@@ -68,7 +68,7 @@ namespace znMusicPlayerWUI.Controls
             try
             {
                 DataContext = null;
-                AlbumImage.Source = null;
+                AlbumImage.Dispose();
                 MusicData = null;
                 MainWindow.DriveInTypeEvent -= MainWindow_DriveInTypeEvent;
             }

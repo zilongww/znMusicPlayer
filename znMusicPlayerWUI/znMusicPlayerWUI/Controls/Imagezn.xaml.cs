@@ -21,7 +21,7 @@ namespace znMusicPlayerWUI.Controls
 {
     public partial class Imagezn : Grid, IDisposable
     {
-        public enum ShowMenuBehaviors { PointEnter, RightTaped, Tapped }
+        public enum ShowMenuBehaviors { PointEnter, RightTaped, Tapped, None }
 
         public ShowMenuBehaviors ShowMenuBehavior { get; set; } = default;
 
@@ -118,6 +118,7 @@ namespace znMusicPlayerWUI.Controls
 
         private async void Clickzn(object sender, object e)
         {
+            if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
             ScrollViewer scrollViewer = new();
             scrollViewer.Content = new Image() { Source = Source, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
             await MainWindow.ShowDialog("查看图片", scrollViewer, "确定", "保存到文件...");

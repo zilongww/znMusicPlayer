@@ -92,7 +92,7 @@
                             CornerRadius="{ThemeResource ControlCornerRadius}"
                             Width="50"
                             Height="50">
-                        <Image x:Name="AlbumImage"/>
+                        <local:Imagezn x:Name="AlbumImage" ShowMenuBehavior="None"/>
                     </Border>
                     <StackPanel VerticalAlignment="Center"
                                 Margin="10,0,0,0">
