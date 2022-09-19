@@ -1,0 +1,130 @@
+﻿<Page
+    x:Class="znMusicPlayerWUI.Pages.DialogPages.EqualizerPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:znMusicPlayerWUI.Pages.DialogPages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Grid>
+        <TextBlock x:Name="WaveInfoTB" Text="{Binding WaveInfo,Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,-34,0,0"/>
+        <ToggleSwitch x:Name="EqEnableTS" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="70,-44,0,0" IsOn="{Binding EqEnabled, Mode=TwoWay}"/>
+        <ScrollViewer>
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="预设" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <ComboBox x:Name="EqComboBox" Width="134" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}" SelectionChanged="ComboBox_SelectionChanged" Loaded="EqComboBox_Loaded">
+                        <x:String>自定义</x:String>
+                        <x:String>高音增强</x:String>
+                        <x:String>低音增强</x:String>
+                        <x:String>头戴式耳机</x:String>
+                        <x:String>笔记本电脑</x:String>
+                        <x:String>便携式扬声器</x:String>
+                        <x:String>家庭立体声</x:String>
+                        <x:String>电视</x:String>
+                        <x:String>汽车</x:String>
+                    </ComboBox>
+                    <Button x:Name="ResetButton" Content="重置" Margin="12,0,0,0" Visibility="Collapsed" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}" Click="ResetButton_Click"/>
+                </StackPanel>
+                <Grid Margin="0,8,0,0">
+                    <StackPanel Width="30" HorizontalAlignment="Left" Margin="0,2,0,0">
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FlowDirection" Value="RightToLeft"/>
+                                <Setter Property="FontSize" Value="13"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <TextBlock Text="分贝"/>
+                        <TextBlock Text="12+" Margin="0,8,0,0"/>
+                        <TextBlock Text="6+" Margin="0,8,0,0"/>
+                        <TextBlock Text="0" Margin="0,8,0,0"/>
+                        <TextBlock Text="6-" Margin="0,8,0,0"/>
+                        <TextBlock Text="12-" Margin="0,8,0,0"/>
+                        <TextBlock Text="Hz" Margin="0,8,0,0"/>
+                    </StackPanel>
+                    <ScrollViewer Padding="0,0,0,16" Margin="38,28,0,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled" HorizontalScrollMode="Enabled">
+                        <Grid Padding="0,2,0,2">
+                            <StackPanel x:Name="SliderStackBase" Orientation="Horizontal">
+                                <StackPanel.Resources>
+                                    <Style TargetType="StackPanel">
+                                        <Setter Property="Margin" Value="0,0,10,0"/>
+                                    </Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontSize" Value="13"/>
+                                        <Setter Property="VerticalAlignment" Value="Bottom"/>
+                                        <Setter Property="TextAlignment" Value="Center"/>
+                                        <Setter Property="Margin" Value="0,8,0,0"/>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <StackPanel>
+                                    <Slider x:Name="Eq0" Orientation="Vertical" Height="120" TickPlacement="Outside" TickFrequency="2" Maximum="12" Minimum="-12" Value="0" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}"/>
+                                    <TextBlock Text="31"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider x:Name="Eq1" Orientation="Vertical" Height="120" TickPlacement="Outside" TickFrequency="2" Maximum="12" Minimum="-12" Value="0" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}"/>
+                                    <TextBlock Text="62"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider x:Name="Eq2" Orientation="Vertical" Height="120" TickPlacement="Outside" TickFrequency="2" Maximum="12" Minimum="-12" Value="0" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}"/>
+                                    <TextBlock Text="125"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider x:Name="Eq3" Orientation="Vertical" Height="120" TickPlacement="Outside" TickFrequency="2" Maximum="12" Minimum="-12" Value="0" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}"/>
+                                    <TextBlock Text="250"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider x:Name="Eq4" Orientation="Vertical" Height="120" TickPlacement="Outside" TickFrequency="2" Maximum="12" Minimum="-12" Value="0" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}"/>
+                                    <TextBlock Text="500"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider x:Name="Eq5" Orientation="Vertical" Height="120" TickPlacement="Outside" TickFrequency="2" Maximum="12" Minimum="-12" Value="0" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}"/>
+                                    <TextBlock Text="1k"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider x:Name="Eq6" Orientation="Vertical" Height="120" TickPlacement="Outside" TickFrequency="2" Maximum="12" Minimum="-12" Value="0" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}"/>
+                                    <TextBlock Text="2k"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider x:Name="Eq7" Orientation="Vertical" Height="120" TickPlacement="Outside" TickFrequency="2" Maximum="12" Minimum="-12" Value="0" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}"/>
+                                    <TextBlock Text="4k"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider x:Name="Eq8" Orientation="Vertical" Height="120" TickPlacement="Outside" TickFrequency="2" Maximum="12" Minimum="-12" Value="0" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}"/>
+                                    <TextBlock Text="8k"/>
+                                </StackPanel>
+                                <StackPanel>
+                                    <Slider x:Name="Eq9" Orientation="Vertical" Height="120" TickPlacement="Outside" TickFrequency="2" Maximum="12" Minimum="-12" Value="0" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}"/>
+                                    <TextBlock Text="16k"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+                <GridView SelectionMode="None">
+                    <GridView.ItemContainerStyle>
+                        <Style TargetType="GridViewItem">
+                            <Setter Property="Padding" Value="2,0,6,8"/>
+                            <Setter Property="VerticalAlignment" Value="Stretch"/>
+                            <Setter Property="HorizontalAlignment" Value="Left"/>
+                            <Setter Property="Height" Value="68"/>
+                        </Style>
+                    </GridView.ItemContainerStyle>
+                    <Slider x:Name="aSlider" Header="变调：1x" Width="140" Minimum="1" Maximum="25" Value="{Binding Pitch,Mode=TwoWay}" TickFrequency="1.14" TickPlacement="Outside" HorizontalAlignment="Left" IsThumbToolTipEnabled="False"/>
+                    <Slider x:Name="bSlider" Header="速度：1x" Width="140" Minimum="1" Maximum="25" Value="{Binding Tempo,Mode=TwoWay}" TickFrequency="1.14" TickPlacement="Outside" HorizontalAlignment="Left" IsThumbToolTipEnabled="False"/>
+                    <Slider x:Name="cSlider" Header="速度比：1x" Width="140" Minimum="1" Maximum="25" Value="{Binding Rate,Mode=TwoWay}" TickFrequency="1.14" TickPlacement="Outside" VerticalAlignment="Center" HorizontalAlignment="Left" IsThumbToolTipEnabled="False"/>
+                    <StackPanel>
+                        <TextBlock Text="音频输出" Margin="{StaticResource HubSectionHeaderThemeMargin}"/>
+                        <DropDownButton x:Name="OutDevicesDropDownButton" Click="OutDevicesDropDownButton_Click" Width="140">
+                            <DropDownButton.Flyout>
+                                <MenuFlyout x:Name="OutDevicesFlyout"/>
+                            </DropDownButton.Flyout>
+                            <TextBlock x:Name="OutDevicesTextBlock" Text="{Binding AudioPlayer.NowOutDevice}"/>
+                        </DropDownButton>
+                    </StackPanel>
+                    <NumberBox x:Name="LatencyNumberBox" Header="音频缓冲时间" Width="140" Value="{Binding Latency,Mode=TwoWay}" PlaceholderText="整数（ms）" Maximum="1000" Minimum="50" SpinButtonPlacementMode="Compact"/>
+                    <ToggleSwitch Header="Wasapi独占声卡" IsOn="{Binding WasapiOnly,Mode=TwoWay}"/>
+                </GridView>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

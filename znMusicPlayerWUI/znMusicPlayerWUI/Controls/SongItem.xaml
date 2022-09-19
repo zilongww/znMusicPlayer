@@ -1,0 +1,131 @@
+﻿<Grid
+    x:Class="znMusicPlayerWUI.Controls.SongItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:znMusicPlayerWUI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Loaded="Grid_Loaded" Unloaded="Grid_Unloaded"
+    RightTapped="Button_RightTapped" Background="Transparent"
+    PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
+    PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited"
+    DoubleTapped="Grid_DoubleTapped">
+    
+    <Grid.Resources>
+        <MenuFlyout x:Name="rmf" Opened="rmf_Opened" Closed="rmf_Closed">
+            <MenuFlyoutItem Text="{Binding MusicData.Title}" IsEnabled="False"/>
+            <MenuFlyoutItem Text="播放" Click="Play_Click">
+                <MenuFlyoutItem.Icon>
+                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 播放ol}"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem Text="添加到播放中列表" Click="AddPlay_Click">
+                <MenuFlyoutItem.Icon>
+                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 添加}"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem Text="下一首播放" Click="NextPlay_Click">
+                <MenuFlyoutItem.Icon>
+                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 下一首ol}"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem x:Name="DeleteFlyoutBtn" Text="从列表中删除" Click="DeleteFlyoutBtn_Click">
+                <MenuFlyoutItem.Icon>
+                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 删除}"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutSubItem x:Name="AddToPlayListSubItems" Text="添加到播放列表">
+                <MenuFlyoutSubItem.Icon>
+                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 添加}"/>
+                </MenuFlyoutSubItem.Icon>
+            </MenuFlyoutSubItem>
+            <MenuFlyoutItem Text="下载" Click="Download_Click">
+                <MenuFlyoutItem.Icon>
+                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 下载}"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutSubItem x:Name="rmfs" Text="艺术家">
+                <MenuFlyoutSubItem.Icon>
+                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 用户}"/>
+                </MenuFlyoutSubItem.Icon>
+            </MenuFlyoutSubItem>
+            <MenuFlyoutItem x:Name="rmfi" Text="专辑">
+                <MenuFlyoutItem.Icon>
+                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 专辑}"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutItem Text="详细信息" Click="Info_Click"/>
+        </MenuFlyout>
+
+        <MenuFlyout x:Name="mf">
+            <MenuFlyoutSubItem x:Name="mfs" Text="艺术家">
+                <MenuFlyoutSubItem.Icon>
+                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 用户}"/>
+                </MenuFlyoutSubItem.Icon>
+            </MenuFlyoutSubItem>
+            <MenuFlyoutItem x:Name="mfi" Text="专辑">
+                <MenuFlyoutItem.Icon>
+                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 专辑}"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+        </MenuFlyout>
+        
+    </Grid.Resources>
+
+    <Border HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            BorderThickness="0"
+            CornerRadius="4"
+            Background="Transparent">
+        <Grid>
+            <Rectangle x:Name="BackgroundBaseGrid" Tapped="Grid_Tapped" Opacity="0" Fill="{ThemeResource ItemBorderBackground}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            <Grid x:Name="BaseGrid" Padding="10,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Border x:Name="AlbumImage_BaseBorder"
+                            CornerRadius="{ThemeResource ControlCornerRadius}"
+                            Width="50"
+                            Height="50">
+                        <Image x:Name="AlbumImage"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center"
+                                Margin="10,0,0,0">
+                        <TextBlock Text="{Binding MusicData.Title}" IsHitTestVisible="False"/>
+                        <Grid>
+                            <Button BorderThickness="0"
+                                    Background="Transparent"
+                                    Margin="0,0,0,0"
+                                    Padding="0"
+                                    x:Name="InfoButton"
+                                    Flyout="{ThemeResource mf}"
+                                    Content=" "
+                                    Width="{Binding ElementName=ButtonNameTextBlock,Path=ActualWidth}"/>
+                            <TextBlock x:Name="ButtonNameTextBlock" IsHitTestVisible="False" FontSize="12" Text="{Binding MusicData.ButtonName}" Foreground="{ThemeResource SystemChromeDisabledLowColor}"/>
+                        </Grid>
+
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel x:Name="RightToolBar" Visibility="Collapsed" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="LeftToRight">
+                    <Button Width="36" Height="36" CornerRadius="18" ToolTipService.ToolTip="播放" Click="Play_Click">
+                        <Viewbox Width="12">
+                            <SymbolIcon Symbol="Play"/>
+                        </Viewbox>
+                    </Button>
+                    <Button Width="36" Height="36" CornerRadius="18" Margin="2,0,0,0" ToolTipService.ToolTip="更多选项" Click="Button_Click">
+                        <Viewbox Width="12">
+                            <SymbolIcon Symbol="More"/>
+                        </Viewbox>
+                    </Button>
+                </StackPanel>
+                
+            </Grid>
+        </Grid>
+    </Border>
+</Grid>

@@ -1,0 +1,28 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:znMusicPlayerWPF.Pages"
+             xmlns:MyC="clr-namespace:znMusicPlayerWPF.MyC" x:Class="znMusicPlayerWPF.Pages.ListLItem" Margin="0,0,6,0"
+             mc:Ignorable="d" d:DesignWidth="358" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave">
+    <Grid Background="{x:Null}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Border x:Name="BackOpacityMask" Background="Black" Grid.ColumnSpan="2" Opacity="1" CornerRadius="6"/>
+        <Rectangle x:Name="LeftBar" Width="3" HorizontalAlignment="Left" Fill="White" RadiusY="1.5" RadiusX="1.5" Margin="0,8"/>
+        <TextBlock x:Name="Name1" Margin="10,5,5,0" TextWrapping="NoWrap" Text="歌名" VerticalAlignment="Top" Foreground="{DynamicResource ATextColor_InColor}" FontSize="16" TextTrimming="CharacterEllipsis" Height="20"/>
+        <TextBlock x:Name="Artist" Margin="10,25,5,5" TextWrapping="NoWrap" Text="歌手" Foreground="{DynamicResource ATextColor_InColor}" FontSize="14" FontWeight="Light" TextTrimming="CharacterEllipsis" VerticalAlignment="Top" Height="18"/>
+        <StackPanel x:Name="ButtonsStackPanel" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Width="80" VerticalAlignment="Center" Margin="0 0 5 0">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                <MyC:znButton Height="40" CRadius="20" ShowContent="False" Content="" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#00000000" BorderBrush="{x:Null}" Click="Button_Click" Width="40"/>
+                <Path x:Name="StatePath" IsHitTestVisible="False" Data="{StaticResource 播放}" Fill="{DynamicResource ATextColor_InColor}" Width="14" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Fill" Stroke="{x:Null}" Grid.Column="1"/>
+            </Grid>
+            <MyC:znButton Height="40" CRadius="20" ShowContent="True" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#00000000" BorderBrush="{x:Null}" Click="Button_Click_1" Width="40">
+                <Path Data="{StaticResource 删除}" Fill="{DynamicResource ATextColor_InColor}" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Fill" Stroke="{DynamicResource ATextColor_InColor}"/>
+            </MyC:znButton>
+        </StackPanel>
+    </Grid>
+</UserControl>

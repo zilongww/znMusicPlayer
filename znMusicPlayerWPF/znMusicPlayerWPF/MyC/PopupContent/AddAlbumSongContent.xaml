@@ -1,0 +1,20 @@
+﻿<UserControl xmlns:MyC="clr-namespace:znMusicPlayerWPF.MyC"  x:Class="znMusicPlayerWPF.MyC.PopupContent.AddAlbumSongContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:znMusicPlayerWPF.MyC.PopupContent"
+             mc:Ignorable="d" 
+             Width="320" Height="266">
+    <StackPanel Width="300" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock x:Name="tba" Text="点击列表名添加到列表" FontSize="20" Foreground="{DynamicResource ATextColor_InBlur}" HorizontalAlignment="Left"/>
+            <TextBlock x:Name="TipTb" FontSize="14" Text="添加成功" VerticalAlignment="Bottom" Foreground="Lime" Margin="10,0,0,0"/>
+        </StackPanel>
+        <Border x:Name="Borders" Height="214" Margin="0,5,0,0" VerticalAlignment="Top" Background="#00000000" CornerRadius="6" ClipToBounds="True">
+            <ListBox x:Name="Lists" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemContainerStyle="{StaticResource ListBoxItemStyleSetting}" Style="{StaticResource AnimateListStyle}" ScrollViewer.CanContentScroll="False" Background="{x:Null}" BorderBrush="{x:Null}" Padding="0" BorderThickness="0">
+                <MyC:znButton x:Name="CopyBtn" Width="288" Content="标题" HorizontalContentAlignment="Left" Background="{DynamicResource ButtonBlurPAMP}" BorderBrush="{x:Null}" Foreground="{DynamicResource ATextColor_InColorBlur}" FontSize="{StaticResource 设置字体大小}" Height="26" EnterColor="{DynamicResource ButtonBlurPAMM}"/>
+            </ListBox>
+        </Border>
+    </StackPanel>
+</UserControl>

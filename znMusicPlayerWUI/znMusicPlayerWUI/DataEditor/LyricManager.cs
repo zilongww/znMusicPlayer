@@ -1,0 +1,152 @@
+﻿using Microsoft.UI.Xaml;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace znMusicPlayerWUI.DataEditor
+{
+    public class LyricManager
+    {
+        public delegate void PlayingLyricDelegate(ObservableCollection<LyricData> nowPlayingLyrics);
+        public delegate void PlayingLyricData(LyricData nowLyricsData);
+        public event PlayingLyricDelegate PlayingLyricSourceChange;
+        public event PlayingLyricData PlayingLyricSelectedChange;
+        MusicData MusicData;
+        DispatcherTimer timer;
+
+        public ObservableCollection<LyricData> NowPlayingLyrics = new();
+        private LyricData _nowLyricsData = new(null, null, TimeSpan.Zero);
+        public LyricData NowLyricsData
+        {
+            get => _nowLyricsData;
+            set
+            {
+                if (_nowLyricsData == null || value == null) return;
+                if (_nowLyricsData.MD5 != value.MD5)
+                {
+                    _nowLyricsData = value;
+                    PlayingLyricSelectedChange?.Invoke(value);
+                }
+            }
+        }
+
+        public LyricManager()
+        {
+            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(10) };
+            timer.Tick += (_, __) => ReCallUpdata();
+
+            App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
+            App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
+        }
+
+        private void AudioPlayer_PlayStateChanged(Media.AudioPlayer audioPlayer)
+        {
+            if (App.audioPlayer.NowOutObj?.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+            {
+                timer.Start();
+            }
+        }
+
+        public async Task InitLyricList(MusicData musicData)
+        {
+            string cachePath = await Helpers.FileHelper.GetLyricCache(musicData);
+            string resultPath = null;
+
+            if (cachePath != null)
+            {
+                resultPath = cachePath;
+            }
+            else
+            {
+                var lyricTuple = await Helpers.WebHelper.GetLyricStringAsync(musicData);
+                if (lyricTuple == null)
+                {
+                    resultPath = null;
+                }
+                else
+                {
+                    string path = $@"{DataFolderBase.LyricCacheFolder}\{musicData.From}{musicData.ID}";
+                    await Task.Run(() =>
+                    {
+                        if (!System.IO.File.Exists(path))
+                        {
+                            System.IO.File.Create(path).Close();
+                        }
+                        System.IO.File.WriteAllText(path, $"{lyricTuple.Item1}\n{lyricTuple.Item2}");
+                    });
+                    resultPath = path;
+                }
+            }
+
+            await InitLyricList(resultPath);
+        }
+
+        public async Task InitLyricList(string lyricPath)
+        {
+            if (lyricPath == null)
+            {
+                NowPlayingLyrics.Clear();
+                return;
+            }
+
+            string f = await System.IO.File.ReadAllTextAsync(lyricPath);
+
+            NowPlayingLyrics.Clear();
+
+            if (f.Length < 10)
+            {
+                System.IO.File.Delete(lyricPath);
+                return;
+            }
+
+            var lyricDatas = await Helpers.LyricHelper.LyricToLrcData(f);
+            if (lyricDatas.Any())
+            {
+                foreach (var i in lyricDatas)
+                {
+                    NowPlayingLyrics.Add(i);
+                }
+
+                NowLyricsData = NowPlayingLyrics.First();
+            }
+        }
+
+        LyricData lastLyricData = null;
+        public void ReCallUpdata()
+        {
+            if (App.audioPlayer.NowOutObj?.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+            {
+                foreach (var data in NowPlayingLyrics)
+                {
+                    if (data.LyricTimeSpan < App.audioPlayer.CurrentTime)
+                    {
+                        lastLyricData = data;
+                    }
+                    else
+                    {
+                        NowLyricsData = lastLyricData;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                timer.Stop();
+            }
+        }
+
+        private async void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
+        {
+            if (MusicData != audioPlayer.MusicData)
+            {
+                MusicData = audioPlayer.MusicData;
+                await InitLyricList(audioPlayer.MusicData);
+                PlayingLyricSourceChange?.Invoke(NowPlayingLyrics);
+                timer.Start();
+            }
+        }
+    }
+}

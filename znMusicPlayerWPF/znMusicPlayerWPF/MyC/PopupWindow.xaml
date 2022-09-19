@@ -1,0 +1,13 @@
+﻿<Window x:Name="MainContentWindow" x:Class="znMusicPlayerWPF.MyC.PopupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:znMusicPlayerWPF.MyC" Deactivated="PopupWindow_Deactivated"
+        mc:Ignorable="d" FontFamily="{StaticResource znNormal}" Topmost="True" 
+        Title="PopupWindow" AllowsTransparency="False" ResizeMode="NoResize" WindowStyle="None" Background="Transparent">
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="-1" CaptionHeight="0" UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+    <TextBlock Foreground="White" Text="无内容zilongcn" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+</Window>

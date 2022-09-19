@@ -1,0 +1,29 @@
+﻿<Grid
+    x:Class="znMusicPlayerWUI.Controls.PlayListCard"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:znMusicPlayerWUI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" MaxWidth="150"
+    mc:Ignorable="d" Background="Transparent"
+    Loaded="UILoaded" Unloaded="UIUnloaded" ActualThemeChanged="Grid_ActualThemeChanged"
+    PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited"
+    PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased">
+    <Rectangle x:Name="ShadowBaseRectangle" Margin="4,2,0,0"/>
+    <Border CornerRadius="6"
+            BorderThickness="1"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultSolid}">
+        <Grid>
+            <Rectangle x:Name="BackColorBaseRectAngle" Fill="{ThemeResource CardBackgroundFillColorDefault}" Opacity="1"/>
+            <StackPanel>
+                <Grid Width="150" Height="150">
+                    <Image x:Name="PlayListImage" Source="/icon.ico"/>
+                    <Rectangle x:Name="BlackColorBaseRectangle" Fill="Black" Opacity="0.25"/>
+                </Grid>
+                <TextBlock Padding="6,4" TextTrimming="CharacterEllipsis" Height="50">
+                    <Run Text="{Binding ListShowName}"/><LineBreak/><Run Text="{Binding Songs.Count}" FontSize="12"/>首歌曲
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Grid>

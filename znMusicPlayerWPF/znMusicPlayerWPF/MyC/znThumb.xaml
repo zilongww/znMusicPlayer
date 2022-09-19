@@ -1,0 +1,18 @@
+﻿<Thumb x:Class="znMusicPlayerWPF.MyC.znThumb"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:znMusicPlayerWPF.MyC"
+             mc:Ignorable="d" MouseLeave="Thumb_MouseLeave" MouseEnter="Thumb_MouseEnter" PreviewMouseLeftButtonDown="Thumb_MouseLeftButtonDown" PreviewMouseLeftButtonUp="Thumb_MouseLeftButtonUp">
+    <Thumb.Template>
+        <ControlTemplate>
+            <Viewbox>
+                <Grid Width="200" Height="200" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Rectangle Fill="White" RadiusY="100" RadiusX="100" Loaded="Rectangle_Loaded"/>
+                    <Rectangle Fill="{StaticResource ButtonPAMP}" RadiusY="100" RadiusX="100" Margin="48" Loaded="ar_Loaded"/>
+                </Grid>
+            </Viewbox>
+        </ControlTemplate>
+    </Thumb.Template>
+</Thumb>

@@ -1,0 +1,106 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:znMusicPlayerWPF"
+        xmlns:MyC="clr-namespace:znMusicPlayerWPF.MyC" x:Class="znMusicPlayerWPF.SetupWindow"
+        mc:Ignorable="d" Background="Transparent"
+        Title="SetupWindow" Height="350" Width="600" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <SolidColorBrush x:Key="textColor" Color="Black"/>
+        <SolidColorBrush x:Key="backColor"/>
+        <SolidColorBrush x:Key="backColorTitle"/>
+        <SolidColorBrush x:Key="backColorBottom"/>
+        <SolidColorBrush x:Key="buttonBackColor" Color="#72FF0000"/>
+        <SolidColorBrush x:Key="buttonEnterColor" Color="#B2FF0000"/>
+    </Window.Resources>
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="-1"/>
+    </WindowChrome.WindowChrome>
+    <Grid x:Name="mainback">
+        <Grid VerticalAlignment="Top" Background="{DynamicResource backColorTitle}" Height="32" MouseLeftButtonDown="Window_MouseLeftButtonDown" Margin="0,0,146,0">
+            <TextBlock x:Name="titleTb" Text="znMusicPlayer安装程序" FontSize="16" Foreground="{DynamicResource textColor}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        </Grid>
+        <Grid x:Name="pages" Background="{DynamicResource backColor}" Margin="0,30,0,48">
+            <Grid x:Name="installPage1" Visibility="Visible">
+                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}">
+                    欢迎安装znMusicPlayer。<LineBreak/>
+                    此程序将会引导你完成在你的设备上安装 znMusicPlayer 所需的步骤。<LineBreak/><LineBreak/>
+                    注意：将会安装到用户名为 <Run x:Name="installPage1_user" Text="user"/> 的管理员用户上。<LineBreak/>
+                    如果你不想安装此程序，可以 <Hyperlink Click="Hyperlink_Click" Foreground="{DynamicResource buttonBackColor}">以绿色版启动</Hyperlink> 此程序
+                </TextBlock>
+            </Grid>
+            <Grid x:Name="installPage2" Visibility="Collapsed">
+                <TextBlock Text="在安装之前，你必须阅读并同意用户协议:" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}"/>
+                <ListBox x:Name="ual" Margin="10,33,10,31" SizeChanged="ListBox_SizeChanged" Style="{StaticResource AnimateListStyle}" ScrollViewer.CanContentScroll="False" ItemContainerStyle="{StaticResource ListBoxItemStyleSetting}" ScrollViewer.HorizontalScrollBarVisibility="Auto" BorderBrush="{x:Null}" Background="#0A000000">
+                    <ListBox.Clip>
+                        <RectangleGeometry x:Name="lrg" Rect="0,0,576,212" RadiusX="10" RadiusY="10"/>
+                    </ListBox.Clip>
+                    <TextBlock x:Name="UserArgeeTb" Text="用户协议。" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="{Binding ElementName=ual,Path=ActualWidth}" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}"/>
+                </ListBox>
+                <Grid Margin="10,0,0,0" VerticalAlignment="Bottom">
+                    <TextBlock Text="我已阅读并同意此用户协议。" IsHitTestVisible="False" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}" Margin="24,4,0,4"/>
+                    <MyC:OCButton x:Name="installPage2_argeeOCBtn" Height="18" Margin="0,4" IsRadioButtonStyle="True" HorizontalAlignment="Left" VerticalAlignment="Center" Width="210" IsCMouseEnterBackground="{DynamicResource buttonEnterColor}" IsCMouseEnterStroke="{DynamicResource buttonEnterColor}" IsCheckedBackground="{DynamicResource buttonBackColor}" IsCheckedStroke="{DynamicResource buttonBackColor}"/>
+                    <TextBlock x:Name="installPage2_notArgeeTb" Text="请同意此用户协议后继续安装。" IsHitTestVisible="False" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource buttonEnterColor}" Margin="206,4,0,4"/>
+                </Grid>
+            </Grid>
+            <Grid x:Name="installPage3" Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock Text="安装路径（如果输入的路径不存在将会尝试自动创建）：" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}"/>
+                    <Grid>
+                        <TextBox x:Name="installPathTbox" Foreground="{DynamicResource textColor}" Text="安装路径" SelectionBrush="{DynamicResource buttonBackColor}" Margin="14,0,114,0" Style="{StaticResource znTextBoxStyle}" BorderThickness="1.5" VerticalAlignment="Center"/>
+                        <MyC:znButton Content="选择文件夹" VerticalAlignment="Top" Background="{DynamicResource buttonBackColor}" BorderBrush="{x:Null}" EnterColor="{DynamicResource buttonEnterColor}" Height="26" Foreground="{DynamicResource ATextColor_InColor}" FontSize="{DynamicResource ButtonFontSize}" Margin="0,0,10,0" HorizontalAlignment="Right" Click="znButton_Click_1" Width="99"/>
+                    </Grid>
+                    <TextBlock Text="其他安装设置：" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <MyC:OCButton x:Name="installSettings_desktopsOCBtn" Margin="14,0,0,0" IsRadioButtonStyle="True" Width="140" Height="18" IsChecked="True" IsCMouseEnterBackground="{DynamicResource buttonEnterColor}" IsCMouseEnterStroke="{DynamicResource buttonEnterColor}" IsCheckedBackground="{DynamicResource buttonBackColor}" IsCheckedStroke="{DynamicResource buttonBackColor}"/>
+                        <TextBlock Text="创建桌面快捷方式" IsHitTestVisible="False" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}" Margin="-112,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <MyC:OCButton x:Name="installSettings_StartMenusOCBtn" Margin="14,0,0,0" IsRadioButtonStyle="True" Width="168" Height="18" IsChecked="True" IsCMouseEnterBackground="{DynamicResource buttonEnterColor}" IsCMouseEnterStroke="{DynamicResource buttonEnterColor}" IsCheckedBackground="{DynamicResource buttonBackColor}" IsCheckedStroke="{DynamicResource buttonBackColor}"/>
+                        <TextBlock Text="创建开始菜单快捷方式" IsHitTestVisible="False" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}" Margin="-140,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <MyC:OCButton x:Name="installSettings_StartUpOCBtn" Margin="14,0,0,0" IsRadioButtonStyle="True" Width="84" Height="18" IsCMouseEnterBackground="{DynamicResource buttonEnterColor}" IsCMouseEnterStroke="{DynamicResource buttonEnterColor}" IsCheckedBackground="{DynamicResource buttonBackColor}" IsCheckedStroke="{DynamicResource buttonBackColor}"/>
+                        <TextBlock Text="开机启动" IsHitTestVisible="False" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}" Margin="-56,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+            <StackPanel x:Name="installPage4" Visibility="Collapsed">
+                <WrapPanel Margin="10,10,10,0">
+                    <MyC:SimpleLoading x:Name="installPage4_installingSl" StrokeThickness="1.5" Width="22" Height="18" Foreground="{DynamicResource buttonBackColor}" Margin="0,0,4,0"/>
+                    <TextBlock x:Name="installPage4_installingTb" Text="正在安装..." IsHitTestVisible="False" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}" Margin="0"/>
+                </WrapPanel>
+                <TextBlock x:Name="installPage4_installStateTb" Text="正在安装..." IsHitTestVisible="False" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}" Margin="10,10,10,0"/>
+            </StackPanel>
+            <Grid x:Name="installPage5" Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock Text="卸载znMusicPlayer" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <MyC:OCButton x:Name="installPage5_deleteDataOCBtn" Margin="14,0,0,0" IsRadioButtonStyle="True" Width="140" Height="18" IsChecked="True" IsCMouseEnterBackground="{DynamicResource buttonEnterColor}" IsCMouseEnterStroke="{DynamicResource buttonEnterColor}" IsCheckedBackground="{DynamicResource buttonBackColor}" IsCheckedStroke="{DynamicResource buttonBackColor}"/>
+                        <TextBlock Text="删除用户数据" IsHitTestVisible="False" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}" Margin="-112,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <MyC:OCButton x:Name="installPage5_deleteCacheOCBtn" Margin="14,0,0,0" IsRadioButtonStyle="True" Width="168" Height="18" IsChecked="True" IsCMouseEnterBackground="{DynamicResource buttonEnterColor}" IsCMouseEnterStroke="{DynamicResource buttonEnterColor}" IsCheckedBackground="{DynamicResource buttonBackColor}" IsCheckedStroke="{DynamicResource buttonBackColor}"/>
+                        <TextBlock Text="删除歌曲缓存" IsHitTestVisible="False" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}" Margin="-140,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+            <StackPanel x:Name="installPage6" Visibility="Collapsed">
+                <WrapPanel Margin="10,10,10,0">
+                    <MyC:SimpleLoading x:Name="installPage6_uninstallingSl" StrokeThickness="1.5" Height="18" Foreground="{DynamicResource buttonBackColor}" Margin="0,0,4,0"/>
+                    <TextBlock x:Name="installPage6_uninstallingTb" Text="正在卸载..." IsHitTestVisible="False" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}" Margin="0"/>
+                </WrapPanel>
+                <TextBlock x:Name="installPage6_uninstallStateTb" Text="正在卸载..." IsHitTestVisible="False" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="{DynamicResource ButtonFontSize}" Foreground="{DynamicResource textColor}" Margin="10,10,10,0"/>
+            </StackPanel>
+        </Grid>
+        <Grid Background="{DynamicResource backColorBottom}" Height="48" VerticalAlignment="Bottom">
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,6,0" Orientation="Horizontal">
+                <MyC:znButton x:Name="CancelBtn" Content="取消" CRadius="18" VerticalAlignment="Top" Background="{DynamicResource buttonBackColor}" BorderBrush="{x:Null}" EnterColor="{DynamicResource buttonEnterColor}" Width="99" Height="36" Foreground="{DynamicResource ATextColor_InColor}" FontSize="{DynamicResource ButtonFontSize}" Margin="0" HorizontalAlignment="Left" Click="znButton_Click"/>
+                <MyC:znButton x:Name="BeforeBtn" Content="上一步" CRadius="18" VerticalAlignment="Top" Background="{DynamicResource buttonBackColor}" BorderBrush="{x:Null}" EnterColor="{DynamicResource buttonEnterColor}" Width="99" Height="36" Foreground="{DynamicResource ATextColor_InColor}" FontSize="{DynamicResource ButtonFontSize}" Margin="2,0,0,0" HorizontalAlignment="Left" Click="BeforeBtn_Click"/>
+                <MyC:znButton x:Name="NextBtn" Content="下一步" CRadius="18" VerticalAlignment="Top" Background="{DynamicResource buttonBackColor}" BorderBrush="{x:Null}" EnterColor="{DynamicResource buttonEnterColor}" Width="99" Height="36" Foreground="{DynamicResource ATextColor_InColor}" FontSize="{DynamicResource ButtonFontSize}" Margin="2,0,0,0" HorizontalAlignment="Left" Click="NextBtn_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

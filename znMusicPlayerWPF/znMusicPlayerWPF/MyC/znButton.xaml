@@ -1,0 +1,31 @@
+﻿<Button x:Class="znMusicPlayerWPF.MyC.znButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:znMusicPlayerWPF.MyC"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="100" Content="zilongcn" HorizontalAlignment="Center" VerticalAlignment="Center" MouseEnter="Grid_MouseEnter" MouseLeave="MainGrid_MouseLeave">
+    <Button.Template>
+        <ControlTemplate TargetType="Button">
+            <Grid x:Name="MainGrid" MouseLeftButtonDown="Grid_MouseLeftButtonDown" ClipToBounds="True" Loaded="MainGrid_Loaded">
+                <Border x:Name="Back" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" ClipToBounds="True" CornerRadius="5" BorderThickness="{TemplateBinding BorderThickness}" Loaded="Back_Loaded">
+                    <Grid Loaded="Grid_Loaded">
+                        <Border x:Name="EnterColorBack" CornerRadius="5" Loaded="EnterColorBack_Loaded" Background="{x:Null}" BorderBrush="{x:Null}" Margin="-1"/>
+                        <ContentPresenter Visibility="Collapsed" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Loaded="ContentPresenter_Loaded"/>
+                        <TextBlock x:Name="ContentText" Loaded="ContentText_Loaded" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Text="{TemplateBinding Content}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" FontFamily="{TemplateBinding FontFamily}" FontStyle="{TemplateBinding FontStyle}" FontStretch="{TemplateBinding FontStretch}"/>
+                        <TextBlock x:Name="EnterContentText" Loaded="EnterContentText_Loaded" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Text="{TemplateBinding Content}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" FontFamily="{TemplateBinding FontFamily}" FontStyle="{TemplateBinding FontStyle}" FontStretch="{TemplateBinding FontStretch}" Opacity="0"/>
+                        <Path x:Name="CR" Fill="Black" Loaded="CR_Loaded" Opacity="0" VerticalAlignment="Stretch" IsEnabled="False">
+                            <Path.Clip>
+                                <RectangleGeometry RadiusX="4" RadiusY="4" Rect="0,0,98,48"/>
+                            </Path.Clip>
+                            <Path.Data>
+                                <EllipseGeometry x:Name="CR1" RadiusX="5" RadiusY="{Binding RelativeSource={RelativeSource Mode=Self}, Path=RadiusX}"/>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+            </Grid>
+        </ControlTemplate>
+    </Button.Template>
+</Button>

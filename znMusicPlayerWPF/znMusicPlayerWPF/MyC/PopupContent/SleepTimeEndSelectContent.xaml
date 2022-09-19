@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="znMusicPlayerWPF.MyC.PopupContent.SleepTimeEndSelectContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:znMusicPlayerWPF.MyC.PopupContent"
+             mc:Ignorable="d"
+             xmlns:c="clr-namespace:znMusicPlayerWPF.MyC" Height="148">
+    <StackPanel Margin="6">
+        <c:znButton Content="暂停播放" Loaded="znButton_Loaded" HorizontalAlignment="Stretch" Height="34" Click="znButton_Click" FontSize="14"/>
+        <c:znButton Content="退出程序" Loaded="znButton_Loaded" HorizontalAlignment="Stretch" Height="34" Click="znButton_Click" FontSize="14"/>
+        <c:znButton Content="注销" Loaded="znButton_Loaded" HorizontalAlignment="Stretch" Height="34" Click="znButton_Click" FontSize="14"/>
+        <c:znButton Content="关机" Loaded="znButton_Loaded" HorizontalAlignment="Stretch" Height="34" Click="znButton_Click" FontSize="14"/>
+    </StackPanel>
+</UserControl>

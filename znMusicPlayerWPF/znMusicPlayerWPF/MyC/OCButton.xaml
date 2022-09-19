@@ -1,0 +1,24 @@
+﻿<Grid xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"  x:Class="znMusicPlayerWPF.MyC.OCButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" Background="Transparent"
+             xmlns:local="clr-namespace:znMusicPlayerWPF.MyC" MouseLeftButtonDown="Viewbox_MouseLeftButtonDown" MouseLeftButtonUp="Viewbox_MouseLeftButtonUp"
+             mc:Ignorable="d" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave">
+    <Viewbox HorizontalAlignment="Left" Loaded="Viewbox_Loaded">
+        <Grid>
+            <Grid x:Name="style1" Height="50" Width="110" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Visible" Loaded="style1_Loaded">
+                <Rectangle Height="50" VerticalAlignment="Top" StrokeThickness="3" RadiusY="25.125" RadiusX="25.125" Loaded="Rectangle_Loaded" Stroke="#FF333333"/>
+                <Ellipse Height="34" Fill="#FF333333" Margin="8,0,0,0" Loaded="Ellipse_Loaded" HorizontalAlignment="Left" Width="34"/>
+            </Grid>
+            <Grid x:Name="style2" Width="50" Height="50" Loaded="style2_Loaded" Visibility="Collapsed">
+                <Grid.Clip>
+                    <RectangleGeometry Rect="0,0,50,50" RadiusX="25.125" RadiusY="25.125"/>
+                </Grid.Clip>
+                <Canvas Loaded="style2animateBack_Loaded"/>
+                <Rectangle RadiusX="25.125" RadiusY="25.125" Loaded="Rectangle_Loaded_1" StrokeThickness="4"/>
+                <materialDesign:PackIcon Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center" Kind="Tick" Loaded="PackIcon_Loaded"/>
+            </Grid>
+        </Grid>
+    </Viewbox>
+</Grid>

@@ -1,0 +1,35 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:znMusicPlayerWPF.Pages"
+             xmlns:MyC="clr-namespace:znMusicPlayerWPF.MyC" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="znMusicPlayerWPF.Pages.AlbumButton"
+             mc:Ignorable="d" SnapsToDevicePixels="False" Margin="0,0,2,10">
+    <Grid x:Name="mainback" Height="209" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave" MouseLeftButtonDown="mainback_MouseLeftButtonDown" MouseLeftButtonUp="mainback_MouseLeftButtonUp" MouseRightButtonDown="mainback_MouseRightButtonDown" MouseRightButtonUp="mainback_MouseRightButtonUp">
+        <Border x:Name="dseBorder" Opacity="0.1" VerticalAlignment="Bottom" Height="207">
+            <Border.Background>
+                <VisualBrush Visual="{Binding ElementName=backBorder}"/>
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect x:Name="dse" BlurRadius="17" Direction="270" ShadowDepth="3" Opacity="1"/>
+            </Border.Effect>
+        </Border>
+        <Border x:Name="backBorder" UseLayoutRounding="False" ClipToBounds="False" Width="156" BorderThickness="1" Background="White" CornerRadius="6" BorderBrush="#FFE4E4EA" VerticalAlignment="Bottom" Margin="0" Height="207">
+            <Border.Clip>
+                <RectangleGeometry x:Name="rg" Rect="0,0,156,400" RadiusX="5" RadiusY="5"/>
+            </Border.Clip>
+            <StackPanel VerticalAlignment="Top" Margin="0,0,0,12">
+                <Grid ClipToBounds="True">
+                    <Grid.Clip>
+                        <RectangleGeometry x:Name="rg1" Rect="0,0,154,160" RadiusX="5.5" RadiusY="5.5"/>
+                    </Grid.Clip>
+                    <Image x:Name="img" Height="154" VerticalAlignment="Top" Source="/znMusicPlayerWPF;component/Images/SugarAndSalt.jpg" RenderOptions.BitmapScalingMode="Fant" Stretch="UniformToFill" Width="154" Margin="0,0,0,0" HorizontalAlignment="Center"/>
+                    <Rectangle x:Name="darkModMask" Fill="#33000000"/>
+                    <MyC:SimpleLoading x:Name="imgLoadingIcon" Foreground="{DynamicResource ATextColor_InColor}" Width="28" Height="28" StrokeThickness="1.2" Pause="True"/>
+                </Grid>
+                <TextBlock x:Name="textTb" TextWrapping="NoWrap" VerticalAlignment="Bottom" FontSize="14" TextTrimming="CharacterEllipsis" Foreground="#FF1B1B1B" HorizontalAlignment="Left" Margin="8,6,4,0"><Run x:Name="title" Text="默认播放列表"/><LineBreak/><Run x:Name="listCount" Text="共 10 首歌曲" FontSize="12"/></TextBlock>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

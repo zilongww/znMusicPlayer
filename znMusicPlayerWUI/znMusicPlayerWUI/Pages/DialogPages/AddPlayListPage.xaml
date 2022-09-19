@@ -1,0 +1,51 @@
+﻿<Page
+    x:Class="znMusicPlayerWUI.Pages.DialogPages.AddPlayListPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:znMusicPlayerWUI.Pages.DialogPages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Grid>
+        <NavigationView PaneDisplayMode="Top"
+                        IsSettingsVisible="False"
+                        IsBackButtonVisible="Collapsed"
+                        SelectionChanged="NavigationView_SelectionChanged">
+            <NavigationView.Resources>
+                <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="#1D2227"/>
+            </NavigationView.Resources>
+            
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="添加本地列表"/>
+                <NavigationViewItem Content="解析外部列表"/>
+            </NavigationView.MenuItems>
+
+            <Grid>
+                <StackPanel x:Name="AddLocalPage"
+                            Orientation="Vertical">
+                    <TextBox Header="播放列表名称"
+                             PlaceholderText="输入你想要的播放列表名称"
+                             Margin="0,10,0,0"
+                             x:Name="AddLocalPage_ListNameTB"/>
+
+                    <TextBlock Text="封面" Margin="0,10,0,0"/>
+                    <VariableSizedWrapGrid Orientation="Horizontal" Margin="0,4,0,0">
+                        <TextBox PlaceholderText="输入图片路径"
+                                 MinWidth="108" Margin="0,4,4,0"
+                                 x:Name="AddLocalPage_ListImageTB"/>
+                        <Button x:Name="AddLocalPage_ListImageSelectBtn"
+                                Content="选择文件" Click="AddLocalPage_ListImageSelectBtn_Click"
+                                VerticalAlignment="Bottom" Margin="0,2,0,0"/>
+                    </VariableSizedWrapGrid>
+                </StackPanel>
+
+                <Grid x:Name="AddOutSidePage">
+                    <StackPanel>
+                        <ComboBox x:Name="AddOutSidePage_PlatfromCb" Header="外部平台" Margin="0,10,0,0"/>
+                        <TextBox x:Name="AddOutSidePage_IDTb" Header="歌单ID" Margin="0,10,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </NavigationView>
+    </Grid>
+</Page>

@@ -1,0 +1,39 @@
+﻿<Page
+    x:Class="znMusicPlayerWUI.Pages.PlayListPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:znMusicPlayerWUI"
+    xmlns:c="using:znMusicPlayerWUI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <GridView x:Name="BaseGridView"
+              SelectionMode="None"
+              Loaded="BaseGridView_Loaded">
+        <GridView.Header>
+            <Grid x:Name="BaseGridView_HeaderGrid">
+                <Rectangle x:Name="BaseGridView_HeaderRectangle" Fill="{ThemeResource AcrylicNormal}"/>
+                <TextBlock x:Name="BaseGridView_HeaderTextBlock" Text="播放列表" Style="{ThemeResource TBHeader}"/>
+                <CommandBar VerticalAlignment="Bottom" Margin="0,0,10,-6" OverflowButtonVisibility="Auto">
+                    <AppBarButton Label="刷新" Click="AppBarButton_Click">
+                        <AppBarButton.Icon>
+                            <PathIcon Data="{StaticResource 刷新}"/>
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton Label="添加" Click="AppBarButton_Click_1">
+                        <AppBarButton.Icon>
+                            <PathIcon Data="{StaticResource 添加}"/>
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                </CommandBar>
+            </Grid>
+        </GridView.Header>
+        <GridView.ItemContainerStyle>
+            <Style TargetType="GridViewItem">
+                <Setter Property="Margin" Value="10,0,0,16"/>
+            </Style>
+        </GridView.ItemContainerStyle>
+    </GridView>
+
+</Page>

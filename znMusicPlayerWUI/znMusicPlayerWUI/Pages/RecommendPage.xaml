@@ -1,0 +1,42 @@
+﻿<Page
+    x:Class="znMusicPlayerWUI.Pages.RecommendPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:znMusicPlayerWUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" ScrollViewer.ZoomMode="Enabled" ScrollViewer.CanContentRenderOutsideBounds="True">
+        <StackPanel HorizontalAlignment="Stretch"
+                    Orientation="Vertical"
+                    Margin="0,14,0,0">
+            <StackPanel Orientation="Horizontal">
+                <Border CornerRadius="6">
+                    <Image Source="/Images/SugarAndSalt.jpg"
+                       Width="120" Height="120"
+                       Opacity="1" Loaded="Image_Loaded"/>
+                </Border>
+                <StackPanel VerticalAlignment="Center"
+                            Margin="10,0,0,0">
+                    <TextBlock Text="znMusicPlayer"
+                               FontSize="28"/>
+                    <TextBlock Text="Copyright © 2022 znMusicPlayer by zilongcn"
+                               FontSize="12"/>
+                </StackPanel>
+            </StackPanel>
+            <TextBlock Margin="0,12,0,0"
+                       TextWrapping="Wrap"
+                       IsTextSelectionEnabled="True">
+                版本号：<Run x:Name="VersionRun" Text="1.0.0"/>
+                <LineBreak/>程序框架：WinUI3 1.1
+                <LineBreak/>平台：.NET 6
+                <LineBreak/>邮箱：zilongcn233@outlook.com
+            </TextBlock>
+            <Button Margin="0,12,0,0"
+                    Content="Github"
+                    Click="Button_Click"/>
+        </StackPanel>
+    </ScrollViewer>
+
+</Page>

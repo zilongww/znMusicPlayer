@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="znMusicPlayerWPF.MyC.PopupContent.MusicAddSeq"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:znMusicPlayerWPF.MyC.PopupContent"
+             mc:Ignorable="d"
+             xmlns:MyC="clr-namespace:znMusicPlayerWPF.MyC"
+             Height="190" Width="320">
+    <Grid>
+        <TextBlock x:Name="tba" Text="选择添加歌曲时的排列顺序" Foreground="{DynamicResource ATextColor_InBlur}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,6,0,0" FontSize="20" />
+        <StackPanel Margin="0,36,0,0">
+            <MyC:znButton Loaded="znButton_Loaded" Content="按名称-正序排序" Background="{DynamicResource ButtonBlurPAMP}" EnterColor="{DynamicResource ButtonBlurPAMM}" BorderBrush="{x:Null}" Foreground="{DynamicResource ATextColor_InColorBlur}" HorizontalAlignment="Stretch" Height="36" Margin="4,0,4,2" FontSize="14" Click="znButton_Click"/>
+            <MyC:znButton Loaded="znButton_Loaded" Content="按名称-倒序排序" Background="{DynamicResource ButtonBlurPAMP}" EnterColor="{DynamicResource ButtonBlurPAMM}" BorderBrush="{x:Null}" Foreground="{DynamicResource ATextColor_InColorBlur}" HorizontalAlignment="Stretch" Height="36" Margin="4,0,4,2" FontSize="14" Click="znButton_Click_1"/>
+            <MyC:znButton Loaded="znButton_Loaded" Content="按日期-正序排序" Background="{DynamicResource ButtonBlurPAMP}" EnterColor="{DynamicResource ButtonBlurPAMM}" BorderBrush="{x:Null}" Foreground="{DynamicResource ATextColor_InColorBlur}" HorizontalAlignment="Stretch" Height="36" Margin="4,0,4,2" FontSize="14" Click="znButton_Click_2"/>
+            <MyC:znButton Loaded="znButton_Loaded" Content="按日期-倒序排序" Background="{DynamicResource ButtonBlurPAMP}" EnterColor="{DynamicResource ButtonBlurPAMM}" BorderBrush="{x:Null}" Foreground="{DynamicResource ATextColor_InColorBlur}" HorizontalAlignment="Stretch" Height="36" Margin="4,0" FontSize="14" Click="znButton_Click_3"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

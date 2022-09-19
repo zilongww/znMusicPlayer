@@ -1,0 +1,14 @@
+﻿<Border xmlns:MyC="clr-namespace:znMusicPlayerWPF.MyC"  x:Class="znMusicPlayerWPF.MyC.PopupContent.PlayApiChoice"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:znMusicPlayerWPF.MyC.PopupContent"
+             mc:Ignorable="d" Height="148">
+    <StackPanel VerticalAlignment="Center" Margin="6">
+        <MyC:znButton x:Name="WaveOutBtn" Content="WaveOut" IsAnimateCR="True" Height="34" FontSize="14" Background="{DynamicResource ButtonBlurPAMP}" BorderBrush="{x:Null}" Click="WaveOutBtn_Click" Foreground="{DynamicResource ATextColor_InBlur}" EnterColor="{DynamicResource ButtonBlurPAMM}" AnimationColor="#33000000" HorizontalAlignment="Stretch"/>
+        <MyC:znButton x:Name="DirectSoundBtn" Content="DirectSound" IsAnimateCR="True" FontSize="14" Width="{Binding ElementName=WaveOutBtn,Path=ActualWidth}" Height="{Binding ElementName=WaveOutBtn,Path=ActualHeight}" Background="{Binding ElementName=WaveOutBtn, Path=Background}" BorderBrush="{x:Null}" Click="WaveOutBtn_Click" Foreground="White" EnterColor="#33FFFFFF" AnimationColor="#33000000"/>
+        <MyC:znButton x:Name="WasapiBtn" Content="Wasapi" IsAnimateCR="True" Width="{Binding ElementName=WaveOutBtn,Path=ActualWidth}" Height="{Binding ElementName=WaveOutBtn,Path=ActualHeight}" Background="{Binding ElementName=WaveOutBtn, Path=Background}" FontSize="14" BorderBrush="{x:Null}" Click="WaveOutBtn_Click" Foreground="White" EnterColor="#33FFFFFF" AnimationColor="#33000000"/>
+        <MyC:znButton x:Name="AsioBtn" Content="Asio" IsAnimateCR="True" Width="{Binding ElementName=WaveOutBtn,Path=ActualWidth}" Height="{Binding ElementName=WaveOutBtn,Path=ActualHeight}" Background="{Binding ElementName=WaveOutBtn, Path=Background}" FontSize="14" BorderBrush="{x:Null}" Click="WaveOutBtn_Click" Foreground="White" EnterColor="#33FFFFFF" AnimationColor="#33000000"/>
+    </StackPanel>
+</Border>

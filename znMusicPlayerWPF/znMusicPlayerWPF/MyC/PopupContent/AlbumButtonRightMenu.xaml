@@ -1,0 +1,38 @@
+﻿<UserControl xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"  x:Class="znMusicPlayerWPF.MyC.PopupContent.AlbumButtonRightMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:znMusicPlayerWPF.MyC.PopupContent"
+             xmlns:MyC="clr-namespace:znMusicPlayerWPF.MyC"
+             mc:Ignorable="d" 
+             Width="170" Height="108">
+    <Grid VerticalAlignment="Center">
+        <StackPanel>
+            <MyC:znButton Loaded="znButton_Loaded" HorizontalAlignment="Stretch" ShowContent="True" VerticalAlignment="Top" Height="35" Background="{DynamicResource ButtonBlurPAMP}" EnterForegroundColor="Transparent" BorderBrush="#00707070" FontWeight="Medium" Foreground="{DynamicResource ATextColor_InColorBlur}" FontSize="13" EnterColor="{DynamicResource ButtonBlurPAMM}" Click="znButton_Click">
+                <MyC:znButton.Content>
+                    <Grid Width="165" Height="30">
+                        <materialDesign:PackIcon Kind="Play" VerticalAlignment="Center" Margin="10,5.5,0,5.5" Width="20" HorizontalAlignment="Left" Loaded="PackIcon_Loaded" Height="20"/>
+                        <TextBlock Loaded="TextBlock_Loaded" Text="播放" VerticalAlignment="Center" Margin="39,6,0,6" FontSize="15" FontWeight="Normal" Foreground="{DynamicResource ATextColor}"/>
+                    </Grid>
+                </MyC:znButton.Content>
+            </MyC:znButton>
+            <MyC:znButton Loaded="znButton_Loaded" HorizontalAlignment="Stretch" ShowContent="True" VerticalAlignment="Top" Height="35" Background="{DynamicResource ButtonBlurPAMP}" EnterForegroundColor="Transparent" BorderBrush="#00707070" FontWeight="Medium" Foreground="{DynamicResource ATextColor_InColorBlur}" FontSize="13" EnterColor="{DynamicResource ButtonBlurPAMM}" Click="znButton_Click_1">
+                <MyC:znButton.Content>
+                    <Grid Width="165" Height="30">
+                        <materialDesign:PackIcon Kind="Edit" VerticalAlignment="Center" Margin="10,5.5,0,5.5" Width="20" HorizontalAlignment="Left" Loaded="PackIcon_Loaded" Height="20"/>
+                        <TextBlock Loaded="TextBlock_Loaded" Text="编辑" VerticalAlignment="Center" Margin="39,6,0,6" FontSize="15" FontWeight="Normal" Foreground="{DynamicResource ATextColor}"/>
+                    </Grid>
+                </MyC:znButton.Content>
+            </MyC:znButton>
+            <MyC:znButton Loaded="znButton_Loaded" HorizontalAlignment="Stretch" ShowContent="True" VerticalAlignment="Top" Height="35" Background="{DynamicResource ButtonBlurPAMP}" EnterForegroundColor="Transparent" BorderBrush="#00707070" FontWeight="Medium" Foreground="{DynamicResource ATextColor_InColorBlur}" FontSize="13" EnterColor="{DynamicResource ButtonBlurPAMM}" Click="znButton_Click_2">
+                <MyC:znButton.Content>
+                    <Grid Width="165" Height="30">
+                        <materialDesign:PackIcon Kind="Delete" VerticalAlignment="Center" Margin="10,5.5,0,5.5" Width="20" HorizontalAlignment="Left" Loaded="PackIcon_Loaded" Height="20"/>
+                        <TextBlock Loaded="TextBlock_Loaded" Text="删除" VerticalAlignment="Center" Margin="39,6,0,6" FontSize="15" FontWeight="Normal" Foreground="{DynamicResource ATextColor}"/>
+                    </Grid>
+                </MyC:znButton.Content>
+            </MyC:znButton>
+        </StackPanel>
+    </Grid>
+</UserControl>

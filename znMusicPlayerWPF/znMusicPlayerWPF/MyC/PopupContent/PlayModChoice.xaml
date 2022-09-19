@@ -1,0 +1,13 @@
+﻿<Border xmlns:MyC="clr-namespace:znMusicPlayerWPF.MyC"  x:Class="znMusicPlayerWPF.MyC.PopupContent.PlayModChoice"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:znMusicPlayerWPF.MyC.PopupContent"
+             mc:Ignorable="d" Height="114">
+    <StackPanel VerticalAlignment="Center" Margin="6,6">
+        <MyC:znButton x:Name="ListPlayModBtn" Content="顺序播放" FontSize="14" IsAnimateCR="True" Height="34" Background="#33FFFFFF" BorderBrush="{x:Null}" Click="znButton_Click" EnterColor="#33FFFFFF" AnimationColor="#33000000" HorizontalAlignment="Stretch"/>
+        <MyC:znButton x:Name="RandomPlayModBtn" Content="随机播放" FontSize="14" IsAnimateCR="True" Width="{Binding ElementName=ListPlayModBtn,Path=ActualWidth}" Height="{Binding ElementName=ListPlayModBtn,Path=ActualHeight}" Background="{Binding ElementName=ListPlayModBtn,Path=Background}" BorderBrush="{x:Null}" Click="znButton_Click" EnterColor="#33FFFFFF" AnimationColor="#33000000"/>
+        <MyC:znButton x:Name="LoopPlayModBtn" Content="单曲循环" FontSize="14" IsAnimateCR="True" Width="{Binding ElementName=ListPlayModBtn,Path=ActualWidth}" Height="{Binding ElementName=ListPlayModBtn,Path=ActualHeight}" Background="{Binding ElementName=ListPlayModBtn,Path=Background}" BorderBrush="{x:Null}" Click="znButton_Click" EnterColor="#33FFFFFF" AnimationColor="#33000000"/>
+    </StackPanel>
+</Border>
