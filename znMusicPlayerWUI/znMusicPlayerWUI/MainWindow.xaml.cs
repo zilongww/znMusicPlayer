@@ -478,12 +478,15 @@ namespace znMusicPlayerWUI
             if (args.WindowActivationState == WindowActivationState.PointerActivated ||
                 args.WindowActivationState == WindowActivationState.CodeActivated)
             {
-                if (!CodeHelper.IsIconic(App.AppWindowLocalHandle) && InOpenMusicPage)
+                if (!CodeHelper.IsIconic(App.AppWindowLocalHandle))
                 {
-                    SMusicPage.MusicPageViewStateChange(MusicPageViewState.View);
                     if (!InOpenMusicPage)
                     {
                         PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage);
+                    }
+                    else
+                    {
+                        SMusicPage.MusicPageViewStateChange(MusicPageViewState.View);
                     }
                 }
             }
