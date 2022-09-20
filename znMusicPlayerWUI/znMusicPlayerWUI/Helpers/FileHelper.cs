@@ -4,8 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.System;
 
 namespace znMusicPlayerWUI.Helpers
 {
@@ -176,6 +179,13 @@ namespace znMusicPlayerWUI.Helpers
             Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
             return folder;
         }
+        public static async Task OpenFilePath(string openPath)
+        {
+            var t = new FolderLauncherOptions();
+            StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(openPath);
+            await Launcher.LaunchFolderAsync(folder, t);
+        }
+
         public static async Task<string> FileTypeGet(string name)
         {
             return await Task.Run(() =>

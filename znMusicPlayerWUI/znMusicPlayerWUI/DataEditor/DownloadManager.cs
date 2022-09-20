@@ -86,13 +86,14 @@ namespace znMusicPlayerWUI.DataEditor
             inUpdata = false;
         }
 
+        public int br { get; set; } = 960;
         public async void StartDownload(DownloadData dm)
         {
             string downloadPath1 = $"{DataFolderBase.DownloadFolder}\\{dm.MusicData.Title} - {CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.ButtonName)}";
             string addressPath = null;
             try
             {
-                addressPath = await MetingService.GetUrl(dm.MusicData.ID, 960);
+                addressPath = await MetingService.GetUrl(dm.MusicData.ID, br);
             }
             catch
             {

@@ -671,13 +671,14 @@ namespace znMusicPlayerWUI
 
         public static void SetNavViewContent(Type type, object param = null, NavigationTransitionInfo navigationTransitionInfo = null)
         {
-            if (navigationTransitionInfo == null) navigationTransitionInfo = new EntranceNavigationTransitionInfo();
+            if (navigationTransitionInfo == null) navigationTransitionInfo = new DrillInNavigationTransitionInfo();
             SContentFrame.Navigate(type, param, navigationTransitionInfo);
             SNavView.IsBackEnabled = SContentFrame.CanGoBack;
-            if (type == typeof(Controls.ItemListView))
+            UpdataNavViewSelectedItem(true);
+            /*if (type == typeof(ItemListView))
             {
                 SNavView.SelectedItem = null;
-            }
+            }*/
         }
 
         public static NavigationView SNavView;
@@ -685,7 +686,7 @@ namespace znMusicPlayerWUI
         public static bool IsBackRequest = false;
         private async void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            if (IsBackRequest || sender.SelectedItem == null)
+            if (IsBackRequest || sender.SelectedItem == null || IsJustUpdata)
             {
                 return;
             }
@@ -714,7 +715,7 @@ namespace znMusicPlayerWUI
                     SetNavViewContent(typeof(SettingPage));
                     break;
                 default:
-                    ShowDialog("未添加此功能", $"未添加 \"{(sender.SelectedItem as NavigationViewItem).Content}\" 功能。");
+                    await ShowDialog("未添加此功能", $"未添加 \"{(sender.SelectedItem as NavigationViewItem).Content}\" 功能。");
                     break;
             }
 
@@ -722,8 +723,10 @@ namespace znMusicPlayerWUI
             else NavView.IsBackEnabled = false;
         }
 
-        public static void UpdataNavViewSelectedItem()
+        static bool IsJustUpdata = false;
+        public static async void UpdataNavViewSelectedItem(bool justUpdata = false)
         {
+            if (justUpdata) IsJustUpdata = true;
             switch ((SContentFrame.Content as Page).GetType().ToString().Split('.')[2])
             {
                 case "SearchPage":
@@ -763,9 +766,10 @@ namespace znMusicPlayerWUI
                     break;
 
                 default:
-                    ShowDialog("未添加此功能", $"未添加 \"{"未知"}\" 功能。");
+                    await ShowDialog("未添加此功能", $"未添加 \"{"未知"}\" 功能。");
                     break;
             }
+            IsJustUpdata = false;
         }
 
         public static bool TryGoBack()

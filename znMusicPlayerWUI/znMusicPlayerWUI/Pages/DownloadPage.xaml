@@ -14,6 +14,8 @@
             <Grid x:Name="HeaderBaseGrid">
                 <Rectangle x:Name="HeaderBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
                 <TextBlock x:Name="HeaderBaseTextBlock" Text="下载" Style="{ThemeResource TBHeader}"/>
+                <Button x:Name="ToSettingBtn" Click="ToSettingBtn_Click"
+                        Content="选项" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,12,2"/>
             </Grid>
         </ListView.Header>
 

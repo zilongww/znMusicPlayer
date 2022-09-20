@@ -11,6 +11,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -24,6 +25,9 @@ namespace znMusicPlayerWUI.Pages
             {
                 ListViewBase.Items.Add(new DownloadCard(dm));
             }
+            int allDownload = 0;
+            int downloaded = 0;
+            var updataTextTB = () => HeaderBaseTextBlock.Text = $"下载（{downloaded}/{allDownload}）";
             App.downloadManager.AddDownload += (dm) =>
             {
                 bool noContains = true;
@@ -38,6 +42,8 @@ namespace znMusicPlayerWUI.Pages
                 if (noContains)
                 {
                     ListViewBase.Items.Add(new DownloadCard(dm));
+                    allDownload++;
+                    updataTextTB();
                 }
             };
             App.downloadManager.OnDownloading += (dm) =>
@@ -78,6 +84,8 @@ namespace znMusicPlayerWUI.Pages
                         if (downloadCard.downloadData == dm)
                         {
                             downloadCard.SetDownloaded();
+                            downloaded++;
+                            updataTextTB();
                             break;
                         }
                     }
@@ -156,6 +164,13 @@ namespace znMusicPlayerWUI.Pages
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdataShyHeader();
+        }
+
+        private void ToSettingBtn_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.SetNavViewContent(
+                typeof(SettingPage),
+                "open download");
         }
     }
 }

@@ -16,6 +16,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Contacts;
 using znMusicPlayerWUI.Helpers;
+using znMusicPlayerWUI.DataEditor;
+using Windows.Networking.Connectivity;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -25,6 +27,28 @@ namespace znMusicPlayerWUI.Pages
         {
             InitializeComponent();
             DataContext = this;
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            var a = (string)e.Parameter;
+            if (!string.IsNullOrEmpty(a))
+            {
+                DelaySetParameter(a);
+            }
+        }
+
+        private void DelaySetParameter(string value)
+        {
+            Expander expander = null;
+            switch (value)
+            {
+                case "open download":
+                    expander = DownloadEpd;
+                    break;
+            }
+            expander.IsExpanded = true;
+            ListViewBase.ScrollIntoView(expander);
         }
 
         public async void ToAudioCachePlaceSize()
@@ -45,10 +69,21 @@ namespace znMusicPlayerWUI.Pages
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             ToAudioCachePlaceSize();
-            CachePath = DataEditor.DataFolderBase.CacheFolder;
-            AudioCachePath = DataEditor.DataFolderBase.AudioCacheFolder;
-            ImageCachePath = DataEditor.DataFolderBase.ImageCacheFolder;
-            LyricCachePath = DataEditor.DataFolderBase.LyricCacheFolder;
+            CachePath = DataFolderBase.CacheFolder;
+            AudioCachePath = DataFolderBase.AudioCacheFolder;
+            ImageCachePath = DataFolderBase.ImageCacheFolder;
+            LyricCachePath = DataFolderBase.LyricCacheFolder;
+            DownloadPathTb.Text = DataFolderBase.DownloadFolder;
+
+            System.Diagnostics.Debug.WriteLine(App.downloadManager.br);
+            switch (App.downloadManager.br)
+            {
+                case 128: DownloadFormatCb.SelectedIndex = 0; break;
+                case 192: DownloadFormatCb.SelectedIndex = 1; break;
+                case 320: DownloadFormatCb.SelectedIndex = 2; break;
+                case 960: DownloadFormatCb.SelectedIndex = 3; break;
+            }
+            DownloadMaximumNb.Value = App.downloadManager.DownloadingMaxium;
         }
 
         public void UpdataShyHeader()
@@ -143,6 +178,65 @@ namespace znMusicPlayerWUI.Pages
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdataShyHeader();
+        }
+
+        private void DownloadPathBaseGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button != null)
+            {
+                if (button.Content as string == "打开目标文件夹")
+                {
+                    await FileHelper.OpenFilePath(DataFolderBase.DownloadFolder);
+                }
+                else
+                {
+                    var newPath = await FileHelper.UserSelectFolder(Windows.Storage.Pickers.PickerLocationId.MusicLibrary);
+                    if (newPath != null)
+                    {
+                        DownloadPathTb.Text = newPath.Path;
+                        DataFolderBase.DownloadFolder = newPath.Path;
+                    }
+                }
+            }
+        }
+
+        private void DownloadFormatBaseGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var a = DownloadFormatCb.SelectedIndex;
+            switch (a)
+            {
+                case 0:
+                    App.downloadManager.br = 128;
+                    break;
+                case 1:
+                    App.downloadManager.br = 192;
+                    break;
+                case 2:
+                    App.downloadManager.br = 320;
+                    break;
+                case 3:
+                    App.downloadManager.br = 960;
+                    break;
+            }
+        }
+
+        private void DownloadMaximumBaseGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void NumberBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+        {
+            App.downloadManager.DownloadingMaxium = (int)sender.Value;
         }
     }
 }

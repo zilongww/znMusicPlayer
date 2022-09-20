@@ -121,7 +121,7 @@
                         </StackPanel>
                     </Grid>
                     <Grid x:Name="CacheDeleteBaseGrid"
-                              Loaded="CacheDeleteBaseGrid_Loaded">
+                          Loaded="CacheDeleteBaseGrid_Loaded">
                         <StackPanel>
                             <TextBlock Text="清理缓存"/>
                             <TextBlock Text="{Binding AudioCachePlaceSize}" Style="{StaticResource LowTextBlock}"/>
@@ -130,11 +130,11 @@
                     </Grid>
                 </StackPanel>
             </Expander>
-            <Expander>
+            <Expander x:Name="DownloadEpd">
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal">
                         <Viewbox Width="16">
-                            <SymbolIcon Symbol="Download"/>
+                            <Path Data="{StaticResource 下载}" Stretch="Uniform" Fill="{ThemeResource ButtonForegroundThemeBrush}"/>
                         </Viewbox>
                         <StackPanel Style="{StaticResource STPS}">
                             <TextBlock Text="下载"/>
@@ -142,6 +142,52 @@
                         </StackPanel>
                     </StackPanel>
                 </Expander.Header>
+                <StackPanel>
+                    <Grid x:Name="DownloadPathBaseGrid"
+                          Loaded="DownloadPathBaseGrid_Loaded"
+                          Style="{StaticResource ItemGridStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="音频下载路径"/>
+                            <TextBlock x:Name="DownloadPathTb" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+                            <Button Content="打开目标文件夹" Tag="2" Margin="{ThemeResource ContentDialogButton1HostMargin}" Click="Button_Click_2"/>
+                            <Button Content="设置路径" Tag="2" Click="Button_Click_2"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid x:Name="DownloadFormatBaseGrid"
+                          Loaded="DownloadFormatBaseGrid_Loaded"
+                          Style="{StaticResource ItemGridStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="下载质量" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="DownloadFormatCb"
+                                  HorizontalAlignment="Right" VerticalAlignment="Center"
+                                  SelectionChanged="ComboBox_SelectionChanged">
+                            <x:String>128kbps 流畅</x:String>
+                            <x:String>192kbps 高品</x:String>
+                            <x:String>320kbps 超清</x:String>
+                            <x:String>960kbps 无损</x:String>
+                        </ComboBox>
+                    </Grid>
+                    <Grid x:Name="DownloadMaximumBaseGrid"
+                          Loaded="DownloadMaximumBaseGrid_Loaded">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="同时下载最大数量" VerticalAlignment="Center"/>
+                        <NumberBox x:Name="DownloadMaximumNb"
+                                   HorizontalAlignment="Right" Minimum="1" Maximum="6" SpinButtonPlacementMode="Compact"
+                                   ValueChanged="NumberBox_ValueChanged"/>
+                    </Grid>
+                </StackPanel>
             </Expander>
         </StackPanel>
     </ListView>
