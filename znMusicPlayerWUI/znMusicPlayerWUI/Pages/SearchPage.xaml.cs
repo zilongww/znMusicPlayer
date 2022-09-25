@@ -21,7 +21,7 @@ namespace znMusicPlayerWUI.Pages
             a.RemoveAt(6);
             a.RemoveAt(5);
             SearchSourceComboBox.ItemsSource = a;
-            SearchSourceComboBox.SelectedIndex = 0;
+            SearchSourceComboBox.SelectedIndex = 3;
             //SearchTextBlock.Text = $"{App.SearchData} 的搜索结果：";
         }
 

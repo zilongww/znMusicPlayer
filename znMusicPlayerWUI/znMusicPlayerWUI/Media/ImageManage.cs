@@ -21,13 +21,28 @@ namespace znMusicPlayerWUI.Media
             {
                 if (Helpers.WebHelper.IsNetworkConnected)
                 {
-                    string a = await Helpers.WebHelper.GetPicturePathAsync(musicData);
                     string b = $@"{DataEditor.DataFolderBase.ImageCacheFolder}\{musicData.From}{musicData.AlbumID}";
                     await Task.Run(() =>
                     {
                         if (!System.IO.File.Exists(b))
-                            System.IO.File.Create(b).Close();
+                        {
+                            try
+                            {
+                                System.IO.File.Create(b).Close();
+                            }
+                            catch { }
+                        }
                     });
+
+                    string a;
+                    if (musicData.PicturePath != null)
+                    {
+                        a = musicData.PicturePath;
+                    }
+                    else
+                    {
+                        a = await Helpers.WebHelper.GetPicturePathAsync(musicData);
+                    }
 
                     try
                     {

@@ -630,7 +630,7 @@
       <Version>10.0.18362.2005</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.WindowsAppSDK">
-      <Version>1.1.4</Version>
+      <Version>1.2.220909.2-experimental2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
       <Version>1.1.37</Version>

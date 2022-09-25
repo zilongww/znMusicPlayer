@@ -96,12 +96,6 @@ namespace znMusicPlayerWUI.Controls
                 }
                 AlbumImage.Source = a;
                 a = null;
-                AnimateHelper.AnimateScalar(
-                    AlbumImage,
-                    1, 0.5, 1, 1, 1, 1,
-                    out var visual, out var compositor, out var animation);
-                visual.Opacity = 0;
-                visual.StartAnimation(nameof(visual.Opacity), animation);
             }
         }
 

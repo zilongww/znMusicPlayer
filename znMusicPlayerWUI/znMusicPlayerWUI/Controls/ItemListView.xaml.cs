@@ -154,13 +154,6 @@ namespace znMusicPlayerWUI.Controls
                 {
                     PlayList_Image.Source = FileHelper.GetImageFileBitmapImage(await ImageManage.GetImageSource(musicListData));
                 }
-
-                AnimateHelper.AnimateScalar(
-                    PlayList_Image,
-                    1, 0.5, 1, 1, 1, 1,
-                    out var visual, out var compositor, out var animation);
-                visual.Opacity = 0;
-                visual.StartAnimation(nameof(visual.Opacity), animation);
             }
 
             if (firstInit)

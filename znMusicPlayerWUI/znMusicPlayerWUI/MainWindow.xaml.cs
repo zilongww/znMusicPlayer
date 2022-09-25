@@ -274,12 +274,12 @@ namespace znMusicPlayerWUI
                     if (!isDeleteImage) PlayingList_NowPlayingImageLoading(null);
                     var image = new Imagezn() { Source = imageSource, Opacity = 1, ShowMenuBehavior = Imagezn.ShowMenuBehaviors.PointEnter };
                     SPlayContent.Content = image;
-                    AnimateHelper.AnimateScalar(
+                    /*AnimateHelper.AnimateScalar(
                         image, 1f, 1,
                         0.2f, 1f, 0.22f, 1f,
                         out var visual, out var compositor, out var animation);
                     visual.Opacity = 0;
-                    visual.StartAnimation("Opacity", animation);
+                    visual.StartAnimation("Opacity", animation);*/
                 }
             }
         }
@@ -648,7 +648,7 @@ namespace znMusicPlayerWUI
 
                 RectInt32 dragRectR;
                 // TOWAIT: when microsoft fix this winui3 bug
-                dragRectR.X = (int)((lpc + 2 + 42 * 2) * scaleAdjustment);
+                dragRectR.X = (int)((lpc + 2 + (NavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 42 * 2 : 42)) * scaleAdjustment);
                 dragRectR.Y = 0;
                 dragRectR.Height = (int)(AppTitleBar.ActualHeight * scaleAdjustment);
                 dragRectR.Width = (int)(rpc * scaleAdjustment * App.AppWindowLocal.Size.Width);
@@ -800,13 +800,11 @@ namespace znMusicPlayerWUI
         {
             if (sender.DisplayMode == NavigationViewDisplayMode.Minimal)
             {
-                if (!w10TitleBarMode)
-                    AppTitleBar.Margin = new Thickness(90, 0, 0, 0);
+                AppTitleBar.Margin = new Thickness(90, 0, 0, 0);
             }
             else
             {
-                if (!w10TitleBarMode)
-                    AppTitleBar.Margin = new Thickness(50, 0, 0, 0);
+                AppTitleBar.Margin = new Thickness(50, 0, 0, 0);
             }
         }
 

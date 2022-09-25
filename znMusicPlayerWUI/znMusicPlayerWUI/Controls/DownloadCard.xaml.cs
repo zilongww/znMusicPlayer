@@ -67,7 +67,7 @@ namespace znMusicPlayerWUI.Controls
         {
             DownloadProgress.Foreground = new SolidColorBrush(Color.FromArgb(255, 200, 0, 0));
             DownloadProgress.IsIndeterminate = false;
-            DownloadProgress.Value = 0;
+            DownloadProgress.Value = 100;
             await Task.Delay(10);
             MessageTb.Text = "下载错误";
         }

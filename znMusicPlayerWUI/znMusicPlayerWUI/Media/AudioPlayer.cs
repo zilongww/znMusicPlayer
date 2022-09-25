@@ -184,7 +184,7 @@ namespace znMusicPlayerWUI.Media
             get
             {
                 if (FileReader != null)
-                    return FileReader.CurrentTime - TimeSpan.FromMilliseconds(Latency);
+                    return FileReader.CurrentTime;// - TimeSpan.FromMilliseconds(Latency);
                 else return TimeSpan.Zero;
             }
             set

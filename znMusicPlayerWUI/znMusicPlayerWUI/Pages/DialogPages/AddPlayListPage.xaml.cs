@@ -109,7 +109,8 @@ namespace znMusicPlayerWUI.Pages.DialogPages
         private async void AddLocalPage_ListImageSelectBtn_Click(object sender, RoutedEventArgs e)
         {
             var a = await FileHelper.UserSelectFile(Windows.Storage.Pickers.PickerViewMode.List, Windows.Storage.Pickers.PickerLocationId.PicturesLibrary);
-            AddLocalPage_ListImageTB.Text = a.Path;
+            if (a != null)
+                AddLocalPage_ListImageTB.Text = a.Path;
         }
     }
 }

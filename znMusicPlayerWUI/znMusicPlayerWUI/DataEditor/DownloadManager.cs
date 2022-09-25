@@ -34,7 +34,10 @@ namespace znMusicPlayerWUI.DataEditor
 
         public DownloadManager()
         {
-
+            OnDownloaded += (_) =>
+            {
+                UpdataDownload();
+            };
         }
 
         /// <summary>
@@ -60,42 +63,40 @@ namespace znMusicPlayerWUI.DataEditor
             }
         }
 
-        bool inUpdata = false;
-        public async void UpdataDownload()
+        public void UpdataDownload()
         {
-            if (inUpdata) return;
-            inUpdata = true;
-            while (WaitingDownloadData.Count > 0)
+            while (DownloadingData.Count < DownloadingMaxium)
             {
-                if (DownloadingData.Count < DownloadingMaxium)
+                var m = WaitingDownloadData[0];
+                WaitingDownloadData.Remove(m);
+                DownloadingData.Add(m);
+                try
                 {
-                    var m = WaitingDownloadData[0];
-                    WaitingDownloadData.Remove(m);
-                    DownloadingData.Add(m);
-                    try
-                    {
-                        StartDownload(m);
-                    }
-                    catch (Exception err)
-                    {
-                        System.Diagnostics.Debug.WriteLine(err.Message);
-                    }
+                    StartDownload(m);
                 }
-                await Task.Delay(1000);
+                catch (Exception err)
+                {
+                    System.Diagnostics.Debug.WriteLine(err.Message);
+                }
             }
-            inUpdata = false;
         }
 
         public int br { get; set; } = 960;
         public async void StartDownload(DownloadData dm)
         {
-            string downloadPath1 = $"{DataFolderBase.DownloadFolder}\\{dm.MusicData.Title} - {CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.ButtonName)}";
+            string downloadPath1 =
+                $"{DataFolderBase.DownloadFolder}\\{CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.Title)} - {CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.ButtonName)}";
             string addressPath = null;
             try
             {
                 addressPath = await MetingService.GetUrl(dm.MusicData.ID, br);
             }
             catch
+            {
+                OnDownloadError?.Invoke(dm);
+                return;
+            }
+            if (string.IsNullOrEmpty(addressPath))
             {
                 OnDownloadError?.Invoke(dm);
                 return;
@@ -190,17 +191,21 @@ namespace znMusicPlayerWUI.DataEditor
             });
 
             var lyric = await MetingService.GetLyric(dm.MusicData.ID);
-            await Task.Run(() =>
+            if (!lyric.Item1.Contains("纯音乐，请欣赏"))
             {
-                File.Create(lyricPath).Dispose();
+                await Task.Run(() =>
+                {
+                    File.Create(lyricPath).Dispose();
 
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                File.WriteAllText(lyricPath, $"{lyric.Item1}\n{lyric.Item2}", Encoding.GetEncoding("GB2312"));
-            });
+                    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                    File.WriteAllText(lyricPath, $"{lyric.Item1}\n{lyric.Item2}", Encoding.GetEncoding("GB2312"));
+                });
+            }
 
             DownloadingData.Remove(dm);
             DownloadedData.Add(dm);
             OnDownloaded?.Invoke(dm);
+            UpdataDownload();
         }
     }
 }

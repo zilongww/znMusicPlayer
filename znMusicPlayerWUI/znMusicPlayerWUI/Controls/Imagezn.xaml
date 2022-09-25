@@ -5,21 +5,19 @@
     xmlns:local="using:znMusicPlayerWUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Background="Transparent" IsRightTapEnabled="True"
-    RightTapped="RightTappedzn" PointerEntered="Grid_PointerEntered" Tapped="Tappedzn">
+    mc:Ignorable="d" Background="Transparent" IsRightTapEnabled="True">
+    <Image x:Name="ImageSourceBefore" Stretch="Uniform"/>
     <Image x:Name="ImageSource" Stretch="Uniform"/>
-    <Rectangle x:Name="ImageMass" Fill="Black" Opacity="0.2"/>
-    <Border x:Name="MenuBtnBorder"
-            VerticalAlignment="Center" HorizontalAlignment="Center"
-            Width="44" Height="44" CornerRadius="50" Opacity="0"
-            Background="{ThemeResource AcrylicNormal}">
-        <Button x:Name="MenuBtn"
-                CornerRadius="50"
-                BorderThickness="0"
-                Background="Transparent"
-                Height="44" Width="44"
-                Click="Clickzn">
-            <SymbolIcon Symbol="More"/>
-        </Button>
-    </Border>
+    <Rectangle x:Name="ImageMass" Fill="Black" Opacity="0.14"/>
+    <Button x:Name="MenuBtn"
+            BorderThickness="0"
+            Background="Transparent"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+        <Button.Flyout>
+            <MenuFlyout Placement="Left" >
+                <MenuFlyoutItem Text="查看图片" Click="MenuFlyoutItem_Click"/>
+            </MenuFlyout>
+        </Button.Flyout>
+    </Button>
 </Grid>

@@ -39,6 +39,17 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
+        private bool _isMassImage = true;
+        public bool IsMassImage
+        {
+            get => _isMassImage;
+            set
+            {
+                _isMassImage = value;
+                UpdataTheme();
+            }
+        }
+
         public Imagezn()
         {
             InitializeComponent();
@@ -48,13 +59,21 @@ namespace znMusicPlayerWUI.Controls
         public void Dispose()
         {
             ImageSource.Source = null;
+            firstLoad = true;
         }
 
         private void UpdataTheme()
         {
-            if (ActualTheme == ElementTheme.Dark)
+            if (IsMassImage)
             {
-                ImageMass.Visibility = Visibility.Visible;
+                if (ActualTheme == ElementTheme.Dark)
+                {
+                    ImageMass.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    ImageMass.Visibility = Visibility.Collapsed;
+                }
             }
             else
             {
@@ -62,66 +81,49 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
+        bool firstLoad = true;
         public void UpdataSource()
         {
             UpdataTheme();
-            ImageSource.Source = Source;
-        }
-
-        private void OpacityAnimate()
-        {
-            AnimateHelper.AnimateScalar(
-                MenuBtnBorder,
-                1, 0.5, 1, 1, 1, 1,
-                out var visual, out var compositor, out var animation);
-            visual.Opacity = 0;
-            visual.StartAnimation(nameof(visual.Opacity), animation);
-        }
-
-        private void RightTappedzn(object sender, Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs e)
-        {
-            if (ShowMenuBehavior == ShowMenuBehaviors.RightTaped)
+            if (!firstLoad)
             {
-                OpacityAnimate();
-                TimeBreak();
+                ImageSourceBefore.Source = ImageSource.Source;
+                AnimateHelper.AnimateScalar(
+                    ImageSource, 1, 1,
+                    0.2f, 1, 0.22f, 1f,
+                    out var visual, out var compositor, out var scalarKeyFrameAnimation);
+                visual.Opacity = 0;
+                visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
+                ImageSource.Source = Source;
+            }
+            else
+            {
+                AnimateHelper.AnimateScalar(
+                    ImageSource, 1, 1,
+                    0.2f, 1, 0.22f, 1f,
+                    out var visual, out var compositor, out var scalarKeyFrameAnimation);
+                visual.Opacity = 0;
+                visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
+                ImageSource.Source = Source;
+                firstLoad = false;
             }
         }
 
-        private void Tappedzn(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
-        {
-            if (ShowMenuBehavior == ShowMenuBehaviors.Tapped)
-            {
-                OpacityAnimate();
-                TimeBreak();
-            }
-        }
-
-        private void Grid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            if (ShowMenuBehavior == ShowMenuBehaviors.PointEnter)
-            {
-                OpacityAnimate();
-                TimeBreak();
-            }
-        }
-
-        private async void TimeBreak()
-        {
-            await Task.Delay(2000);
-            AnimateHelper.AnimateScalar(
-                MenuBtnBorder,
-                0, 0.5, 1, 1, 1, 1,
-                out var visual, out var compositor, out var animation);
-            visual.Opacity = 1;
-            visual.StartAnimation(nameof(visual.Opacity), animation);
-        }
-
-        private async void Clickzn(object sender, object e)
+        private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
-            ScrollViewer scrollViewer = new();
-            scrollViewer.Content = new Image() { Source = Source };
-            await MainWindow.ShowDialog("查看图片", new Border() { CornerRadius = new(4), Child = scrollViewer }, "确定", "保存到文件...");
+            ScrollViewer scrollViewer = new()
+            {
+                ZoomMode = ZoomMode.Enabled,
+                HorizontalScrollMode = ScrollMode.Enabled,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
+            };
+            scrollViewer.Content = new Border() { Child = new Image() { Source = Source }, CornerRadius = new(54) };
+            Border border = new() { CornerRadius = new(4), Child = scrollViewer };
+            Grid grid = new();
+            grid.Children.Add(border);
+            grid.Children.Add(new TextBlock() { Text = "按住Ctrl键滑动滚轮可缩放", Margin = new(84, -32, 0, 0), IsHitTestVisible = false });
+            await MainWindow.ShowDialog("查看图片", grid, "确定", "保存到文件...");
         }
     }
 }

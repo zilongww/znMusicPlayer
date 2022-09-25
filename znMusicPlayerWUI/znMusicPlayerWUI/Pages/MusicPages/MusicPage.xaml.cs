@@ -100,6 +100,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     BackgroundBaseImageAnimate.Source = null;
                 BackgroundBaseImageAnimate.Source = BackgroundBaseImage.Source;
                 BackgroundBaseImage.Source = null;
+                //AlbumImageBase.Dispose();
             }
         }
 
@@ -112,20 +113,15 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     ImageSources = imageSource;
                     if (App.audioPlayer?.MusicData?.AlbumID != MusicData?.AlbumID) return;
                     BackgroundBaseImage.Source = ImageSources;
+                    AlbumImageBase.Source = imageSource;
 
                     AnimateHelper.AnimateScalar(
-                        BackgroundBaseImage,
-                        1, 0.5, 1, 1, 1, 1,
+                        BackgroundBaseImage, 1, 1,
+                        0.2f, 1f, 0.22f, 1f,
                         out var visual, out var compositor, out var animation);
                     visual.Opacity = 0;
                     visual.StartAnimation(nameof(visual.Opacity), animation);
 
-                    AnimateHelper.AnimateScalar(
-                        AlbumImageBase,
-                        1, 0.5, 1, 1, 1, 1,
-                        out var visual1, out var compositor1, out var animation1);
-                    visual1.Opacity = 0;
-                    visual1.StartAnimation(nameof(visual1.Opacity), animation1);
                 }
             }
         }
