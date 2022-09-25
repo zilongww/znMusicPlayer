@@ -5,7 +5,8 @@
     xmlns:local="using:znMusicPlayerWUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Background="Transparent" IsRightTapEnabled="True">
+    mc:Ignorable="d" Background="Transparent" IsRightTapEnabled="True"
+    MinWidth="0" MinHeight="0">
     <Image x:Name="ImageSourceBefore" Stretch="Uniform"/>
     <Image x:Name="ImageSource" Stretch="Uniform"/>
     <Rectangle x:Name="ImageMass" Fill="Black" Opacity="0.14"/>
@@ -14,6 +15,12 @@
             Background="Transparent"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch">
+        <Button.Style>
+            <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                <Setter Property="MinWidth" Value="0"/>
+                <Setter Property="MinHeight" Value="0"/>
+            </Style>
+        </Button.Style>
         <Button.Flyout>
             <MenuFlyout Placement="Left" >
                 <MenuFlyoutItem Text="查看图片" Click="MenuFlyoutItem_Click"/>

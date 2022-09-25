@@ -165,8 +165,8 @@ namespace znMusicPlayerWUI
             ".m4a", ".m4v", ".mov", ".mp4",
             // SAMI
             ".sami", ".smi",
-            // WAV
-            ".wav", ".ogg", ".flac"
+            // other
+            ".wav", ".ogg", ".flac", ".aiff", ".aif"
         };
     }
 }

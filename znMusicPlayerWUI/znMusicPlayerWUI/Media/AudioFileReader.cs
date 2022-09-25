@@ -7,6 +7,7 @@ using NAudio.Dsp;
 using NAudio.Codecs;
 using System.IO;
 using System.Linq;
+using znMusicPlayerWUI.Helpers;
 
 namespace znMusicPlayerWUI.Media
 {
@@ -68,38 +69,51 @@ namespace znMusicPlayerWUI.Media
 
         private void CreateReaderStream(string fileName)
         {
-            if (fileName.EndsWith(".wav", StringComparison.OrdinalIgnoreCase))
+            if (File.Exists(fileName))
             {
-                readerStream = new WaveFileReader(fileName);
-                if (readerStream.WaveFormat.Encoding != WaveFormatEncoding.Pcm && readerStream.WaveFormat.Encoding != WaveFormatEncoding.IeeeFloat)
+                var f = File.ReadAllBytes(fileName);
+                if (f.Length > 0)
                 {
-                    readerStream = WaveFormatConversionStream.CreatePcmStream(readerStream);
-                    readerStream = new BlockAlignReductionStream(readerStream);
+                    string addr = null;
+                    try
+                    {
+                        addr = FileHelper.FileTypeGet(fileName).Result;
+                    }
+                    catch
+                    {
+                        addr = "-1";
+                    }
+                    System.Diagnostics.Debug.WriteLine(addr);
+                    switch (addr)
+                    {
+                        case "10276":
+                            readerStream = new NAudio.Flac.FlacReader(fileName);
+                            break;
+                        case "7368":
+                            readerStream = new Mp3FileReader(fileName);
+                            break;
+                        case "8273":
+                            readerStream = new WaveFileReader(fileName);
+                            if (readerStream.WaveFormat.Encoding != WaveFormatEncoding.Pcm && readerStream.WaveFormat.Encoding != WaveFormatEncoding.IeeeFloat)
+                            {
+                                readerStream = WaveFormatConversionStream.CreatePcmStream(readerStream);
+                                readerStream = new BlockAlignReductionStream(readerStream);
+                            }
+                            break;
+                        case "7079":
+                            readerStream = new AiffFileReader(fileName);
+                            break;
+                        default:
+                            if (File.Exists(fileName))
+                            {
+                                readerStream = new MediaFoundationReader(fileName);
+                            }
+                            break;
+                    }
+                    return;
                 }
             }
-            else if (fileName.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase))
-            {
-                readerStream = new Mp3FileReader(fileName);
-            }
-            else if (fileName.EndsWith(".aiff", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".aif", StringComparison.OrdinalIgnoreCase))
-            {
-                readerStream = new AiffFileReader(fileName);
-            }
-            else
-            {
-                if (File.Exists(fileName))
-                {
-                    var f = File.ReadAllBytes(fileName);
-                    if (f.Length > 0)
-                    {
-                        readerStream = new MediaFoundationReader(fileName);
-                    }
-                    else
-                    {
-                        throw new FileLoadException("无法加载缓存文件。");
-                    }
-                }
-            }
+            throw new FileLoadException("无法读取此音频文件。");
         }
 
         public override int Read(byte[] buffer, int offset, int count)

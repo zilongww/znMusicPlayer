@@ -11,6 +11,7 @@
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <NeutralLanguage>zh-CN</NeutralLanguage>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Controls\DownloadCard.xaml" />

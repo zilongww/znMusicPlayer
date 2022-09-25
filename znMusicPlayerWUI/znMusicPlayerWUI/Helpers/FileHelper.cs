@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.VisualBasic;
+using Windows.Graphics.Display;
+using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
@@ -130,7 +134,7 @@ namespace znMusicPlayerWUI.Helpers
             return new BitmapImage(fileUri) { DecodePixelWidth = decodePixelWidth, DecodePixelHeight = decodePixelHeight };
         }
 
-        public static async Task<IReadOnlyList<Windows.Storage.StorageFile>> UserSelectFiles(
+        public static async Task<IReadOnlyList<StorageFile>> UserSelectFiles(
             PickerViewMode viewMode = default,
             PickerLocationId suggestedStartLocation = default,
             string[] fileTypeFilter = null)
@@ -150,7 +154,7 @@ namespace znMusicPlayerWUI.Helpers
             return files;
         }
         
-        public static async Task<Windows.Storage.StorageFile> UserSelectFile(
+        public static async Task<StorageFile> UserSelectFile(
             PickerViewMode viewMode = default,
             PickerLocationId suggestedStartLocation = default,
             string[] fileTypeFilter = null)
@@ -170,15 +174,32 @@ namespace znMusicPlayerWUI.Helpers
             return files;
         }
 
-        public static async Task<Windows.Storage.StorageFolder> UserSelectFolder(PickerLocationId suggestedStartLocation = default)
+        public static async Task<StorageFolder> UserSelectFolder(PickerLocationId suggestedStartLocation = default)
         {
             var folderPicker = new FolderPicker();
             folderPicker.SuggestedStartLocation = suggestedStartLocation;
 
             WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, App.AppWindowLocalHandle);
-            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            StorageFolder folder = await folderPicker.PickSingleFolderAsync();
             return folder;
         }
+
+        public static async Task<StorageFile> UserSaveFile(
+            string suggestedFileName = "SaveFile",
+            PickerLocationId suggestedStartLocation = default,
+            string[] fileTypeFilter = null, string fileTypeFilterKey = null)
+        {
+            var saveFile = new FileSavePicker();
+            saveFile.SuggestedStartLocation = suggestedStartLocation;
+            saveFile.FileTypeChoices.Add(fileTypeFilterKey, fileTypeFilter);
+            saveFile.SuggestedFileName = suggestedFileName;
+
+            WinRT.Interop.InitializeWithWindow.Initialize(saveFile, App.AppWindowLocalHandle);
+            StorageFile sFile = await saveFile.PickSaveFileAsync();
+
+            return sFile;
+        }
+
         public static async Task OpenFilePath(string openPath)
         {
             var t = new FolderLauncherOptions();

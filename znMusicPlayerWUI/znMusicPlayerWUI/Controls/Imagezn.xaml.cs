@@ -16,6 +16,10 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media;
 using znMusicPlayerWUI.Media;
 using znMusicPlayerWUI.Pages;
+using Windows.Graphics.Imaging;
+using Windows.Storage;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.Storage.Streams;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -123,7 +127,33 @@ namespace znMusicPlayerWUI.Controls
             Grid grid = new();
             grid.Children.Add(border);
             grid.Children.Add(new TextBlock() { Text = "按住Ctrl键滑动滚轮可缩放", Margin = new(84, -32, 0, 0), IsHitTestVisible = false });
-            await MainWindow.ShowDialog("查看图片", grid, "确定", "保存到文件...");
+            var result = await MainWindow.ShowDialog("查看图片", grid, "确定", "保存到文件...");
+            if (result == ContentDialogResult.Primary)
+            {
+                var f = await FileHelper.UserSaveFile("一张图片", Windows.Storage.Pickers.PickerLocationId.PicturesLibrary, new[] { ".png" }, "图片");
+                if (f != null)
+                {
+                    var _bitmap = new RenderTargetBitmap();
+                    await _bitmap.RenderAsync(ImageSource);
+                    var pixels = await _bitmap.GetPixelsAsync();
+                    using (IRandomAccessStream stream = await f.OpenAsync(FileAccessMode.ReadWrite))
+                    {
+                        var encoder = await
+                        BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, stream);
+                        byte[] bytes = pixels.ToArray();
+                        encoder.SetPixelData(
+                            BitmapPixelFormat.Bgra8,
+                            BitmapAlphaMode.Ignore,
+                            (uint)_bitmap.PixelWidth,
+                            (uint)_bitmap.PixelHeight,
+                            96,
+                            96,
+                            bytes);
+
+                        await encoder.FlushAsync();
+                    }
+                }
+            }
         }
     }
 }

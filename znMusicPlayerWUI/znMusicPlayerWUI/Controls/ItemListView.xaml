@@ -215,7 +215,7 @@
                                     <AppBarButton Style="{ThemeResource AppBarStyle}"
                                                   x:Name="SearchPageSelectorCustom"
                                                   ToolTipService.ToolTip="自定义页面"
-                                                  Label="自定义页面"
+                                                  Label="自定义页面" AllowFocusOnInteraction="True"
                                                   Icon="Page2" Tapped="AppBarButton_Tapped">
                                         <FlyoutBase.AttachedFlyout>
                                             <Flyout x:Name="SearchPageSelectorCustomFlyout">
