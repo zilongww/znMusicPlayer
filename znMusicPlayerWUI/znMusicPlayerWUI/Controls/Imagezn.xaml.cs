@@ -27,7 +27,23 @@ namespace znMusicPlayerWUI.Controls
     {
         public enum ShowMenuBehaviors { PointEnter, RightTaped, Tapped, None }
 
-        public ShowMenuBehaviors ShowMenuBehavior { get; set; } = default;
+        private ShowMenuBehaviors _showMenuBehavior = default;
+        public ShowMenuBehaviors ShowMenuBehavior
+        {
+            get => _showMenuBehavior;
+            set
+            {
+                _showMenuBehavior = value;
+                if (ShowMenuBehavior == ShowMenuBehaviors.None)
+                {
+                    MenuBtn.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    MenuBtn.Visibility = Visibility.Visible;
+                }
+            }
+        }
 
         private ImageSource _source = null;
         public ImageSource Source
@@ -139,15 +155,14 @@ namespace znMusicPlayerWUI.Controls
                     using (IRandomAccessStream stream = await f.OpenAsync(FileAccessMode.ReadWrite))
                     {
                         var encoder = await
-                        BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, stream);
+                        BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
                         byte[] bytes = pixels.ToArray();
                         encoder.SetPixelData(
                             BitmapPixelFormat.Bgra8,
                             BitmapAlphaMode.Ignore,
                             (uint)_bitmap.PixelWidth,
                             (uint)_bitmap.PixelHeight,
-                            96,
-                            96,
+                            0, 0,
                             bytes);
 
                         await encoder.FlushAsync();

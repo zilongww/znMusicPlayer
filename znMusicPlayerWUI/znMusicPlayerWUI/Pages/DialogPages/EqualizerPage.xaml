@@ -7,10 +7,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid>
-        <TextBlock x:Name="WaveInfoTB" Text="{Binding WaveInfo,Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,-34,0,0"/>
-        <ToggleSwitch x:Name="EqEnableTS" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="70,-44,0,0" IsOn="{Binding EqEnabled, Mode=TwoWay}"/>
+        <TextBlock x:Name="WaveInfoTB"
+                   Text="{Binding WaveInfo,Mode=TwoWay}"
+                   VerticalAlignment="Top" HorizontalAlignment="Right" Margin="84,-34,0,0"/>
         <ScrollViewer>
             <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="均衡器" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Margin="0,0,4,0"/>
+                    <ToggleSwitch x:Name="EqEnableTS" VerticalAlignment="Center" IsOn="{Binding EqEnabled, Mode=TwoWay}"/>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="预设" VerticalAlignment="Center" Margin="0,0,12,0"/>
                     <ComboBox x:Name="EqComboBox" Width="134" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}" SelectionChanged="ComboBox_SelectionChanged" Loaded="EqComboBox_Loaded">

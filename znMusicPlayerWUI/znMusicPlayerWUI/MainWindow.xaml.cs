@@ -200,7 +200,7 @@ namespace znMusicPlayerWUI
         static Pages.DialogPages.EqualizerPage equalizerPage;
         public static async Task ShowEqualizerDialog()
         {
-            await ShowDialog("均衡器", equalizerPage);
+            await ShowDialog("音频设置", equalizerPage);
         }
         #endregion
 

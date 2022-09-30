@@ -23,6 +23,7 @@ namespace znMusicPlayerWUI.Media
 
         public bool EqEnabled { get; set; }
         public string FileName { get; }
+        public string FileAddr { get; private set; }
 
         public override WaveFormat WaveFormat => sampleChannel.WaveFormat;
 
@@ -83,6 +84,7 @@ namespace znMusicPlayerWUI.Media
                     {
                         addr = "-1";
                     }
+                    FileAddr = addr;
                     System.Diagnostics.Debug.WriteLine(addr);
                     switch (addr)
                     {

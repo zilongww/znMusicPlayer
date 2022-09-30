@@ -390,7 +390,7 @@ namespace znMusicPlayerWUI.Media
             AudioEffects.SoundTouchWaveProvider fileProvider = null;
             try
             {
-                await Task.Run(async () =>
+                await Task.Run(() =>
                 {
                     fileReader = new AudioFileReader(filePath);
                     fileProvider = new AudioEffects.SoundTouchWaveProvider(fileReader);
@@ -400,16 +400,18 @@ namespace znMusicPlayerWUI.Media
                     fileProvider.Tempo = Tempo;
                     fileProvider.Rate = Rate;
 
-                    string addr = await FileHelper.FileTypeGet(filePath);
-                    //Debug.WriteLine(addr);
-                    switch (addr)
+                    try
                     {
-                        case "10276":
-                            IsReloadErrorFile = true;
-                            break;
+                        var tagfile = TagLib.File.Create(filePath);
+                        if (!tagfile.Tag.IsEmpty)
+                        {
+                            WaveInfo = $"{tagfile.Properties.Codecs.First().Description} - {fileReader.WaveFormat.SampleRate / (decimal)1000}kHz-{tagfile.Properties.AudioBitrate}kbps";
+                        }
                     }
-
-                    WaveInfo = $"{fileReader.WaveFormat.SampleRate / (decimal)1000}kHz-{(int)(File.ReadAllBytes(filePath).Length * 8 / fileReader.TotalTime.TotalSeconds / 1000)}kbps";
+                    catch
+                    {
+                        WaveInfo = $"{fileReader.WaveFormat.AsStandardWaveFormat().Encoding} - {fileReader.WaveFormat.SampleRate / (decimal)1000}kHz-{(int)(File.ReadAllBytes(filePath).Length * 8 / fileReader.TotalTime.TotalSeconds / 1000)}kbps";
+                    }
                 });
                 if (EqEnabled)
                 {
