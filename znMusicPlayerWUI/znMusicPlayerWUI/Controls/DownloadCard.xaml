@@ -14,14 +14,16 @@
             BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="1"
             CornerRadius="4">
         <Grid>
-            <ProgressBar IsIndeterminate="True"
+            <!--<ProgressBar
                          VerticalAlignment="Center"
-                         Foreground="#ffdddd00"
+                         IsIndeterminate="{Binding ElementName=DownloadProgress, Path=IsIndeterminate}"
+                         Value="{Binding ElementName=DownloadProgress, Path=Value}"
+                         Foreground="{Binding ElementName=DownloadProgress, Path=Foreground}"/>
+            <Rectangle Fill="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"/>-->
+            <ProgressBar IsIndeterminate="True"
+                         VerticalAlignment="Bottom"
+                         Margin="4,0" Foreground="#ffdddd00" 
                          x:Name="DownloadProgress"/>
-            <Rectangle Fill="{ThemeResource AcrylicNormal}"/>
-            <ProgressBar IsIndeterminate="{Binding ElementName=DownloadProgress, Path=IsIndeterminate}"
-                         VerticalAlignment="Bottom" Value="{Binding ElementName=DownloadProgress, Path=Value}"
-                         Margin="4,0" Foreground="{Binding ElementName=DownloadProgress, Path=Foreground}"/>
             <StackPanel Padding="12,6">
                 <TextBlock x:Name="TitleTb" Text="标题" FontSize="16"/>
                 <TextBlock x:Name="ButtonNameTb" Text="消息" FontSize="13"/>

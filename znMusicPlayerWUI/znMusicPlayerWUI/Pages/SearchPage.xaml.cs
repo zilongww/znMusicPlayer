@@ -22,14 +22,18 @@ namespace znMusicPlayerWUI.Pages
             a.RemoveAt(5);
             SearchSourceComboBox.ItemsSource = a;
             SearchSourceComboBox.SelectedIndex = 3;
-            //SearchTextBlock.Text = $"{App.SearchData} 的搜索结果：";
+
+            var b = Enum.GetNames(typeof(DataEditor.DataType)).ToList();
+            b.RemoveAt(2);
+            SearchTypeComboBox.ItemsSource = b;
+            SearchTypeComboBox.SelectedIndex = 0;
         }
 
         public void StartSearch(string title)
         {
             MainWindow.SetNavViewContent(
                 typeof(ItemListView),
-                new List<object> { DataEditor.DataType.Search, title },
+                new List<object> { DataEditor.DataType.歌曲, title },
                 new DrillInNavigationTransitionInfo());
         }
 

@@ -95,7 +95,7 @@ namespace znMusicPlayerWUI.Controls
             SearchTopHeader.Visibility = Visibility.Collapsed;
             switch (NowShowMode)
             {
-                case DataType.Search:
+                case DataType.歌曲:
                     SearchResult_BaseGrid.Visibility = Visibility.Visible;
 
                     SearchPageSelector.Visibility = Visibility.Visible;
@@ -127,7 +127,7 @@ namespace znMusicPlayerWUI.Controls
                     }
                     break;
 
-                case DataType.PlayList:
+                case DataType.歌单:
                     ToolsCommandBar.Margin = new Thickness(126, 0, 0, 0);
                     PlayList_BaseGrid.Visibility = Visibility.Visible;
                     AddLocalFilesButton.Visibility = Visibility.Visible;
@@ -146,13 +146,13 @@ namespace znMusicPlayerWUI.Controls
                     Children.Items.Add(a);
                 }
 
-                if (musicListData.ListDataType == DataType.LocalPlayList)
+                if (musicListData.ListDataType == DataType.本地歌单)
                 {
-                    PlayList_Image.Source = FileHelper.GetImageFileBitmapImage(musicListData.PicturePath);
+                    PlayList_Image.Source = await FileHelper.GetImageSource(musicListData.PicturePath);
                 }
-                else if (musicListData.ListDataType == DataType.PlayList)
+                else if (musicListData.ListDataType == DataType.歌单)
                 {
-                    PlayList_Image.Source = FileHelper.GetImageFileBitmapImage(await ImageManage.GetImageSource(musicListData));
+                    PlayList_Image.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(musicListData));
                 }
             }
 
@@ -175,7 +175,7 @@ namespace znMusicPlayerWUI.Controls
             if (scrollViewer == null) return;
 
             double anotherHeight = HeaderBaseGrid.ActualHeight;
-            if (NowShowMode == DataType.PlayList) anotherHeight = 130;
+            if (NowShowMode == DataType.歌单) anotherHeight = 130;
             String progress = $"Clamp(-scroller.Translation.Y / {anotherHeight}, 0, 1.0)";
 
             if (scrollerPropertySet == null)
@@ -196,7 +196,7 @@ namespace znMusicPlayerWUI.Controls
             backgroundVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             backgroundVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
 
-            if (NowShowMode == DataType.PlayList)
+            if (NowShowMode == DataType.歌单)
             {
                 // Logo scale and transform                                          from               to
                 var logoHeaderScaleAnimation = compositor.CreateExpressionAnimation("Lerp(Vector2(1,1), Vector2(0.5, 0.5), " + progress + ")");
@@ -354,7 +354,7 @@ namespace znMusicPlayerWUI.Controls
         {
             if (Children.SelectedItems.Any())
             {
-                if (NowShowMode == DataType.PlayList)
+                if (NowShowMode == DataType.歌单)
                 {
 
                 }

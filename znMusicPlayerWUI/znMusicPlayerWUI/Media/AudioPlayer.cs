@@ -332,6 +332,7 @@ namespace znMusicPlayerWUI.Media
 
             if (resultPath != null)
             {
+                string errMessage = null;
                 // 检查文件是否没有下载完成
                 bool downloaded = await Task.Run(() =>
                 {
@@ -345,6 +346,7 @@ namespace znMusicPlayerWUI.Media
                     catch (Exception err)
                     {
                         Debug.WriteLine(err.ToString());
+                        errMessage = err.Message;
                         return true;
                     }
                     return false;
@@ -353,7 +355,10 @@ namespace znMusicPlayerWUI.Media
                 // 当文件没有下载完成
                 if (downloaded)
                 {
-                    await MainWindow.ShowDialog("播放缓存失败", "此缓存文件无法播放。");
+                    if (errMessage == null)
+                        await MainWindow.ShowDialog("播放缓存失败", "此缓存文件无法播放");
+                    else
+                        await MainWindow.ShowDialog("播放缓存失败", $"此缓存文件无法播放：\n\n{errMessage}");
                     CacheLoadedChanged?.Invoke(this);
                     await Task.Run(() =>
                     {
@@ -474,7 +479,6 @@ namespace znMusicPlayerWUI.Media
             return true;
         }
 
-        string[] ReloadErrorExtension = new string[] { ".flac" };
         public async Task<bool> Reload()
         {
             bool result = false;
@@ -488,16 +492,7 @@ namespace znMusicPlayerWUI.Media
                 DisposeAll();
                 result = await SetSource(filePath);
 
-                if (IsReloadErrorFile)
-                {
-                    SetPlay();
-                    await Task.Delay(1);
-                    FileReader.CurrentTime = nowPosition;
-                }
-                else
-                {
-                    FileReader.CurrentTime = nowPosition;
-                }
+                FileReader.CurrentTime = nowPosition;
                 if (nowPlayState == PlaybackState.Playing) SetPlay();
                 else SetPause();
             }

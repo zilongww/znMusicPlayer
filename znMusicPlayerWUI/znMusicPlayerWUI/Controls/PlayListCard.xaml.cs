@@ -65,17 +65,17 @@ namespace znMusicPlayerWUI.Controls
         {
             CreatShadow();
             PlayListImage.Opacity = 0.01;
-            if (MusicListData.ListDataType == DataEditor.DataType.LocalPlayList)
+            if (MusicListData.ListDataType == DataEditor.DataType.本地歌单)
             {
-                PlayListImage.Source = FileHelper.GetImageFileBitmapImage(MusicListData.PicturePath, 150, 150);
+                PlayListImage.Source = await FileHelper.GetImageSource(MusicListData.PicturePath, 150, 150, true);
             }
-            else if (MusicListData.ListDataType == DataEditor.DataType.PlayList)
+            else if (MusicListData.ListDataType == DataEditor.DataType.歌单)
             {
-                PlayListImage.Source = FileHelper.GetImageFileBitmapImage(await ImageManage.GetImageSource(MusicListData), 150, 150);
+                PlayListImage.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(MusicListData), 150, 150, true);
             }
             else
             {
-                PlayListImage.Source = FileHelper.GetImageFileBitmapImage("", 150, 150);
+                PlayListImage.Source = await FileHelper.GetImageSource("", 150, 150, true);
             }
             AnimateHelper.AnimateOpacity(
                 PlayListImage,
@@ -151,7 +151,7 @@ namespace znMusicPlayerWUI.Controls
             {
                 MainWindow.SetNavViewContent(
                     typeof(ItemListView),
-                    new List<object> { DataEditor.DataType.PlayList, MusicListData },
+                    new List<object> { DataEditor.DataType.歌单, MusicListData },
                     new DrillInNavigationTransitionInfo());
             }
             isPressed = false;

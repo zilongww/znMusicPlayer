@@ -57,7 +57,7 @@ namespace znMusicPlayerWUI.Controls
             MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
             MainWindow.DriveInTypeEvent += MainWindow_DriveInTypeEvent;
 
-            if (musicListData.ListDataType != DataType.LocalPlayList)
+            if (musicListData.ListDataType != DataType.本地歌单)
             {
                 DeleteFlyoutBtn.Visibility = Visibility.Collapsed;
             }
@@ -72,7 +72,7 @@ namespace znMusicPlayerWUI.Controls
                 MusicData = null;
                 MainWindow.DriveInTypeEvent -= MainWindow_DriveInTypeEvent;
             }
-            catch { }
+            catch(Exception err) { System.Diagnostics.Debug.WriteLine(err.ToString()); }
         }
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
@@ -90,7 +90,7 @@ namespace znMusicPlayerWUI.Controls
                 {
                     try
                     {
-                        a = FileHelper.GetImageFileBitmapImage(await Media.ImageManage.GetImageSource(MusicData), 50, 50);
+                        a = await FileHelper.GetImageSource(await Media.ImageManage.GetImageSource(MusicData), 50, 50, true);
                     }
                     catch { }
                 }
@@ -271,7 +271,7 @@ namespace znMusicPlayerWUI.Controls
 
         private async void DeleteFlyoutBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (MusicListData.ListDataType == DataType.LocalPlayList)
+            if (MusicListData.ListDataType == DataType.本地歌单)
             {
                 await PlayListHelper.DeleteMusicDataFromPlayList(MusicListData.ListName, MusicData);
             }

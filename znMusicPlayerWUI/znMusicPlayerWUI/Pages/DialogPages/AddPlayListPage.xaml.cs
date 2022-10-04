@@ -20,13 +20,9 @@ namespace znMusicPlayerWUI.Pages.DialogPages
         delegate void ResultDelegate(ContentDialogResult contentDialogResult);
         static event ResultDelegate ResultEvent;
 
-        NavigationView navigationView = null;
         public AddPlayListPage()
         {
             InitializeComponent();
-            var a = (VisualTreeHelper.GetChild(this, 0) as Grid).Children[0] as NavigationView;
-            navigationView = a;
-            a.SelectedItem = a.MenuItems[0];
 
             var b = Enum.GetNames(typeof(MusicFrom)).ToList();
             AddOutSidePage_PlatfromCb.ItemsSource = b;
@@ -43,12 +39,12 @@ namespace znMusicPlayerWUI.Pages.DialogPages
             {
                 MusicListData musicListData = null;
 
-                if (navigationView.SelectedItem == navigationView.MenuItems[0])
+                if (PivotList.SelectedItem == PivotList.Items[0])
                 {
                     musicListData = new MusicListData(null, AddLocalPage_ListNameTB.Text, AddLocalPage_ListImageTB.Text, MusicFrom.localMusic);
                     musicListData.ListName = musicListData.MD5;
                     musicListData.ListFrom = MusicFrom.localMusic;
-                    musicListData.ListDataType = DataType.LocalPlayList;
+                    musicListData.ListDataType = DataType.本地歌单;
                     musicListData.ReMD5();
                 }
                 else
@@ -88,22 +84,8 @@ namespace znMusicPlayerWUI.Pages.DialogPages
 
         public static async Task ShowDialog()
         {
-            var a = await MainWindow.ShowDialog("添加新的播放列表", new AddPlayListPage(), "取消", "创建");
+            var a = await MainWindow.ShowDialog("", new AddPlayListPage(), "取消", "创建");
             ResultEvent?.Invoke(a);
-        }
-
-        private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
-        {
-            if (navigationView.SelectedItem != navigationView.MenuItems[0])
-            {
-                AddLocalPage.Visibility = Visibility.Collapsed;
-                AddOutSidePage.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                AddLocalPage.Visibility = Visibility.Visible;
-                AddOutSidePage.Visibility = Visibility.Collapsed;
-            }
         }
 
         private async void AddLocalPage_ListImageSelectBtn_Click(object sender, RoutedEventArgs e)

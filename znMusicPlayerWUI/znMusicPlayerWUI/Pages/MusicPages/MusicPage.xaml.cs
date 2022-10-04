@@ -263,9 +263,18 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         public void SelectedChangedDo()
         {
             LrcBaseListView.SelectedItem = App.lyricManager.NowLyricsData;
-            var b = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
-            if (b != null && scrollViewer != null)
+            if (scrollViewer != null)
+            {
+                var b = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
+                if (b == null)
+                {
+                    LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData);
+                    b = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
+                    LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData);
+                    System.Diagnostics.Debug.WriteLine("asd");
+                }
                 scrollViewer.ChangeView(null, b.ActualOffset.Y + b.ActualSize.Y / 2, null);
+            }
         }
 
         //todo：优化性能

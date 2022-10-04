@@ -154,7 +154,7 @@ namespace znMusicPlayerWUI.Helpers
                         musicListData.ID = (string)pld["id"];
                         musicListData.PicturePath = (string)pld["coverImgUrl"];
                         musicListData.ListFrom = MusicFrom.neteaseMusic;
-                        musicListData.ListDataType = DataType.PlayList;
+                        musicListData.ListDataType = DataType.歌单;
 
                         var plt = pld["tracks"];
                         foreach (var md in plt)

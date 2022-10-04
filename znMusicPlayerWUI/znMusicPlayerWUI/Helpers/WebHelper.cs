@@ -160,7 +160,7 @@ namespace znMusicPlayerWUI.Helpers
             int pageNumber = 1,
             int pageSize = 30,
             MusicFrom searchFrom = MusicFrom.neteaseMusic,
-            DataType dataType = DataType.Search)
+            DataType dataType = DataType.歌曲)
         {
             MusicListData musicListData = new(searchData, searchData, null, searchFrom, null, listDataType: dataType);
             switch (searchFrom)
@@ -172,7 +172,7 @@ namespace znMusicPlayerWUI.Helpers
                     break;
 
                 case MusicFrom.neteaseMusic:
-                    if (dataType == DataType.Search)
+                    if (dataType == DataType.歌曲)
                     {
                         string webResult = null;
 

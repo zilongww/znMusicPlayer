@@ -67,17 +67,21 @@ namespace znMusicPlayerWUI.DataEditor
         {
             while (DownloadingData.Count < DownloadingMaxium)
             {
-                var m = WaitingDownloadData[0];
-                WaitingDownloadData.Remove(m);
-                DownloadingData.Add(m);
-                try
+                if (WaitingDownloadData.Any())
                 {
-                    StartDownload(m);
+                    var m = WaitingDownloadData[0];
+                    WaitingDownloadData.Remove(m);
+                    DownloadingData.Add(m);
+                    try
+                    {
+                        StartDownload(m);
+                    }
+                    catch (Exception err)
+                    {
+                        System.Diagnostics.Debug.WriteLine(err.Message);
+                    }
                 }
-                catch (Exception err)
-                {
-                    System.Diagnostics.Debug.WriteLine(err.Message);
-                }
+                else break;
             }
         }
 

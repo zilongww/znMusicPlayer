@@ -26,6 +26,7 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Drawing;
 using Microsoft.UI.Xaml.Markup;
+using System.Threading.Tasks;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -63,6 +64,11 @@ namespace znMusicPlayerWUI
             DataFolderBase.InitFiles();
             this.InitializeComponent();
             UnhandledException += App_UnhandledException;
+            TaskScheduler.UnobservedTaskException +=
+            (object sender, UnobservedTaskExceptionEventArgs excArgs) =>
+            {
+                Debug.WriteLine(excArgs.Exception.ToString());
+            };
         }
 
         private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)

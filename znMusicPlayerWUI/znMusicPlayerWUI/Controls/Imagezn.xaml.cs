@@ -78,7 +78,8 @@ namespace znMusicPlayerWUI.Controls
 
         public void Dispose()
         {
-            ImageSource.Source = null;
+            Source = null;
+            Source = null;
             firstLoad = true;
         }
 
@@ -146,26 +147,40 @@ namespace znMusicPlayerWUI.Controls
             var result = await MainWindow.ShowDialog("查看图片", grid, "确定", "保存到文件...");
             if (result == ContentDialogResult.Primary)
             {
-                var f = await FileHelper.UserSaveFile("一张图片", Windows.Storage.Pickers.PickerLocationId.PicturesLibrary, new[] { ".png" }, "图片");
+                StorageFile f = null;
+                if (Source.GetType() == typeof(WriteableBitmap))
+                {
+                    f = await FileHelper.UserSaveFile("一张图片", Windows.Storage.Pickers.PickerLocationId.PicturesLibrary, new[] { ".png" }, "图片");
+                }
+                else
+                {
+                    await MainWindow.ShowDialog("无法保存图片", "不支持保存此类型的图片。");
+                }
+
                 if (f != null)
                 {
-                    var _bitmap = new RenderTargetBitmap();
-                    await _bitmap.RenderAsync(ImageSource);
-                    var pixels = await _bitmap.GetPixelsAsync();
-                    using (IRandomAccessStream stream = await f.OpenAsync(FileAccessMode.ReadWrite))
+                    try
                     {
-                        var encoder = await
-                        BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
-                        byte[] bytes = pixels.ToArray();
-                        encoder.SetPixelData(
-                            BitmapPixelFormat.Bgra8,
-                            BitmapAlphaMode.Ignore,
-                            (uint)_bitmap.PixelWidth,
-                            (uint)_bitmap.PixelHeight,
-                            0, 0,
-                            bytes);
+                        using (IRandomAccessStream stream = await f.OpenAsync(FileAccessMode.ReadWrite))
+                        {
+                            WriteableBitmap wb = Source as WriteableBitmap;
+                            BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
+                            Stream pixelStream = wb.PixelBuffer.AsStream();
+                            byte[] pixels = new byte[pixelStream.Length];
+                            await pixelStream.ReadAsync(pixels, 0, pixels.Length);
 
-                        await encoder.FlushAsync();
+                            encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore,
+                                                (uint)wb.PixelWidth,
+                                                (uint)wb.PixelHeight,
+                                                96.0,
+                                                96.0,
+                                                pixels);
+                            await encoder.FlushAsync();
+                        }
+                    }
+                    catch (Exception err)
+                    {
+                        await MainWindow.ShowDialog("保存图片失败", $"保存图片时出现错误：\n{err.Message}");
                     }
                 }
             }

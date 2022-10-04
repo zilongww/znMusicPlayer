@@ -160,10 +160,12 @@ namespace znMusicPlayerWUI.Pages.DialogPages
             if (audioPlayer.WasapiOnly && audioPlayer.NowOutDevice.DeviceType == Media.AudioPlayer.OutApi.Wasapi)
             {
                 LatencyNumberBox.Minimum = 0;
+                LatencyNumberBox.Maximum = 981;
             }
             else
             {
                 LatencyNumberBox.Minimum = 50;
+                LatencyNumberBox.Maximum = 1000;
             }
 
             WaveInfoTB.Text = audioPlayer.WaveInfo;

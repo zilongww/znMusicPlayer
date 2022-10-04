@@ -64,7 +64,7 @@ namespace znMusicPlayerWUI.DataEditor
                 }
                 else
                 {
-                    a = FileHelper.GetImageFileBitmapImage(await Media.ImageManage.GetImageSource(audioPlayer.MusicData));
+                    a = await FileHelper.GetImageSource(await Media.ImageManage.GetImageSource(audioPlayer.MusicData));
                 }
 
                 NowPlayingImage = a;

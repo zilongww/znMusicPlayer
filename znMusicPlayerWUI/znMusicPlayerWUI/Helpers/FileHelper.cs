@@ -6,12 +6,14 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.VisualBasic;
 using Windows.Graphics.Display;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
 using Windows.System;
 
 namespace znMusicPlayerWUI.Helpers
@@ -107,9 +109,9 @@ namespace znMusicPlayerWUI.Helpers
         {
             return await Task.Run(() =>
             {
-                System.IO.DirectoryInfo directory = new System.IO.DirectoryInfo(DataEditor.DataFolderBase.LyricCacheFolder);
-                System.IO.FileInfo[] fileInfo = directory.GetFiles();
-                foreach (System.IO.FileInfo file in fileInfo)
+                DirectoryInfo directory = new DirectoryInfo(DataEditor.DataFolderBase.LyricCacheFolder);
+                FileInfo[] fileInfo = directory.GetFiles();
+                foreach (FileInfo file in fileInfo)
                 {
                     if (file.Name == musicData.From + musicData.ID)
                     {
@@ -120,18 +122,40 @@ namespace znMusicPlayerWUI.Helpers
             });
         }
 
-        public static BitmapImage GetImageFileBitmapImage(string filePath, int decodePixelWidth = 0, int decodePixelHeight = 0)
+        public static async Task<ImageSource> GetImageSource(string filePath, int decodePixelWidth = 0, int decodePixelHeight = 0, bool useBitmapImage = false)
         {
             if (string.IsNullOrEmpty(filePath))
             {
                 filePath = @"ms-appx:///Images/SugarAndSalt.jpg";
+                return GetImageSource(new Uri(filePath), decodePixelWidth, decodePixelHeight);
             }
-            return new BitmapImage(new Uri(filePath)) { DecodePixelWidth = decodePixelWidth, DecodePixelHeight = decodePixelHeight };
+            else if (Path.GetExtension(filePath) == ".gif" || useBitmapImage)
+            {
+                return GetImageSource(new Uri(filePath), decodePixelWidth, decodePixelHeight);
+            }
+            else
+            {
+                return await OpenWriteableBitmapFile(await StorageFile.GetFileFromPathAsync(filePath));
+            }
         }
 
-        public static BitmapImage GetImageFileBitmapImage(Uri fileUri, int decodePixelWidth = 0, int decodePixelHeight = 0)
+        public static ImageSource GetImageSource(Uri fileUri, int decodePixelWidth = 0, int decodePixelHeight = 0)
         {
             return new BitmapImage(fileUri) { DecodePixelWidth = decodePixelWidth, DecodePixelHeight = decodePixelHeight };
+        }
+
+        private static async Task<WriteableBitmap> OpenWriteableBitmapFile(StorageFile file, int pixelWidth = 0, int pixelHeight = 0)
+        {
+            using (IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read))
+            {
+                BitmapDecoder decoder = await BitmapDecoder.CreateAsync(stream);
+                WriteableBitmap image = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+                //pixelWidth == 0 ? (int)decoder.PixelWidth : pixelWidth,
+                //pixelHeight == 0 ? (int)decoder.PixelHeight : pixelHeight);
+                await image.SetSourceAsync(stream);
+
+                return image;
+            }
         }
 
         public static async Task<IReadOnlyList<StorageFile>> UserSelectFiles(
