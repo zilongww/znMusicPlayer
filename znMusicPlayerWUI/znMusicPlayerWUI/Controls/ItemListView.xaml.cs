@@ -27,6 +27,8 @@ namespace znMusicPlayerWUI.Controls
         private ScrollViewer scrollViewer { get; set; }
         public object NavToObj { get; set; }
         public DataType NowShowMode { get; set; }
+        public SearchDataType NowSearchMode { get; set; } = SearchDataType.歌曲;
+        public MusicFrom NowMusicFrom { get; set; } = MusicFrom.neteaseMusic;
 
         public ItemListView()
         {
@@ -38,6 +40,10 @@ namespace znMusicPlayerWUI.Controls
             var a = (List<object>)e.Parameter;
             NowShowMode = (DataType)a[0];
             NavToObj = a[1];
+            if (a.Count >= 3)
+                NowMusicFrom = (MusicFrom)a[2];
+            if (a.Count >= 4)
+                NowSearchMode = (SearchDataType)a[3];
             InitData();
         }
 
@@ -114,7 +120,7 @@ namespace znMusicPlayerWUI.Controls
                     Children.Items.Clear();
                     try
                     {
-                        musicListData = await WebHelper.SearchData(searchData, pageNumber, pageSize);
+                        musicListData = await WebHelper.SearchData(searchData, pageNumber, pageSize, NowMusicFrom, NowSearchMode);
                     }
                     catch (ArgumentOutOfRangeException)
                     {

@@ -314,10 +314,15 @@ namespace znMusicPlayerWUI.Media
                         }
                         catch (Exception err)
                         {
-                            await Task.Run(() => File.Delete(b));
-                            await MainWindow.ShowDialog("加载缓存文件失败", err.Message);
-                            CacheLoadedChanged?.Invoke(this);
-                            return false;
+                            try
+                            {
+                                await Task.Run(() => File.Delete(b));
+                                await MainWindow.ShowDialog("加载缓存文件失败", err.Message);
+
+                                CacheLoadedChanged?.Invoke(this);
+                                return false;
+                            }
+                            catch { }
                         }
 
                         resultPath = b;

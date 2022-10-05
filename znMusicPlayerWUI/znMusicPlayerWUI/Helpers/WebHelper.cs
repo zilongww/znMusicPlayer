@@ -121,7 +121,7 @@ namespace znMusicPlayerWUI.Helpers
                 case MusicFrom.kgMusic:
                     break;
                 case MusicFrom.neteaseMusic:
-                    return await MetingService.GetUrl(musicData.ID, 960);
+                    return await App.metingServices.NeteaseServices.GetUrl(musicData.ID, 960);
                 case MusicFrom.qqMusic:
                     break;
                 case MusicFrom.miguMusic:
@@ -137,7 +137,7 @@ namespace znMusicPlayerWUI.Helpers
             switch (musicData.From)
             {
                 case MusicFrom.neteaseMusic:
-                    return await MetingService.GetLyric(musicData.ID);
+                    return await App.metingServices.NeteaseServices.GetLyric(musicData.ID);
                 //string a = await GetStringAsync($"https://api.injahow.cn/meting/?server=netease&type=song&id={musicData.ID}");
                 default: return null;
             }
@@ -160,9 +160,10 @@ namespace znMusicPlayerWUI.Helpers
             int pageNumber = 1,
             int pageSize = 30,
             MusicFrom searchFrom = MusicFrom.neteaseMusic,
-            DataType dataType = DataType.歌曲)
+            SearchDataType searchDataType = SearchDataType.歌曲)
         {
-            MusicListData musicListData = new(searchData, searchData, null, searchFrom, null, listDataType: dataType);
+            // TODO!!!:设置ListDataType
+            MusicListData musicListData = new(searchData, searchData, null, searchFrom, null);
             switch (searchFrom)
             {
                 case MusicFrom.kwMusic:
@@ -172,7 +173,7 @@ namespace znMusicPlayerWUI.Helpers
                     break;
 
                 case MusicFrom.neteaseMusic:
-                    if (dataType == DataType.歌曲)
+                    if (searchDataType == SearchDataType.歌曲)
                     {
                         string webResult = null;
 

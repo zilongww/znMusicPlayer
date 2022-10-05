@@ -15,6 +15,7 @@ namespace znMusicPlayerWUI.DataEditor
     public enum MusicFrom { kwMusic, kgMusic, qqMusic, neteaseMusic, miguMusic, localMusic, otherMusic }
 
     public enum DataType { 歌曲, 歌单, 本地歌单, 专辑, 用户, 艺术家 }
+    public enum SearchDataType { 歌曲, 歌单, 专辑, 用户, 艺术家 }
     public enum MusicKbps { aac, wma, Kbps128, Kbps192, Kbps320, Kbps1000 }
 
     public struct Artist
@@ -119,7 +120,8 @@ namespace znMusicPlayerWUI.DataEditor
         public string MD5 { get; set; }
         public List<MusicData> Songs { get; set; }
 
-        public MusicListData(string listName = null, string listShowName = null, string picturePath = null, MusicFrom listFrom = default, string ID = null, List<MusicData> songs = null, DataType listDataType = default)
+        public MusicListData(string listName = null, string listShowName = null, string picturePath = null,
+            MusicFrom listFrom = default, string ID = null, List<MusicData> songs = null, DataType listDataType = default)
         {
             this.ListName = listName;
             this.ListShowName = listShowName;

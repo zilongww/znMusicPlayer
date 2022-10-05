@@ -1,33 +1,28 @@
-﻿using Meting4Net.Core.Models.Netease;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Web.Http.Diagnostics;
 using znMusicPlayerWUI.DataEditor;
 
-namespace znMusicPlayerWUI.Helpers
+namespace znMusicPlayerWUI.Helpers.MetingService
 {
-    public static class MetingService
+    public class NeteaseMeting: IMetingService
     {
-        public static string NeteaseCookie = null;
-        public static Meting4Net.Core.Meting NeteaseMeting = new(Meting4Net.Core.ServerProvider.Netease);
-
-        public static void InitMeting()
+        public Meting4Net.Core.Meting Services { get; set; }
+        public NeteaseMeting(Meting4Net.Core.Meting meting)
         {
-            NeteaseMeting.Cookie("os=pc; " + NeteaseCookie);
+            Services = meting;
         }
 
-        public static async Task<string> GetUrl(string id, int br)
+        public async Task<string> GetUrl(string id, int br)
         {
             return await Task.Run(() =>
             {
                 var getAddressAction = string () =>
                 {
-                    string address = NeteaseMeting.FormatMethod().Url(id, br);
+                    string address = Services.FormatMethod().Url(id, br);
                     System.Diagnostics.Debug.WriteLine(address);
 
                     if (address != null)
@@ -67,13 +62,13 @@ namespace znMusicPlayerWUI.Helpers
         /// item1歌词
         /// item2歌词翻译
         /// </returns>
-        public static async Task<Tuple<string, string>> GetLyric(string id)
+        public async Task<Tuple<string, string>> GetLyric(string id)
         {
             return await Task.Run(() =>
             {
                 var getLyricAction = Tuple<string, string> () =>
                 {
-                    string lyric = NeteaseMeting.FormatMethod().Lyric(id);
+                    string lyric = Services.FormatMethod().Lyric(id);
 
                     if (lyric != null)
                     {
@@ -101,14 +96,14 @@ namespace znMusicPlayerWUI.Helpers
                 return null;
             });
         }
-        
-        public static async Task<Tuple<string, string>> GetPic(string id)
+
+        public async Task<Tuple<string, string>> GetPic(string id)
         {
             return await Task.Run(() =>
             {
                 var getPicAction = Tuple<string, string> () =>
                 {
-                    string pic = NeteaseMeting.FormatMethod().Pic(id, 5000);
+                    string pic = Services.FormatMethod().Pic(id, 5000);
 
                     if (pic != null)
                     {
@@ -137,13 +132,13 @@ namespace znMusicPlayerWUI.Helpers
             });
         }
 
-        public static async Task<MusicListData> GetPlayList(string id)
+        public async Task<MusicListData> GetPlayList(string id)
         {
             return await Task.Run(() =>
             {
                 var getPlayListAction = MusicListData () =>
                 {
-                    JObject pls = JObject.Parse(NeteaseMeting.FormatMethod(false).Playlist(id));
+                    JObject pls = JObject.Parse(Services.FormatMethod(false).Playlist(id));
 
                     if (pls["code"].ToString() == "200")
                     {

@@ -139,11 +139,20 @@ namespace znMusicPlayerWUI.Controls
                 HorizontalScrollMode = ScrollMode.Enabled,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
             };
+            TextBlock textBlock = new() { Text = "Ctrl键滑动滚轮和双指滑动可进行缩放", Margin = new(84, -32, 0, 0), IsHitTestVisible = false };
+            scrollViewer.ViewChanged += (_, __) =>
+            {
+                try
+                {
+                    textBlock.Text = $"当前缩放：{scrollViewer.ZoomFactor}%";
+                }
+                catch { }
+            };
             scrollViewer.Content = new Border() { Child = new Image() { Source = Source }, CornerRadius = new(54) };
             Border border = new() { CornerRadius = new(4), Child = scrollViewer };
             Grid grid = new();
             grid.Children.Add(border);
-            grid.Children.Add(new TextBlock() { Text = "按住Ctrl键滑动滚轮可缩放", Margin = new(84, -32, 0, 0), IsHitTestVisible = false });
+            grid.Children.Add(textBlock);
             var result = await MainWindow.ShowDialog("查看图片", grid, "确定", "保存到文件...");
             if (result == ContentDialogResult.Primary)
             {
@@ -172,8 +181,7 @@ namespace znMusicPlayerWUI.Controls
                             encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore,
                                                 (uint)wb.PixelWidth,
                                                 (uint)wb.PixelHeight,
-                                                96.0,
-                                                96.0,
+                                                96.0, 96.0,
                                                 pixels);
                             await encoder.FlushAsync();
                         }

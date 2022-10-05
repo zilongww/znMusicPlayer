@@ -51,7 +51,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 {
                     try
                     {
-                        var pl = await MetingService.GetPlayList(AddOutSidePage_IDTb.Text);
+                        var pl = await App.metingServices.NeteaseServices.GetPlayList(AddOutSidePage_IDTb.Text);
                         if (pl != null)
                         {
                             musicListData = pl;

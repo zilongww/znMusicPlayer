@@ -93,7 +93,7 @@ namespace znMusicPlayerWUI.DataEditor
             string addressPath = null;
             try
             {
-                addressPath = await MetingService.GetUrl(dm.MusicData.ID, br);
+                addressPath = await App.metingServices.NeteaseServices.GetUrl(dm.MusicData.ID, br);
             }
             catch
             {
@@ -194,7 +194,7 @@ namespace znMusicPlayerWUI.DataEditor
                 tagFile.Dispose();
             });
 
-            var lyric = await MetingService.GetLyric(dm.MusicData.ID);
+            var lyric = await App.metingServices.NeteaseServices.GetLyric(dm.MusicData.ID);
             if (!lyric.Item1.Contains("纯音乐，请欣赏"))
             {
                 await Task.Run(() =>

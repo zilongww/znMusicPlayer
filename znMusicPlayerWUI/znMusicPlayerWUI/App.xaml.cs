@@ -38,6 +38,7 @@ namespace znMusicPlayerWUI
     /// </summary>
     public partial class App : Application
     {
+        public static readonly MetingServices metingServices = new();
         public static readonly AudioPlayer audioPlayer = new();
         public static readonly PlayingList playingList = new();
         public static readonly LyricManager lyricManager = new();
@@ -87,7 +88,6 @@ namespace znMusicPlayerWUI
             m_window = new MainWindow();
             AppWindowLocalHandle = WindowHelper.GetWindowHandle(m_window);
             AppWindowLocalPresenter = OverlappedPresenter.Create();
-            MetingService.InitMeting();
 
             //l_window = new DesktopLyricWindow();
             //AppDesktopLyricWindowHandle = WindowHelper.GetWindowHandle(l_window);
@@ -132,7 +132,8 @@ namespace znMusicPlayerWUI
             audioPlayer.WasapiOnly = (bool)b[DataFolderBase.SettingParams.WasapiOnly.ToString()];
             audioPlayer.Latency = (int)b[DataFolderBase.SettingParams.AudioLatency.ToString()];
             MainWindow.SMusicPage.ShowLrcPage = (bool)b[DataFolderBase.SettingParams.MusicPageShowLyricPage.ToString()];
-            MetingService.NeteaseCookie = (string)b[DataFolderBase.SettingParams.NeteaseMusicCookie.ToString()];
+            metingServices.NeteaseCookie = (string)b[DataFolderBase.SettingParams.NeteaseMusicCookie.ToString()];
+            metingServices.InitMeting();
         }
 
         public static void SaveSettings()

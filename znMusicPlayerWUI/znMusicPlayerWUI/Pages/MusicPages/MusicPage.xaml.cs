@@ -122,6 +122,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     visual.Opacity = 0;
                     visual.StartAnimation(nameof(visual.Opacity), animation);
 
+                    System.Diagnostics.Debug.WriteLine($"MusicPage Image Changed.");
                 }
             }
         }
@@ -143,6 +144,8 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     SelectedChangedDo();
                 }
             }
+
+            System.Diagnostics.Debug.WriteLine($"MusicPage.ViewState set to {musicPageViewState}.");
         }
 
         private void BackgroundBaseImage_Loaded(object sender, RoutedEventArgs e)
@@ -273,8 +276,10 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData);
                     System.Diagnostics.Debug.WriteLine("asd");
                 }
-                scrollViewer.ChangeView(null, b.ActualOffset.Y + b.ActualSize.Y / 2, null);
+                if (b != null)
+                    scrollViewer.ChangeView(null, b.ActualOffset.Y + b.ActualSize.Y / 2, null);
             }
+            System.Diagnostics.Debug.WriteLine($"MusicPage Lrc Selected Changed: {App.lyricManager.NowLyricsData.Lyric}.");
         }
 
         //todo：优化性能
