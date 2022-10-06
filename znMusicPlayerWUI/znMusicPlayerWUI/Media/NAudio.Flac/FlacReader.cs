@@ -132,8 +132,8 @@ namespace NAudio.Flac
                 _streamInfo = streamInfo;
                 _waveFormat = new WaveFormat(streamInfo.SampleRate, (short) streamInfo.BitsPerSample,
                     (short) streamInfo.Channels);
-                Debug.WriteLine("Flac StreamInfo found -> WaveFormat: " + _waveFormat);
-                Debug.WriteLine("Flac-File-Metadata read.");
+                //Debug.WriteLine("Flac StreamInfo found -> WaveFormat: " + _waveFormat);
+                //Debug.WriteLine("Flac-File-Metadata read.");
             }
             else
                 throw new FlacException("Invalid Flac-File. \"fLaC\" Sync not found.", FlacLayer.Top);

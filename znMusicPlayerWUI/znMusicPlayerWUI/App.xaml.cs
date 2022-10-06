@@ -27,6 +27,7 @@ using System.Diagnostics;
 using System.Drawing;
 using Microsoft.UI.Xaml.Markup;
 using System.Threading.Tasks;
+using znMusicPlayerWUI.Background;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -52,9 +53,6 @@ namespace znMusicPlayerWUI
 
         public static readonly string AppName = "znMusicPlayer";
         public static readonly string AppVersion = "1.0.0 Beta";
-
-        public static readonly string PlayIconPathData = "M 744.727 551.564 L 325.818 795.927 c -30.2545 18.6182 -69.8182 -4.65454 -69.8182 -39.5636 v -488.727 c 0 -34.9091 39.5636 -58.1818 69.8182 -39.5636 l 418.909 244.364 c 30.2545 16.2909 30.2545 62.8364 0 79.1273 Z";
-        public static readonly string PauseIconPathData = "M 442.182 709.818 c 0 37.2364 -30.2545 69.8182 -69.8182 69.8182 s -69.8182 -30.2545 -69.8182 -69.8182 v -395.636 c 0 -37.2364 30.2545 -69.8182 69.8182 -69.8182 s 69.8182 30.2545 69.8182 69.8182 v 395.636 Z m 279.273 0 c 0 37.2364 -30.2545 69.8182 -69.8182 69.8182 s -69.8182 -30.2545 -69.8182 -69.8182 v -395.636 c 0 -37.2364 30.2545 -69.8182 69.8182 -69.8182 s 69.8182 30.2545 69.8182 69.8182 v 395.636 Z";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -107,7 +105,7 @@ namespace znMusicPlayerWUI
 
             m_window.Activate();
             m_window.Closed += M_window_Closed;
-            AppWindowLocal.SetPresenter(AppWindowLocalPresenter);
+            //AppWindowLocal.SetPresenter(AppWindowLocalPresenter);
         }
 
         private void M_window_Closed(object sender, WindowEventArgs args)

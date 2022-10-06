@@ -115,6 +115,10 @@ namespace znMusicPlayerWUI.Controls
                     out var visual, out var compositor, out var scalarKeyFrameAnimation);
                 visual.Opacity = 0;
                 visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
+                compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
+                {
+                    ImageSourceBefore.Source = null;
+                };
                 ImageSource.Source = Source;
             }
             else
@@ -139,12 +143,12 @@ namespace znMusicPlayerWUI.Controls
                 HorizontalScrollMode = ScrollMode.Enabled,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
             };
-            TextBlock textBlock = new() { Text = "Ctrl键滑动滚轮和双指滑动可进行缩放", Margin = new(84, -32, 0, 0), IsHitTestVisible = false };
+            TextBlock textBlock = new() { Text = "Ctrl键滑动滚轮或双指滑动可进行缩放 100%", Margin = new(84, -32, 0, 0), IsHitTestVisible = false };
             scrollViewer.ViewChanged += (_, __) =>
             {
                 try
                 {
-                    textBlock.Text = $"当前缩放：{scrollViewer.ZoomFactor}%";
+                    textBlock.Text = $"Ctrl键滑动滚轮或双指滑动可进行缩放 {Math.Round(scrollViewer.ZoomFactor * 100, 0)}%";
                 }
                 catch { }
             };

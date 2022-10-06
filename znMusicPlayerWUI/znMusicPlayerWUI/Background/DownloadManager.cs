@@ -6,9 +6,10 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Media.Protection.PlayReady;
+using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Helpers;
 
-namespace znMusicPlayerWUI.DataEditor
+namespace znMusicPlayerWUI.Background
 {
     public class DownloadManager
     {
@@ -155,7 +156,7 @@ namespace znMusicPlayerWUI.DataEditor
                 await WebHelper.DownloadFileAsync(await WebHelper.GetPicturePathAsync(dm.MusicData), picPath);
                 picDownloaded = true;
             }
-            catch(Exception err)
+            catch (Exception err)
             {
                 System.Diagnostics.Debug.WriteLine(err.ToString());
             }

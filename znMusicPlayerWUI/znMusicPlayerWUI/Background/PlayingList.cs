@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Helpers;
 
-namespace znMusicPlayerWUI.DataEditor
+namespace znMusicPlayerWUI.Background
 {
     public class PlayingList
     {
@@ -59,7 +59,6 @@ namespace znMusicPlayerWUI.DataEditor
 
                 if (audioPlayer.MusicData.InLocal != null)
                 {
-                    System.Diagnostics.Debug.WriteLine(audioPlayer.MusicData.InLocal);
                     a = await CodeHelper.GetCover(audioPlayer.MusicData.InLocal);
                 }
                 else
@@ -71,7 +70,7 @@ namespace znMusicPlayerWUI.DataEditor
                 NowPlayingImageLoaded?.Invoke(_nowPlayingImage);
             }
         }
-    
+
 
         public void Add(MusicData musicData, bool invoke = true)
         {

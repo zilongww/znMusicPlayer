@@ -5,8 +5,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using znMusicPlayerWUI.DataEditor;
 
-namespace znMusicPlayerWUI.DataEditor
+namespace znMusicPlayerWUI.Background
 {
     public class LyricManager
     {
@@ -28,6 +29,7 @@ namespace znMusicPlayerWUI.DataEditor
                 if (_nowLyricsData.MD5 != value.MD5)
                 {
                     _nowLyricsData = value;
+                    System.Diagnostics.Debug.WriteLine($"LyricManager: 当前歌词已被更改为: {lastLyricData.Lyric}.");
                     PlayingLyricSelectedChange?.Invoke(value);
                 }
             }
@@ -35,7 +37,7 @@ namespace znMusicPlayerWUI.DataEditor
 
         public LyricManager()
         {
-            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(10) };
+            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(30) };
             timer.Tick += (_, __) => ReCallUpdata();
 
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
@@ -117,7 +119,7 @@ namespace znMusicPlayerWUI.DataEditor
         LyricData lastLyricData = null;
         public void ReCallUpdata()
         {
-            if (App.audioPlayer.NowOutObj?.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+            if (App.audioPlayer.NowOutObj?.PlaybackState == NAudio.Wave.PlaybackState.Playing && NowPlayingLyrics.Any())
             {
                 foreach (var data in NowPlayingLyrics)
                 {

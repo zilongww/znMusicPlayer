@@ -15,8 +15,8 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media;
 using znMusicPlayerWUI.Media;
-using znMusicPlayerWUI.DataEditor;
 using Windows.UI;
+using znMusicPlayerWUI.Background;
 
 namespace znMusicPlayerWUI.Controls
 {

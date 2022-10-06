@@ -39,7 +39,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.0.3.1" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.25211-preview" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.5" />
     <PackageReference Include="NAudio" Version="2.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

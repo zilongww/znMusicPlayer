@@ -98,7 +98,6 @@ namespace znMusicPlayerWUI.Controls
 
             SearchResult_BaseGrid.Visibility = Visibility.Collapsed;
             PlayList_BaseGrid.Visibility = Visibility.Collapsed;
-            SearchTopHeader.Visibility = Visibility.Collapsed;
             switch (NowShowMode)
             {
                 case DataType.歌曲:
@@ -107,11 +106,6 @@ namespace znMusicPlayerWUI.Controls
                     SearchPageSelector.Visibility = Visibility.Visible;
                     SearchPageSelectorCustom.Visibility = Visibility.Visible;
                     SearchHomeButton.Visibility = Visibility.Visible;
-                    SearchPageSelectorSeparator.Visibility = Visibility.Visible;
-
-                    SearchTopHeader.Visibility = Visibility.Visible;
-                    if (SearchTopHeader.SelectedItem == null)
-                        SearchTopHeader.SelectedItem = SearchTopHeader.MenuItems[0];
                     var searchData = NavToObj as string;
                     Result_Search_Header.Text = $"\"{searchData}\"的搜索结果";
                     NowPage.Text = pageNumber.ToString();

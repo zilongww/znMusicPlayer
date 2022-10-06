@@ -122,7 +122,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     visual.Opacity = 0;
                     visual.StartAnimation(nameof(visual.Opacity), animation);
 
-                    System.Diagnostics.Debug.WriteLine($"MusicPage Image Changed.");
+                    System.Diagnostics.Debug.WriteLine($"MusicPage: 图片已被更改.");
                 }
             }
         }
@@ -145,7 +145,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 }
             }
 
-            System.Diagnostics.Debug.WriteLine($"MusicPage.ViewState set to {musicPageViewState}.");
+            System.Diagnostics.Debug.WriteLine($"MusicPage: ViewState 已被设置为 {musicPageViewState}.");
         }
 
         private void BackgroundBaseImage_Loaded(object sender, RoutedEventArgs e)
@@ -274,12 +274,11 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData);
                     b = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
                     LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData);
-                    System.Diagnostics.Debug.WriteLine("asd");
                 }
                 if (b != null)
                     scrollViewer.ChangeView(null, b.ActualOffset.Y + b.ActualSize.Y / 2, null);
             }
-            System.Diagnostics.Debug.WriteLine($"MusicPage Lrc Selected Changed: {App.lyricManager.NowLyricsData.Lyric}.");
+            System.Diagnostics.Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData.Lyric}.");
         }
 
         //todo：优化性能

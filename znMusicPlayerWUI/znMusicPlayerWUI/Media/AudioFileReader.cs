@@ -85,14 +85,15 @@ namespace znMusicPlayerWUI.Media
                         addr = "-1";
                     }
                     FileAddr = addr;
-                    System.Diagnostics.Debug.WriteLine(addr);
                     switch (addr)
                     {
                         case "10276":
                             readerStream = new NAudio.Flac.FlacReader(fileName);
+                            System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Flac 解码器");
                             break;
                         case "7368":
                             readerStream = new Mp3FileReader(fileName);
+                            System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 MP3 解码器");
                             break;
                         case "8273":
                             readerStream = new WaveFileReader(fileName);
@@ -100,15 +101,18 @@ namespace znMusicPlayerWUI.Media
                             {
                                 readerStream = WaveFormatConversionStream.CreatePcmStream(readerStream);
                                 readerStream = new BlockAlignReductionStream(readerStream);
+                                System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Wave 解码器");
                             }
                             break;
                         case "7079":
                             readerStream = new AiffFileReader(fileName);
+                            System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Aiff 解码器");
                             break;
                         default:
                             if (File.Exists(fileName))
                             {
                                 readerStream = new MediaFoundationReader(fileName);
+                                System.Diagnostics.Debug.WriteLine($"AudioFileReader: 正在使用 Microsoft MediaFoundationReader 解码器，文件标识符为：{addr}");
                             }
                             break;
                     }
