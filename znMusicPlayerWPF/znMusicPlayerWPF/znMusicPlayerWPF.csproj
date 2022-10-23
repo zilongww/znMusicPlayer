@@ -635,9 +635,6 @@
     <PackageReference Include="ModernWpfUI">
       <Version>[0.9.6]</Version>
     </PackageReference>
-    <PackageReference Include="MonoGame.Framework.Portable">
-      <Version>3.7.1.189</Version>
-    </PackageReference>
     <PackageReference Include="NAudio">
       <Version>2.0.1</Version>
     </PackageReference>

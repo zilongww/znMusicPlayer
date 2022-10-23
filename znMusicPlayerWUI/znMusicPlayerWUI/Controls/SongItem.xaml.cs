@@ -20,6 +20,7 @@ namespace znMusicPlayerWUI.Controls
     {
         private bool _ShowImage = true;
 
+        public bool CanClickPlay { get; set; } = true;
         public MusicData MusicData { get; set; }
         public MusicListData MusicListData { get; set; }
         public bool ShowImage
@@ -226,7 +227,8 @@ namespace znMusicPlayerWUI.Controls
         {
             if (e.PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Mouse)
             {
-                Play_Click(null, null);
+                if (CanClickPlay)
+                    Play_Click(null, null);
             }
         }
 
@@ -235,7 +237,8 @@ namespace znMusicPlayerWUI.Controls
         {
             if (e.PointerDeviceType != Microsoft.UI.Input.PointerDeviceType.Mouse)
             {
-                Play_Click(null, null);
+                if (CanClickPlay)
+                    Play_Click(null, null);
             }
         }
 

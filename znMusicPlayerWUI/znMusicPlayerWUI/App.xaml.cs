@@ -28,6 +28,7 @@ using System.Drawing;
 using Microsoft.UI.Xaml.Markup;
 using System.Threading.Tasks;
 using znMusicPlayerWUI.Background;
+using static znMusicPlayerWUI.DataEditor.DataFolderBase;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -116,33 +117,34 @@ namespace znMusicPlayerWUI
 
         public static void LoadSettings()
         {
-            var b = DataFolderBase.JSettingData;
+            var b = JSettingData;
 
-            var bdata = ((string)b[DataFolderBase.SettingParams.EqualizerCustomData.ToString()]).Split(',');
+            var bdata = ((string)b[SettingParams.EqualizerCustomData.ToString()]).Split(',');
             for (int i = 0; i < 10; i++)
             {
                 AudioEqualizerBands.CustomBands[i][2] = float.Parse(bdata[i]);
             }
 
-            audioPlayer.Volume = (float)b[DataFolderBase.SettingParams.Volume.ToString()];
-            audioPlayer.EqEnabled = (bool)b[DataFolderBase.SettingParams.EqualizerEnable.ToString()];
-            audioPlayer.EqualizerBand = AudioEqualizerBands.GetBandFromString((string)b[DataFolderBase.SettingParams.EqualizerString.ToString()]);
-            audioPlayer.WasapiOnly = (bool)b[DataFolderBase.SettingParams.WasapiOnly.ToString()];
-            audioPlayer.Latency = (int)b[DataFolderBase.SettingParams.AudioLatency.ToString()];
-            MainWindow.SMusicPage.ShowLrcPage = (bool)b[DataFolderBase.SettingParams.MusicPageShowLyricPage.ToString()];
-            metingServices.NeteaseCookie = (string)b[DataFolderBase.SettingParams.NeteaseMusicCookie.ToString()];
+            audioPlayer.Volume = (float)b[SettingParams.Volume.ToString()];
+            audioPlayer.EqEnabled = (bool)b[SettingParams.EqualizerEnable.ToString()];
+            audioPlayer.EqualizerBand = AudioEqualizerBands.GetBandFromString((string)b[SettingParams.EqualizerString.ToString()]);
+            audioPlayer.WasapiOnly = (bool)b[SettingParams.WasapiOnly.ToString()];
+            audioPlayer.Latency = (int)b[SettingParams.AudioLatency.ToString()];
+            MainWindow.SMusicPage.ShowLrcPage = (bool)b[SettingParams.MusicPageShowLyricPage.ToString()];
+            //metingServices.NeteaseCookie = (string)b[SettingParams.NeteaseMusicCookie.ToString()];
+            metingServices.NeteaseCookie = (string)SettingDefault[SettingParams.NeteaseMusicCookie.ToString()];
             metingServices.InitMeting();
         }
 
         public static void SaveSettings()
         {
-            var a = DataFolderBase.JSettingData;
-            a[DataFolderBase.SettingParams.Volume.ToString()] = audioPlayer.Volume == 0 ? MainWindow.NoVolumeValue : audioPlayer.Volume;
-            a[DataFolderBase.SettingParams.EqualizerEnable.ToString()] = audioPlayer.EqEnabled;
-            a[DataFolderBase.SettingParams.EqualizerString.ToString()] = AudioEqualizerBands.GetNameFromBands(audioPlayer.EqualizerBand);
-            a[DataFolderBase.SettingParams.WasapiOnly.ToString()] = audioPlayer.WasapiOnly;
-            a[DataFolderBase.SettingParams.AudioLatency.ToString()] = audioPlayer.Latency;
-            a[DataFolderBase.SettingParams.MusicPageShowLyricPage.ToString()] = MainWindow.SMusicPage.ShowLrcPage;
+            var a = JSettingData;
+            a[SettingParams.Volume.ToString()] = audioPlayer.Volume == 0 ? MainWindow.NoVolumeValue : audioPlayer.Volume;
+            a[SettingParams.EqualizerEnable.ToString()] = audioPlayer.EqEnabled;
+            a[SettingParams.EqualizerString.ToString()] = AudioEqualizerBands.GetNameFromBands(audioPlayer.EqualizerBand);
+            a[SettingParams.WasapiOnly.ToString()] = audioPlayer.WasapiOnly;
+            a[SettingParams.AudioLatency.ToString()] = audioPlayer.Latency;
+            a[SettingParams.MusicPageShowLyricPage.ToString()] = MainWindow.SMusicPage.ShowLrcPage;
 
             List<float> c = new();
             foreach (var d in AudioEqualizerBands.CustomBands)
@@ -150,8 +152,8 @@ namespace znMusicPlayerWUI
                 c.Add(d[2]);
             }
             string b = string.Join(",", c.ToArray());
-            a[DataFolderBase.SettingParams.EqualizerCustomData.ToString()] = b;
-            DataFolderBase.JSettingData = a;
+            a[SettingParams.EqualizerCustomData.ToString()] = b;
+            JSettingData = a;
         }
 
         private Window m_window;

@@ -293,7 +293,11 @@ namespace Meting4Net.Core
                 if (payload != null)
                 {
                     postDataStr = payload;
-                    responseData = HttpAide.HttpPost(url: url, postDataStr: postDataStr, responseHeadersSb: responseHeadersSb, headers: headers.ToArray(), proxy: this.Proxy != null ? this.Proxy.Proxy : null);
+                    try
+                    {
+                        responseData = HttpAide.HttpPost(url: url, postDataStr: postDataStr, responseHeadersSb: responseHeadersSb, headers: headers.ToArray(), proxy: this.Proxy != null ? this.Proxy.Proxy : null);
+                    }
+                    catch { }
                 }
                 else
                 {

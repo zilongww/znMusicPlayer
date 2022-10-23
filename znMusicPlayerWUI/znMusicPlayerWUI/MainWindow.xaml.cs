@@ -48,6 +48,8 @@ namespace znMusicPlayerWUI
         public static Grid SPlayingListBaseGrid;
         public static Frame SMusicPageBaseFrame;
         public static Frame SPlayContent;
+        public static TeachingTip teachingTipVolume;
+        public static TeachingTip teachingTipPlayingList;
         static ContentDialog AsyncDialog = null;
 
         public MainWindow()
@@ -64,6 +66,8 @@ namespace znMusicPlayerWUI
             SPlayingListBaseGrid = PlayingListBaseGrid;
             SPlayingListBaseView = PlayingListBaseView;
             SMusicPageBaseFrame = MusicPageBaseFrame;
+            teachingTipPlayingList = PlayingListBasePopup;
+            teachingTipVolume = VolumeBasePopup;
             SPlayContent = PlayContent;
             AsyncDialog = new ContentDialog() { XamlRoot = SContent.XamlRoot, CloseButtonCommand = null };
             equalizerPage = new Pages.DialogPages.EqualizerPage();
@@ -78,7 +82,7 @@ namespace znMusicPlayerWUI
             //RequestedTheme = App.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : ElementTheme.Light;
             m_wsdqHelper = new WindowsSystemDispatcherQueueHelper();
             m_wsdqHelper.EnsureWindowsSystemDispatcherQueueController();
-            SetBackdrop(BackdropType.Mica);
+            SetBackdrop(BackdropType.DesktopAcrylic);
             SetDragRegionForCustomTitleBar(App.AppWindowLocal);
 
             NavView.SelectedItem = NavView.MenuItems[1];
@@ -97,8 +101,6 @@ namespace znMusicPlayerWUI
             App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
 
             // 第一次点击不会响应动画。。。
-            OpenOrClosePlayingList();
-            OpenOrCloseVolume();
             App.LoadSettings();
         }
 
@@ -252,6 +254,11 @@ namespace znMusicPlayerWUI
         static bool isDeleteImage = true;
         private static void PlayingList_NowPlayingImageLoading(ImageSource imageSource)
         {
+            if (SPlayContent.Content.GetType() != typeof(Imagezn))
+            {
+                SPlayContent.Content = new Imagezn();
+            }
+            /*
             if (!CodeHelper.IsIconic(App.AppWindowLocalHandle) && !InOpenMusicPage)
             {
                 var image1 = SPlayContent.Content as Imagezn;
@@ -262,7 +269,7 @@ namespace znMusicPlayerWUI
                 SPlayContent.Content = null;
                 isDeleteImage = true;
             }
-            else isDeleteImage = false;
+            else isDeleteImage = false;*/
         }
 
         public static void PlayingList_NowPlayingImageLoaded(ImageSource imageSource)
@@ -271,9 +278,10 @@ namespace znMusicPlayerWUI
             {
                 if (imageSource != (SPlayContent.Content as Imagezn)?.Source)
                 {
-                    if (!isDeleteImage) PlayingList_NowPlayingImageLoading(null);
-                    var image = new Imagezn() { Source = imageSource, Opacity = 1, ShowMenuBehavior = Imagezn.ShowMenuBehaviors.PointEnter };
-                    SPlayContent.Content = image;
+                    (SPlayContent.Content as Imagezn).Source = imageSource;
+                    //if (!isDeleteImage) PlayingList_NowPlayingImageLoading(null);
+                    //var image = new Imagezn() { Source = imageSource, Opacity = 1, ShowMenuBehavior = Imagezn.ShowMenuBehaviors.PointEnter };
+                    //SPlayContent.Content = image;
                     /*AnimateHelper.AnimateScalar(
                         image, 1f, 1,
                         0.2f, 1f, 0.22f, 1f,
@@ -448,6 +456,18 @@ namespace znMusicPlayerWUI
                 }
 
                 m_acrylicController = new DesktopAcrylicController();
+                if (RequestedTheme == ElementTheme.Dark)
+                {
+                    m_acrylicController.LuminosityOpacity = 1f;
+                    m_acrylicController.TintOpacity = 0.5f;
+                    m_acrylicController.TintColor = Color.FromArgb(255, 32, 32, 32);
+                }
+                else
+                {
+                    m_acrylicController.LuminosityOpacity = 1f;
+                    m_acrylicController.TintOpacity = 0.5f;
+                    m_acrylicController.TintColor = Color.FromArgb(255, 245, 245, 245);
+                }
 
                 m_acrylicController.AddSystemBackdropTarget(SWindow.As<ICompositionSupportsSystemBackdrop>());
                 m_acrylicController.SetSystemBackdropConfiguration(m_configurationSource);
@@ -461,10 +481,6 @@ namespace znMusicPlayerWUI
         #region Window Events
         private void WindowGridBase_Loaded(object sender, RoutedEventArgs e)
         {
-            // 设置header为顶层
-            var headerPresenter = (UIElement)VisualTreeHelper.GetParent((UIElement)PlayingListBaseView.Header);
-            var headerContainer = (UIElement)VisualTreeHelper.GetParent(headerPresenter);
-            Canvas.SetZIndex(headerContainer, 1);
             PlayingListBaseView.ItemsSource = App.playingList.NowPlayingList;
         }
 
@@ -524,28 +540,15 @@ namespace znMusicPlayerWUI
 
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (isShowVolume)
-            {
-                VolumeBaseGrid.Margin = new Thickness(VolumeBaseGrid.Margin.Left, VolumeBaseGrid.Margin.Top,
-                    10, 4);
-            }
-            else
-            {
-                VolumeBaseGrid.Margin = new Thickness(VolumeBaseGrid.Margin.Left, VolumeBaseGrid.Margin.Top,
-                    -VolumeBaseGrid.ActualWidth, 4);
-            }
-
-            if (isShowPlayingList)
-            {
-                PlayingListBaseGrid.Margin = new Thickness(0, 50, 10, 4);
-            }
-            else
-            {
-                PlayingListBaseGrid.Margin = new Thickness(0, 50, -PlayingListBaseGrid.ActualWidth, 4);
-            }
-
             SetDragRegionForCustomTitleBar(App.AppWindowLocal);
-            UpdataPlayingListShyHeader();
+
+            try
+            {
+                PlayingListBaseGrid.Height = TopControlsBaseGrid.ActualHeight - 172;
+                PlayingListBaseGrid.Width = 400;
+                PlayingListBaseGrid.MaxHeight = 800;
+            }
+            catch { }
         }
 
         private void ContentFrame_Loaded(object sender, RoutedEventArgs e)
@@ -648,7 +651,7 @@ namespace znMusicPlayerWUI
 
                 RectInt32 dragRectR;
                 // TOWAIT: when microsoft fix this winui3 bug
-                dragRectR.X = (int)((lpc + 2 + (NavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 42 * 2 : 42)) * scaleAdjustment);
+                dragRectR.X = (int)((lpc + 2 + (NavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 42 * 2 * scaleAdjustment : 42 * scaleAdjustment)));
                 dragRectR.Y = 0;
                 dragRectR.Height = (int)(AppTitleBar.ActualHeight * scaleAdjustment);
                 dragRectR.Width = (int)(rpc * scaleAdjustment * App.AppWindowLocal.Size.Width);
@@ -852,7 +855,6 @@ namespace znMusicPlayerWUI
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
             OpenOrClosePlayingList();
-            UpdataPlayingListShyHeader();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -860,65 +862,16 @@ namespace znMusicPlayerWUI
             OpenOrCloseMusicPage();
         }
 
-        static bool isShowVolume = true;
         public static void OpenOrCloseVolume()
         {
-            if (!isShowVolume)
-            {
-                if (isShowPlayingList) OpenOrClosePlayingList();
-                isShowVolume = true;
-
-                AnimateHelper.AnimateOffset(
-                    SVolumeBaseGrid,
-                    (float)(STopControlsBaseGrid.ActualWidth - SVolumeBaseGrid.ActualWidth - 10),
-                    (float)(STopControlsBaseGrid.ActualHeight - SVolumeBaseGrid.ActualHeight - 4), 0, 0.5,
-                    0.2f, 1f, 0.22f, 1f,
-                    out Visual contentGridVisual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
-                contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
-            }
-            else
-            {
-                isShowVolume = false;
-
-                AnimateHelper.AnimateOffset(
-                    SVolumeBaseGrid,
-                    (float)(STopControlsBaseGrid.ActualWidth + SVolumeBaseGrid.ActualWidth),
-                    (float)(STopControlsBaseGrid.ActualHeight - SVolumeBaseGrid.ActualHeight - 4), 0, 0.45,
-                    1f, 0f, 1f, 1f,
-                    out Visual contentGridVisual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
-                contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
-            }
+            teachingTipVolume.IsOpen = !teachingTipVolume.IsOpen;
+            teachingTipVolume.IsLightDismissEnabled = true;
         }
 
-        static bool isShowPlayingList = true;
         public static void OpenOrClosePlayingList()
         {
-            if (!isShowPlayingList)
-            {
-                if (isShowVolume) OpenOrCloseVolume();
-                isShowPlayingList = true;
-                SPlayingListBaseView.ScrollIntoView(SPlayingListBaseView.SelectedItem);
-
-                AnimateHelper.AnimateOffset(
-                    SPlayingListBaseGrid,
-                    (float)(STopControlsBaseGrid.ActualWidth - SPlayingListBaseGrid.ActualWidth - 10),
-                    (float)(STopControlsBaseGrid.ActualHeight - SPlayingListBaseGrid.ActualHeight - 4), 0, 0.6,
-                    0.2f, 1f, 0.22f, 1f,
-                    out Visual contentGridVisual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
-                contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
-            }
-            else
-            {
-                isShowPlayingList = false;
-
-                AnimateHelper.AnimateOffset(
-                    SPlayingListBaseGrid,
-                    (float)(STopControlsBaseGrid.ActualWidth + SPlayingListBaseGrid.ActualWidth),
-                    (float)(STopControlsBaseGrid.ActualHeight - SPlayingListBaseGrid.ActualHeight - 4), 0, 0.6,
-                    1f, 0f, 1f, 1f,
-                    out Visual contentGridVisual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
-                contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
-            }
+            teachingTipPlayingList.IsOpen = !teachingTipPlayingList.IsOpen;
+            teachingTipPlayingList.IsLightDismissEnabled = true;
         }
 
         public static bool InOpenMusicPage { get; set; } = false;
@@ -1079,6 +1032,12 @@ namespace znMusicPlayerWUI
 
         public void UpdataPlayingListShyHeader()
         {
+            /*
+            // 设置header为顶层
+            var headerPresenter = (UIElement)VisualTreeHelper.GetParent((UIElement)PlayingListBaseView.Header);
+            var headerContainer = (UIElement)VisualTreeHelper.GetParent(headerPresenter);
+            Canvas.SetZIndex(headerContainer, 1);
+
             var scrollViewer = (VisualTreeHelper.GetChild(PlayingListBaseView, 0) as Border).Child as ScrollViewer;
 
             CompositionPropertySet scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(scrollViewer);
@@ -1095,14 +1054,14 @@ namespace znMusicPlayerWUI
             offsetExpression.SetReferenceParameter("scroller", scrollerPropertySet);
             headerVisual.StartAnimation("Offset.Y", offsetExpression);
 
-            /*
+            
             Visual textVisual = ElementCompositionPreview.GetElementVisual(HeaderBaseTextBlock);
             Vector3 finalOffset = new Vector3(0, 10, 0);
             var headerOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(0,0,0), finalOffset, {progress})");
             headerOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             headerOffsetAnimation.SetVector3Parameter("finalOffset", finalOffset);
             textVisual.StartAnimation(nameof(Visual.Offset), headerOffsetAnimation);
-            */
+            
 
             // Logo scale and transform                                          from               to
             var logoHeaderScaleAnimation = compositor.CreateExpressionAnimation("Lerp(Vector2(1,1), Vector2(0.7, 0.7), " + progress + ")");
@@ -1132,6 +1091,7 @@ namespace znMusicPlayerWUI
             var backgroundVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 1, {progress})");
             backgroundVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             backgroundVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
+            */
         }
         #endregion
 

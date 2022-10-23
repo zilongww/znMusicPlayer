@@ -80,6 +80,8 @@ namespace znMusicPlayerWUI.Background
                     catch (Exception err)
                     {
                         System.Diagnostics.Debug.WriteLine(err.Message);
+                        DownloadingData.Remove(m);
+                        OnDownloadError?.Invoke(m);
                     }
                 }
                 else break;
@@ -98,11 +100,13 @@ namespace znMusicPlayerWUI.Background
             }
             catch
             {
+                DownloadingData.Remove(dm);
                 OnDownloadError?.Invoke(dm);
                 return;
             }
             if (string.IsNullOrEmpty(addressPath))
             {
+                DownloadingData.Remove(dm);
                 OnDownloadError?.Invoke(dm);
                 return;
             }

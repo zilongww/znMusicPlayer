@@ -278,6 +278,11 @@ namespace znMusicPlayerWUI.Controls
 
                 Children.AllowDrop = true;
                 Children.CanReorderItems = true;
+
+                foreach (SongItem songItem in Children.Items)
+                {
+                    songItem.CanClickPlay = false;
+                }
             }
             else
             {
@@ -293,6 +298,11 @@ namespace znMusicPlayerWUI.Controls
 
                 Children.AllowDrop = false;
                 Children.CanReorderItems = false;
+
+                foreach (SongItem songItem in Children.Items)
+                {
+                    songItem.CanClickPlay = true;
+                }
             }
 
             ToolsCommandBar.Width = 0;
@@ -372,18 +382,25 @@ namespace znMusicPlayerWUI.Controls
 
         private void SelectAllButton_Click(object sender, RoutedEventArgs e)
         {
+            /*
             foreach (SongItem item in Children.Items)
             {
                 (Children.ContainerFromIndex(Children.Items.IndexOf(item)) as ListViewItem).IsSelected = true;
-            }
+            }*/
+            Children.SelectAll();
         }
 
         private void SelectReverseButton_Click(object sender, RoutedEventArgs e)
         {
             foreach (SongItem item in Children.Items)
             {
-                var a = Children.ContainerFromIndex(Children.Items.IndexOf(item)) as ListViewItem;
-                a.IsSelected = !a.IsSelected;
+                try
+                {
+                    var a = Children.ContainerFromIndex(Children.Items.IndexOf(item)) as ListViewItem;
+                    if (a!=null)
+                        a.IsSelected = !a.IsSelected;
+                }
+                catch { }
             }
         }
 

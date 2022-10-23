@@ -39,7 +39,8 @@ namespace znMusicPlayerWUI.Pages
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             //System.Diagnostics.Debug.WriteLine(a[0].ListName);
-            GC.Collect();
+            //GC.Collect();
+            MainWindow.SetBackdrop(MainWindow.BackdropType.DesktopAcrylic);
             //await App.audioPlayer.Reload();
             /*
             if (a == 0)

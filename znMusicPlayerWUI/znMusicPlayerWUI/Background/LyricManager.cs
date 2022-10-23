@@ -29,7 +29,6 @@ namespace znMusicPlayerWUI.Background
                 if (_nowLyricsData.MD5 != value.MD5)
                 {
                     _nowLyricsData = value;
-                    System.Diagnostics.Debug.WriteLine($"LyricManager: 当前歌词已被更改为: {lastLyricData.Lyric}.");
                     PlayingLyricSelectedChange?.Invoke(value);
                 }
             }

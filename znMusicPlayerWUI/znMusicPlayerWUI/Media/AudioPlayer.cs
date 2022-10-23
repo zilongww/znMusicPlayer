@@ -267,7 +267,7 @@ namespace znMusicPlayerWUI.Media
             timer.Tick += (_, __) => ReCallTiming();
         }
 
-        public async Task<bool> SetSource(DataEditor.MusicData musicData)
+        public async Task SetSource(DataEditor.MusicData musicData)
         {
             if (musicData == MusicData)
             {
@@ -275,7 +275,7 @@ namespace znMusicPlayerWUI.Media
                 {
                     FileReader.CurrentTime = TimeSpan.Zero;
                 }
-                return true;
+                return;
             }
 
             CacheLoadingChanged?.Invoke(this, 0);
@@ -295,9 +295,8 @@ namespace znMusicPlayerWUI.Media
                 {
                     if (!WebHelper.IsNetworkConnected)
                     {
-                        await MainWindow.ShowDialog("网络未连接", "请连接网络后再试。");
                         CacheLoadedChanged?.Invoke(this);
-                        return false;
+                        throw new WebException("网络未连接，请连接网络后重试。");
                     }
 
                     string a = await WebHelper.GetAudioAddressAsync(musicData);
@@ -314,15 +313,9 @@ namespace znMusicPlayerWUI.Media
                         }
                         catch (Exception err)
                         {
-                            try
-                            {
-                                await Task.Run(() => File.Delete(b));
-                                await MainWindow.ShowDialog("加载缓存文件失败", err.Message);
-
-                                CacheLoadedChanged?.Invoke(this);
-                                return false;
-                            }
-                            catch { }
+                            await Task.Run(() => File.Delete(b));
+                            CacheLoadedChanged?.Invoke(this);
+                            throw new FileLoadException($"加载缓存文件失败：{err.Message}");
                         }
 
                         resultPath = b;
@@ -341,17 +334,8 @@ namespace znMusicPlayerWUI.Media
                 // 检查文件是否没有下载完成
                 bool downloaded = await Task.Run(() =>
                 {
-                    try
+                    if (File.ReadAllBytes(resultPath).Length <= 10)
                     {
-                        if (File.ReadAllBytes(resultPath).Length <= 10)
-                        {
-                            return true;
-                        }
-                    }
-                    catch (Exception err)
-                    {
-                        Debug.WriteLine(err.ToString());
-                        errMessage = err.Message;
                         return true;
                     }
                     return false;
@@ -360,82 +344,73 @@ namespace znMusicPlayerWUI.Media
                 // 当文件没有下载完成
                 if (downloaded)
                 {
-                    if (errMessage == null)
-                        await MainWindow.ShowDialog("播放缓存失败", "此缓存文件无法播放");
-                    else
-                        await MainWindow.ShowDialog("播放缓存失败", $"此缓存文件无法播放：\n\n{errMessage}");
                     CacheLoadedChanged?.Invoke(this);
                     await Task.Run(() =>
                     {
                         if (File.Exists(resultPath))
                             File.Delete(resultPath);
                     });
-                    return false;
+                    throw new FileLoadException("缓存文件不完整，请重新加载。");
                 }
             
                 var m = MusicData;
                 MusicData = musicData;
-                var loaded = await SetSource(resultPath);
-                if (!loaded)
+                try
+                {
+                    await SetSource(resultPath);
+                }
+                catch (Exception err)
                 {
                     MusicData = m;
                 }
-                CacheLoadedChanged?.Invoke(this);
-                return loaded;
+                finally
+                {
+                    CacheLoadedChanged?.Invoke(this);
+                }
             }
             else
             {
-                await MainWindow.ShowDialog("播放缓存失败", "播放缓存文件时出现未知错误。");
                 CacheLoadedChanged?.Invoke(this);
-                return false;
+                throw new Exception("播放缓存文件时出现未知错误。");
             }
         }
 
-        public async Task<bool> SetSource(string filePath)
+        public async Task SetSource(string filePath)
         {
-            if (IsInReading) return false;
+            if (IsInReading) return;
 
             IsInReading = true;
             AudioFileReader fileReader = null;
             AudioEffects.SoundTouchWaveProvider fileProvider = null;
-            try
-            {
-                await Task.Run(() =>
-                {
-                    fileReader = new AudioFileReader(filePath);
-                    fileProvider = new AudioEffects.SoundTouchWaveProvider(fileReader);
-                    fileReader.EqEnabled = EqEnabled;
-                    fileReader.Volume = Volume;
-                    fileProvider.Pitch = Pitch;
-                    fileProvider.Tempo = Tempo;
-                    fileProvider.Rate = Rate;
 
-                    try
-                    {
-                        var tagfile = TagLib.File.Create(filePath);
-                        if (!tagfile.Tag.IsEmpty)
-                        {
-                            WaveInfo = $"{tagfile.Properties.Codecs.First().Description} - {fileReader.WaveFormat.SampleRate / (decimal)1000}kHz-{tagfile.Properties.AudioBitrate}kbps";
-                        }
-                    }
-                    catch
-                    {
-                        WaveInfo = $"{fileReader.WaveFormat.AsStandardWaveFormat().Encoding} - {fileReader.WaveFormat.SampleRate / (decimal)1000}kHz-{(int)(File.ReadAllBytes(filePath).Length * 8 / fileReader.TotalTime.TotalSeconds / 1000)}kbps";
-                    }
-                });
-                if (EqEnabled)
-                {
-                    EqualizerBand = EqualizerBand;
-                }
-            }
-            catch (Exception err)
+            await Task.Run(() =>
             {
-                Debug.WriteLine(err.ToString());
-                await MainWindow.ShowDialog("播放错误", $"播放文件时出现错误：\n\r{err.Message}");
-                IsInReading = false;
-                CacheLoadedChanged?.Invoke(this);
-                return false;
+                fileReader = new AudioFileReader(filePath);
+                fileProvider = new AudioEffects.SoundTouchWaveProvider(fileReader);
+                fileReader.EqEnabled = EqEnabled;
+                fileReader.Volume = Volume;
+                fileProvider.Pitch = Pitch;
+                fileProvider.Tempo = Tempo;
+                fileProvider.Rate = Rate;
+
+                try
+                {
+                    var tagfile = TagLib.File.Create(filePath);
+                    if (!tagfile.Tag.IsEmpty)
+                    {
+                        WaveInfo = $"{tagfile.Properties.Codecs.First().Description} - {fileReader.WaveFormat.SampleRate / (decimal)1000}kHz-{tagfile.Properties.AudioBitrate}kbps";
+                    }
+                }
+                catch
+                {
+                    WaveInfo = $"{fileReader.WaveFormat.AsStandardWaveFormat().Encoding} - {fileReader.WaveFormat.SampleRate / (decimal)1000}kHz-{(int)(File.ReadAllBytes(filePath).Length * 8 / fileReader.TotalTime.TotalSeconds / 1000)}kbps";
+                }
+            });
+            if (EqEnabled)
+            {
+                EqualizerBand = EqualizerBand;
             }
+
             IsInReading = false;
 
             PreviewSourceChanged?.Invoke(this);
@@ -480,29 +455,23 @@ namespace znMusicPlayerWUI.Media
                     NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
                     break;
             }
-
-            return true;
         }
 
-        public async Task<bool> Reload()
+        public async Task Reload()
         {
-            bool result = false;
             if (FileReader != null)
             {
                 TimeSpan nowPosition = FileReader.CurrentTime;
                 var nowPlayState = NowOutObj.PlaybackState;
                 string filePath = FileReader.FileName;
-                nowPosition = FileReader.CurrentTime;
 
                 DisposeAll();
-                result = await SetSource(filePath);
+                await SetSource(filePath);
 
                 FileReader.CurrentTime = nowPosition;
                 if (nowPlayState == PlaybackState.Playing) SetPlay();
                 else SetPause();
             }
-
-            return result;
         }
 
         public async void SetReloadAsync()

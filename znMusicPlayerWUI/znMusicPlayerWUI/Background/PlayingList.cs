@@ -85,8 +85,17 @@ namespace znMusicPlayerWUI.Background
         public async Task<bool> Play(MusicData musicData)
         {
             Add(musicData);
-            var a = await App.audioPlayer.SetSource(musicData);
-            App.audioPlayer.SetPlay();
+            bool a = true;
+            try
+            {
+                await App.audioPlayer.SetSource(musicData);
+                App.audioPlayer.SetPlay();
+            }
+            catch (Exception e)
+            {
+                a = false;
+                await MainWindow.ShowDialog("播放音频时出现错误", e.Message);
+            }
             return a;
         }
 
