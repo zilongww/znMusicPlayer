@@ -330,8 +330,10 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 {
                     PlaySlider.Minimum = 0;
                     PlaySlider.Maximum = audioPlayer.FileReader.TotalTime.Ticks;
+                    isCodeChangedSliderValue = true;
                     PlaySlider.Value = audioPlayer.CurrentTime.Ticks;
-                    NowPlayTimeTb.Text = 
+                    isCodeChangedSliderValue = false;
+                    NowPlayTimeTb.Text =
                         $"{audioPlayer.CurrentTime.ToString(@"mm\:ss")}/{audioPlayer.FileReader.TotalTime.ToString(@"mm\:ss")}";
                     NowAtherTimeTb.Text =
                         (audioPlayer.FileReader.TotalTime - audioPlayer.CurrentTime).ToString(@"mm\:ss");
@@ -435,14 +437,13 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             ShowLrcPage = false;
         }
 
-        private void PlaySlider_Holding(object sender, Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs e)
+        bool isCodeChangedSliderValue = false;
+        private void PlaySlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
-
-        }
-
-        private void PlaySlider_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
-        {
-
+            if (!isCodeChangedSliderValue)
+            {
+                App.audioPlayer.CurrentTime = TimeSpan.FromTicks((long)PlaySlider.Value);
+            }
         }
     }
 }

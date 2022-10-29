@@ -27,6 +27,7 @@ using NAudio.Wave;
 using Microsoft.UI.Xaml.Hosting;
 using System.Collections.ObjectModel;
 using znMusicPlayerWUI.Controls;
+using NAudio.Gui;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -1110,6 +1111,57 @@ namespace znMusicPlayerWUI
             //meting.Cookie("_ntes_nnid=e0720c34928112f57e4337b387e75a50,1654241864468; _ntes_nuid=e0720c34928112f57e4337b387e75a50; NMTID=00O84chCJ4UB0byzElkifyX9WkE3ZcAAAGBKH-xBw; WEVNSM=1.0.0; WNMCID=ujjiij.1654241864835.01.0; WM_TID=SWn5%2BrsBpSdEQBQERBeFA13BO%2BveMgTU; ntes_kaola_ad=1; _iuqxldmzr_=32; WM_NI=XQozOcYzcaCpDN93g4Dj0bPG2wp69WO6yTvymRLrerar51JwsGXjp3%2BTLqVGJk1UAav7LRkHXpt%2B2c4Cm2qxWgL1BX4I54KHEMgdDaPP9Qj%2Bh%2FkxAPZkpby32jBX5JoidnY%3D; WM_NIKE=9ca17ae2e6ffcda170e2e6eed9cc3b91b79f82cb80b2928aa6d85f839f8ab1d149919fa1b5c17b90a800a8db2af0fea7c3b92a9c8fa19bce699ba6ad82c27c8892f7d4e64088b60083d34df2a9c0d7bc5d8deab7b5f573af8e8493e87aa3aefbd2c97db199988bf339e98c8492d54d8ab5ffb6c46bb6e984b3ea449cb0bcccb169f89da3d3f47495b984d2c154f897fbd5ca448793a985c76b9490f7b2e921acf1a599c45c9ab5c083fc39f2b68eb9b842adb7ac8fdc37e2a3; JSESSIONID-WYYY=nbnnzUzR1Ap%2FRJpYqrIns7reQEmyC%2Bpu%2Bg9mQ8nDHajNFTsJkwrGyG5wXKQ1Xy4mkruApNERuC0V3vHukX%5Cmwx%5CEZ8%2FDvH2OjVwCGF1NP7acYy%5C5p%2F4%5CfRksIrli38UzUIsYGvMKeYc5PwmD3ZuqPqZMRw4EOUPX%2BRhd%5CHvhupvEAZrx%3A1659080893357");
             //string jstr = meting.FormatMethod().Lyric("1441758494");
             //System.Diagnostics.Debug.WriteLine(jstr);
+        }
+
+        private void PlayButton_Holding(object sender, HoldingRoutedEventArgs e)
+        {
+            InitPlayTimePopup();
+        }
+
+        private void PlayButton_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            InitPlayTimePopup();
+        }
+
+        private void InitPlayTimePopup()
+        {
+            PlayTimeSliderBasePopup.IsOpen = true;
+            PlayTimeSliderBasePopup.IsLightDismissEnabled = true;
+            PlayTimeSliderBasePopup.Closed += PlayTimeSliderBasePopup_Closed;
+            App.audioPlayer.TimingChanged += AudioPlayer_TimingChanged1;
+            PlayTimeSlider.ValueChanged += PlayTimeSlider_ValueChanged;
+        }
+
+        private void PlayTimeSliderBasePopup_Closed(TeachingTip sender, TeachingTipClosedEventArgs args)
+        {
+            PlayTimeSliderBasePopup.Closed -= PlayTimeSliderBasePopup_Closed;
+            App.audioPlayer.TimingChanged -= AudioPlayer_TimingChanged1;
+            PlayTimeSlider.ValueChanged -= PlayTimeSlider_ValueChanged;
+        }
+
+        private void AudioPlayer_TimingChanged1(Media.AudioPlayer audioPlayer)
+        {
+            if (audioPlayer.FileReader != null)
+            {
+                PlayTimeSlider.Minimum = 0;
+                PlayTimeSlider.Maximum = audioPlayer.FileReader.TotalTime.Ticks;
+
+                isCodeChangedSilderValue = true;
+                PlayTimeSlider.Value = audioPlayer.CurrentTime.Ticks;
+                isCodeChangedSilderValue = false;
+
+                PlayTimeTextBlock.Text =
+                        $"{audioPlayer.CurrentTime:mm\\:ss}/{audioPlayer.FileReader.TotalTime:mm\\:ss}";
+            }
+        }
+
+        bool isCodeChangedSilderValue = false;
+        private void PlayTimeSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            if (!isCodeChangedSilderValue)
+            {
+                App.audioPlayer.CurrentTime = TimeSpan.FromTicks((long)PlayTimeSlider.Value);
+            }
         }
     }
 }
