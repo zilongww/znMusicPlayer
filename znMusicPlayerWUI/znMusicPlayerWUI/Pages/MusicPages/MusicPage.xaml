@@ -202,5 +202,16 @@
                 </ListView>
             </Grid>
         </Grid>
+        <Button x:Name="CloseMusicPageButton" Click="Button_Click"
+                Background="Transparent" BorderBrush="Transparent"
+                VerticalAlignment="Top" HorizontalAlignment="Left"
+                HorizontalContentAlignment="Left" CornerRadius="0,0,4,0"
+                Width="84" Height="48" Padding="12">
+            <AnimatedIcon>
+                <AnimatedIcon.Source>
+                    <m:AnimatedChevronDownSmallVisualSource/>
+                </AnimatedIcon.Source>
+            </AnimatedIcon>
+        </Button>
     </Grid>
 </Page>

@@ -301,6 +301,8 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private void MusicPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdataInterfaceDesign();
+
+            CloseMusicPageButton.Width = MainWindow.SNavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 86 : 44;
         }
 
         DataEditor.MusicData MusicData;
@@ -444,6 +446,11 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             {
                 App.audioPlayer.CurrentTime = TimeSpan.FromTicks((long)PlaySlider.Value);
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.OpenOrCloseMusicPage();
         }
     }
 }

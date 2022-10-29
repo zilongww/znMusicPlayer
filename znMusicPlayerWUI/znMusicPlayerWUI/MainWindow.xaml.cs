@@ -83,7 +83,7 @@ namespace znMusicPlayerWUI
             //RequestedTheme = App.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : ElementTheme.Light;
             m_wsdqHelper = new WindowsSystemDispatcherQueueHelper();
             m_wsdqHelper.EnsureWindowsSystemDispatcherQueueController();
-            SetBackdrop(BackdropType.Mica);
+            SetBackdrop(BackdropType.DesktopAcrylic);
             SetDragRegionForCustomTitleBar(App.AppWindowLocal);
 
             NavView.SelectedItem = NavView.MenuItems[1];
@@ -661,7 +661,7 @@ namespace znMusicPlayerWUI
 
                 RectInt32 dragRectR;
                 // TOWAIT: when microsoft fix this winui3 bug
-                dragRectR.X = (int)((lpc + 2 + (NavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 42 * 2 * scaleAdjustment : 42 * scaleAdjustment)));
+                dragRectR.X = (int)((lpc + 2 + (NavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 84 * scaleAdjustment : 42 * scaleAdjustment)));
                 dragRectR.Y = 0;
                 dragRectR.Height = (int)(AppTitleBar.ActualHeight * scaleAdjustment);
                 dragRectR.Width = (int)(rpc * scaleAdjustment * App.AppWindowLocal.Size.Width);
@@ -1113,6 +1113,7 @@ namespace znMusicPlayerWUI
             //System.Diagnostics.Debug.WriteLine(jstr);
         }
 
+        #region PlayTimePopup
         private void PlayButton_Holding(object sender, HoldingRoutedEventArgs e)
         {
             InitPlayTimePopup();
@@ -1158,10 +1159,11 @@ namespace znMusicPlayerWUI
         bool isCodeChangedSilderValue = false;
         private void PlayTimeSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
-            if (!isCodeChangedSilderValue)
+            if (!isCodeChangedSilderValue && App.audioPlayer.FileReader != null)
             {
                 App.audioPlayer.CurrentTime = TimeSpan.FromTicks((long)PlayTimeSlider.Value);
             }
         }
+        #endregion
     }
 }
