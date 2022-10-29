@@ -230,5 +230,12 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 OutDevicesFlyout.Items.Add(c);
             }
         }
+
+        private async void ReloadAudio_Click(object sender, RoutedEventArgs e)
+        {
+            (sender as Button).IsEnabled = false;
+            await App.audioPlayer.Reload();
+            (sender as Button).IsEnabled = true;
+        }
     }
 }

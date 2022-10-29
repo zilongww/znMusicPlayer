@@ -114,9 +114,22 @@
                             <Setter Property="Height" Value="68"/>
                         </Style>
                     </GridView.ItemContainerStyle>
-                    <Slider x:Name="aSlider" Header="变调：1x" Width="140" Minimum="1" Maximum="25" Value="{Binding Pitch,Mode=TwoWay}" TickFrequency="1.14" TickPlacement="Outside" HorizontalAlignment="Left" IsThumbToolTipEnabled="False"/>
-                    <Slider x:Name="bSlider" Header="速度：1x" Width="140" Minimum="1" Maximum="25" Value="{Binding Tempo,Mode=TwoWay}" TickFrequency="1.14" TickPlacement="Outside" HorizontalAlignment="Left" IsThumbToolTipEnabled="False"/>
-                    <Slider x:Name="cSlider" Header="速度比：1x" Width="140" Minimum="1" Maximum="25" Value="{Binding Rate,Mode=TwoWay}" TickFrequency="1.14" TickPlacement="Outside" VerticalAlignment="Center" HorizontalAlignment="Left" IsThumbToolTipEnabled="False"/>
+                    <Slider x:Name="aSlider" Header="变调：1x"
+                            Width="140" Minimum="1" Maximum="25" HorizontalAlignment="Left"
+                            Value="{Binding Pitch,Mode=TwoWay}"
+                            TickFrequency="1.14" TickPlacement="Outside"
+                            IsThumbToolTipEnabled="False"/>
+                    <Slider x:Name="bSlider" Header="速度：1x"
+                            Width="140" Minimum="1" Maximum="25" HorizontalAlignment="Left"
+                            Value="{Binding Tempo,Mode=TwoWay}"
+                            TickFrequency="1.14" TickPlacement="Outside"
+                            IsThumbToolTipEnabled="False"/>
+                    <Slider x:Name="cSlider" Header="速度比：1x"
+                            Width="140" Minimum="1" Maximum="25"
+                            Value="{Binding Rate,Mode=TwoWay}"
+                            TickFrequency="1.14" TickPlacement="Outside"
+                            VerticalAlignment="Center" HorizontalAlignment="Left"
+                            IsThumbToolTipEnabled="False"/>
                     <StackPanel>
                         <TextBlock Text="音频输出" Margin="{StaticResource HubSectionHeaderThemeMargin}"/>
                         <DropDownButton x:Name="OutDevicesDropDownButton" Click="OutDevicesDropDownButton_Click" Width="140">
@@ -128,6 +141,16 @@
                     </StackPanel>
                     <NumberBox x:Name="LatencyNumberBox" Header="音频缓冲时间" Width="140" Value="{Binding Latency,Mode=TwoWay}" PlaceholderText="整数（ms）" Maximum="1000" Minimum="50" SpinButtonPlacementMode="Compact"/>
                     <ToggleSwitch Header="Wasapi独占声卡" IsOn="{Binding WasapiOnly,Mode=TwoWay}"/>
+                    <StackPanel Background="Transparent"
+                                ToolTipService.ToolTip="当播放中断或出错时尝试重新加载">
+                        <TextBlock Text="重新加载音频" Margin="{StaticResource HubSectionHeaderThemeMargin}"/>
+                        <Button Click="ReloadAudio_Click">
+                            <Path Data="{StaticResource 刷新}"
+                                  Stretch="UniformToFill"
+                                  Fill="{ThemeResource ButtonForegroundThemeBrush}"
+                                  Width="14"/>
+                        </Button>
+                    </StackPanel>
                 </GridView>
             </StackPanel>
         </ScrollViewer>

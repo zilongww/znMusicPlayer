@@ -417,7 +417,7 @@ namespace znMusicPlayerWUI.Media
             if (filePath != FileReader?.FileName)
                 SourceChanged?.Invoke(this);
 
-            DisposeAll();
+            await Task.Run(() => DisposeAll());
 
             FileReader = fileReader;
             FileProvider = fileProvider;
@@ -465,7 +465,7 @@ namespace znMusicPlayerWUI.Media
                 var nowPlayState = NowOutObj.PlaybackState;
                 string filePath = FileReader.FileName;
 
-                DisposeAll();
+                await Task.Run(() => DisposeAll());
                 await SetSource(filePath);
 
                 FileReader.CurrentTime = nowPosition;
@@ -540,15 +540,20 @@ namespace znMusicPlayerWUI.Media
             }
         }
 
+        bool isDosposing = false;
         public void DisposeAll()
         {
-            SetStop();
+            if (isDosposing) return;
+            isDosposing = true;
+
             (NowOutObj as IDisposable)?.Dispose();
             NowOutObj = null;
             FileReader?.Dispose();
             FileReader = null;
             FileProvider?.Clear();
             FileProvider = null;
+
+            isDosposing = false;
         }
     }
 }

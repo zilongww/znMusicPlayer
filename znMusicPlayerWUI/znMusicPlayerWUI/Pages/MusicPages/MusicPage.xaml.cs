@@ -14,6 +14,7 @@ using znMusicPlayerWUI.Helpers;
 using NAudio.Wave;
 using Microsoft.UI.Xaml.Media;
 using znMusicPlayerWUI.Controls;
+using System.Diagnostics;
 
 namespace znMusicPlayerWUI.Pages.MusicPages
 {
@@ -145,7 +146,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 }
             }
 
-            System.Diagnostics.Debug.WriteLine($"MusicPage: ViewState 已被设置为 {musicPageViewState}.");
+            Debug.WriteLine($"MusicPage: ViewState 已被设置为 {musicPageViewState}.");
         }
 
         private void BackgroundBaseImage_Loaded(object sender, RoutedEventArgs e)
@@ -265,7 +266,9 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         public void SelectedChangedDo()
         {
+            isCodeChangedLrcItem = true;
             LrcBaseListView.SelectedItem = App.lyricManager.NowLyricsData;
+            isCodeChangedLrcItem = false;
             if (scrollViewer != null)
             {
                 var b = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
@@ -278,7 +281,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 if (b != null)
                     scrollViewer.ChangeView(null, b.ActualOffset.Y + b.ActualSize.Y / 2, null);
             }
-            System.Diagnostics.Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData.Lyric}.");
+            Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData.Lyric}.");
         }
 
         //todo：优化性能
@@ -400,8 +403,16 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             UpdataInterfaceDesign();
         }
 
+        bool isCodeChangedLrcItem = false;
         private void LrcBaseListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            var lrcItem = LrcBaseListView.SelectedItem as DataEditor.LyricData;
+            if (lrcItem != null && !isCodeChangedLrcItem)
+            {
+                // 加1ms，否则会短时间判定到上一句歌词
+                App.audioPlayer.CurrentTime = lrcItem.LyricTimeSpan + TimeSpan.FromMilliseconds(1);
+                Debug.WriteLine("audio player time setted.");
+            }
         }
 
         private void LrcBaseListView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -422,6 +433,16 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private void LrcButton_Unchecked(object sender, RoutedEventArgs e)
         {
             ShowLrcPage = false;
+        }
+
+        private void PlaySlider_Holding(object sender, Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs e)
+        {
+
+        }
+
+        private void PlaySlider_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+
         }
     }
 }

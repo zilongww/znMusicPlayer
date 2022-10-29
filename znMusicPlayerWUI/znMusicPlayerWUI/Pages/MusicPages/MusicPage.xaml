@@ -63,7 +63,9 @@
                             VerticalAlignment="Center"
                             IsThumbToolTipEnabled="False"
                             Padding="12,0,12,0"
-                            Grid.Column="1"/>
+                            Grid.Column="1"
+                            Holding="PlaySlider_Holding"
+                            Tapped="PlaySlider_Tapped"/>
                     <TextBlock x:Name="NowAtherTimeTb"
                                Text="00:00"
                                FontSize="12"
@@ -157,8 +159,7 @@
                             <StackPanel>
                                 <TextBlock Text="{Binding LyricAndTranslate}"
                                            TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
-                                           FontSize="24" TextWrapping="Wrap" Margin="0,0,0,48"
-                                           IsTextSelectionEnabled="True"/>
+                                           FontSize="24" TextWrapping="Wrap" Margin="0,0,0,48"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>

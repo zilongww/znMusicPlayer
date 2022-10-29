@@ -82,7 +82,7 @@ namespace znMusicPlayerWUI
             //RequestedTheme = App.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : ElementTheme.Light;
             m_wsdqHelper = new WindowsSystemDispatcherQueueHelper();
             m_wsdqHelper.EnsureWindowsSystemDispatcherQueueController();
-            SetBackdrop(BackdropType.DesktopAcrylic);
+            SetBackdrop(BackdropType.Mica);
             SetDragRegionForCustomTitleBar(App.AppWindowLocal);
 
             NavView.SelectedItem = NavView.MenuItems[1];
@@ -433,12 +433,14 @@ namespace znMusicPlayerWUI
                 m_micaController = new MicaController();
                 m_micaController.AddSystemBackdropTarget(SWindow.As<ICompositionSupportsSystemBackdrop>());
                 m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
+                isAcrylicBackdrop = false;
                 return true;
             }
 
             return false;
         }
 
+        static bool isAcrylicBackdrop = false;
         static bool TrySetAcrylicBackdrop()
         {
             if (DesktopAcrylicController.IsSupported())
@@ -448,6 +450,7 @@ namespace znMusicPlayerWUI
                 SWindow.Closed += Window_Closed;
 
                 m_configurationSource.IsInputActive = true;
+                RequestedTheme = App.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : default;
                 switch (RequestedTheme)
                 {
                     case ElementTheme.Dark: m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
@@ -471,6 +474,7 @@ namespace znMusicPlayerWUI
 
                 m_acrylicController.AddSystemBackdropTarget(SWindow.As<ICompositionSupportsSystemBackdrop>());
                 m_acrylicController.SetSystemBackdropConfiguration(m_configurationSource);
+                isAcrylicBackdrop = true;
                 return true;
             }
 
@@ -487,6 +491,10 @@ namespace znMusicPlayerWUI
         private void WindowGridBase_ActualThemeChanged(FrameworkElement sender, object args)
         {
             InitializeTitleBar(App.Current.RequestedTheme);
+            if (isAcrylicBackdrop)
+            {
+                SetBackdrop(BackdropType.DesktopAcrylic);
+            }
         }
 
         private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
@@ -524,6 +532,7 @@ namespace znMusicPlayerWUI
 
         private static void Window_Closed(object sender, WindowEventArgs args)
         {
+            /*
             if (m_micaController != null)
             {
                 m_micaController.Dispose();
@@ -533,7 +542,7 @@ namespace znMusicPlayerWUI
             {
                 m_acrylicController.Dispose();
                 m_acrylicController = null;
-            }
+            }*/
             SWindow.Activated -= Window_Activated;
             m_configurationSource = null;
         }
