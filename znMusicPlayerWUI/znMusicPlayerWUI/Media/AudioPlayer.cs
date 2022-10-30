@@ -396,10 +396,8 @@ namespace znMusicPlayerWUI.Media
                 try
                 {
                     var tagfile = TagLib.File.Create(filePath);
-                    if (!tagfile.Tag.IsEmpty)
-                    {
-                        WaveInfo = $"{tagfile.Properties.Codecs.First().Description} - {fileReader.WaveFormat.SampleRate / (decimal)1000}kHz-{tagfile.Properties.AudioBitrate}kbps";
-                    }
+                    WaveInfo = $"{tagfile.Properties.Codecs.First().Description} - {fileReader.WaveFormat.SampleRate / (decimal)1000}kHz-{tagfile.Properties.AudioBitrate}kbps";
+                    
                 }
                 catch
                 {

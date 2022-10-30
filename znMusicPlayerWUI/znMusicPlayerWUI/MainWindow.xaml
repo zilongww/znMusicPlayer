@@ -15,336 +15,338 @@
           KeyDown="Grid_KeyDown" KeyUp="Grid_KeyUp"
           PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
           Tapped="Grid_Tapped" Loaded="WindowGridBase_Loaded"  RequestedTheme="Default">
+        <Grid x:Name="GridBase">
+            <Grid x:Name="AppTitleBar"
+                  VerticalAlignment="Top"
+                  Height="48"
+                  Margin="0,0,0,0">
+                <TextBlock x:Name="AppTitleTextBlock"
+                           Text="znMusicPlayer"
+                           TextWrapping="NoWrap"
+                           Margin="0,0,0,0"
+                           Style="{StaticResource CaptionTextBlockStyle}" 
+                           VerticalAlignment="Center"/>
+            </Grid>
 
-        <Grid x:Name="AppTitleBar"
-              VerticalAlignment="Top"
-              Height="48"
-              Margin="0,0,0,0">
-            <TextBlock x:Name="AppTitleTextBlock"
-                       Text="znMusicPlayer"
-                       TextWrapping="NoWrap"
-                       Margin="0,0,0,0"
-                       Style="{StaticResource CaptionTextBlockStyle}" 
-                       VerticalAlignment="Center"/>
-        </Grid>
+            <NavigationView x:Name="NavView"
+                            Margin="0,0,0,0"
+                            IsBackButtonVisible="Visible"
+                            Background="Transparent"
+                            IsTitleBarAutoPaddingEnabled="False"
+                            SelectionChanged="NavView_SelectionChanged"
+                            BackRequested="NavView_BackRequested"
+                            DisplayModeChanged="NavView_DisplayModeChanged"
+                            PaneOpened="NavView_PaneOpened">
 
-        <NavigationView x:Name="NavView"
-                        Margin="0,0,0,0"
-                        IsBackButtonVisible="Visible"
-                        Background="Transparent"
-                        IsTitleBarAutoPaddingEnabled="False"
-                        SelectionChanged="NavView_SelectionChanged"
-                        BackRequested="NavView_BackRequested"
-                        DisplayModeChanged="NavView_DisplayModeChanged"
-                        PaneOpened="NavView_PaneOpened">
+                <NavigationView.MenuItems>
+                    <NavigationViewItemHeader Content="网络"/>
+                    <NavigationViewItem Content="搜索">
+                        <NavigationViewItem.Icon>
+                            <AnimatedIcon x:Name='SearchAnimatedIcon'>
+                                <AnimatedIcon.Source>
+                                    <m:AnimatedFindVisualSource/>
+                                </AnimatedIcon.Source>
+                                <AnimatedIcon.FallbackIconSource>
+                                    <SymbolIconSource Symbol='Find'/>
+                                </AnimatedIcon.FallbackIconSource>
+                            </AnimatedIcon>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItem Content="推荐">
+                        <NavigationViewItem.Icon>
+                            <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 推荐}"/>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItem Content="浏览">
+                        <NavigationViewItem.Icon>
+                            <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 浏览}"/>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItemHeader Content="本地" Margin="0,16,0,0"/>
+                    <NavigationViewItem Content="下载">
+                        <NavigationViewItem.Icon>
+                            <PathIcon Scale="1.05,1.05,1" Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 下载}"/>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItem Content="播放列表">
+                        <NavigationViewItem.Icon>
+                            <PathIcon Scale="1.05,1.05,1" Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 播放列表}"/>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItem Content="历史">
+                        <NavigationViewItem.Icon>
+                            <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 历史}"/>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                </NavigationView.MenuItems>
 
-            <NavigationView.MenuItems>
-                <NavigationViewItemHeader Content="网络"/>
-                <NavigationViewItem Content="搜索">
-                    <NavigationViewItem.Icon>
-                        <AnimatedIcon x:Name='SearchAnimatedIcon'>
-                            <AnimatedIcon.Source>
-                                <m:AnimatedFindVisualSource/>
-                            </AnimatedIcon.Source>
-                            <AnimatedIcon.FallbackIconSource>
-                                <SymbolIconSource Symbol='Find'/>
-                            </AnimatedIcon.FallbackIconSource>
-                        </AnimatedIcon>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="推荐">
-                    <NavigationViewItem.Icon>
-                        <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 推荐}"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="浏览">
-                    <NavigationViewItem.Icon>
-                        <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 浏览}"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItemHeader Content="本地" Margin="0,16,0,0"/>
-                <NavigationViewItem Content="下载">
-                    <NavigationViewItem.Icon>
-                        <PathIcon Scale="1.05,1.05,1" Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 下载}"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="播放列表">
-                    <NavigationViewItem.Icon>
-                        <PathIcon Scale="1.05,1.05,1" Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 播放列表}"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="历史">
-                    <NavigationViewItem.Icon>
-                        <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 历史}"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-            </NavigationView.MenuItems>
-
-            <Grid x:Name="NavViewContentBase" SizeChanged="NavViewContentBase_SizeChanged">
-                <Grid.Clip>
-                    <RectangleGeometry x:Name="NavViewContentBase_RGClip" Rect="0,0,400,400"/>
-                </Grid.Clip>
-                <!--<Rectangle Fill="{ThemeResource BottomBackground}" VerticalAlignment="Bottom" Height="86"/>-->
-                <Frame x:Name="ContentFrame"
-                       Loaded="ContentFrame_Loaded"
-                       IsTabStop="True" CornerRadius="0"
-                       Padding="0,0,0,86"/>
-                <Grid VerticalAlignment="Bottom"
-                      Height="86"
-                      Background="{ThemeResource AcrylicNormal}"
-                      x:Name="BottomPlayGrid">
-                    <Button Background="Transparent"
-                            CornerRadius="0"
-                            VerticalAlignment="Stretch"
-                            HorizontalAlignment="Stretch"
-                            BorderThickness="0"
-                            Margin="0"
-                            Click="Button_Click_1"/>
-                    <!--<Grid>
-                        
-                        <TextBlock x:Name="NowPlayTimeTb"
-                                   Text="00:00"
-                                   Margin="8,12,0,0"
-                                   FontSize="12"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Top"/>
-                        <Slider x:Name="NowPlaySlider" HorizontalAlignment="Stretch"
-                                VerticalAlignment="Top"
-                                Margin="-8,-15,-8,0"
-                                IsThumbToolTipEnabled="False"/>
-                        <TextBlock x:Name="NowAtherTimeTb"
-                                   Text="00:00"
-                                   Margin="0,12,6,0"
-                                   FontSize="12"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Top"/>
-                    </Grid>-->
-                    <Grid VerticalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid Margin="10,0,0,0"
-                              IsHitTestVisible="True">
+                <Grid x:Name="NavViewContentBase" SizeChanged="NavViewContentBase_SizeChanged">
+                    <Grid.Clip>
+                        <RectangleGeometry x:Name="NavViewContentBase_RGClip" Rect="0,0,400,400"/>
+                    </Grid.Clip>
+                    <!--<Rectangle Fill="{ThemeResource BottomBackground}" VerticalAlignment="Bottom" Height="86"/>-->
+                    <Frame x:Name="ContentFrame"
+                           Loaded="ContentFrame_Loaded"
+                           IsTabStop="True" CornerRadius="0"
+                           Padding="0,0,0,86"/>
+                    <Grid VerticalAlignment="Bottom"
+                          Height="86"
+                          Background="{ThemeResource AcrylicNormal}"
+                          x:Name="BottomPlayGrid">
+                        <Button Background="Transparent"
+                                CornerRadius="0"
+                                VerticalAlignment="Stretch"
+                                HorizontalAlignment="Stretch"
+                                BorderThickness="0"
+                                Margin="0"
+                                Click="Button_Click_1"/>
+                        <!--<Grid>
+                            
+                            <TextBlock x:Name="NowPlayTimeTb"
+                                       Text="00:00"
+                                       Margin="8,12,0,0"
+                                       FontSize="12"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"/>
+                            <Slider x:Name="NowPlaySlider" HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top"
+                                    Margin="-8,-15,-8,0"
+                                    IsThumbToolTipEnabled="False"/>
+                            <TextBlock x:Name="NowAtherTimeTb"
+                                       Text="00:00"
+                                       Margin="0,12,6,0"
+                                       FontSize="12"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Top"/>
+                        </Grid>-->
+                        <Grid VerticalAlignment="Center">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Border CornerRadius="5"
-                                        Height="66"
-                                        Margin="0,0,10,0">
-                                <Frame x:Name="PlayContent"
-                                       IsTabStop="True"
-                                       CommonNavigationTransitionInfo.IsStaggerElement="True">
-                                    <Image Source="/Images/SugarAndSalt.jpg"/>
-                                </Frame>
-                            </Border>
-                            <StackPanel VerticalAlignment="Center"
-                                        Margin="0,0,0,0"
-                                        Grid.Column="1"
-                                        IsHitTestVisible="False">
-                                <TextBlock x:Name="PlayTitle"
-                                           Text="znMusicPlayer"
-                                           FontSize="20"
-                                           TextWrapping="NoWrap"
-                                           HorizontalAlignment="Left"
-                                           TextTrimming="CharacterEllipsis"/>
-                                <TextBlock x:Name="PlayArtist"
-                                           Text="No media playing"
-                                           FontSize="14"
-                                           TextWrapping="NoWrap"
-                                           HorizontalAlignment="Left"
-                                           TextTrimming="CharacterEllipsis"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <StackPanel Orientation="Horizontal"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center"
-                                    Grid.Column="1"
-                                    Background="Transparent">
-                            <Button x:Name="PlayBeforeButton"
-                                    Height="40"
-                                    Width="40"
-                                    BorderThickness="0"
-                                    Click="PlayBeforeButton_Click"
-                                    Background="Transparent">
-                                <Path Stretch="Uniform"
-                                      Width="14"
-                                      Fill="{ThemeResource ButtonForegroundThemeBrush}"
-                                      Data="{StaticResource 上一首}"/>
-                            </Button>
-                            <Grid>
-                                <Button x:Name="PlayButton"
-                                        Height="56"
-                                        Width="56"
-                                        CornerRadius="28"
-                                        BorderThickness="6"
-                                        Margin="4,0,4,0"
-                                        Click="PlayButton_Click"
-                                        IsHoldingEnabled="True" Holding="PlayButton_Holding"
-                                        IsRightTapEnabled="True" RightTapped="PlayButton_RightTapped"
-                                        Background="Transparent">
-                                    <Button.Resources>
-                                        <TeachingTip x:Name="PlayTimeSliderBasePopup"
-                                                     Target="{x:Bind PlayButton}"
-                                                     Background="{ThemeResource AcrylicNormal}">
-                                            <StackPanel Orientation="Vertical">
-                                                <TextBlock x:Name="PlayTimeTextBlock" Text="00:00/00:00" TextAlignment="Center"/>
-                                                <Slider x:Name="PlayTimeSlider" Width="180" IsThumbToolTipEnabled="False"/>
-                                            </StackPanel>
-                                        </TeachingTip>
-                                    </Button.Resources>
-                                    <controls:MediaPlayStateViewer x:Name="MediaPlayStateViewer" PlaybackState="Paused" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4"/>
-                                </Button>
-                                <ProgressRing x:Name="PlayRing" Width="56" Height="56" IsIndeterminate="False"/>
+                            <Grid Margin="10,0,0,0"
+                                  IsHitTestVisible="True">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border CornerRadius="5"
+                                            Height="66"
+                                            Margin="0,0,10,0">
+                                    <Frame x:Name="PlayContent"
+                                           IsTabStop="True"
+                                           CommonNavigationTransitionInfo.IsStaggerElement="True">
+                                        <Image Source="/Images/SugarAndSalt.jpg"/>
+                                    </Frame>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center"
+                                            Margin="0,0,0,0"
+                                            Grid.Column="1"
+                                            IsHitTestVisible="False">
+                                    <TextBlock x:Name="PlayTitle"
+                                               Text="znMusicPlayer"
+                                               FontSize="20"
+                                               TextWrapping="NoWrap"
+                                               HorizontalAlignment="Left"
+                                               TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock x:Name="PlayArtist"
+                                               Text="No media playing"
+                                               FontSize="14"
+                                               TextWrapping="NoWrap"
+                                               HorizontalAlignment="Left"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
                             </Grid>
-                            <Button x:Name="PlayNextButton"
-                                    Height="40"
-                                    Width="40"
-                                    BorderThickness="0"
-                                    Click="PlayNextButton_Click"
-                                    Background="Transparent">
-                                <Path Stretch="Uniform"
-                                      Width="14"
-                                      Fill="{ThemeResource ButtonForegroundThemeBrush}"
-                                      Data="{StaticResource 下一首}"/>
-                            </Button>
-                        </StackPanel>
 
-                        <CommandBar Background="Transparent"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Right"
-                                    DefaultLabelPosition="Collapsed"
-                                    Grid.Column="2">
-                            <AppBarButton Background="Transparent"
-                                          Label="打开桌面歌词"
-                                          Style="{ThemeResource AppBarStyle}">
-                                <AppBarButton.Icon>
-                                    <FontIcon Glyph="词" FontSize="20"
-                                              FontFamily="{StaticResource ContentControlThemeFontFamily}"/>
-                                </AppBarButton.Icon>
-                            </AppBarButton>
-                            <AppBarButton x:Name="VolumeAppButton"
-                                          Click="Button_Click"
-                                          Label="音量"
-                                          Style="{ThemeResource AppBarStyle}">
-                                <AppBarButton.Icon>
-                                    <PathIcon Data="{StaticResource 音量0}"/>
-                                </AppBarButton.Icon>
-                            </AppBarButton>
-                            <AppBarButton Click="Button_Click_4"
-                                          Label="播放列表"
-                                          Style="{ThemeResource AppBarStyle}">
-                                <AppBarButton.Icon>
-                                    <PathIcon Data="{StaticResource 播放列表}"/>
-                                </AppBarButton.Icon>
-                            </AppBarButton>
-                        </CommandBar>
+                            <StackPanel Orientation="Horizontal"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        Grid.Column="1"
+                                        Background="Transparent">
+                                <Button x:Name="PlayBeforeButton"
+                                        Height="40"
+                                        Width="40"
+                                        BorderThickness="0"
+                                        Click="PlayBeforeButton_Click"
+                                        Background="Transparent">
+                                    <Path Stretch="Uniform"
+                                          Width="14"
+                                          Fill="{ThemeResource ButtonForegroundThemeBrush}"
+                                          Data="{StaticResource 上一首}"/>
+                                </Button>
+                                <Grid>
+                                    <Button x:Name="PlayButton"
+                                            Height="56"
+                                            Width="56"
+                                            CornerRadius="28"
+                                            BorderThickness="6"
+                                            Margin="4,0,4,0"
+                                            Click="PlayButton_Click"
+                                            IsHoldingEnabled="True" Holding="PlayButton_Holding"
+                                            IsRightTapEnabled="True" RightTapped="PlayButton_RightTapped"
+                                            Background="Transparent">
+                                        <Button.Resources>
+                                            <TeachingTip x:Name="PlayTimeSliderBasePopup"
+                                                         Target="{x:Bind PlayButton}"
+                                                         Background="{ThemeResource AcrylicNormal}">
+                                                <StackPanel Orientation="Vertical">
+                                                    <TextBlock x:Name="PlayTimeTextBlock" Text="00:00/00:00" TextAlignment="Center"/>
+                                                    <Slider x:Name="PlayTimeSlider" Width="180" IsThumbToolTipEnabled="False"/>
+                                                </StackPanel>
+                                            </TeachingTip>
+                                        </Button.Resources>
+                                        <controls:MediaPlayStateViewer x:Name="MediaPlayStateViewer" PlaybackState="Paused" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4"/>
+                                    </Button>
+                                    <ProgressRing x:Name="PlayRing" Width="56" Height="56" IsIndeterminate="False"/>
+                                </Grid>
+                                <Button x:Name="PlayNextButton"
+                                        Height="40"
+                                        Width="40"
+                                        BorderThickness="0"
+                                        Click="PlayNextButton_Click"
+                                        Background="Transparent">
+                                    <Path Stretch="Uniform"
+                                          Width="14"
+                                          Fill="{ThemeResource ButtonForegroundThemeBrush}"
+                                          Data="{StaticResource 下一首}"/>
+                                </Button>
+                            </StackPanel>
+
+                            <CommandBar Background="Transparent"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right"
+                                        DefaultLabelPosition="Collapsed"
+                                        Grid.Column="2">
+                                <AppBarButton Background="Transparent"
+                                              Label="打开桌面歌词"
+                                              Style="{ThemeResource AppBarStyle}">
+                                    <AppBarButton.Icon>
+                                        <FontIcon Glyph="词" FontSize="20"
+                                                  FontFamily="{StaticResource ContentControlThemeFontFamily}"/>
+                                    </AppBarButton.Icon>
+                                </AppBarButton>
+                                <AppBarButton x:Name="VolumeAppButton"
+                                              Click="Button_Click"
+                                              Label="音量"
+                                              Style="{ThemeResource AppBarStyle}">
+                                    <AppBarButton.Icon>
+                                        <PathIcon Data="{StaticResource 音量0}"/>
+                                    </AppBarButton.Icon>
+                                </AppBarButton>
+                                <AppBarButton Click="Button_Click_4"
+                                              Label="播放列表"
+                                              Style="{ThemeResource AppBarStyle}">
+                                    <AppBarButton.Icon>
+                                        <PathIcon Data="{StaticResource 播放列表}"/>
+                                    </AppBarButton.Icon>
+                                </AppBarButton>
+                            </CommandBar>
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-        </NavigationView>
+            </NavigationView>
 
-        <Grid x:Name="MusicPageBaseGrid">
-            <Frame x:Name="MusicPageBaseFrame"/>
-        </Grid>
-        
-        <Grid x:Name="TopControlsBaseGrid" IsHitTestVisible="True">
+            <Grid x:Name="TopControlsBaseGrid" IsHitTestVisible="True">
 
-            <Grid>
-                <TeachingTip x:Name="PlayingListBasePopup"
+                <Grid>
+                    <TeachingTip x:Name="PlayingListBasePopup"
+                                 PreferredPlacement="BottomRight" PlacementMargin="0,0,-24,62"
+                                 Background="{ThemeResource AcrylicNormal}">
+                        <Grid x:Name="PlayingListBaseGrid"
+                              HorizontalAlignment="Stretch">
+                            <Grid Margin="0,0,44,0">
+                                <ListView x:Name="PlayingListBaseView"
+                                          SelectionChanged="PlayingListBaseView_SelectionChanged"
+                                          Background="Transparent"
+                                          AllowDrop="True"
+                                          CanReorderItems="True">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="data:MusicData">
+                                            <StackPanel Padding="0,8,0,8" Tag="{Binding MD5}">
+                                                <TextBlock Text="{Binding Title}"/>
+                                                <TextBlock Text="{Binding ButtonName}" Foreground="{ThemeResource SystemChromeDisabledLowColor}" FontSize="12"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <Button Width="46"
+                                        Height="28"
+                                        Padding="0"
+                                        Margin="0,0,16,0"
+                                        VerticalAlignment="Top" HorizontalAlignment="Right"
+                                        Click="Button_Click_5"
+                                        ToolTipService.ToolTip="清除所有">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding ElementName=PlayingListBaseView,Path=ItemsSource.Count}"
+                                                   FontSize="12" Margin="0,0,2,0"
+                                                   VerticalAlignment="Center"/>
+                                        <Viewbox Width="13">
+                                            <SymbolIcon Symbol="Clear"/>
+                                        </Viewbox>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </TeachingTip>
+                </Grid>
+
+                <TeachingTip x:Name="VolumeBasePopup"
                              PreferredPlacement="BottomRight" PlacementMargin="0,0,-24,62"
                              Background="{ThemeResource AcrylicNormal}">
-                    <Grid x:Name="PlayingListBaseGrid"
-                          HorizontalAlignment="Stretch">
-                        <Grid Margin="0,0,44,0">
-                            <ListView x:Name="PlayingListBaseView"
-                                      SelectionChanged="PlayingListBaseView_SelectionChanged"
-                                      Background="Transparent"
-                                      AllowDrop="True"
-                                      CanReorderItems="True">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate x:DataType="data:MusicData">
-                                        <StackPanel Padding="0,8,0,8" Tag="{Binding MD5}">
-                                            <TextBlock Text="{Binding Title}"/>
-                                            <TextBlock Text="{Binding ButtonName}" Foreground="{ThemeResource SystemChromeDisabledLowColor}" FontSize="12"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                            <Button Width="46"
-                                    Height="28"
-                                    Padding="0"
-                                    Margin="0,0,16,0"
-                                    VerticalAlignment="Top" HorizontalAlignment="Right"
-                                    Click="Button_Click_5"
-                                    ToolTipService.ToolTip="清除所有">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding ElementName=PlayingListBaseView,Path=ItemsSource.Count}"
-                                               FontSize="12" Margin="0,0,2,0"
-                                               VerticalAlignment="Center"/>
-                                    <Viewbox Width="13">
-                                        <SymbolIcon Symbol="Clear"/>
-                                    </Viewbox>
-                                </StackPanel>
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </TeachingTip>
-            </Grid>
-
-            <TeachingTip x:Name="VolumeBasePopup"
-                         PreferredPlacement="BottomRight" PlacementMargin="0,0,-24,62"
-                         Background="{ThemeResource AcrylicNormal}">
-                <Grid x:Name="VolumeBaseGrid">
-                    <StackPanel Orientation="Horizontal">
-                        <Button Padding="12"
-                            BorderThickness="0"
-                            Background="Transparent"
-                            VerticalContentAlignment="Center"
-                            HorizontalContentAlignment="Center"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            Click="Button_Click_2">
-                            <Path Width="14" Height="14" Stretch="Uniform" Fill="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 均衡器}"/>
-                        </Button>
-                        <Button Padding="12"
+                    <Grid x:Name="VolumeBaseGrid">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Padding="12"
                                 BorderThickness="0"
-                                Margin="2,0,0,0"
                                 Background="Transparent"
                                 VerticalContentAlignment="Center"
                                 HorizontalContentAlignment="Center"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
-                                Click="Button_Click_3">
-                            <Viewbox Width="16">
-                                <SymbolIcon x:Name="VolumeIconBase" Symbol="Volume"/>
-                            </Viewbox>
-                        </Button>
-                        <AppBarSeparator/>
-                        <StackPanel Orientation="Horizontal"
-                                    Margin="8,0,10,0">
-                            <TextBlock Text="{Binding ElementName=VolumeSlider,Path=Value}"
-                                       VerticalAlignment="Center"/>
-                            <Slider x:Name="VolumeSlider"
-                                    Orientation="Horizontal"
-                                    Width="150"
-                                    Margin="10,0,0,0"
-                                    Minimum="0"
-                                    Maximum="100"
-                                    IsThumbToolTipEnabled="False"
-                                    TickPlacement="Outside"
-                                    TickFrequency="5"
+                                Click="Button_Click_2">
+                                <Path Width="14" Height="14" Stretch="Uniform" Fill="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 均衡器}"/>
+                            </Button>
+                            <Button Padding="12"
+                                    BorderThickness="0"
+                                    Margin="2,0,0,0"
+                                    Background="Transparent"
+                                    VerticalContentAlignment="Center"
+                                    HorizontalContentAlignment="Center"
                                     VerticalAlignment="Center"
-                                    PointerEntered="VolumeSlider_PointerEntered"
-                                    PointerExited="VolumeSlider_PointerExited"
-                                    ValueChanged="VolumeSlider_ValueChanged"/>
+                                    HorizontalAlignment="Center"
+                                    Click="Button_Click_3">
+                                <Viewbox Width="16">
+                                    <SymbolIcon x:Name="VolumeIconBase" Symbol="Volume"/>
+                                </Viewbox>
+                            </Button>
+                            <AppBarSeparator/>
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="8,0,10,0">
+                                <TextBlock Text="{Binding ElementName=VolumeSlider,Path=Value}"
+                                           VerticalAlignment="Center"/>
+                                <Slider x:Name="VolumeSlider"
+                                        Orientation="Horizontal"
+                                        Width="150"
+                                        Margin="10,0,0,0"
+                                        Minimum="0"
+                                        Maximum="100"
+                                        IsThumbToolTipEnabled="False"
+                                        TickPlacement="Outside"
+                                        TickFrequency="5"
+                                        VerticalAlignment="Center"
+                                        PointerEntered="VolumeSlider_PointerEntered"
+                                        PointerExited="VolumeSlider_PointerExited"
+                                        ValueChanged="VolumeSlider_ValueChanged"/>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </Grid>
-            </TeachingTip>
+                    </Grid>
+                </TeachingTip>
+            </Grid>
         </Grid>
+        
+        <Grid x:Name="MusicPageBaseGrid">
+            <Frame x:Name="MusicPageBaseFrame"/>
+        </Grid>
+
     </Grid>
 </Window>

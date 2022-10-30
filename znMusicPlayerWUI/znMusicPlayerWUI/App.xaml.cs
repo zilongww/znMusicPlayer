@@ -46,6 +46,7 @@ namespace znMusicPlayerWUI
         public static readonly LyricManager lyricManager = new();
         public static readonly DownloadManager downloadManager = new();
 
+        public static Window WindowLocal;
         public static AppWindow AppWindowLocal;
         public static AppWindow AppDesktopLyricWindow;
         public static OverlappedPresenter AppWindowLocalPresenter;
@@ -85,6 +86,7 @@ namespace znMusicPlayerWUI
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             m_window = new MainWindow();
+            WindowLocal = m_window;
             AppWindowLocalHandle = WindowHelper.GetWindowHandle(m_window);
             AppWindowLocalPresenter = OverlappedPresenter.Create();
 
@@ -154,6 +156,8 @@ namespace znMusicPlayerWUI
             string b = string.Join(",", c.ToArray());
             a[SettingParams.EqualizerCustomData.ToString()] = b;
             JSettingData = a;
+
+            Debug.WriteLine("设置配置已存储！");
         }
 
         private Window m_window;

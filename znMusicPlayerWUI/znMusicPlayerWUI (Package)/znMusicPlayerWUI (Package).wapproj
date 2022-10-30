@@ -75,7 +75,6 @@
     <PackageReference Include="PInvoke.User32" Version="0.7.124" />
     <PackageReference Include="SoundTouch.Net.NAudioSupport" Version="2.3.2" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
-    <PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 </Project>

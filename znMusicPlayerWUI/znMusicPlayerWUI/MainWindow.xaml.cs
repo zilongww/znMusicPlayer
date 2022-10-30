@@ -28,6 +28,7 @@ using Microsoft.UI.Xaml.Hosting;
 using System.Collections.ObjectModel;
 using znMusicPlayerWUI.Controls;
 using NAudio.Gui;
+using System.Runtime.Intrinsics.Arm;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -43,6 +44,7 @@ namespace znMusicPlayerWUI
         public static Window SWindow;
         public static MusicPage SMusicPage = new();
         public static Grid STopControlsBaseGrid;
+        public static Grid SWindowGridBase;
         public static Grid SVolumeBaseGrid;
         public static Grid SMusicPageBaseGrid;
         public static ListView SPlayingListBaseView;
@@ -62,6 +64,7 @@ namespace znMusicPlayerWUI
             SNavView = NavView;
             SContentFrame = ContentFrame;
             STopControlsBaseGrid = TopControlsBaseGrid;
+            SWindowGridBase = GridBase;
             SVolumeBaseGrid = VolumeBaseGrid;
             SMusicPageBaseGrid = MusicPageBaseGrid;
             SPlayingListBaseGrid = PlayingListBaseGrid;
@@ -83,7 +86,7 @@ namespace znMusicPlayerWUI
             //RequestedTheme = App.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : ElementTheme.Light;
             m_wsdqHelper = new WindowsSystemDispatcherQueueHelper();
             m_wsdqHelper.EnsureWindowsSystemDispatcherQueueController();
-            SetBackdrop(BackdropType.DesktopAcrylic);
+            SetBackdrop(BackdropType.Mica);
             SetDragRegionForCustomTitleBar(App.AppWindowLocal);
 
             NavView.SelectedItem = NavView.MenuItems[1];
@@ -900,12 +903,22 @@ namespace znMusicPlayerWUI
                     0.2f, 1f, 0.22f, 1f,
                     out Visual contentGridVisual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
                 contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
+                compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
+                {
+                    if (InOpenMusicPage)
+                    {
+                        SWindowGridBase.Visibility = Visibility.Collapsed;
+                        System.Diagnostics.Debug.WriteLine("Collapsed");
+                    }
+                };
 
                 SMusicPage.MusicPageViewStateChange(MusicPageViewState.View);
             }
             else
             {
                 InOpenMusicPage = false;
+                SWindowGridBase.Visibility = Visibility.Visible;
+                System.Diagnostics.Debug.WriteLine("Visible");
                 SMusicPageBaseFrame.Content = SMusicPage;
                 AnimateHelper.AnimateOffset(
                     SMusicPageBaseFrame,
@@ -916,7 +929,9 @@ namespace znMusicPlayerWUI
                 compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
                 {
                     if (!InOpenMusicPage)
+                    {
                         SMusicPageBaseFrame.Visibility = Visibility.Collapsed;
+                    }
                 };
 
                 SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);

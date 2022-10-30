@@ -21,6 +21,7 @@ namespace znMusicPlayerWUI.Controls
     public partial class PlayListCard : Grid, IDisposable
     {
         private DataEditor.MusicListData MusicListData { get; set; }
+        public double ImageScaleDPI { get; set; } = 1.0;
 
         public PlayListCard(DataEditor.MusicListData musicListData)
         {
@@ -67,16 +68,17 @@ namespace znMusicPlayerWUI.Controls
             PlayListImage.Opacity = 0.01;
             if (MusicListData.ListDataType == DataEditor.DataType.本地歌单)
             {
-                PlayListImage.Source = await FileHelper.GetImageSource(MusicListData.PicturePath, 150, 150, true);
+                PlayListImage.Source = await FileHelper.GetImageSource(MusicListData.PicturePath, (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
             }
             else if (MusicListData.ListDataType == DataEditor.DataType.歌单)
             {
-                PlayListImage.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(MusicListData), 150, 150, true);
+                PlayListImage.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(MusicListData), (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
             }
             else
             {
-                PlayListImage.Source = await FileHelper.GetImageSource("", 150, 150, true);
+                PlayListImage.Source = await FileHelper.GetImageSource("", (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
             }
+            System.Diagnostics.Debug.WriteLine(ImageScaleDPI);
             AnimateHelper.AnimateOpacity(
                 PlayListImage,
                 PlayListImage.Opacity, 1,

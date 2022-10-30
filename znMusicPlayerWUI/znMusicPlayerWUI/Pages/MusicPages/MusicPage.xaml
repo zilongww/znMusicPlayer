@@ -22,7 +22,7 @@
         <Rectangle>
             <Rectangle.Fill>
                 <!--<SolidColorBrush Color="#55000000"/>-->
-                <AcrylicBrush TintLuminosityOpacity="0.75" TintOpacity="0.0" FallbackColor="#60000000" TintColor="#FF585858" Opacity="1"/>
+                <AcrylicBrush TintLuminosityOpacity="0.85" TintOpacity="0.0" FallbackColor="#60000000" TintColor="#FF4F4F4F" Opacity="1"/>
             </Rectangle.Fill>
        </Rectangle>
         <Grid Padding="0,48,0,0">
@@ -206,7 +206,8 @@
                 Background="Transparent" BorderBrush="Transparent"
                 VerticalAlignment="Top" HorizontalAlignment="Left"
                 HorizontalContentAlignment="Left" CornerRadius="0,0,4,0"
-                Width="84" Height="48" Padding="12">
+                Width="84" Height="48" Padding="12"
+                ToolTipService.ToolTip="一目了然，不言而喻。">
             <AnimatedIcon>
                 <AnimatedIcon.Source>
                     <m:AnimatedChevronDownSmallVisualSource/>

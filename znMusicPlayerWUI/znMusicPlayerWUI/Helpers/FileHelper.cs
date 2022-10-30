@@ -231,7 +231,7 @@ namespace znMusicPlayerWUI.Helpers
             await Launcher.LaunchFolderAsync(folder, t);
         }
 
-        public static async Task<string> FileTypeGet(string name)
+        public static async Task<string> FileTypeGetAsync(string name)
         {
             return await Task.Run(() =>
             {
@@ -246,6 +246,20 @@ namespace znMusicPlayerWUI.Helpers
                 }
                 return ss;
             });
+        }
+
+        public static string FileTypeGet(string name)
+        {
+            FileStream fs = new FileStream(@name, FileMode.Open, FileAccess.Read);
+            byte[] imagebytes = new byte[fs.Length];
+            BinaryReader br = new BinaryReader(fs);
+            imagebytes = br.ReadBytes(2);
+            string ss = "";
+            for (int i = 0; i < imagebytes.Length; i++)
+            {
+                ss += imagebytes[i];
+            }
+            return ss;
         }
     }
 }

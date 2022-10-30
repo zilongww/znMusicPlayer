@@ -78,7 +78,7 @@ namespace znMusicPlayerWUI.Media
                     string addr = null;
                     try
                     {
-                        addr = FileHelper.FileTypeGet(fileName).Result;
+                        addr = FileHelper.FileTypeGet(fileName);
                     }
                     catch
                     {

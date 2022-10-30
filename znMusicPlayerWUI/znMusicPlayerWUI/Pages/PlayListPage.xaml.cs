@@ -44,9 +44,10 @@ namespace znMusicPlayerWUI.Pages
             }
             BaseGridView.Items.Clear();
             var mls = await DataEditor.PlayListHelper.ReadAllPlayList();
+            var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
             foreach (var item in mls)
             {
-                BaseGridView.Items.Add(new PlayListCard(item) { Width = 150 });
+                BaseGridView.Items.Add(new PlayListCard(item) { Width = 150, ImageScaleDPI = dpi });
             }
         }
 
