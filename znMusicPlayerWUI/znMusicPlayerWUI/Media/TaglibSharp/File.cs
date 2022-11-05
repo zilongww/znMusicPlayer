@@ -1296,7 +1296,9 @@ namespace TagLib
                         ext = "aiff";
                         break;
                     default:
-						addr = string.Empty;
+                        int index = abstraction.Name.LastIndexOf(".") + 1;
+                        if (index >= 1 && index < abstraction.Name.Length)
+                            ext = abstraction.Name.Substring(index, abstraction.Name.Length - index);
                         break;
                 }
 				mimetype = $"taglib/" + ext.ToLower (CultureInfo.InvariantCulture);

@@ -95,14 +95,14 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void PlayingList_NowPlayingImageLoading(ImageSource imageSource)
         {
-            if (App.audioPlayer.MusicData?.AlbumID != MusicData?.AlbumID)
+            /*if (App.audioPlayer.MusicData?.AlbumID != MusicData?.AlbumID)
             {
                 if (BackgroundBaseImage.Source != null)
                     BackgroundBaseImageAnimate.Source = null;
                 BackgroundBaseImageAnimate.Source = BackgroundBaseImage.Source;
                 BackgroundBaseImage.Source = null;
                 //AlbumImageBase.Dispose();
-            }
+            }*/
         }
 
         private void PlayingList_NowPlayingImageLoaded(ImageSource imageSource)
@@ -116,14 +116,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     BackgroundBaseImage.Source = ImageSources;
                     AlbumImageBase.Source = imageSource;
 
-                    AnimateHelper.AnimateScalar(
-                        BackgroundBaseImage, 1, 1,
-                        0.2f, 1f, 0.22f, 1f,
-                        out var visual, out var compositor, out var animation);
-                    visual.Opacity = 0;
-                    visual.StartAnimation(nameof(visual.Opacity), animation);
-
-                    System.Diagnostics.Debug.WriteLine($"MusicPage: 图片已被更改.");
+                    Debug.WriteLine($"MusicPage: 图片已被更改.");
                 }
             }
         }
@@ -161,7 +154,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         };
         private void CreatBlurVisualToImage()
         {
-            return;
+            return;/*
             var imageVisual = ElementCompositionPreview.GetElementVisual(BackgroundBaseImage);
             var compositor = imageVisual.Compositor;
             var blurFactory = compositor.CreateEffectFactory(blur);
@@ -180,7 +173,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             var blurVisual1 = compositor1.CreateSpriteVisual();
             blurVisual1.Brush = blurBrush1;
             blurVisual1.RelativeSizeAdjustment = new System.Numerics.Vector2(1f, 1f);
-            ElementCompositionPreview.SetElementChildVisual(BackgroundBaseImageAnimate, blurVisual1);
+            ElementCompositionPreview.SetElementChildVisual(BackgroundBaseImageAnimate, blurVisual1);*/
         }
 
         public void UpdataInterfaceDesign()

@@ -101,15 +101,19 @@ namespace znMusicPlayerWUI
             App.audioPlayer.CacheLoadedChanged += AudioPlayer_CacheLoadedChanged;
             App.audioPlayer.CacheLoadingChanged += AudioPlayer_CacheLoadingChanged;
             App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
-            App.playingList.NowPlayingImageLoading += PlayingList_NowPlayingImageLoading; ;
+            App.playingList.NowPlayingImageLoading += PlayingList_NowPlayingImageLoading;
             App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
-
+            App.lyricManager.PlayingLyricSelectedChange += (_) =>
+            {
+                if (SWindowGridBase.Visibility == Visibility.Visible)
+                    AppTitleTextBlock.Text = $"{App.AppName} - {_.Lyric}";
+            };
+            
             // 第一次点击不会响应动画。。。
             App.LoadSettings();
         }
 
         #region init TitleBar
-        bool w10TitleBarMode = false;
         public void InitializeTitleBar(ApplicationTheme theme)
         {
             if (AppWindowTitleBar.IsCustomizationSupported())
@@ -118,7 +122,6 @@ namespace znMusicPlayerWUI
             }
             else
             {
-                w10TitleBarMode = true;
                 ExtendsContentIntoTitleBar = true;
                 SetTitleBar(AppTitleBar);
                 AppTitleBar.Height = 28;

@@ -131,7 +131,7 @@ namespace NAudio.Flac
             }
             else
             {
-                Debug.WriteLine("ID3v2::ReadData: No ID3v2 Header found.");
+                Debug.WriteLine("ID3v2::ReadData: 找不到ID3v2头.");
                 return false;
             }
         }

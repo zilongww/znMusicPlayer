@@ -22,12 +22,7 @@ namespace znMusicPlayerWUI.Pages
             InitializeComponent();
             int allDownload = 0;
             int downloaded = 0;
-            // 当第一次初始化时加载
-            foreach (var dm in App.downloadManager.AllDownloadData)
-            {
-                ListViewBase.Items.Add(new DownloadCard(dm));
-                allDownload++;
-            }
+
             var updataTextTB = () => HeaderBaseTextBlock.Text = $"下载（{downloaded}/{allDownload}）";
             App.downloadManager.AddDownload += (dm) =>
             {
@@ -106,6 +101,26 @@ namespace znMusicPlayerWUI.Pages
                     }
                 }
             };
+
+            // 当第一次初始化时加载
+            foreach (var dm in App.downloadManager.AllDownloadData)
+            {
+                ListViewBase.Items.Add(new DownloadCard(dm));
+                allDownload++;
+            }
+            foreach (var dm in App.downloadManager.DownloadingData)
+            {
+                App.downloadManager.CallOnDownloadingEvent(dm);
+            }
+            foreach (var dm in App.downloadManager.DownloadedData)
+            {
+                App.downloadManager.CallOnDownloadedEvent(dm);
+                downloaded++;
+            }
+            foreach (var dm in App.downloadManager.DownloadErrorData)
+            {
+                App.downloadManager.CallOnDownloadErrorEvent(dm);
+            }
         }
 
         public void UpdataShyHeader()

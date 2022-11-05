@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" Background="Transparent" IsRightTapEnabled="True"
     MinWidth="0" MinHeight="0">
-    <Image x:Name="ImageSourceBefore" Stretch="Uniform"/>
+    <Image x:Name="ImageSourceBefore" Stretch="{Binding ElementName=ImageSource, Path=Stretch}"/>
     <Image x:Name="ImageSource" Stretch="Uniform"/>
     <Rectangle x:Name="ImageMass" Fill="Black" Opacity="0.14"/>
     <Button x:Name="MenuBtn"

@@ -481,13 +481,10 @@ namespace znMusicPlayerWUI.Controls
         {
             if (Children.SelectedItems.Any())
             {
-                List<SongItem> a = new List<SongItem>();
-                foreach (SongItem item in Children.SelectedItems) a.Add(item);
-                foreach (var b in a)
+                foreach (SongItem songItem in Children.Items)
                 {
-                    App.downloadManager.Add(b.MusicData);
+                    App.downloadManager.Add(songItem.MusicData);
                 }
-
             }
         }
     }

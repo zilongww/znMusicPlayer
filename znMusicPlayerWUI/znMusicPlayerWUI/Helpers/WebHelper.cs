@@ -53,13 +53,14 @@ namespace znMusicPlayerWUI.Helpers
             Uri uriResult;
 
             if (!Uri.TryCreate(address, UriKind.Absolute, out uriResult))
-                throw new InvalidOperationException("无法定位到网络地址，请检查你的域名服务器是否正常工作。");
+                throw new InvalidOperationException("无法定位到网络地址，请检查你的域名服务器是否正常工作或DNS配置是否正确。");
 
             if (!File.Exists(downloadPath))
                 throw new FileNotFoundException("找不到目标文件。");
 
             byte[] fileBytes = await Client.GetByteArrayAsync(address);
             await File.WriteAllBytesAsync(downloadPath, fileBytes);
+            
         }
 
         /// <summary>

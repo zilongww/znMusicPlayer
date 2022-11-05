@@ -76,8 +76,8 @@ namespace NAudio.Flac
 
 #if DEBUG
             watch.Stop();
-            Debug.WriteLine(String.Format("FlacPreScan finished: {0} Bytes processed in {1} ms.",
-                _stream.Length, watch.ElapsedMilliseconds));
+            //Debug.WriteLine(String.Format("FlacPreScan finished: {0} Bytes processed in {1} ms.",
+            //    _stream.Length, watch.ElapsedMilliseconds));
 #endif
             RaiseScanFinished(result);
             return result;

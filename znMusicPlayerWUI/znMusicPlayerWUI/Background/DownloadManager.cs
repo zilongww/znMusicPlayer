@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Media.Protection.PlayReady;
 using znMusicPlayerWUI.DataEditor;
@@ -22,9 +23,11 @@ namespace znMusicPlayerWUI.Background
 
         //public enum DownloadStates { Waiting, Downloading, DownloadedPreview, Downloaded, Error  }
         public List<DownloadData> AllDownloadData { get; set; } = new();
-        List<DownloadData> WaitingDownloadData { get; set; } = new();
-        List<DownloadData> DownloadingData { get; set; } = new();
-        List<DownloadData> DownloadedData { get; set; } = new();
+        public List<DownloadData> WaitingDownloadData { get; set; } = new();
+        public List<DownloadData> DownloadingData { get; set; } = new();
+        public List<DownloadData> DownloadedData { get; set; } = new();
+        public List<DownloadData> DownloadErrorData { get; set; } = new();
+
         public delegate void DownloadHandler(DownloadData data);
         public event DownloadHandler AddDownload;
         public event DownloadHandler OnDownloading;
@@ -48,14 +51,14 @@ namespace znMusicPlayerWUI.Background
         public void Add(MusicData musicData)
         {
             var dm = new DownloadData() { MusicData = musicData };
-            if (!DownloadingData.Contains(dm) && !DownloadedData.Contains(dm) && !WaitingDownloadData.Contains(dm))
+            if (!DownloadingData.Contains(dm) || !DownloadedData.Contains(dm) || !WaitingDownloadData.Contains(dm))
             {
                 AllDownloadData.Add(dm);
                 WaitingDownloadData.Add(dm);
+                AddDownload?.Invoke(dm);
                 try
                 {
                     UpdataDownload();
-                    AddDownload?.Invoke(dm);
                 }
                 catch (Exception err)
                 {
@@ -66,25 +69,23 @@ namespace znMusicPlayerWUI.Background
 
         public void UpdataDownload()
         {
-            while (DownloadingData.Count < DownloadingMaxium)
+            while (DownloadingData.Count < DownloadingMaxium && WaitingDownloadData.Any())
             {
-                if (WaitingDownloadData.Any())
+                var dm = WaitingDownloadData[0];
+                WaitingDownloadData.Remove(dm);
+                DownloadingData.Add(dm);
+                try
                 {
-                    var m = WaitingDownloadData[0];
-                    WaitingDownloadData.Remove(m);
-                    DownloadingData.Add(m);
-                    try
-                    {
-                        StartDownload(m);
-                    }
-                    catch (Exception err)
-                    {
-                        System.Diagnostics.Debug.WriteLine(err.Message);
-                        DownloadingData.Remove(m);
-                        OnDownloadError?.Invoke(m);
-                    }
+                    System.Diagnostics.Debug.WriteLine($"下载中：{dm.MusicData.Title}");
+                    StartDownload(dm);
                 }
-                else break;
+                catch (Exception err)
+                {
+                    System.Diagnostics.Debug.WriteLine(err.Message);
+                    DownloadingData.Remove(dm);
+                    DownloadErrorData.Add(dm);
+                    OnDownloadError?.Invoke(dm);
+                }
             }
         }
 
@@ -94,22 +95,24 @@ namespace znMusicPlayerWUI.Background
             string downloadPath1 =
                 $"{DataFolderBase.DownloadFolder}\\{CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.Title)} - {CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.ButtonName)}";
             string addressPath = null;
+            bool isErr = false;
             try
             {
                 addressPath = await App.metingServices.NeteaseServices.GetUrl(dm.MusicData.ID, br);
             }
             catch
             {
-                DownloadingData.Remove(dm);
-                OnDownloadError?.Invoke(dm);
+                isErr = true;
                 return;
             }
-            if (string.IsNullOrEmpty(addressPath))
+            if (string.IsNullOrEmpty(addressPath) || isErr)
             {
                 DownloadingData.Remove(dm);
+                DownloadErrorData.Add(dm);
                 OnDownloadError?.Invoke(dm);
                 return;
             }
+
             string lastName = new FileInfo(addressPath).Extension;
             string downloadPath = downloadPath1 + lastName;
             string lyricPath = downloadPath1 + ".lrc";
@@ -123,34 +126,39 @@ namespace znMusicPlayerWUI.Background
             var file = new FileInfo(downloadPath);
 
             var n = response.Content.Headers.ContentLength;
+            var fileStream = file.Create();
             var stream = await response.Content.ReadAsStreamAsync();
-            using (var fileStream = file.Create())
-            using (stream)
+            using (fileStream)
             {
-                byte[] buffer = new byte[1024];
-                var readLength = 0;
-                int length;
-                int dcount = 0;
-                while ((length = await stream.ReadAsync(buffer, 0, buffer.Length)) != 0)
+                using (stream)
                 {
-                    readLength += length;
-
-                    dcount += 1;
-                    if (dcount == 3550)
+                    byte[] buffer = new byte[1024];
+                    var readLength = 0;
+                    int length;
+                    int dcount = 0;
+                    while ((length = await stream.ReadAsync(buffer, 0, buffer.Length)) != 0)
                     {
-                        dcount = 0;
-                        var a = Math.Round(readLength / (decimal)n * 100, 1);
-                        dm.DownloadPercent = a;
-                        OnDownloading?.Invoke(dm);
-                        //DownloadingData[DownloadingData.IndexOf(dm)].DownloadPercent = a;
-                        //System.Diagnostics.Debug.WriteLine(a);
-                    }
+                        readLength += length;
 
-                    // 写入到文件
-                    await fileStream.WriteAsync(buffer, 0, length);
+                        dcount += 1;
+                        if (dcount == 3550)
+                        {
+                            dcount = 0;
+                            var a = Math.Round(readLength / (decimal)n * 100, 1);
+                            dm.DownloadPercent = a;
+                            OnDownloading?.Invoke(dm);
+                            //DownloadingData[DownloadingData.IndexOf(dm)].DownloadPercent = a;
+                            //System.Diagnostics.Debug.WriteLine(a);
+                        }
+
+                        // 写入到文件
+                        await fileStream.WriteAsync(buffer, 0, length);
+                    }
                 }
             }
-
+            await fileStream.DisposeAsync();
+            await stream.DisposeAsync();
+            response.Dispose();
             OnDownloadedPreview?.Invoke(dm);
 
             bool picDownloaded = false;
@@ -172,6 +180,7 @@ namespace znMusicPlayerWUI.Background
                 tag.Title = dm.MusicData.Title;
                 tag.Album = dm.MusicData.Album;
                 tag.Comment = $"Download with {App.AppName}";
+                tag.Description = tag.Comment;
 
                 if (picDownloaded)
                 {
@@ -195,7 +204,24 @@ namespace znMusicPlayerWUI.Background
                 }
                 tag.Performers = artists.ToArray();
                 tag.AlbumArtists = tag.Performers;
-                tagFile.Save();
+
+                // 在上面的异步操作完成后，似乎不会很快地将下载的数据从内存中写入到磁盘中，
+                // 因此导致文件被占用。在此每间隔1秒尝试保存。
+                int retryCount = 0;
+                while (retryCount <= 12)
+                {
+                    try
+                    {
+                        tagFile.Save();
+                        break;
+                    }
+                    catch
+                    {
+                        Thread.Sleep(1000);
+                        retryCount++;
+                    }
+                }
+                
                 tagFile.Dispose();
             });
 
@@ -215,6 +241,19 @@ namespace znMusicPlayerWUI.Background
             DownloadedData.Add(dm);
             OnDownloaded?.Invoke(dm);
             UpdataDownload();
+        }
+
+        public void CallOnDownloadingEvent(DownloadData dm)
+        {
+            OnDownloading?.Invoke(dm);
+        }
+        public void CallOnDownloadedEvent(DownloadData dm)
+        {
+            OnDownloaded?.Invoke(dm);
+        }
+        public void CallOnDownloadErrorEvent(DownloadData dm)
+        {
+            OnDownloadError?.Invoke(dm);
         }
     }
 }

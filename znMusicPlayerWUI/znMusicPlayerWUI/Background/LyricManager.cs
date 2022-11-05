@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using znMusicPlayerWUI.DataEditor;
+using znMusicPlayerWUI.Helpers;
 
 namespace znMusicPlayerWUI.Background
 {
@@ -53,7 +54,7 @@ namespace znMusicPlayerWUI.Background
 
         public async Task InitLyricList(MusicData musicData)
         {
-            string cachePath = await Helpers.FileHelper.GetLyricCache(musicData);
+            string cachePath = await FileHelper.GetLyricCache(musicData);
             string resultPath = null;
 
             if (cachePath != null)
@@ -62,7 +63,7 @@ namespace znMusicPlayerWUI.Background
             }
             else
             {
-                var lyricTuple = await Helpers.WebHelper.GetLyricStringAsync(musicData);
+                var lyricTuple = await WebHelper.GetLyricStringAsync(musicData);
                 if (lyricTuple == null)
                 {
                     resultPath = null;
@@ -93,7 +94,17 @@ namespace znMusicPlayerWUI.Background
                 return;
             }
 
-            string f = await System.IO.File.ReadAllTextAsync(lyricPath);
+            string f = null;
+            var lrcEncode = FileHelper.GetEncodeingType(lyricPath);
+            if (lrcEncode == Encoding.Default)
+            {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                f = await System.IO.File.ReadAllTextAsync(lyricPath, Encoding.GetEncoding("GB2312"));
+            }
+            else
+            {
+                f = await System.IO.File.ReadAllTextAsync(lyricPath, lrcEncode);
+            }
 
             NowPlayingLyrics.Clear();
 

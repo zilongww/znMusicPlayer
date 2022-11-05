@@ -64,9 +64,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.25211-preview">
-      <IncludeAssets>build</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.220909.2-experimental2" />
     <PackageReference Include="NAudio" Version="2.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

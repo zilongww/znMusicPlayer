@@ -70,6 +70,15 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
+        public Stretch Stretch
+        {
+            get => ImageSource.Stretch;
+            set
+            {
+                ImageSource.Stretch = value;
+            }
+        }
+
         public Imagezn()
         {
             InitializeComponent();

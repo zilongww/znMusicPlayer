@@ -12,12 +12,9 @@
     mc:Ignorable="d" Background="{ThemeResource ButtonBorderThemeBrush}" Opacity="1" IsHitTestVisible="True">
 
     <Grid RequestedTheme="Dark">
-        <Image x:Name="BackgroundBaseImageAnimate"
-               VerticalAlignment="Center" HorizontalAlignment="Center"
-               Opacity="1" Stretch="UniformToFill"/>
-        <Image x:Name="BackgroundBaseImage"
-               VerticalAlignment="Center" HorizontalAlignment="Center"
-               Stretch="UniformToFill" Loaded="BackgroundBaseImage_Loaded"/>
+        <controls:Imagezn x:Name="BackgroundBaseImage" IsHitTestVisible="False"
+                          VerticalAlignment="Center" HorizontalAlignment="Center"
+                          Stretch="UniformToFill" Loaded="BackgroundBaseImage_Loaded"/>
         <TextBlock x:Name="BridgeTb" TextAlignment="Center" HorizontalAlignment="Left"/>
         <Rectangle>
             <Rectangle.Fill>

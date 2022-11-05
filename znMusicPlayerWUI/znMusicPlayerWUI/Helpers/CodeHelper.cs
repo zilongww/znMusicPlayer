@@ -21,6 +21,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Graphics.Imaging;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace znMusicPlayerWUI.Helpers
 {
@@ -340,7 +341,10 @@ namespace znMusicPlayerWUI.Helpers
                                 timesb +
                                 TimeSpan.FromMilliseconds(int.Parse(times[1]));
 
-                            lyricDictionary.Add(timesResult, new(timesAndLyric.Last(), null, timesResult));
+                            if (!lyricDictionary.ContainsKey(timesResult))
+                            {
+                                lyricDictionary.Add(timesResult, new(timesAndLyric.Last(), null, timesResult));
+                            }
                         }
                     }
                     else
