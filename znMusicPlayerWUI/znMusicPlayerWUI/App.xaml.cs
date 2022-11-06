@@ -45,6 +45,7 @@ namespace znMusicPlayerWUI
         public static readonly PlayingList playingList = new();
         public static readonly LyricManager lyricManager = new();
         public static readonly DownloadManager downloadManager = new();
+        public static readonly PlayListReader playListReader = new();
 
         public static Window WindowLocal;
         public static AppWindow AppWindowLocal;

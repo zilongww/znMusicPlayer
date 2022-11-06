@@ -37,6 +37,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
         {
             if (contentDialogResult == ContentDialogResult.Primary)
             {
+                MainWindow.ShowDialog("正在加载", new ProgressRing() { IsIndeterminate = true, Width = 50, Height = 50 }, null, null);
                 MusicListData musicListData = null;
 
                 if (PivotList.SelectedItem == PivotList.Items[0])
@@ -68,6 +69,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                     try
                     {
                         await PlayListHelper.AddPlayList(musicListData);
+                        await App.playListReader.Refresh();
                     }
                     catch (Exception err)
                     {
@@ -78,6 +80,8 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                         //}
                     }
                 }
+
+                MainWindow.HideDialog();
             }
             ResultEvent -= AddPlayListPage_ResultEvent;
         }

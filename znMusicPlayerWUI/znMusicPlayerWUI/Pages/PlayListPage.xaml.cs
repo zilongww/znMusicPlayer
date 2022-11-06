@@ -20,6 +20,10 @@ namespace znMusicPlayerWUI.Pages
         public PlayListPage()
         {
             InitializeComponent();
+            App.playListReader.Updataed += () =>
+            {
+                UpdataPlayList();
+            };
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -43,9 +47,12 @@ namespace znMusicPlayerWUI.Pages
                 item.Dispose();
             }
             BaseGridView.Items.Clear();
-            var mls = await DataEditor.PlayListHelper.ReadAllPlayList();
             var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
-            foreach (var item in mls)
+
+            if (App.playListReader.NowMusicListDatas == null)
+                await App.playListReader.Refresh();
+
+            foreach (var item in App.playListReader.NowMusicListDatas)
             {
                 BaseGridView.Items.Add(new PlayListCard(item) { Width = 150, ImageScaleDPI = dpi });
             }
@@ -119,15 +126,14 @@ namespace znMusicPlayerWUI.Pages
             UpdataShyHeader();
         }
 
-        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            UpdataPlayList();
+            await App.playListReader.Refresh();
         }
 
         private async void AppBarButton_Click_1(object sender, RoutedEventArgs e)
         {
             await DialogPages.AddPlayListPage.ShowDialog();
-            UpdataPlayList();
         }
     }
 }

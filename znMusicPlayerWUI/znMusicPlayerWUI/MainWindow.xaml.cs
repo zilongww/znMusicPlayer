@@ -105,8 +105,9 @@ namespace znMusicPlayerWUI
             App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
             App.lyricManager.PlayingLyricSelectedChange += (_) =>
             {
-                if (SWindowGridBase.Visibility == Visibility.Visible)
+                if (SWindowGridBase.Visibility == Visibility.Visible && !isMinSize)
                     AppTitleTextBlock.Text = $"{App.AppName} - {_.Lyric}";
+                //System.Diagnostics.Debug.WriteLine("233");
             };
             
             // 第一次点击不会响应动画。。。
@@ -211,6 +212,11 @@ namespace znMusicPlayerWUI
         {
             await ShowDialog("音频设置", equalizerPage);
         }
+
+        public static void HideDialog()
+        {
+            AsyncDialog.Hide();
+        }
         #endregion
 
         #region AudioPlayer Events
@@ -251,7 +257,7 @@ namespace znMusicPlayerWUI
 
         private void AudioPlayer_CacheLoadingChanged(Media.AudioPlayer audioPlayer, object data)
         {
-            if (!CodeHelper.IsIconic(App.AppWindowLocalHandle))
+            if (!isMinSize)
             {
                 PlayRing.IsIndeterminate = true;
                 PlayRing.Foreground = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
@@ -281,7 +287,7 @@ namespace znMusicPlayerWUI
 
         public static void PlayingList_NowPlayingImageLoaded(ImageSource imageSource)
         {
-            if (!CodeHelper.IsIconic(App.AppWindowLocalHandle) && !InOpenMusicPage)
+            if (!isMinSize && !InOpenMusicPage)
             {
                 if (imageSource != (SPlayContent.Content as Imagezn)?.Source)
                 {
@@ -333,7 +339,7 @@ namespace znMusicPlayerWUI
 
         private void AudioPlayer_TimingChanged(Media.AudioPlayer audioPlayer)
         {
-            if (!CodeHelper.IsIconic(App.AppWindowLocalHandle) && !InOpenMusicPage)
+            if (!isMinSize && !InOpenMusicPage)
             {
                 if (audioPlayer.FileReader != null)
                 {
@@ -504,6 +510,7 @@ namespace znMusicPlayerWUI
             }
         }
 
+        public static bool isMinSize = false;
         private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
             if (args.WindowActivationState == WindowActivationState.PointerActivated ||
@@ -511,6 +518,7 @@ namespace znMusicPlayerWUI
             {
                 if (!CodeHelper.IsIconic(App.AppWindowLocalHandle))
                 {
+                    isMinSize = false;
                     if (!InOpenMusicPage)
                     {
                         PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage);
@@ -524,7 +532,10 @@ namespace znMusicPlayerWUI
             else
             {
                 if (CodeHelper.IsIconic(App.AppWindowLocalHandle))
+                {
+                    isMinSize = true;
                     SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
+                }
             }
         }
 
@@ -793,6 +804,12 @@ namespace znMusicPlayerWUI
 
         public static bool TryGoBack()
         {
+            if (InOpenMusicPage)
+            {
+                OpenOrCloseMusicPage();
+                return SContentFrame.CanGoBack;
+            }
+
             if (!SContentFrame.CanGoBack)
                 return false;
 
@@ -888,6 +905,7 @@ namespace znMusicPlayerWUI
         {
             teachingTipPlayingList.IsOpen = !teachingTipPlayingList.IsOpen;
             teachingTipPlayingList.IsLightDismissEnabled = true;
+            SPlayingListBaseView.ScrollIntoView(App.playingList.NowPlayingMusicData);
         }
 
         public static bool InOpenMusicPage { get; set; } = false;
