@@ -112,6 +112,20 @@ namespace znMusicPlayerWUI
             
             // 第一次点击不会响应动画。。。
             App.LoadSettings();
+            ReadLAE();
+        }
+
+        public async void ReadLAE()
+        {
+            if (App.LAE == null) return;
+
+            string b = "";
+            foreach (var arg in App.LAE.Arguments)
+            {
+                b += arg + "\n";
+            }
+            await ShowDialog("LAE", b);
+            AppTitleTextBlock.Text = b;
         }
 
         #region init TitleBar

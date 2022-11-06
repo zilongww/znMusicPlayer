@@ -79,6 +79,7 @@ namespace znMusicPlayerWUI
             Debug.WriteLine(e.ToString());
         }
 
+        public static Microsoft.UI.Xaml.LaunchActivatedEventArgs LAE = null;
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used such as when the application is launched to open a specific file.
@@ -90,7 +91,7 @@ namespace znMusicPlayerWUI
             WindowLocal = m_window;
             AppWindowLocalHandle = WindowHelper.GetWindowHandle(m_window);
             AppWindowLocalPresenter = OverlappedPresenter.Create();
-
+            LAE = args;
             //l_window = new DesktopLyricWindow();
             //AppDesktopLyricWindowHandle = WindowHelper.GetWindowHandle(l_window);
             //l_window.Activate();

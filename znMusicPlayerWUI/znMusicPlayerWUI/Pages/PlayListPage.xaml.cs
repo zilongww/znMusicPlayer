@@ -40,8 +40,11 @@ namespace znMusicPlayerWUI.Pages
             BaseGridView.Items.Clear();
         }
 
+        bool isInUpdata = false;
         public async void UpdataPlayList()
         {
+            if (isInUpdata) return;
+            isInUpdata = true;
             foreach (PlayListCard item in BaseGridView.Items)
             {
                 item.Dispose();
@@ -56,6 +59,7 @@ namespace znMusicPlayerWUI.Pages
             {
                 BaseGridView.Items.Add(new PlayListCard(item) { Width = 150, ImageScaleDPI = dpi });
             }
+            isInUpdata = false;
         }
 
         CompositionPropertySet scrollerPropertySet;
