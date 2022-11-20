@@ -100,25 +100,6 @@
                                 BorderThickness="0"
                                 Margin="0"
                                 Click="Button_Click_1"/>
-                        <!--<Grid>
-                            
-                            <TextBlock x:Name="NowPlayTimeTb"
-                                       Text="00:00"
-                                       Margin="8,12,0,0"
-                                       FontSize="12"
-                                       HorizontalAlignment="Left"
-                                       VerticalAlignment="Top"/>
-                            <Slider x:Name="NowPlaySlider" HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Top"
-                                    Margin="-8,-15,-8,0"
-                                    IsThumbToolTipEnabled="False"/>
-                            <TextBlock x:Name="NowAtherTimeTb"
-                                       Text="00:00"
-                                       Margin="0,12,6,0"
-                                       FontSize="12"
-                                       HorizontalAlignment="Right"
-                                       VerticalAlignment="Top"/>
-                        </Grid>-->
                         <Grid VerticalAlignment="Center">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -135,7 +116,7 @@
                                             Height="66"
                                             Margin="0,0,10,0">
                                     <Frame x:Name="PlayContent"
-                                           IsTabStop="True"
+                                           IsTabStop="True" MinWidth="0"
                                            CommonNavigationTransitionInfo.IsStaggerElement="True">
                                         <Image Source="/Images/SugarAndSalt.jpg"/>
                                     </Frame>
@@ -188,8 +169,7 @@
                                             Background="Transparent">
                                         <Button.Resources>
                                             <TeachingTip x:Name="PlayTimeSliderBasePopup"
-                                                         Target="{x:Bind PlayButton}"
-                                                         Background="{ThemeResource AcrylicNormal}">
+                                                         Target="{x:Bind PlayButton}">
                                                 <StackPanel Orientation="Vertical">
                                                     <TextBlock x:Name="PlayTimeTextBlock" Text="00:00/00:00" TextAlignment="Center"/>
                                                     <Slider x:Name="PlayTimeSlider" Width="180" IsThumbToolTipEnabled="False"/>
@@ -220,7 +200,8 @@
                                         Grid.Column="2">
                                 <AppBarButton Background="Transparent"
                                               Label="打开桌面歌词"
-                                              Style="{ThemeResource AppBarStyle}">
+                                              Style="{ThemeResource AppBarStyle}"
+                                              Click="Button_Click_6">
                                     <AppBarButton.Icon>
                                         <FontIcon Glyph="词" FontSize="20"
                                                   FontFamily="{StaticResource ContentControlThemeFontFamily}"/>
@@ -251,8 +232,7 @@
 
                 <Grid>
                     <TeachingTip x:Name="PlayingListBasePopup"
-                                 PreferredPlacement="BottomRight" PlacementMargin="0,0,-24,62"
-                                 Background="{ThemeResource AcrylicNormal}">
+                                 PreferredPlacement="BottomRight" PlacementMargin="0,0,-24,62">
                         <Grid x:Name="PlayingListBaseGrid"
                               HorizontalAlignment="Stretch">
                             <Grid Margin="0,0,44,0">
@@ -292,8 +272,7 @@
                 </Grid>
 
                 <TeachingTip x:Name="VolumeBasePopup"
-                             PreferredPlacement="BottomRight" PlacementMargin="0,0,-24,62"
-                             Background="{ThemeResource AcrylicNormal}">
+                             PreferredPlacement="BottomRight" PlacementMargin="0,0,-24,62">
                     <Grid x:Name="VolumeBaseGrid">
                         <StackPanel Orientation="Horizontal">
                             <Button Padding="12"

@@ -115,8 +115,9 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     if (App.audioPlayer?.MusicData?.AlbumID != MusicData?.AlbumID) return;
                     BackgroundBaseImage.Source = ImageSources;
                     AlbumImageBase.Source = imageSource;
-
+#if DEBUG
                     Debug.WriteLine($"MusicPage: 图片已被更改.");
+#endif
                 }
             }
         }
@@ -138,8 +139,9 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     SelectedChangedDo();
                 }
             }
-
+#if DEBUG
             Debug.WriteLine($"MusicPage: ViewState 已被设置为 {musicPageViewState}.");
+#endif
         }
 
         private void BackgroundBaseImage_Loaded(object sender, RoutedEventArgs e)
@@ -274,7 +276,9 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 if (b != null)
                     scrollViewer.ChangeView(null, b.ActualOffset.Y + b.ActualSize.Y / 2, null);
             }
+#if DEBUG
             Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData.Lyric}.");
+#endif
         }
 
         //todo：优化性能
@@ -408,7 +412,9 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             {
                 // 加1ms，否则会短时间判定到上一句歌词
                 App.audioPlayer.CurrentTime = lrcItem.LyricTimeSpan + TimeSpan.FromMilliseconds(1);
+#if DEBUG
                 Debug.WriteLine("audio player time setted.");
+#endif
             }
         }
 

@@ -41,7 +41,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                     return null;
                 };
 
-                for (int i = 0; i <= 15; i++)
+                for (int i = 0; i <= App.metingServices.RetryCount; i++)
                 {
                     var a = getAddressAction();
                     if (a != null)
@@ -84,7 +84,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                     return null;
                 };
 
-                for (int i = 0; i <= 15; i++)
+                for (int i = 0; i <= App.metingServices.RetryCount; i++)
                 {
                     var a = getLyricAction();
                     if (a != null)
@@ -119,9 +119,77 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                     return null;
                 };
 
-                for (int i = 0; i <= 15; i++)
+                for (int i = 0; i <= App.metingServices.RetryCount; i++)
                 {
                     var a = getPicAction();
+                    if (a != null)
+                    {
+                        return a;
+                    }
+                }
+
+                return null;
+            });
+        }
+        
+        public async Task<MusicListData> GetSearch(
+            string keyword,
+            int pageNumber = 1,
+            int pageSize = 30,
+            SearchDataType type = default)
+        {
+            return await Task.Run(() =>
+            {
+                var getSearchAction = MusicListData () =>
+                {
+                    string data = Services.FormatMethod(false).Search(keyword, new Meting4Net.Core.Models.Standard.Options() { page = pageNumber, limit = pageSize, type = 1/*(int)type*/ });
+
+                    if (data != null)
+                    {
+                        var a = JObject.Parse(data);
+                        if (a.ContainsKey("result"))
+                        {
+                            MusicListData ld = new(keyword, keyword, null, MusicFrom.neteaseMusic, null, null);
+                            ld.Songs = new();
+
+                            foreach (var song in a["result"]["songs"])
+                            {
+                                List<Artist> artists = null;
+                                // 添加歌手
+                                if (song["ar"] != null)
+                                {
+                                    artists = new();
+                                    foreach (var artist in song["ar"])
+                                    {
+                                        artists.Add(new(
+                                            (string)artist["name"],
+                                            (string)artist["id"],
+                                            null
+                                            ));
+                                    }
+                                }
+
+                                // 初始化歌曲信息
+                                ld.Songs.Add(new(
+                                    (string)song["name"], (string)song["id"],
+                                    artists,
+                                    (string)song["al"]["name"], (string)song["al"]["id"],
+                                    (string)song["al"]["picUrl"],
+                                    (string)song["publishTime"],
+                                    MusicFrom.neteaseMusic
+                                    ));
+                            }
+
+                            return ld;
+                        }
+                    }
+
+                    return null;
+                };
+
+                for (int i = 0; i <= App.metingServices.RetryCount; i++)
+                {
+                    var a = getSearchAction();
                     if (a != null)
                     {
                         return a;
@@ -184,7 +252,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                     return null;
                 };
 
-                for (int i = 0; i <= 15; i++)
+                for (int i = 0; i <= App.metingServices.RetryCount; i++)
                 {
                     var a = getPlayListAction();
                     if (a != null)

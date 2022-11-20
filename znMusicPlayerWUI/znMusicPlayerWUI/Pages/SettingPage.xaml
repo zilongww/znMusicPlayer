@@ -189,6 +189,35 @@
                     </Grid>
                 </StackPanel>
             </Expander>
+            <Expander x:Name="FutureEpd">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Viewbox Width="16">
+                            <SymbolIcon Symbol="More"/>
+                        </Viewbox>
+                        <StackPanel Style="{StaticResource STPS}">
+                            <TextBlock Text="其它"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander.Header>
+                <StackPanel>
+                    <Grid x:Name="OpenMediaBaseGrid"
+                          Loaded="OpenMediaBaseGrid_Loaded">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="打开媒体文件"/>
+                            <TextBlock Text="使用MediaPlayerElement打开媒体文件" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Button Content="打开文件" Margin="{ThemeResource ContentDialogButton1HostMargin}" Click="Button_Click_3"/>
+                            <Button Content="输入地址" Margin="{ThemeResource ContentDialogButton1HostMargin}" Click="Button_Click_3"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Expander>
         </StackPanel>
     </ListView>
 </Page>

@@ -37,7 +37,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
         {
             if (contentDialogResult == ContentDialogResult.Primary)
             {
-                MainWindow.ShowDialog("正在加载", new ProgressRing() { IsIndeterminate = true, Width = 50, Height = 50 }, null, null);
+                MainWindow.ShowLoadingDialog();
                 MusicListData musicListData = null;
 
                 if (PivotList.SelectedItem == PivotList.Items[0])
@@ -60,7 +60,9 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                     }
                     catch
                     {
+#if DEBUG
                         Debug.WriteLine("error");
+#endif
                     }
                 }
 

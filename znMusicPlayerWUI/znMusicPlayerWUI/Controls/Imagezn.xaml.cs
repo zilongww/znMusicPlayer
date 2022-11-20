@@ -170,6 +170,7 @@ namespace znMusicPlayerWUI.Controls
             if (result == ContentDialogResult.Primary)
             {
                 StorageFile f = null;
+                
                 if (Source.GetType() == typeof(WriteableBitmap))
                 {
                     f = await FileHelper.UserSaveFile("一张图片", Windows.Storage.Pickers.PickerLocationId.PicturesLibrary, new[] { ".png" }, "图片");

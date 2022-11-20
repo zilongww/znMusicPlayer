@@ -18,6 +18,7 @@ using Windows.ApplicationModel.Contacts;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.DataEditor;
 using Windows.Networking.Connectivity;
+using znMusicPlayerWUI.Windowed;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -237,6 +238,32 @@ namespace znMusicPlayerWUI.Pages
         private void NumberBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
         {
             App.downloadManager.DownloadingMaxium = (int)sender.Value;
+        }
+
+        private void OpenMediaBaseGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            if ((sender as Button).Content as string == "打开文件")
+            {
+                var res = await FileHelper.UserSelectFile(Windows.Storage.Pickers.PickerViewMode.List, Windows.Storage.Pickers.PickerLocationId.VideosLibrary, new[] { ".mp4", "*" });
+                if (res != null)
+                {
+                    new MediaPlayerWindow(res.Path);
+                }
+            }
+            else
+            {
+                var tbox = new TextBox() { PlaceholderText = "请输入媒体文件地址" };
+                var res = await MainWindow.ShowDialog("输入地址", tbox, "取消", "确定");
+                if (res == ContentDialogResult.Primary)
+                {
+                    new MediaPlayerWindow(tbox.Text);
+                }
+            }
         }
     }
 }

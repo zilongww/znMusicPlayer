@@ -27,7 +27,7 @@ using NAudio.Wave;
 using Microsoft.UI.Xaml.Hosting;
 using System.Collections.ObjectModel;
 
-namespace znMusicPlayerWUI
+namespace znMusicPlayerWUI.Windowed
 {
     public sealed partial class DesktopLyricWindow : Window
     {

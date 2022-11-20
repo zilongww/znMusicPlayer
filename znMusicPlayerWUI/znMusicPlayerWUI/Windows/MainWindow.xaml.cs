@@ -29,6 +29,8 @@ using System.Collections.ObjectModel;
 using znMusicPlayerWUI.Controls;
 using NAudio.Gui;
 using System.Runtime.Intrinsics.Arm;
+using Windows.Services.Store;
+using znMusicPlayerWUI.Windowed;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -199,7 +201,7 @@ namespace znMusicPlayerWUI
                 dialogShow = true;
                 AsyncDialog.Title = title;
                 AsyncDialog.Content = content;
-                AsyncDialog.Background = App.Current.Resources["AcrylicInAppFillColorBaseBrush"] as AcrylicBrush;
+                //AsyncDialog.Background = App.Current.Resources["AcrylicNormal"] as AcrylicBrush;
                 AsyncDialog.CloseButtonText = closeButtonText;
                 AsyncDialog.PrimaryButtonText = primaryButtonText;
                 AsyncDialog.CloseButtonCommand = null;
@@ -225,6 +227,11 @@ namespace znMusicPlayerWUI
         public static async Task ShowEqualizerDialog()
         {
             await ShowDialog("音频设置", equalizerPage);
+        }
+
+        public static async void ShowLoadingDialog(string title = "正在加载")
+        {
+            await ShowDialog(title, new ProgressRing() { IsIndeterminate = true, Width = 50, Height = 50 }, null, null);
         }
 
         public static void HideDialog()
@@ -283,20 +290,8 @@ namespace znMusicPlayerWUI
         {
             if (SPlayContent.Content.GetType() != typeof(Imagezn))
             {
-                SPlayContent.Content = new Imagezn();
+                SPlayContent.Content = new Imagezn() { MinWidth = 0 };
             }
-            /*
-            if (!CodeHelper.IsIconic(App.AppWindowLocalHandle) && !InOpenMusicPage)
-            {
-                var image1 = SPlayContent.Content as Imagezn;
-                if (image1 != null)
-                {
-                    image1.Dispose();
-                }
-                SPlayContent.Content = null;
-                isDeleteImage = true;
-            }
-            else isDeleteImage = false;*/
         }
 
         public static void PlayingList_NowPlayingImageLoaded(ImageSource imageSource)
@@ -306,15 +301,6 @@ namespace znMusicPlayerWUI
                 if (imageSource != (SPlayContent.Content as Imagezn)?.Source)
                 {
                     (SPlayContent.Content as Imagezn).Source = imageSource;
-                    //if (!isDeleteImage) PlayingList_NowPlayingImageLoading(null);
-                    //var image = new Imagezn() { Source = imageSource, Opacity = 1, ShowMenuBehavior = Imagezn.ShowMenuBehaviors.PointEnter };
-                    //SPlayContent.Content = image;
-                    /*AnimateHelper.AnimateScalar(
-                        image, 1f, 1,
-                        0.2f, 1f, 0.22f, 1f,
-                        out var visual, out var compositor, out var animation);
-                    visual.Opacity = 0;
-                    visual.StartAnimation("Opacity", animation);*/
                 }
             }
         }
@@ -450,11 +436,10 @@ namespace znMusicPlayerWUI
                 SWindow.Closed += Window_Closed;
 
                 m_configurationSource.IsInputActive = true;
-                switch (RequestedTheme)
+                switch (App.Current.RequestedTheme)
                 {
-                    case ElementTheme.Dark: m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
-                    case ElementTheme.Light: m_configurationSource.Theme = SystemBackdropTheme.Light; break;
-                    case ElementTheme.Default: m_configurationSource.Theme = SystemBackdropTheme.Default; break;
+                    case ApplicationTheme.Dark: m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
+                    case ApplicationTheme.Light: m_configurationSource.Theme = SystemBackdropTheme.Light; break;
                 }
 
                 m_micaController = new MicaController();
@@ -477,16 +462,14 @@ namespace znMusicPlayerWUI
                 SWindow.Closed += Window_Closed;
 
                 m_configurationSource.IsInputActive = true;
-                RequestedTheme = App.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : default;
-                switch (RequestedTheme)
+                switch (App.Current.RequestedTheme)
                 {
-                    case ElementTheme.Dark: m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
-                    case ElementTheme.Light: m_configurationSource.Theme = SystemBackdropTheme.Light; break;
-                    case ElementTheme.Default: m_configurationSource.Theme = SystemBackdropTheme.Default; break;
+                    case ApplicationTheme.Dark: m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
+                    case ApplicationTheme.Light: m_configurationSource.Theme = SystemBackdropTheme.Light; break;
                 }
 
                 m_acrylicController = new DesktopAcrylicController();
-                if (RequestedTheme == ElementTheme.Dark)
+                if (App.Current.RequestedTheme == ApplicationTheme.Dark)
                 {
                     m_acrylicController.LuminosityOpacity = 1f;
                     m_acrylicController.TintOpacity = 0.5f;
@@ -517,13 +500,14 @@ namespace znMusicPlayerWUI
 
         private void WindowGridBase_ActualThemeChanged(FrameworkElement sender, object args)
         {
-            InitializeTitleBar(App.Current.RequestedTheme);
             if (isAcrylicBackdrop)
             {
                 SetBackdrop(BackdropType.DesktopAcrylic);
             }
+            InitializeTitleBar(App.Current.RequestedTheme);
         }
 
+        static ApplicationTheme applicationTheme = App.Current.RequestedTheme;
         public static bool isMinSize = false;
         private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
@@ -555,11 +539,20 @@ namespace znMusicPlayerWUI
 
         private static void Window_Activated(object sender, WindowActivatedEventArgs args)
         {
-            if (m_currentBackdrop != BackdropType.DesktopAcrylic)
+            //SetBackdrop(BackdropType.DesktopAcrylic);
+            
+            switch (App.Current.RequestedTheme)
+            {
+                case ApplicationTheme.Light:
+                    m_configurationSource.Theme = SystemBackdropTheme.Light; break;
+                case ApplicationTheme.Dark:
+                    m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
+            }
+            m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
+            if (m_currentBackdrop != BackdropType.DefaultColor)
             {
                 m_configurationSource.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
             }
-
         }
 
         private static void Window_Closed(object sender, WindowEventArgs args)
@@ -943,7 +936,9 @@ namespace znMusicPlayerWUI
                     if (InOpenMusicPage)
                     {
                         SWindowGridBase.Visibility = Visibility.Collapsed;
+#if DEBUG
                         System.Diagnostics.Debug.WriteLine("Collapsed");
+#endif
                     }
                 };
 
@@ -953,7 +948,9 @@ namespace znMusicPlayerWUI
             {
                 InOpenMusicPage = false;
                 SWindowGridBase.Visibility = Visibility.Visible;
+#if DEBUG
                 System.Diagnostics.Debug.WriteLine("Visible");
+#endif
                 SMusicPageBaseFrame.Content = SMusicPage;
                 AnimateHelper.AnimateOffset(
                     SMusicPageBaseFrame,
@@ -1157,10 +1154,6 @@ namespace znMusicPlayerWUI
 
         private void Button_Click_6(object sender, RoutedEventArgs e)
         {
-            //Meting4Net.Core.Meting meting = new(Meting4Net.Core.ServerProvider.Netease);
-            //meting.Cookie("_ntes_nnid=e0720c34928112f57e4337b387e75a50,1654241864468; _ntes_nuid=e0720c34928112f57e4337b387e75a50; NMTID=00O84chCJ4UB0byzElkifyX9WkE3ZcAAAGBKH-xBw; WEVNSM=1.0.0; WNMCID=ujjiij.1654241864835.01.0; WM_TID=SWn5%2BrsBpSdEQBQERBeFA13BO%2BveMgTU; ntes_kaola_ad=1; _iuqxldmzr_=32; WM_NI=XQozOcYzcaCpDN93g4Dj0bPG2wp69WO6yTvymRLrerar51JwsGXjp3%2BTLqVGJk1UAav7LRkHXpt%2B2c4Cm2qxWgL1BX4I54KHEMgdDaPP9Qj%2Bh%2FkxAPZkpby32jBX5JoidnY%3D; WM_NIKE=9ca17ae2e6ffcda170e2e6eed9cc3b91b79f82cb80b2928aa6d85f839f8ab1d149919fa1b5c17b90a800a8db2af0fea7c3b92a9c8fa19bce699ba6ad82c27c8892f7d4e64088b60083d34df2a9c0d7bc5d8deab7b5f573af8e8493e87aa3aefbd2c97db199988bf339e98c8492d54d8ab5ffb6c46bb6e984b3ea449cb0bcccb169f89da3d3f47495b984d2c154f897fbd5ca448793a985c76b9490f7b2e921acf1a599c45c9ab5c083fc39f2b68eb9b842adb7ac8fdc37e2a3; JSESSIONID-WYYY=nbnnzUzR1Ap%2FRJpYqrIns7reQEmyC%2Bpu%2Bg9mQ8nDHajNFTsJkwrGyG5wXKQ1Xy4mkruApNERuC0V3vHukX%5Cmwx%5CEZ8%2FDvH2OjVwCGF1NP7acYy%5C5p%2F4%5CfRksIrli38UzUIsYGvMKeYc5PwmD3ZuqPqZMRw4EOUPX%2BRhd%5CHvhupvEAZrx%3A1659080893357");
-            //string jstr = meting.FormatMethod().Lyric("1441758494");
-            //System.Diagnostics.Debug.WriteLine(jstr);
         }
 
         #region PlayTimePopup
@@ -1176,7 +1169,7 @@ namespace znMusicPlayerWUI
 
         private void InitPlayTimePopup()
         {
-            PlayTimeSliderBasePopup.IsOpen = true;
+            PlayTimeSliderBasePopup.IsOpen = !PlayTimeSliderBasePopup.IsOpen;
             PlayTimeSliderBasePopup.IsLightDismissEnabled = true;
             PlayTimeSliderBasePopup.Closed += PlayTimeSliderBasePopup_Closed;
             App.audioPlayer.TimingChanged += AudioPlayer_TimingChanged1;

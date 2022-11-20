@@ -9,7 +9,7 @@
     RightTapped="Button_RightTapped" Background="Transparent"
     PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
     PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited"
-    DoubleTapped="Grid_DoubleTapped">
+    DoubleTapped="Grid_DoubleTapped" Holding="Grid_Holding">
     
     <Grid.Resources>
         <MenuFlyout x:Name="rmf" Opened="rmf_Opened" Closed="rmf_Closed">

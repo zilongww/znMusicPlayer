@@ -62,7 +62,9 @@ namespace znMusicPlayerWUI.Background
                 }
                 catch (Exception err)
                 {
+#if DEBUG
                     System.Diagnostics.Debug.WriteLine(err.Message);
+#endif
                 }
             }
         }
@@ -76,12 +78,16 @@ namespace znMusicPlayerWUI.Background
                 DownloadingData.Add(dm);
                 try
                 {
+#if DEBUG
                     System.Diagnostics.Debug.WriteLine($"下载中：{dm.MusicData.Title}");
+#endif
                     StartDownload(dm);
                 }
                 catch (Exception err)
                 {
+#if DEBUG
                     System.Diagnostics.Debug.WriteLine(err.Message);
+#endif
                     DownloadingData.Remove(dm);
                     DownloadErrorData.Add(dm);
                     OnDownloadError?.Invoke(dm);

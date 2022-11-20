@@ -157,14 +157,14 @@ namespace znMusicPlayerWUI.Helpers
         /// <exception cref="NullReferenceException"></exception>
         /// <exception cref="WebException">internal not conncetd or timeout</exception>
         public static async Task<MusicListData> SearchData(
-            string searchData,
+            string keyword,
             int pageNumber = 1,
             int pageSize = 30,
             MusicFrom searchFrom = MusicFrom.neteaseMusic,
             SearchDataType searchDataType = SearchDataType.歌曲)
         {
             // TODO!!!:设置ListDataType
-            MusicListData musicListData = new(searchData, searchData, null, searchFrom, null);
+            MusicListData musicListData = new(keyword, keyword, null, searchFrom, null);
             switch (searchFrom)
             {
                 case MusicFrom.kwMusic:
@@ -174,59 +174,17 @@ namespace znMusicPlayerWUI.Helpers
                     break;
 
                 case MusicFrom.neteaseMusic:
-                    if (searchDataType == SearchDataType.歌曲)
+                    try
                     {
-                        string webResult = null;
-
-                        try
+                        musicListData = await App.metingServices.NeteaseServices.GetSearch(keyword, pageNumber, pageSize, searchDataType);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                        var d = await MainWindow.ShowDialog("搜索失败", $"搜索时出现错误：\n{ex.Message}", "确定", "重试");
+                        if (d == Microsoft.UI.Xaml.Controls.ContentDialogResult.Secondary)
                         {
-                            webResult = await GetStringAsync(
-                                string.Format(NeteaseSearchAddress, searchData, (pageNumber - 1) * pageSize, pageSize));
-                        }
-                        catch (Exception err)
-                        {
-                            throw new WebException(err.Message);
-                        }
-
-                        JObject jResult = JObject.Parse(webResult);
-                        var code = jResult["code"];
-                        var result = jResult["result"];
-                        var songCount = result["songCount"];
-                        var songList = result["songs"];
-
-                        if (code.ToString() != "200" || songCount.ToString() == "0")
-                        {
-                            throw new NullReferenceException("搜索无结果。");
-                        }
-
-                        musicListData.Songs = new();
-                        foreach (var song in songList)
-                        {
-                            List<Artist> artists = null;
-
-                            if (song["artists"] != null)
-                            {
-                                artists = new();
-
-                                foreach (var artist in song["artists"])
-                                {
-                                    artists.Add(new(
-                                        (string)artist["name"],
-                                        (string)artist["id"],
-                                        null
-                                        ));
-                                }
-                            }
-
-                            musicListData.Songs.Add(
-                                new(
-                                    (string)song["name"],
-                                    (string)song["id"],
-                                    artists,
-                                    (string)song["album"]["name"],
-                                    (string)song["album"]["id"],
-                                    from: MusicFrom.neteaseMusic
-                                ));
+                            await SearchData(keyword, pageNumber, pageSize, searchFrom, searchDataType);
                         }
                     }
                     break;

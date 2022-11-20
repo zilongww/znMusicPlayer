@@ -18,11 +18,13 @@ namespace znMusicPlayerWUI.Helpers
         public Task<string> GetUrl(string id, int br);
         public Task<Tuple<string, string>> GetLyric(string id);
         public Task<Tuple<string, string>> GetPic(string id);
+        public Task<MusicListData> GetSearch(string keyword, int pageNumber = 1, int pageSize = 30, SearchDataType type = default);
         public Task<MusicListData> GetPlayList(string id);
     }
 
     public class MetingServices
     {
+        public int RetryCount = 15;
         public string NeteaseCookie = null;
         private Meting4Net.Core.Meting NeteaseMeting = new(Meting4Net.Core.ServerProvider.Netease);
         public IMetingService NeteaseServices { get; set; }

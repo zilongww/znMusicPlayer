@@ -22,6 +22,7 @@ using Microsoft.UI;
 using WinRT.Interop;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Media;
+using znMusicPlayerWUI.Windowed;
 using System.Reflection;
 using System.Diagnostics;
 using System.Drawing;
@@ -69,14 +70,18 @@ namespace znMusicPlayerWUI
             TaskScheduler.UnobservedTaskException +=
             (object sender, UnobservedTaskExceptionEventArgs excArgs) =>
             {
+#if DEBUG
                 Debug.WriteLine(excArgs.Exception.ToString());
+#endif
             };
         }
 
         private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
         {
             e.Handled = true;
+#if DEBUG
             Debug.WriteLine(e.ToString());
+#endif
         }
 
         public static Microsoft.UI.Xaml.LaunchActivatedEventArgs LAE = null;
@@ -92,9 +97,11 @@ namespace znMusicPlayerWUI
             AppWindowLocalHandle = WindowHelper.GetWindowHandle(m_window);
             AppWindowLocalPresenter = OverlappedPresenter.Create();
             LAE = args;
-            //l_window = new DesktopLyricWindow();
-            //AppDesktopLyricWindowHandle = WindowHelper.GetWindowHandle(l_window);
-            //l_window.Activate();
+            /*
+                        var l_window = new DesktopLyricWindow();
+                        AppDesktopLyricWindowHandle = WindowHelper.GetWindowHandle(l_window);
+                        l_window.Activate();
+            */
 
             var displayArea = CodeHelper.GetDisplayArea(m_window);
             var dpi = CodeHelper.GetScaleAdjustment(m_window);
@@ -158,8 +165,9 @@ namespace znMusicPlayerWUI
             string b = string.Join(",", c.ToArray());
             a[SettingParams.EqualizerCustomData.ToString()] = b;
             JSettingData = a;
-
+#if DEBUG
             Debug.WriteLine("设置配置已存储！");
+#endif
         }
 
         private Window m_window;

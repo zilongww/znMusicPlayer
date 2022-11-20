@@ -147,7 +147,14 @@ namespace znMusicPlayerWUI.Helpers
             }
             else
             {
-                return await OpenWriteableBitmapFile(await StorageFile.GetFileFromPathAsync(filePath));
+                try
+                {
+                    return await OpenWriteableBitmapFile(await StorageFile.GetFileFromPathAsync(filePath));
+                }
+                catch
+                {
+                    return null;
+                }
             }
         }
 

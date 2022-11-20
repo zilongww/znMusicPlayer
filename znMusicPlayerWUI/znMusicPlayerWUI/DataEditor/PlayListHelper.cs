@@ -39,6 +39,13 @@ namespace znMusicPlayerWUI.DataEditor
             return addData;
         }
 
+        public static async Task DeletePlayList(MusicListData musicListData)
+        {
+            var jdata = JObject.Parse(await ReadData());
+            jdata.Remove(musicListData.ListName);
+            await SaveData(jdata.ToString());
+        }
+
         public static async Task AddMusicDataToPlayList(string listName, MusicData musicData)
         {
             var text = await ReadData();

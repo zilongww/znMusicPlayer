@@ -73,7 +73,12 @@ namespace znMusicPlayerWUI.Controls
                 MusicData = null;
                 MainWindow.DriveInTypeEvent -= MainWindow_DriveInTypeEvent;
             }
-            catch(Exception err) { System.Diagnostics.Debug.WriteLine(err.ToString()); }
+            catch (Exception err)
+            {
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine(err.ToString());
+#endif
+            }
         }
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
@@ -96,7 +101,6 @@ namespace znMusicPlayerWUI.Controls
                     catch { }
                 }
                 AlbumImage.Source = a;
-                a = null;
             }
         }
 
@@ -112,13 +116,13 @@ namespace znMusicPlayerWUI.Controls
             {
                 InfoButton.Visibility = Visibility.Collapsed;
                 RightToolBar.Visibility = Visibility.Visible;
-                (RightToolBar.Children[0] as UIElement).Visibility = Visibility.Collapsed;
+                RightToolBar.Children[0].Visibility = Visibility.Collapsed;
             }
             else
             {
                 InfoButton.Visibility = Visibility.Visible;
                 RightToolBar.Visibility = Visibility.Collapsed;
-                (RightToolBar.Children[0] as UIElement).Visibility = Visibility.Visible;
+                RightToolBar.Children[0].Visibility = Visibility.Visible;
             }
 
             if (deviceType == Microsoft.UI.Input.PointerDeviceType.Touch)
@@ -133,6 +137,11 @@ namespace znMusicPlayerWUI.Controls
         }
 
         private void Button_RightTapped(object sender, Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs e)
+        {
+            rmf.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
+        }
+
+        private void Grid_Holding(object sender, Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs e)
         {
             rmf.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
         }

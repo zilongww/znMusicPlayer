@@ -32,6 +32,7 @@
     <None Remove="Pages\RecommendPage.xaml" />
     <None Remove="Pages\SearchPage.xaml" />
     <None Remove="Pages\SettingPage.xaml" />
+    <None Remove="Windows\MediaPlayerWindow.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
@@ -125,6 +126,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Pages\RecommendPage.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Windows\MediaPlayerWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
   </ItemGroup>

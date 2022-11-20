@@ -32,10 +32,7 @@
             <x:Double x:Key="TeachingTipMaxHeight">1000</x:Double>
             <x:Double x:Key="TeachingTipMinWidth">2</x:Double>
             <x:Double x:Key="TeachingTipMaxWidth">400</x:Double>
-            <StaticResource x:Key="TeachingTipTransientBackground" ResourceKey="AcrylicNormal"/>
-            <SolidColorBrush x:Key="TeachingTipTopHighlightBrush" Color="Transparent"/>
-            <SolidColorBrush x:Key="TeachingTipBackgroundBrush" Color="Transparent"/>
-            
+
             <x:String x:Key="上一首">M 357.3 324 v 376 c 0 17.6 -14.4 32 -32 32 s -32 -14.4 -32 -32 V 324 c 0 -17.6 14.4 -32 32 -32 s 32 14.4 32 32 Z M 400.5 512 c 0 9 4.4 17.4 11.7 22.6 l 275.2 192.6 c 8.4 5.9 19.4 6.5 28.5 1.9 c 9.1 -4.7 14.8 -14.1 14.8 -24.4 V 319.4 c 0 -10.3 -5.7 -19.6 -14.8 -24.4 c -9.1 -4.7 -20.1 -4 -28.5 1.9 L 412.3 489.5 a 27.29 27.29 0 0 0 -11.8 22.5 Z</x:String>
             <x:String x:Key="下一首">M 698.7 292 c 17.6 0 32 14.4 32 32 v 376 c 0 17.6 -14.4 32 -32 32 s -32 -14.4 -32 -32 V 324 c 0 -17.6 14.4 -32 32 -32 Z M 611.7 489.5 L 336.6 296.9 c -8.4 -5.9 -19.4 -6.6 -28.5 -1.9 c -9.1 4.8 -14.8 14.1 -14.8 24.4 v 385.3 c 0 10.3 5.7 19.7 14.8 24.4 c 9.1 4.6 20.1 4 28.5 -1.9 l 275.2 -192.6 c 7.3 -5.2 11.7 -13.6 11.7 -22.6 c 0 -9 -4.4 -17.4 -11.8 -22.5 Z</x:String>
             <x:String x:Key="下一首ol">M 897.6 0 c -25.6 0 -43.2 17.6 -43.2 43.2 v 443.2 L 206.4 17.6 C 180.8 0 150.4 0 124.8 12.8 c -20.8 12.8 -38.4 38.4 -38.4 64 v 865.6 c 0 30.4 17.6 56 38.4 68.8 c 12.8 4.8 20.8 8 33.6 8 c 17.6 0 30.4 -4.8 43.2 -12.8 l 648 -468.8 v 443.2 c 0 25.6 17.6 43.2 43.2 43.2 s 43.2 -17.6 43.2 -43.2 V 43.2 c 4.8 -25.6 -12.8 -43.2 -38.4 -43.2 Z M 172.8 926.4 V 97.6 L 744 512 L 172.8 926.4 Z</x:String>
