@@ -29,7 +29,7 @@
                        TextWrapping="Wrap"
                        IsTextSelectionEnabled="True">
                 版本号：<Run x:Name="VersionRun" Text="1.0.0"/>
-                <LineBreak/>程序框架：WinUI3 1.2.2 Preview
+                <LineBreak/>程序框架：WinUI3 1.2.2
                 <LineBreak/>平台：.NET 6
                 <LineBreak/>邮箱：zilongcn233@outlook.com
             </TextBlock>
