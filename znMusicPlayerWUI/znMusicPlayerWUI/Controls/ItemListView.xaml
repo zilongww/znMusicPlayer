@@ -5,13 +5,16 @@
     xmlns:local="using:znMusicPlayerWUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:brushes="using:CommunityToolkit.WinUI.UI.Media"
+    xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
     mc:Ignorable="d" NavigationCacheMode="Enabled">
     
     <Page.Resources>
         <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="Transparent"/>
         <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
     </Page.Resources>
-    
+
     <Grid>
         <ListView x:Name="Children"
                   Background="Transparent"
@@ -34,7 +37,7 @@
                                                TextWrapping="Wrap"/>
                                 </StackPanel>
                                 <Grid x:Name="PlayList_BaseGrid" Loaded="menu_border_Loaded">
-                                    <Grid x:Name="PlayList_Image_BaseGrid">
+                                    <Grid x:Name="PlayList_Image_BaseGrid" animations:Connected.AnchorElement="{x:Bind PlayList_Image}">
                                         <Rectangle x:Name="PlayList_Image_DropShadowBase"/>
                                         <Border Width="210"
                                                 Height="210"
@@ -42,14 +45,15 @@
                                                 BorderThickness="0"
                                                 HorizontalAlignment="Left"
                                                 x:Name="PlayList_ImageBaseBorder">
-                                            <local:Imagezn x:Name="PlayList_Image"/>
+                                            <local:Imagezn x:Name="PlayList_Image" animations:Connected.Key="listItem"/>
                                         </Border>
                                     </Grid>
                                     <StackPanel x:Name="InfosBaseStackPanel">
                                         <TextBlock x:Name="PlayList_TitleTextBlock"
                                                    Style="{ThemeResource SubTBHeader}"
                                                    TextTrimming="WordEllipsis"
-                                                   TextWrapping="NoWrap"/>
+                                                   TextWrapping="NoWrap"
+                                                   animations:Connected.Key="itemt"/>
                                         <TextBlock x:Name="PlayList_OtherTextBlock" Text="共0首歌曲"/>
                                     </StackPanel>
                                 </Grid>

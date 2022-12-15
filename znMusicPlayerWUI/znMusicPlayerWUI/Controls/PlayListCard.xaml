@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:znMusicPlayerWUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" MaxWidth="150"
     mc:Ignorable="d" Background="Transparent"
     Loaded="UILoaded" Unloaded="UIUnloaded"

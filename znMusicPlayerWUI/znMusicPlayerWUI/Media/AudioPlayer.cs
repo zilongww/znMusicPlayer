@@ -16,6 +16,8 @@ using static znMusicPlayerWUI.Media.AudioPlayer;
 using Microsoft.UI.Xaml;
 using System.Reflection.Metadata;
 using znMusicPlayerWUI.Helpers;
+using znMusicPlayerWUI.DataEditor;
+using static znMusicPlayerWUI.DataEditor.DataFolderBase;
 
 namespace znMusicPlayerWUI.Media
 {
@@ -46,19 +48,6 @@ namespace znMusicPlayerWUI.Media
 
             await Task.Run(() =>
             {
-                // Wasapi
-                var enumerator = new MMDeviceEnumerator();
-                // 添加默认设备
-                OutDevice outDevice1 = new OutDevice(OutApi.Wasapi, enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia).ID, defaultName);
-                outDevices.Add(outDevice1);
-
-                foreach (var wasapi in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
-                {
-                    OutDevice outDevice = new OutDevice(OutApi.Wasapi, wasapi.ID, wasapi.FriendlyName);
-                    outDevices.Add(outDevice);
-                }
-                enumerator.Dispose();
-
                 // WaveOut
                 for (int n = -1; n < WaveOut.DeviceCount; n++)
                 {
@@ -74,6 +63,19 @@ namespace znMusicPlayerWUI.Media
                     OutDevice outDevice = new OutDevice(OutApi.DirectSound, dev, name == "主声音驱动程序" ? defaultName : name);
                     outDevices.Add(outDevice);
                 }
+
+                // Wasapi
+                var enumerator = new MMDeviceEnumerator();
+                // 添加默认设备
+                OutDevice outDevice1 = new OutDevice(OutApi.Wasapi, enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia).ID, defaultName);
+                outDevices.Add(outDevice1);
+
+                foreach (var wasapi in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
+                {
+                    OutDevice outDevice = new OutDevice(OutApi.Wasapi, wasapi.ID, wasapi.FriendlyName);
+                    outDevices.Add(outDevice);
+                }
+                enumerator.Dispose();
 
                 // Asio
                 foreach (var asio in AsioOut.GetDriverNames())
@@ -193,7 +195,7 @@ namespace znMusicPlayerWUI.Media
             }
         }
 
-        private OutDevice _nowOutDevice = new() { DeviceType = OutApi.Wasapi, Device = new MMDeviceEnumerator().GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia).ID, DeviceName = "默认输出设备" };
+        private OutDevice _nowOutDevice = new() { DeviceType = OutApi.WaveOut, Device = null, DeviceName = "默认输出设备" };
         public OutDevice NowOutDevice
         {
             get => _nowOutDevice;
@@ -267,7 +269,9 @@ namespace znMusicPlayerWUI.Media
             timer.Tick += (_, __) => ReCallTiming();
         }
 
-        public async Task SetSource(DataEditor.MusicData musicData)
+        MusicData PointMusicData = null;
+        List<MusicData> LoadingMusicDatas = new();
+        public async Task SetSource(MusicData musicData)
         {
             if (musicData == MusicData)
             {
@@ -278,6 +282,13 @@ namespace znMusicPlayerWUI.Media
                 return;
             }
 
+            if (LoadingMusicDatas.Contains(musicData))
+            {
+                throw new Exception("音频正在缓存，请稍后。");
+            }
+
+            PointMusicData = musicData;
+            LoadingMusicDatas.Add(musicData);
             CacheLoadingChanged?.Invoke(this, 0);
 
             // 获取音频缓存路径
@@ -295,6 +306,7 @@ namespace znMusicPlayerWUI.Media
                 {
                     if (!WebHelper.IsNetworkConnected)
                     {
+                        LoadingMusicDatas.Remove(musicData);
                         CacheLoadedChanged?.Invoke(this);
                         throw new WebException("网络未连接，请连接网络后重试。");
                     }
@@ -303,7 +315,7 @@ namespace znMusicPlayerWUI.Media
                     if (a != null)
                     {
                         //Debug.WriteLine(a);
-                        string b = @$"{DataEditor.DataFolderBase.AudioCacheFolder}\{musicData.From}{musicData.ID}";
+                        string b = @$"{AudioCacheFolder}\{musicData.From}{musicData.ID}";
 
                         await Task.Run(() => File.Create(b).Close());
 
@@ -314,6 +326,7 @@ namespace znMusicPlayerWUI.Media
                         catch (Exception err)
                         {
                             await Task.Run(() => File.Delete(b));
+                            LoadingMusicDatas.Remove(musicData);
                             CacheLoadedChanged?.Invoke(this);
                             throw new FileLoadException($"加载缓存文件失败：{err.Message}");
                         }
@@ -344,6 +357,7 @@ namespace znMusicPlayerWUI.Media
                 // 当文件没有下载完成
                 if (downloaded)
                 {
+                    LoadingMusicDatas.Remove(musicData);
                     CacheLoadedChanged?.Invoke(this);
                     await Task.Run(() =>
                     {
@@ -352,20 +366,25 @@ namespace znMusicPlayerWUI.Media
                     });
                     throw new FileLoadException("缓存文件不完整，请重新加载。");
                 }
-            
-                var m = MusicData;
-                MusicData = musicData;
-                try
+
+                if (PointMusicData == musicData)
                 {
-                    await SetSource(resultPath);
-                }
-                catch (Exception err)
-                {
-                    MusicData = m;
-                }
-                finally
-                {
-                    CacheLoadedChanged?.Invoke(this);
+
+                    var m = MusicData;
+                    MusicData = musicData;
+                    try
+                    {
+                        await SetSource(resultPath);
+                    }
+                    catch (Exception err)
+                    {
+                        MusicData = m;
+                    }
+                    finally
+                    {
+                        LoadingMusicDatas.Remove(musicData);
+                        CacheLoadedChanged?.Invoke(this);
+                    }
                 }
             }
             else
@@ -420,35 +439,52 @@ namespace znMusicPlayerWUI.Media
             FileReader = fileReader;
             FileProvider = fileProvider;
 
+            bool notDefaultLatency = false;
+            if (Latency != (int)SettingDefault[SettingParams.AudioLatency.ToString()])
+            {
+                notDefaultLatency = true;
+            }
+
             switch (NowOutDevice.DeviceType)
             {
                 case OutApi.WaveOut:
                     NowOutObj = new WaveOutEvent();
                     (NowOutObj as WaveOutEvent).DeviceNumber = NowOutDevice.Device == null ? -1 : (int)NowOutDevice.Device;
-                    (NowOutObj as WaveOutEvent).NumberOfBuffers = Latency;
+                    if (notDefaultLatency) (NowOutObj as WaveOutEvent).NumberOfBuffers = Latency;
                     NowOutObj.Init(FileProvider);
                     NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
                     break;
                 case OutApi.DirectSound:
                     if (NowOutDevice.Device == null)
-                        NowOutObj = new DirectSoundOut(Latency);
+                    {
+                        if (notDefaultLatency)
+                            NowOutObj = new DirectSoundOut(Latency);
+                        else
+                            NowOutObj = new DirectSoundOut();
+                    }
                     else
-                        NowOutObj = new DirectSoundOut((NowOutDevice.Device as DirectSoundDeviceInfo).Guid, Latency);
+                    {
+                        if (notDefaultLatency)
+                            NowOutObj = new DirectSoundOut((NowOutDevice.Device as DirectSoundDeviceInfo).Guid, Latency);
+                        else
+                            NowOutObj = new DirectSoundOut((NowOutDevice.Device as DirectSoundDeviceInfo).Guid);
+                    }
                     NowOutObj.Init(FileProvider);
                     NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
                     break;
                 case OutApi.Wasapi:
-                    var a = new MMDeviceEnumerator().GetDevice(NowOutDevice.Device as string);
+                    var device = new MMDeviceEnumerator().GetDevice(NowOutDevice.Device as string);
                     NowOutObj = new WasapiOut(
-                        a,
+                        device,
                         WasapiOnly ? AudioClientShareMode.Exclusive : AudioClientShareMode.Shared, false,
                         Latency);
                     NowOutObj.Init(FileProvider);
                     NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
-                    a.Dispose();
+                    device.Dispose();
                     break;
                 case OutApi.Asio:
                     NowOutObj = new AsioOut(NowOutDevice.Device.ToString());
+                    //if (notDefaultLatency) (NowOutObj as AsioOut).PlaybackLatency = Latency;
                     NowOutObj.Init(FileProvider);
                     NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
                     break;
@@ -466,7 +502,10 @@ namespace znMusicPlayerWUI.Media
                 await Task.Run(() => DisposeAll());
                 await SetSource(filePath);
 
-                FileReader.CurrentTime = nowPosition;
+                if (FileReader != null)
+                {
+                    FileReader.CurrentTime = nowPosition;
+                }
                 if (nowPlayState == PlaybackState.Playing) SetPlay();
                 else SetPause();
             }

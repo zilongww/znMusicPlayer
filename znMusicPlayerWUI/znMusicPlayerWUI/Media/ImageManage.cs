@@ -8,8 +8,16 @@ namespace znMusicPlayerWUI.Media
 {
     public static class ImageManage
     {
+        public static List<DataEditor.MusicData> LoadingImages = new();
+
         public static async Task<string> GetImageSource(DataEditor.MusicData musicData)
         {
+            while (LoadingImages.Contains(musicData))
+            {
+                await Task.Delay(500);
+            }
+
+            LoadingImages.Add(musicData);
             string cachePath = await Helpers.FileHelper.GetImageCache(musicData);
             string resultPath = null;
 
@@ -68,10 +76,11 @@ namespace znMusicPlayerWUI.Media
                 }
                 else
                 {
-                    return "/Images/SugarAndSalt.jpg";
+                    resultPath = "/Images/SugarAndSalt.jpg";
                 }
             }
 
+            LoadingImages.Remove(musicData);
             return resultPath;
         }
 

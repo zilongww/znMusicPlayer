@@ -50,7 +50,17 @@ namespace znMusicPlayerWUI.DataEditor
         public MusicKbps Kbps { get; set; }
         public string InLocal { get; set; }
         public string ButtonName { get; set; }
-        public string MD5 { get; set; }
+
+        private string md5 = null;
+        public string MD5
+        {
+            get
+            {
+                if (md5 == null)
+                    md5 = Helpers.CodeHelper.ToMD5($"{Title}{Artists[0]}{Artists.Count}{Album}{this.ID}{AlbumID}{From}{InLocal}");
+                return md5;
+            }
+        }
 
         public MusicData(string title = "",
                          string ID = "",
@@ -80,8 +90,6 @@ namespace znMusicPlayerWUI.DataEditor
             }
 
             ButtonName += Album;
-
-            this.MD5 = Helpers.CodeHelper.ToMD5($"{Title}{Artists[0]}{Artists.Count}{Album}{this.ID}{AlbumID}{From}{InLocal}");
         }
 
         public static bool operator ==(MusicData left, MusicData right)

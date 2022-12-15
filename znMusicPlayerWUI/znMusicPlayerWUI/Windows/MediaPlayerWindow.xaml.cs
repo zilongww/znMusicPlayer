@@ -34,15 +34,16 @@ namespace znMusicPlayerWUI.Windowed
     {
         AppWindow appWindow = null;
         OverlappedPresenter overlappedPresenter = null;
-        string videoUri = null;
-        public string VideoUri
+        string mediaUri = null;
+        public string MediaUri
         {
-            get => videoUri;
+            get => mediaUri;
             set
             {
-                if (videoUri != value)
+                if (mediaUri != value)
                 {
                     MPE.Source = MediaSource.CreateFromUri(new Uri(value));
+                    MPE.MediaPlayer.Play();
                 }
             }
         }
@@ -64,9 +65,8 @@ namespace znMusicPlayerWUI.Windowed
             }
             SetBackdrop(BackdropType.Mica);
 
-            VideoUri = videoUri;
+            MediaUri = videoUri;
             Activate();
-            MPE.AutoPlay = true;
         }
 
         #region Enable Window Backdrop
@@ -171,8 +171,6 @@ namespace znMusicPlayerWUI.Windowed
 
         private void DesktopLyricWindow_Closed(object sender, WindowEventArgs args)
         {
-            MPE.Source = null;
-
             if (m_micaController != null)
             {
                 m_micaController.Dispose();
@@ -265,6 +263,12 @@ namespace znMusicPlayerWUI.Windowed
 
                 appWindow.TitleBar.SetDragRectangles(dragRects);
             }
+        }
+
+        private void Window_Closed(object sender, WindowEventArgs args)
+        {
+            System.Diagnostics.Debug.WriteLine("Closed");
+            MPE.Source = null;
         }
     }
 }

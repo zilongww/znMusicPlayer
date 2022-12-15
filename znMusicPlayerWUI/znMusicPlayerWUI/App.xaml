@@ -18,6 +18,7 @@
                     <SolidColorBrush x:Key="HeaderLowForeground" Color="#FF878787"/>
                     <SolidColorBrush x:Key="BorderNormal" Color="#10FFFFFF"/>
                     <StaticResource x:Key="AcrylicNormal" ResourceKey="AcrylicInAppFillColorDefaultBrush"/>
+                    <Color x:Key="BlurImageAcrylicBrush">#FF4F4F4F</Color>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <SolidColorBrush x:Key="ItemBorderBackground" Color="Black"/>
@@ -25,6 +26,7 @@
                     <SolidColorBrush x:Key="HeaderLowForeground" Color="#FF424242"/>
                     <SolidColorBrush x:Key="BorderNormal" Color="#15000000"/>
                     <StaticResource x:Key="AcrylicNormal" ResourceKey="AcrylicInAppFillColorBaseBrush"/>
+                    <Color x:Key="BlurImageAcrylicBrush">#EEEEEE</Color>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 

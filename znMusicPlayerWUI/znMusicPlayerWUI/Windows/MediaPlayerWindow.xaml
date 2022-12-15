@@ -5,7 +5,9 @@
     xmlns:local="using:znMusicPlayerWUI.Windowed"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:brushes="using:CommunityToolkit.WinUI.UI.Media"
+    mc:Ignorable="d" Closed="Window_Closed">
     <Grid SizeChanged="Grid_SizeChanged" RequestedTheme="Default">
         <MediaPlayerElement
             x:Name="MPE"
@@ -18,8 +20,7 @@
                                         IsFastForwardButtonVisible="True" IsFastForwardEnabled="True"
                                         IsFastRewindButtonVisible="True" IsFastRewindEnabled="True"
                                         IsSkipBackwardButtonVisible="True" IsSkipBackwardEnabled="True"
-                                        IsSkipForwardButtonVisible="True" IsSkipForwardEnabled="True"
-                                        Background="{ThemeResource AcrylicNormal}"/>
+                                        IsSkipForwardButtonVisible="True" IsSkipForwardEnabled="True"/>
             </MediaPlayerElement.TransportControls>
         </MediaPlayerElement>
 
