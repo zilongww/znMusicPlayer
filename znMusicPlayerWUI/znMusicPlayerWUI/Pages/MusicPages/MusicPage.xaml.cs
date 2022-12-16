@@ -15,6 +15,7 @@ using NAudio.Wave;
 using Microsoft.UI.Xaml.Media;
 using znMusicPlayerWUI.Controls;
 using System.Diagnostics;
+using Microsoft.UI.Xaml.Input;
 
 namespace znMusicPlayerWUI.Pages.MusicPages
 {
@@ -264,7 +265,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             isCodeChangedLrcItem = true;
             LrcBaseListView.SelectedItem = App.lyricManager.NowLyricsData;
             isCodeChangedLrcItem = false;
-            if (scrollViewer != null)
+            if (scrollViewer != null && !inScroll)
             {
                 var b = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
                 if (b == null)
@@ -348,7 +349,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private void AudioPlayer_CacheLoadingChanged(Media.AudioPlayer audioPlayer, object data)
         {
             if (ViewState == MusicPageViewState.Hidden) return;
-            PlayButton.IsEnabled = false;
+            PlayButton.IsEnabled = true;
             AudioLoadingProressRing.IsIndeterminate = true;
         }
 
@@ -401,10 +402,14 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             var a = VisualTreeHelper.GetChild(LrcBaseListView, 0) as Border;
             if (a != null)
                 scrollViewer = a.Child as ScrollViewer;
+            LrcBaseListView.AddHandler(PointerWheelChangedEvent, new PointerEventHandler(LrcBaseListView_PointerWheelChanged), true);
             UpdataInterfaceDesign();
         }
 
+        bool inScroll = false;
+        int scrollCount = 0;
         bool isCodeChangedLrcItem = false;
+        bool isCodeScrollLrcViewer = false;
         private void LrcBaseListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var lrcItem = LrcBaseListView.SelectedItem as DataEditor.LyricData;
@@ -450,6 +455,19 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.OpenOrCloseMusicPage();
+        }
+
+        private async void LrcBaseListView_PointerWheelChanged(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            scrollCount++;
+            inScroll = true;
+            await Task.Delay(2500);
+            if (scrollCount <= 1)
+            {
+                inScroll = false;
+                SelectedChangedDo();
+            }
+            scrollCount--;
         }
     }
 }

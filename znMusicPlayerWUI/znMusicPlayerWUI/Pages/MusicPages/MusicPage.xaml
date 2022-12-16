@@ -147,7 +147,7 @@
                 </Grid>
             </Grid>
 
-            <Grid x:Name="LrcBaseGrid" Grid.Column="1">
+            <Grid x:Name="LrcBaseGrid" Grid.Column="1" PointerWheelChanged="LrcBaseListView_PointerWheelChanged">
                 <ListView x:Name="LrcBaseListView"
                           Loaded="LrcBaseListView_Loaded"
                           Background="Transparent"

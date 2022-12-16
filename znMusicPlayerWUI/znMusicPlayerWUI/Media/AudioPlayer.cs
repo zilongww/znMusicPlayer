@@ -284,6 +284,7 @@ namespace znMusicPlayerWUI.Media
 
             if (LoadingMusicDatas.Contains(musicData))
             {
+                return;
                 throw new Exception("音频正在缓存，请稍后。");
             }
 
@@ -370,7 +371,6 @@ namespace znMusicPlayerWUI.Media
                 LoadingMusicDatas.Remove(musicData);
                 if (PointMusicData == musicData)
                 {
-
                     var m = MusicData;
                     MusicData = musicData;
                     try
