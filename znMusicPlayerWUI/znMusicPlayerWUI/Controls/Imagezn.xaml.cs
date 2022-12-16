@@ -20,12 +20,13 @@ using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
+using Windows.Media.Devices;
 
 namespace znMusicPlayerWUI.Controls
 {
     public partial class Imagezn : Grid, IDisposable
     {
-        public enum ShowMenuBehaviors { PointEnter, RightTaped, Tapped, None }
+        public enum ShowMenuBehaviors { Tapped, None }
 
         private ShowMenuBehaviors _showMenuBehavior = default;
         public ShowMenuBehaviors ShowMenuBehavior
@@ -34,14 +35,6 @@ namespace znMusicPlayerWUI.Controls
             set
             {
                 _showMenuBehavior = value;
-                if (ShowMenuBehavior == ShowMenuBehaviors.None)
-                {
-                    MenuBtn.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    MenuBtn.Visibility = Visibility.Visible;
-                }
             }
         }
 
@@ -206,6 +199,62 @@ namespace znMusicPlayerWUI.Controls
                     }
                 }
             }
+        }
+
+        private void Grid_RightTapped(object sender, Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs e)
+        {
+        }
+
+        bool isPointEnter = false;
+        bool isFirstAnimate = true;
+        private async void Grid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
+            isPointEnter = true;
+            ImageMassAlpha.Visibility = Visibility.Visible;
+            AnimateHelper.AnimateScalar(
+                ImageMassAlpha, 0.6f, 0.5,
+                0.2f, 1, 0.22f, 1f,
+                out var visual, out var compositor, out var scalarKeyFrameAnimation);
+            visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
+
+            if (isFirstAnimate)
+            {
+                isFirstAnimate = false;
+                await Task.Delay(1);
+                Grid_PointerEntered(null, null);
+            }
+        }
+
+        private void Grid_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
+            isPointEnter = false;
+            AnimateHelper.AnimateScalar(
+                ImageMassAlpha, 0, 1,
+                0f, 0f, 0f, 0f,
+                out var visual, out var compositor, out var scalarKeyFrameAnimation);
+            visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
+            compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
+            {
+                if (!isPointEnter)
+                    ImageMassAlpha.Visibility = Visibility.Collapsed;
+            };
+        }
+
+        private void Grid_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+
+        }
+
+        private void Grid_PointerReleased(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+
+        }
+
+        private void Grid_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            MenuFlyoutItem_Click(null, null);
         }
     }
 }

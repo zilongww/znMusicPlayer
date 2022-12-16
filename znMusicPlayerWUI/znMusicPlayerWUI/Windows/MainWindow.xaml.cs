@@ -937,7 +937,7 @@ namespace znMusicPlayerWUI
                     {
                         SWindowGridBase.Visibility = Visibility.Collapsed;
 #if DEBUG
-                        System.Diagnostics.Debug.WriteLine("Collapsed");
+                        System.Diagnostics.Debug.WriteLine("主界面被隐藏。");
 #endif
                     }
                 };
@@ -949,7 +949,7 @@ namespace znMusicPlayerWUI
                 InOpenMusicPage = false;
                 SWindowGridBase.Visibility = Visibility.Visible;
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine("Visible");
+                System.Diagnostics.Debug.WriteLine("主界面被显示。");
 #endif
                 SMusicPageBaseFrame.Content = SMusicPage;
                 AnimateHelper.AnimateOffset(
