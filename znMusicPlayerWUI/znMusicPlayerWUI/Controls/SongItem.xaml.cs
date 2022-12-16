@@ -23,6 +23,7 @@ namespace znMusicPlayerWUI.Controls
         public bool CanClickPlay { get; set; } = true;
         public MusicData MusicData { get; set; }
         public MusicListData MusicListData { get; set; }
+        public double ImageScaleDPI { get; set; } = 1.0;
         public bool ShowImage
         {
             get { return _ShowImage; }
@@ -96,7 +97,7 @@ namespace znMusicPlayerWUI.Controls
                 {
                     try
                     {
-                        a = await FileHelper.GetImageSource(await Media.ImageManage.GetImageSource(MusicData), 50, 50, true);
+                        a = await FileHelper.GetImageSource(await Media.ImageManage.GetImageSource(MusicData), (int)(50 * ImageScaleDPI), (int)(50 * ImageScaleDPI), true);
                     }
                     catch { }
                 }
