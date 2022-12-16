@@ -367,6 +367,7 @@ namespace znMusicPlayerWUI.Media
                     throw new FileLoadException("缓存文件不完整，请重新加载。");
                 }
 
+                LoadingMusicDatas.Remove(musicData);
                 if (PointMusicData == musicData)
                 {
 
@@ -382,7 +383,6 @@ namespace znMusicPlayerWUI.Media
                     }
                     finally
                     {
-                        LoadingMusicDatas.Remove(musicData);
                         CacheLoadedChanged?.Invoke(this);
                     }
                 }
