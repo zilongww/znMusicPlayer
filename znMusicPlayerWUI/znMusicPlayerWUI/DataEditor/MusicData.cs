@@ -76,8 +76,8 @@ namespace znMusicPlayerWUI.DataEditor
             this.Title = title;
             this.ID = ID;
             this.Artists = artists == null ? new List<Artist>() { new Artist() { Name = "未知" } } : artists;
-            this.Album = album == null ? "未知" : album;
-            this.AlbumID = albumID;
+            this.Album = string.IsNullOrEmpty(album) ? "未知" : album;
+            this.AlbumID = albumID == "0" ? null : albumID;
             this.PicturePath = picturePath;
             this.RelaseTime = relaseTime;
             this.From = from;
@@ -105,9 +105,10 @@ namespace znMusicPlayerWUI.DataEditor
             return !(left == right);
         }
 
-        public bool Equals(MusicData other)
+        public override bool Equals(object other)
         {
-            return string.Equals(MD5, other.MD5, StringComparison.InvariantCulture);
+            if (!(other is MusicData)) return false;
+            return string.Equals(MD5, (other as MusicData).MD5, StringComparison.InvariantCulture);
         }
 
         public override int GetHashCode()

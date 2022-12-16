@@ -118,7 +118,6 @@
                                     <Frame x:Name="PlayContent"
                                            IsTabStop="True" MinWidth="0"
                                            CommonNavigationTransitionInfo.IsStaggerElement="True">
-                                        <Image Source="/Images/SugarAndSalt.jpg"/>
                                     </Frame>
                                 </Border>
                                 <StackPanel VerticalAlignment="Center"
