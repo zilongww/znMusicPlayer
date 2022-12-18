@@ -144,7 +144,7 @@ namespace znMusicPlayerWUI.Controls
                     MainWindow.SetNavViewContent(
                     typeof(ItemListView),
                     new List<object> { DataType.歌单, MusicListData },
-                    new DrillInNavigationTransitionInfo());
+                    new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
                 }
             }
             isPressed = false;

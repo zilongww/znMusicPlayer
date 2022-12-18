@@ -68,9 +68,9 @@
                                 </Grid.ColumnDefinitions>
 
                                 <CommandBar Grid.Column="1" x:Name="ToolsCommandBar"
-                                            DefaultLabelPosition="Collapsed" Margin="0,0,10,0">
-                                    <AppBarButton Style="{ThemeResource AppBarStyle}"
-                                                  x:Name="SelectAllButton"
+                                            DefaultLabelPosition="Right"
+                                            Margin="0,0,10,0">
+                                    <AppBarButton x:Name="SelectAllButton"
                                                   Click="SelectAllButton_Click"
                                                   Label="选中全部"
                                                   ToolTipService.ToolTip="选中全部">
@@ -78,8 +78,7 @@
                                             <PathIcon Data="{StaticResource 全选}"/>
                                         </AppBarButton.Icon>
                                     </AppBarButton>
-                                    <AppBarButton Style="{ThemeResource AppBarStyle}"
-                                                  x:Name="SelectReverseButton"
+                                    <AppBarButton x:Name="SelectReverseButton"
                                                   Click="SelectReverseButton_Click"
                                                   Label="反选"
                                                   ToolTipService.ToolTip="反选">
@@ -87,8 +86,7 @@
                                             <PathIcon Data="{StaticResource 反选}"/>
                                         </AppBarButton.Icon>
                                     </AppBarButton>
-                                    <AppBarButton Style="{ThemeResource AppBarStyle}"
-                                                  x:Name="DeleteSelectedButton"
+                                    <AppBarButton x:Name="DeleteSelectedButton"
                                                   Click="DeleteSelectedButton_Click"
                                                   Label="删除选中歌曲"
                                                   ToolTipService.ToolTip="删除选中歌曲">
@@ -96,8 +94,7 @@
                                             <PathIcon Data="{StaticResource 删除}"/>
                                         </AppBarButton.Icon>
                                     </AppBarButton>
-                                    <AppBarButton Style="{ThemeResource AppBarStyle}"
-                                                  x:Name="DownloadSelectedButton"
+                                    <AppBarButton x:Name="DownloadSelectedButton"
                                                   Click="DownloadSelectedButton_Click"
                                                   Label="下载选中歌曲"
                                                   ToolTipService.ToolTip="下载选中歌曲">
@@ -105,8 +102,7 @@
                                             <PathIcon Data="{StaticResource 下载}"/>
                                         </AppBarButton.Icon>
                                     </AppBarButton>
-                                    <AppBarButton Style="{ThemeResource AppBarStyle}"
-                                                  x:Name="AddSelectedToPlayListButton"
+                                    <AppBarButton x:Name="AddSelectedToPlayListButton"
                                                   Label="添加选中歌曲到播放列表中"
                                                   ToolTipService.ToolTip="添加选中歌曲到播放列表中">
                                         <AppBarButton.Flyout>
@@ -121,8 +117,7 @@
                                             </Grid>
                                         </Viewbox>
                                     </AppBarButton>
-                                    <AppBarButton Style="{ThemeResource AppBarStyle}"
-                                                  x:Name="AddSelectedToPlayingListButton"
+                                    <AppBarButton x:Name="AddSelectedToPlayingListButton"
                                                   Label="添加选中歌曲到正在播放的列表中"
                                                   ToolTipService.ToolTip="添加选中歌曲到正在播放的列表中"
                                                   Click="AddSelectedToPlayingListButton_Click">
@@ -138,8 +133,16 @@
                                     
                                     <AppBarSeparator x:Name="SelectorSeparator"/>
 
+                                    <AppBarButton Click="Button_Click"
+                                                  Label="播放全部"
+                                                  Background="{ThemeResource AccentAAFillColorTertiaryBrush}"
+                                                  Foreground="{ThemeResource SystemControlForegroundAltHighBrush}"
+                                                  ToolTipService.ToolTip="播放全部">
+                                        <AppBarButton.Icon>
+                                            <PathIcon Data="{StaticResource 播放ol}"/>
+                                        </AppBarButton.Icon>
+                                    </AppBarButton>
                                     <AppBarButton x:Name="AddLocalFilesButton"
-                                                  Style="{ThemeResource AppBarStyle}"
                                                   Click="AddLocalFilesButton_Click"
                                                   Label="添加本地文件"
                                                   ToolTipService.ToolTip="添加本地文件">
@@ -147,24 +150,14 @@
                                             <PathIcon Data="{StaticResource 添加文件}"/>
                                         </AppBarButton.Icon>
                                     </AppBarButton>
-                                    <AppBarButton Style="{ThemeResource AppBarStyle}"
-                                                  Click="Button_Click"
-                                                  Label="播放全部"
-                                                  ToolTipService.ToolTip="播放全部">
-                                        <AppBarButton.Icon>
-                                            <PathIcon Data="{StaticResource 播放ol}"/>
-                                        </AppBarButton.Icon>
-                                    </AppBarButton>
-                                    <AppBarButton Style="{ThemeResource AppBarStyle}"
-                                                  Click="Button_Click_1"
+                                    <AppBarButton Click="Button_Click_1"
                                                   Label="刷新"
                                                   ToolTipService.ToolTip="刷新">
                                         <AppBarButton.Icon>
                                             <PathIcon Data="{StaticResource 刷新}"/>
                                         </AppBarButton.Icon>
                                     </AppBarButton>
-                                    <AppBarButton Style="{ThemeResource AppBarStyle}"
-                                                  Click="Button_Click_2"
+                                    <AppBarButton Click="Button_Click_2"
                                                   Label="多选"
                                                   ToolTipService.ToolTip="多选">
                                         <AppBarButton.Icon>
@@ -174,36 +167,13 @@
 
                                     <AppBarSeparator x:Name="SearchPageSelectorSeparator"/>
 
-                                    <AppBarButton Style="{ThemeResource AppBarStyle}"
-                                                  Click="Button_Click_3"
+                                    <AppBarButton Click="Button_Click_3"
                                                   x:Name="SearchHomeButton"
                                                   Label="首页"
                                                   Icon="Home"
                                                   ToolTipService.ToolTip="首页">
                                     </AppBarButton>
-                                    <AppBarElementContainer x:Name="SearchPageSelector">
-                                        <StackPanel Orientation="Horizontal">
-                                            <AppBarButton Style="{ThemeResource AppBarStyle}"
-                                                          Click="Button_Click_4"
-                                                          LabelPosition="Collapsed"
-                                                          ToolTipService.ToolTip="上一页"
-                                                          Icon="Back">
-                                            </AppBarButton>
-                                            <TextBlock x:Name="NowPage"
-                                                       Text="1"
-                                                       VerticalAlignment="Center"
-                                                       HorizontalAlignment="Center"
-                                                       Margin="4"/>
-                                            <AppBarButton Style="{ThemeResource AppBarStyle}"
-                                                          Click="Button_Click_5"
-                                                          LabelPosition="Collapsed"
-                                                          Icon="Forward"
-                                                          ToolTipService.ToolTip="下一页">
-                                            </AppBarButton>
-                                        </StackPanel>
-                                    </AppBarElementContainer>
-                                    <AppBarButton Style="{ThemeResource AppBarStyle}"
-                                                  x:Name="SearchPageSelectorCustom"
+                                    <AppBarButton x:Name="SearchPageSelectorCustom"
                                                   ToolTipService.ToolTip="自定义页面"
                                                   Label="自定义页面" AllowFocusOnInteraction="True"
                                                   Icon="Page2" Tapped="AppBarButton_Tapped">
@@ -234,6 +204,35 @@
                                             </Flyout>
                                         </FlyoutBase.AttachedFlyout>
                                     </AppBarButton>
+                                    <AppBarElementContainer x:Name="SearchPageSelector"
+                                                            HorizontalContentAlignment="Stretch"
+                                                            VerticalContentAlignment="Stretch">
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <AppBarButton Grid.Column="0"
+                                                          Click="Button_Click_4"
+                                                          LabelPosition="Collapsed"
+                                                          ToolTipService.ToolTip="上一页"
+                                                          Icon="Back">
+                                            </AppBarButton>
+                                            <TextBlock Grid.Column="1"
+                                                       x:Name="NowPage"
+                                                       Text="1"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center"
+                                                       Margin="4"/>
+                                            <AppBarButton Grid.Column="2"
+                                                          Click="Button_Click_5"
+                                                          LabelPosition="Collapsed"
+                                                          Icon="Forward"
+                                                          ToolTipService.ToolTip="下一页">
+                                            </AppBarButton>
+                                        </Grid>
+                                    </AppBarElementContainer>
                                 </CommandBar>
                             </Grid>
 

@@ -46,6 +46,7 @@ namespace znMusicPlayerWUI
         public static Window SWindow;
         public static MusicPage SMusicPage = new();
         public static Grid STopControlsBaseGrid;
+        public static Grid SWindowGridBaseTop;
         public static Grid SWindowGridBase;
         public static Grid SVolumeBaseGrid;
         public static Grid SMusicPageBaseGrid;
@@ -66,6 +67,7 @@ namespace znMusicPlayerWUI
             SNavView = NavView;
             SContentFrame = ContentFrame;
             STopControlsBaseGrid = TopControlsBaseGrid;
+            SWindowGridBaseTop = WindowGridBase;
             SWindowGridBase = GridBase;
             SVolumeBaseGrid = VolumeBaseGrid;
             SMusicPageBaseGrid = MusicPageBaseGrid;
@@ -83,7 +85,7 @@ namespace znMusicPlayerWUI
             App.AppWindowLocal.Title = App.AppName;
             App.AppWindowLocal.SetIcon("icon.ico");
 
-            InitializeTitleBar(App.Current.RequestedTheme);
+            InitializeTitleBar(SWindowGridBaseTop.RequestedTheme);
 
             //RequestedTheme = App.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : ElementTheme.Light;
             m_wsdqHelper = new WindowsSystemDispatcherQueueHelper();
@@ -131,7 +133,7 @@ namespace znMusicPlayerWUI
         }
 
         #region init TitleBar
-        public void InitializeTitleBar(ApplicationTheme theme)
+        public void InitializeTitleBar(ElementTheme theme)
         {
             if (AppWindowTitleBar.IsCustomizationSupported())
             {
@@ -145,7 +147,7 @@ namespace znMusicPlayerWUI
                 AppTitleBar.Margin = new Thickness(0);
                 NavView.Margin = new Thickness(0, 28, 0, 0);
                 AppTitleTextBlock.Margin = new Thickness(18, 0, 0, 0);
-                if (theme == ApplicationTheme.Dark)
+                if (theme == ElementTheme.Dark)
                 {
                     WindowGridBase.Background = new SolidColorBrush(Color.FromArgb(255, 32, 32, 32));
                     AppTitleBar.Background = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
@@ -159,11 +161,11 @@ namespace znMusicPlayerWUI
             }
         }
 
-        public static void InitializeTitleBara(AppWindowTitleBar bar, ApplicationTheme theme)
+        public static void InitializeTitleBara(AppWindowTitleBar bar, ElementTheme theme)
         {
             bar.ExtendsContentIntoTitleBar = true;
 
-            if (theme == ApplicationTheme.Light)
+            if (theme == ElementTheme.Light)
             {
                 bar.ButtonBackgroundColor = Colors.Transparent;
                 bar.ButtonForegroundColor = Colors.Black;
@@ -200,12 +202,14 @@ namespace znMusicPlayerWUI
             {
                 dialogShow = true;
                 AsyncDialog.Title = title;
+                AsyncDialog.Width = 5000;
                 AsyncDialog.Content = content;
-                //AsyncDialog.Background = App.Current.Resources["AcrylicNormal"] as AcrylicBrush;
+                AsyncDialog.Background = App.Current.Resources["AcrylicNormal"] as AcrylicBrush;
                 AsyncDialog.CloseButtonText = closeButtonText;
                 AsyncDialog.PrimaryButtonText = primaryButtonText;
                 AsyncDialog.CloseButtonCommand = null;
                 AsyncDialog.XamlRoot = SContent.XamlRoot;
+                AsyncDialog.RequestedTheme = SWindowGridBaseTop.RequestedTheme;
                 result = await AsyncDialog.ShowAsync();
                 dialogShow = false;
 
@@ -352,28 +356,6 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region Enable Window Backdrop
-        public static ApplicationTheme ActualTheme = ApplicationTheme.Dark;
-        static ElementTheme requestedTheme = ElementTheme.Default;
-        public static ElementTheme RequestedTheme
-        {
-            get => requestedTheme;
-            set
-            {
-                requestedTheme = value;
-
-                switch (value)
-                {
-                    case ElementTheme.Dark: ActualTheme = ApplicationTheme.Dark; break;
-                    case ElementTheme.Light: ActualTheme = ApplicationTheme.Light; break;
-                    case ElementTheme.Default:
-                        var uiSettings = new Windows.UI.ViewManagement.UISettings();
-                        var defaultthemecolor = uiSettings.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background);
-                        ActualTheme = defaultthemecolor == Colors.Black ? ApplicationTheme.Dark : ApplicationTheme.Light;
-                        break;
-                }
-            }
-        }
-
         public enum BackdropType
         {
             Mica,
@@ -436,10 +418,11 @@ namespace znMusicPlayerWUI
                 SWindow.Closed += Window_Closed;
 
                 m_configurationSource.IsInputActive = true;
-                switch (App.Current.RequestedTheme)
+                switch (SWindowGridBaseTop.RequestedTheme)
                 {
-                    case ApplicationTheme.Dark: m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
-                    case ApplicationTheme.Light: m_configurationSource.Theme = SystemBackdropTheme.Light; break;
+                    case ElementTheme.Dark: m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
+                    case ElementTheme.Light: m_configurationSource.Theme = SystemBackdropTheme.Light; break;
+                    case ElementTheme.Default: m_configurationSource.Theme = SystemBackdropTheme.Default; break;
                 }
 
                 m_micaController = new MicaController();
@@ -462,20 +445,28 @@ namespace znMusicPlayerWUI
                 SWindow.Closed += Window_Closed;
 
                 m_configurationSource.IsInputActive = true;
-                switch (App.Current.RequestedTheme)
+                switch (SWindowGridBaseTop.RequestedTheme)
                 {
-                    case ApplicationTheme.Dark: m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
-                    case ApplicationTheme.Light: m_configurationSource.Theme = SystemBackdropTheme.Light; break;
+                    case ElementTheme.Dark: m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
+                    case ElementTheme.Light: m_configurationSource.Theme = SystemBackdropTheme.Light; break;
+                    case ElementTheme.Default: m_configurationSource.Theme = SystemBackdropTheme.Default; break;
                 }
 
                 m_acrylicController = new DesktopAcrylicController();
-                if (App.Current.RequestedTheme == ApplicationTheme.Dark)
+
+                ElementTheme elementTheme = SWindowGridBaseTop.RequestedTheme;
+                if (elementTheme == ElementTheme.Default)
+                {
+                    elementTheme = App.Current.RequestedTheme == ApplicationTheme.Light ? ElementTheme.Light : ElementTheme.Dark;
+                }
+
+                if (elementTheme == ElementTheme.Dark)
                 {
                     m_acrylicController.LuminosityOpacity = 1f;
                     m_acrylicController.TintOpacity = 0.5f;
                     m_acrylicController.TintColor = Color.FromArgb(255, 32, 32, 32);
                 }
-                else
+                else if (elementTheme == ElementTheme.Light)
                 {
                     m_acrylicController.LuminosityOpacity = 1f;
                     m_acrylicController.TintOpacity = 0.5f;
@@ -504,7 +495,7 @@ namespace znMusicPlayerWUI
             {
                 SetBackdrop(BackdropType.DesktopAcrylic);
             }
-            InitializeTitleBar(App.Current.RequestedTheme);
+            InitializeTitleBar(SWindowGridBaseTop.RequestedTheme);
         }
 
         static ApplicationTheme applicationTheme = App.Current.RequestedTheme;
@@ -540,19 +531,25 @@ namespace znMusicPlayerWUI
         private static void Window_Activated(object sender, WindowActivatedEventArgs args)
         {
             //SetBackdrop(BackdropType.DesktopAcrylic);
-            
-            switch (App.Current.RequestedTheme)
-            {
-                case ApplicationTheme.Light:
-                    m_configurationSource.Theme = SystemBackdropTheme.Light; break;
-                case ApplicationTheme.Dark:
-                    m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
-            }
-            m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
+            UpdataWindowBackdropTheme();
             if (m_currentBackdrop != BackdropType.DefaultColor)
             {
                 m_configurationSource.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
             }
+        }
+
+        public static void UpdataWindowBackdropTheme()
+        {
+            switch (SWindowGridBaseTop.RequestedTheme)
+            {
+                case ElementTheme.Light:
+                    m_configurationSource.Theme = SystemBackdropTheme.Light; break;
+                case ElementTheme.Dark:
+                    m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
+                default:
+                    m_configurationSource.Theme = SystemBackdropTheme.Default; break;
+            }
+            m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
         }
 
         private static void Window_Closed(object sender, WindowEventArgs args)

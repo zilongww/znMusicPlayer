@@ -266,6 +266,7 @@ namespace znMusicPlayerWUI.Controls
         {
             if (Children.SelectionMode == ListViewSelectionMode.None)
             {
+                (sender as Button).Background = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as Brush;
                 Children.SelectionMode = ListViewSelectionMode.Multiple;
 
                 SelectorSeparator.Visibility = Visibility.Visible;
@@ -286,6 +287,7 @@ namespace znMusicPlayerWUI.Controls
             }
             else
             {
+                (sender as Button).Background = new SolidColorBrush(Colors.Transparent);
                 Children.SelectionMode = ListViewSelectionMode.None;
 
                 SelectorSeparator.Visibility = Visibility.Collapsed;

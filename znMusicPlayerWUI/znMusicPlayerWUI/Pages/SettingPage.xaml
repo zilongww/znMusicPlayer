@@ -218,6 +218,38 @@
                     </Grid>
                 </StackPanel>
             </Expander>
+            <Expander x:Name="ThemeEpd">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Viewbox Width="16">
+                            <SymbolIcon Symbol="FontColor"/>
+                        </Viewbox>
+                        <StackPanel Style="{StaticResource STPS}">
+                            <TextBlock Text="主题"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Expander.Header>
+                <StackPanel>
+                    <Grid x:Name="ThemeBaseGrid"
+                          Loaded="ThemeBaseGrid_Loaded">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="应用主题"/>
+                            <TextBlock Text="更改应用主题的行为" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
+                        </StackPanel>
+                        <ComboBox Grid.Column="1"
+                                  x:Name="ThemeCb"
+                                  SelectionChanged="ThemeCb_SelectionChanged">
+                            <x:String>跟随系统</x:String>
+                            <x:String>浅色</x:String>
+                            <x:String>深色</x:String>
+                        </ComboBox>
+                    </Grid>
+                </StackPanel>
+            </Expander>
         </StackPanel>
     </ListView>
 </Page>

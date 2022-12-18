@@ -17,7 +17,6 @@ namespace znMusicPlayerWUI.Media
                 await Task.Delay(500);
             }
 
-            LoadingImages.Add(musicData);
             string cachePath = await Helpers.FileHelper.GetImageCache(musicData);
             string resultPath = null;
 
@@ -27,6 +26,7 @@ namespace znMusicPlayerWUI.Media
             }
             else
             {
+                LoadingImages.Add(musicData);
                 if (Helpers.WebHelper.IsNetworkConnected)
                 {
                     string b = $@"{DataEditor.DataFolderBase.ImageCacheFolder}\{musicData.From}{(string.IsNullOrEmpty(musicData.AlbumID) ? musicData.MD5 : musicData.AlbumID)}";
@@ -78,9 +78,9 @@ namespace znMusicPlayerWUI.Media
                 {
                     resultPath = "/Images/SugarAndSalt.jpg";
                 }
+                LoadingImages.Remove(musicData);
             }
 
-            LoadingImages.Remove(musicData);
             return resultPath;
         }
 

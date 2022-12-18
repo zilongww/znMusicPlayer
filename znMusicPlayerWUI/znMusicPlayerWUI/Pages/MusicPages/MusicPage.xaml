@@ -32,6 +32,11 @@
                 <ColumnDefinition Width="*" x:Name="InfoPageColumn"/>
                 <ColumnDefinition Width="1.35*" x:Name="LrcPageColumn"/>
             </Grid.ColumnDefinitions>
+            <Grid.ChildrenTransitions>
+                <TransitionCollection>
+                    <RepositionThemeTransition/>
+                </TransitionCollection>
+            </Grid.ChildrenTransitions>
             <Grid x:Name="InfoBaseGrid" VerticalAlignment="Stretch" Padding="24,0,24,24" Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
@@ -39,6 +44,11 @@
                     <RowDefinition Height="0.06*" MinHeight="34"/>
                     <RowDefinition Height="0.17*"/>
                 </Grid.RowDefinitions>
+                <Grid.ChildrenTransitions>
+                    <TransitionCollection>
+                        <RepositionThemeTransition/>
+                    </TransitionCollection>
+                </Grid.ChildrenTransitions>
                 <StackPanel>
                     <TextBlock x:Name="InfoBaseTitle" TextAlignment="Center" FontSize="24" IsTextSelectionEnabled="True"/>
                     <TextBlock x:Name="InfoBaseArtist" TextAlignment="{Binding ElementName=InfoBaseTitle,Path=TextAlignment}" Foreground="{Binding ElementName=InfoBaseTitle,Path=Foreground}" IsTextSelectionEnabled="True"/>
@@ -55,6 +65,11 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
+                    <Grid.ChildrenTransitions>
+                        <TransitionCollection>
+                            <RepositionThemeTransition/>
+                        </TransitionCollection>
+                    </Grid.ChildrenTransitions>
                     <TextBlock x:Name="NowPlayTimeTb"
                                Text="00:00"
                                FontSize="12"
@@ -79,10 +94,15 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
+                    <Grid.ChildrenTransitions>
+                        <TransitionCollection>
+                            <RepositionThemeTransition/>
+                        </TransitionCollection>
+                    </Grid.ChildrenTransitions>
                     <StackPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <ToggleButton x:Name="LrcButton" Padding="12" Width="44" Height="44"
+                        <ToggleButton x:Name="LrcButton" Padding="0" Width="44" Height="44"
                                       Checked="LrcButton_Checked" Unchecked="LrcButton_Unchecked"
-                                      Background="Transparent" BorderThickness="0" FontWeight="Normal">
+                                      Background="Transparent" BorderThickness="2">
                             词
                         </ToggleButton>
                     </StackPanel>
@@ -115,20 +135,20 @@
                                 HorizontalAlignment="Right" VerticalAlignment="Center"
                                 IsDynamicOverflowEnabled="True"
                                 OverflowButtonVisibility="Auto"
-                                DefaultLabelPosition="Collapsed">
-                        <AppBarButton x:Name="VloumeButton" Label="音量" Style="{ThemeResource AppBarStyle}"
+                                DefaultLabelPosition="Right">
+                        <AppBarButton x:Name="VloumeButton" Label="音量"
                                       Background="Transparent" BorderThickness="0" FontWeight="Normal" Click="VloumeButton_Click">
                             <AppBarButton.Icon>
                                 <PathIcon Data="{StaticResource 音量2}"/>
                             </AppBarButton.Icon>
                         </AppBarButton>
-                        <AppBarButton x:Name="PlayListButton" Label="播放列表" Style="{ThemeResource AppBarStyle}"
+                        <AppBarButton x:Name="PlayListButton" Label="播放列表"
                                       Background="Transparent" BorderThickness="0" FontWeight="Normal" Click="PlayListButton_Click">
                             <AppBarButton.Icon>
                                 <PathIcon Data="{StaticResource 播放列表}"/>
                             </AppBarButton.Icon>
                         </AppBarButton>
-                        <AppBarButton x:Name="CloseButton"
+                        <!--<AppBarButton x:Name="CloseButton"
                                       Style="{ThemeResource AppBarStyle}"
                                       BorderThickness="0"
                                       Background="Transparent"
@@ -141,8 +161,7 @@
                                     </AnimatedIcon.Source>
                                 </AnimatedIcon>
                             </AppBarButton.Icon>
-                        </AppBarButton>
-
+                        </AppBarButton>-->
                     </CommandBar>
                 </Grid>
             </Grid>
@@ -154,13 +173,14 @@
                           SelectionChanged="LrcBaseListView_SelectionChanged"
                           ScrollViewer.VerticalScrollBarVisibility="Hidden"
                           SizeChanged="LrcBaseListView_SizeChanged"
+                          IsFocusEngagementEnabled="False"
                           HorizontalContentAlignment="Stretch">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="data:LyricData">
                             <StackPanel>
                                 <TextBlock Text="{Binding LyricAndTranslate}"
                                            TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
-                                           FontSize="24" TextWrapping="Wrap" Margin="0,0,0,48"/>
+                                           TextWrapping="Wrap" Margin="0,0,0,38" FontSize="24" />
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -170,7 +190,7 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListViewItem">
                                         <ListViewItemPresenter
-                                            SelectionIndicatorCornerRadius="4"
+                                            Foreground="{ThemeResource ButtonDisabledForegroundThemeBrush}"
                                             CornerRadius="4"
                                             ContentTransitions="{TemplateBinding ContentTransitions}"
                                             SelectionCheckMarkVisualEnabled="True"
@@ -182,6 +202,7 @@
                                             FocusSecondaryBorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
                                             PlaceholderBackground="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}"
                                             PointerOverBackground="Transparent"
+                                            PointerOverForeground="{ThemeResource ButtonDisabledForegroundThemeBrush}"
                                             SelectedBackground="Transparent"
                                             SelectedForeground="{ThemeResource SystemAccentColorLight2}"
                                             SelectedPointerOverBackground="Transparent"

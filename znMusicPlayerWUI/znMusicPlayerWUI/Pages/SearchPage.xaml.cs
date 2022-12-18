@@ -34,7 +34,7 @@ namespace znMusicPlayerWUI.Pages
             MainWindow.SetNavViewContent(
                 typeof(ItemListView),
                 new List<object> { DataEditor.DataType.歌曲, title },
-                new DrillInNavigationTransitionInfo());
+                new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
         }
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)

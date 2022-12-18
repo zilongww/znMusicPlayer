@@ -66,9 +66,7 @@
             <Thickness x:Key="MPEdge">16,0</Thickness>
             <x:Double x:Key="MaxWidthControls">1000</x:Double>
 
-            <Style x:Key="AppBarStyle" TargetType="AppBarButton" BasedOn="{StaticResource AppBarButtonOverflowStyle}">
-                <Setter Property="Width" Value="auto"/>
-                <Setter Property="MinWidth" Value="48"/>
+            <Style TargetType="AppBarButton" BasedOn="{StaticResource DefaultAppBarButtonStyle}">
             </Style>
             
             <Style x:Key="ToolBarButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">

@@ -329,9 +329,9 @@ namespace znMusicPlayerWUI.Helpers
                     var timesAndLyric = lyric.Split(']');
                     if (timesAndLyric.Count() > 2)
                     {
-                        foreach (var i in timesAndLyric)
+                        for (int i = timesAndLyric.Count(); i > 0; i--)
                         {
-                            var times = i.Replace("[", "").Split('.');
+                            var times = timesAndLyric[i - 1].Replace("[", "").Split('.');
                             var timesa = TimeSpan.TryParse("00:" + times[0], null, out TimeSpan timesb);
 
                             if (times.Length == 1) continue;

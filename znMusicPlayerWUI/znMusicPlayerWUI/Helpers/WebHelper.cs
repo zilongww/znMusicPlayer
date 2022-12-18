@@ -58,9 +58,11 @@ namespace znMusicPlayerWUI.Helpers
             if (!File.Exists(downloadPath))
                 throw new FileNotFoundException("找不到目标文件。");
 
-            byte[] fileBytes = await Client.GetByteArrayAsync(address);
-            await File.WriteAllBytesAsync(downloadPath, fileBytes);
-            
+            await Task.Run(() =>
+            {
+                byte[] fileBytes = Client.GetByteArrayAsync(address).Result;
+                File.WriteAllBytes(downloadPath, fileBytes);
+            });
         }
 
         /// <summary>

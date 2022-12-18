@@ -265,5 +265,42 @@ namespace znMusicPlayerWUI.Pages
                 }
             }
         }
+
+        bool isCodeChangedTheme = false;
+        private void ThemeBaseGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            isCodeChangedTheme = true;
+            switch (MainWindow.SWindowGridBaseTop.RequestedTheme)
+            {
+                case ElementTheme.Default:
+                    ThemeCb.SelectedIndex = 0;
+                    break;
+                case ElementTheme.Light:
+                    ThemeCb.SelectedIndex = 1;
+                    break;
+                case ElementTheme.Dark:
+                    ThemeCb.SelectedIndex = 2;
+                    break;
+            }
+            isCodeChangedTheme = false;
+        }
+
+        private void ThemeCb_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (isCodeChangedTheme) return;
+            switch (ThemeCb.SelectedItem as string)
+            {
+                case "跟随系统":
+                    MainWindow.SWindowGridBaseTop.RequestedTheme = ElementTheme.Default;
+                    break;
+                case "浅色":
+                    MainWindow.SWindowGridBaseTop.RequestedTheme = ElementTheme.Light;
+                    break;
+                case "深色":
+                    MainWindow.SWindowGridBaseTop.RequestedTheme = ElementTheme.Dark;
+                    break;
+            }
+            MainWindow.UpdataWindowBackdropTheme();
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace znMusicPlayerWUI.Background
 
         public LyricManager()
         {
-            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(30) };
+            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(15) };
             timer.Tick += (_, __) => ReCallUpdata();
 
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
@@ -114,7 +114,7 @@ namespace znMusicPlayerWUI.Background
                 return;
             }
 
-            var lyricDatas = await Helpers.LyricHelper.LyricToLrcData(f);
+            var lyricDatas = await LyricHelper.LyricToLrcData(f);
             if (lyricDatas.Any())
             {
                 foreach (var i in lyricDatas)
@@ -129,6 +129,7 @@ namespace znMusicPlayerWUI.Background
         LyricData lastLyricData = null;
         public void ReCallUpdata()
         {
+            timer.Interval = TimeSpan.FromMilliseconds(3);
             if (App.audioPlayer.NowOutObj?.PlaybackState == NAudio.Wave.PlaybackState.Playing && NowPlayingLyrics.Any())
             {
                 foreach (var data in NowPlayingLyrics)

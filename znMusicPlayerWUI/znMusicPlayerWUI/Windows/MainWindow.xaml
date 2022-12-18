@@ -199,7 +199,6 @@
                                         Grid.Column="2">
                                 <AppBarButton Background="Transparent"
                                               Label="打开桌面歌词"
-                                              Style="{ThemeResource AppBarStyle}"
                                               Click="Button_Click_6">
                                     <AppBarButton.Icon>
                                         <FontIcon Glyph="词" FontSize="20"
@@ -208,15 +207,13 @@
                                 </AppBarButton>
                                 <AppBarButton x:Name="VolumeAppButton"
                                               Click="Button_Click"
-                                              Label="音量"
-                                              Style="{ThemeResource AppBarStyle}">
+                                              Label="音量">
                                     <AppBarButton.Icon>
                                         <PathIcon Data="{StaticResource 音量0}"/>
                                     </AppBarButton.Icon>
                                 </AppBarButton>
                                 <AppBarButton Click="Button_Click_4"
-                                              Label="播放列表"
-                                              Style="{ThemeResource AppBarStyle}">
+                                              Label="播放列表">
                                     <AppBarButton.Icon>
                                         <PathIcon Data="{StaticResource 播放列表}"/>
                                     </AppBarButton.Icon>
