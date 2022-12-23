@@ -91,7 +91,7 @@ namespace znMusicPlayerWUI.Controls
                 ImageSource a = null;
                 if (MusicData.InLocal != null)
                 {
-                    a = await CodeHelper.GetCover(MusicData.InLocal);
+                    //a = await CodeHelper.GetCover(MusicData.InLocal);
                 }
                 else
                 {

@@ -207,6 +207,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                 var getPlayListAction = MusicListData () =>
                 {
                     JObject pls = JObject.Parse(Services.FormatMethod(false).Playlist(id));
+                    //System.Diagnostics.Debug.WriteLine(pls);
 
                     if (pls["code"].ToString() == "200")
                     {
@@ -245,8 +246,12 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                         musicListData.ListName = $"{musicListData.ListShowName}{musicListData.ListFrom}{musicListData.PicturePath}";
                         musicListData.ReMD5();
 
-                        System.Diagnostics.Debug.WriteLine(musicListData.MD5);
+                        //System.Diagnostics.Debug.WriteLine(musicListData.MD5);
                         if (musicListData.Songs.Any()) return musicListData;
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine(pls["message"]);
                     }
 
                     return null;

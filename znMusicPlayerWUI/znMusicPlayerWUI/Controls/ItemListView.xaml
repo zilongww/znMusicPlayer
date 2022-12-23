@@ -130,7 +130,7 @@
                                             </Grid>
                                         </Viewbox>
                                     </AppBarButton>
-                                    
+
                                     <AppBarSeparator x:Name="SelectorSeparator"/>
 
                                     <AppBarButton Click="Button_Click"
@@ -241,6 +241,7 @@
                 </Border>
             </ListView.Header>
         </ListView>
-
+        <ProgressRing x:Name="LoadingRing"
+                      Width="48" Height="48"/>
     </Grid>
 </Page>

@@ -57,7 +57,7 @@ namespace znMusicPlayerWUI.DataEditor
             get
             {
                 if (md5 == null)
-                    md5 = Helpers.CodeHelper.ToMD5($"{Title}{Artists[0]}{Artists.Count}{Album}{this.ID}{AlbumID}{From}{InLocal}");
+                    md5 = Helpers.CodeHelper.ToMD5($"{Title}{Artists[0]}{Artists.Count}{Album}{ID}{AlbumID}{From}{InLocal}");
                 return md5;
             }
         }
@@ -77,7 +77,7 @@ namespace znMusicPlayerWUI.DataEditor
             this.ID = ID;
             this.Artists = artists == null ? new List<Artist>() { new Artist() { Name = "未知" } } : artists;
             this.Album = string.IsNullOrEmpty(album) ? "未知" : album;
-            this.AlbumID = albumID == "0" ? null : albumID;
+            this.AlbumID = albumID == "0" || string.IsNullOrEmpty(albumID) ? null : albumID;
             this.PicturePath = picturePath;
             this.RelaseTime = relaseTime;
             this.From = from;

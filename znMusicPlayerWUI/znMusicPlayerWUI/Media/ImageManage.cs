@@ -29,7 +29,8 @@ namespace znMusicPlayerWUI.Media
                 LoadingImages.Add(musicData);
                 if (Helpers.WebHelper.IsNetworkConnected)
                 {
-                    string b = $@"{DataEditor.DataFolderBase.ImageCacheFolder}\{musicData.From}{(string.IsNullOrEmpty(musicData.AlbumID) ? musicData.MD5 : musicData.AlbumID)}";
+                    //System.Diagnostics.Debug.WriteLine(musicData.AlbumID);
+                    string b = $@"{DataEditor.DataFolderBase.ImageCacheFolder}\{musicData.From}{(string.IsNullOrEmpty(musicData.AlbumID) ? musicData.MD5.Replace(@"/", "#") : musicData.AlbumID)}";
                     await Task.Run(() =>
                     {
                         if (!System.IO.File.Exists(b))

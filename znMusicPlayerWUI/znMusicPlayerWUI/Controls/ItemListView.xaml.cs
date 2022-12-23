@@ -49,14 +49,16 @@ namespace znMusicPlayerWUI.Controls
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
+            await Task.Delay(500);
+            scrollViewer?.ScrollToVerticalOffset(0);
             foreach (SongItem item in Children.Items)
             {
                 item.Dispose();
             }
             Children.Items.Clear();
             dropShadow.Dispose();
-            await Task.Delay(500);
             PlayList_Image.Dispose();
+            //System.Diagnostics.Debug.WriteLine("Clear");
         }
 
         private void CreatShadow()
@@ -139,21 +141,23 @@ namespace znMusicPlayerWUI.Controls
 
             if (musicListData != null)
             {
+                LoadImage();
                 Children.Items.Clear();
+                LoadingRing.Visibility = Visibility.Visible;
+                LoadingRing.IsIndeterminate = true;
+                /*
+                var h = (Children.Header as Border).ActualHeight;
+                LoadingRing.Margin = new(0, h + (ActualHeight - h) / 2, 0, 0);
+                */
+                await Task.Delay(500);
                 foreach (var i in musicListData.Songs)
                 {
                     var a = new SongItem(i, musicListData);
                     Children.Items.Add(a);
                 }
-
-                if (musicListData.ListDataType == DataType.本地歌单)
-                {
-                    PlayList_Image.Source = await FileHelper.GetImageSource(musicListData.PicturePath);
-                }
-                else if (musicListData.ListDataType == DataType.歌单)
-                {
-                    PlayList_Image.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(musicListData));
-                }
+                System.Diagnostics.Debug.WriteLine("加载完成。");
+                LoadingRing.IsIndeterminate = false;
+                LoadingRing.Visibility = Visibility.Collapsed;
             }
 
             if (firstInit)
@@ -161,6 +165,18 @@ namespace znMusicPlayerWUI.Controls
                 firstInit = false;
                 await Task.Delay(1000);
                 Button_Click_2(null, null);
+            }
+        }
+
+        private async void LoadImage()
+        {
+            if (musicListData.ListDataType == DataType.本地歌单)
+            {
+                PlayList_Image.Source = await FileHelper.GetImageSource(musicListData.PicturePath);
+            }
+            else if (musicListData.ListDataType == DataType.歌单)
+            {
+                PlayList_Image.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(musicListData));
             }
         }
 

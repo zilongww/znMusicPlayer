@@ -12,6 +12,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using znMusicPlayerWUI.Helpers;
 using Microsoft.UI.Xaml.Navigation;
 using znMusicPlayerWUI.Controls;
+using System.Threading.Tasks;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -31,8 +32,9 @@ namespace znMusicPlayerWUI.Pages
             UpdataPlayList();
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
+            await Task.Delay(500);
             foreach (PlayListCard item in BaseGridView.Items)
             {
                 item.Dispose();

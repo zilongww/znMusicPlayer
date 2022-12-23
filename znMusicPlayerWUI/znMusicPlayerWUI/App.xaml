@@ -17,14 +17,16 @@
                     <SolidColorBrush x:Key="BottomBackground" Color="Black"/>
                     <SolidColorBrush x:Key="HeaderLowForeground" Color="#FF878787"/>
                     <SolidColorBrush x:Key="BorderNormal" Color="#10FFFFFF"/>
+                    <SolidColorBrush x:Key="MusicPageLrcForeground" Color="#8FFFFFFF"/>
                     <StaticResource x:Key="AcrylicNormal" ResourceKey="AcrylicInAppFillColorDefaultBrush"/>
-                    <Color x:Key="BlurImageAcrylicBrush">#FF4F4F4F</Color>
+                    <Color x:Key="BlurImageAcrylicBrush">#FF202020</Color>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <SolidColorBrush x:Key="ItemBorderBackground" Color="Black"/>
                     <SolidColorBrush x:Key="BottomBackground" Color="White"/>
                     <SolidColorBrush x:Key="HeaderLowForeground" Color="#FF424242"/>
                     <SolidColorBrush x:Key="BorderNormal" Color="#15000000"/>
+                    <SolidColorBrush x:Key="MusicPageLrcForeground" Color="#88000000"/>
                     <StaticResource x:Key="AcrylicNormal" ResourceKey="AcrylicInAppFillColorBaseBrush"/>
                     <Color x:Key="BlurImageAcrylicBrush">#EEEEEE</Color>
                 </ResourceDictionary>
@@ -66,9 +68,11 @@
             <Thickness x:Key="MPEdge">16,0</Thickness>
             <x:Double x:Key="MaxWidthControls">1000</x:Double>
 
-            <Style TargetType="AppBarButton" BasedOn="{StaticResource DefaultAppBarButtonStyle}">
+            <Style x:Key="AppBarStyle" TargetType="AppBarButton" BasedOn="{StaticResource AppBarButtonOverflowStyle}">
+                <Setter Property="Width" Value="auto"/>
+                <Setter Property="MinWidth" Value="48"/>
             </Style>
-            
+
             <Style x:Key="ToolBarButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonRevealStyle}">
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="CornerRadius" Value="4"/>

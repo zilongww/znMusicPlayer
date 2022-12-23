@@ -125,11 +125,22 @@ namespace znMusicPlayerWUI.DataEditor
         public static async Task AddLocalMusicDataToPlayList(string listName, FileInfo localFlie)
         {
             MusicData localAudioData;
+            TagLib.File tagFile;
+            TagLib.Tag tag = null;
+            bool isNoError = true;
 
-            TagLib.File tagFile = TagLib.File.Create(localFlie.FullName);
-            var tag = tagFile.Tag;
+            try
+            {
+                tagFile = TagLib.File.Create(localFlie.FullName);
+                tag = tagFile.Tag;
+                if (tag.IsEmpty) isNoError = false;
+            }
+            catch
+            {
+                isNoError = false;
+            }
 
-            if (!tag.IsEmpty)
+            if (isNoError)
             {
                 List<Artist> artists = null;
                 if (tag.Performers.Any())

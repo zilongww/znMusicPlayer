@@ -37,11 +37,24 @@ namespace znMusicPlayerWUI.Background
 
         public LyricManager()
         {
-            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(15) };
+            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(5) };
             timer.Tick += (_, __) => ReCallUpdata();
 
+            //MainWindow.WindowViewStateChanged += MainWindow_WindowViewStateChanged;
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
             App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
+        }
+
+        private void MainWindow_WindowViewStateChanged(bool isView)
+        {
+            if (isView)
+            {
+                timer.Start();
+            }
+            else
+            {
+                timer.Stop();
+            }
         }
 
         private void AudioPlayer_PlayStateChanged(Media.AudioPlayer audioPlayer)
@@ -129,9 +142,11 @@ namespace znMusicPlayerWUI.Background
         LyricData lastLyricData = null;
         public void ReCallUpdata()
         {
-            timer.Interval = TimeSpan.FromMilliseconds(3);
-            if (App.audioPlayer.NowOutObj?.PlaybackState == NAudio.Wave.PlaybackState.Playing && NowPlayingLyrics.Any())
+            //timer.Interval = TimeSpan.FromMilliseconds(5);
+            if (App.audioPlayer.NowOutObj?.PlaybackState == NAudio.Wave.PlaybackState.Playing && NowPlayingLyrics.Any() && !MainWindow.isMinSize)
             {
+                if (!timer.IsEnabled) timer.Start();
+                //System.Diagnostics.Debug.WriteLine("C");
                 foreach (var data in NowPlayingLyrics)
                 {
                     if (data.LyricTimeSpan < App.audioPlayer.CurrentTime)

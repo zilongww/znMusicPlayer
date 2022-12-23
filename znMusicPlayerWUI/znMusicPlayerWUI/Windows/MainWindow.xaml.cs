@@ -58,6 +58,9 @@ namespace znMusicPlayerWUI
         public static TeachingTip teachingTipPlayingList;
         static ContentDialog AsyncDialog = null;
 
+        public delegate void WindowViewStateChangedDelegate(bool isView);
+        public static event WindowViewStateChangedDelegate WindowViewStateChanged;
+
         public MainWindow()
         {
             SWindow = this;
@@ -508,6 +511,8 @@ namespace znMusicPlayerWUI
                 if (!CodeHelper.IsIconic(App.AppWindowLocalHandle))
                 {
                     isMinSize = false;
+                    //WindowViewStateChanged?.Invoke(true);
+                    App.lyricManager.ReCallUpdata();
                     if (!InOpenMusicPage)
                     {
                         PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage);
@@ -523,6 +528,7 @@ namespace znMusicPlayerWUI
                 if (CodeHelper.IsIconic(App.AppWindowLocalHandle))
                 {
                     isMinSize = true;
+                    //WindowViewStateChanged?.Invoke(false);
                     SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
                 }
             }

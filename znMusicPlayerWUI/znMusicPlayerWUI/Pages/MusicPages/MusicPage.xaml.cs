@@ -403,6 +403,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             if (a != null)
                 scrollViewer = a.Child as ScrollViewer;
             LrcBaseListView.AddHandler(PointerWheelChangedEvent, new PointerEventHandler(LrcBaseListView_PointerWheelChanged), true);
+            LrcBaseListView.AddHandler(HoldingEvent, new HoldingEventHandler(LrcBaseListView_Holding), true);
             UpdataInterfaceDesign();
         }
 
@@ -457,7 +458,17 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             MainWindow.OpenOrCloseMusicPage();
         }
 
-        private async void LrcBaseListView_PointerWheelChanged(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void LrcBaseListView_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        {
+            ScrollingLrcView();
+        }
+
+        private void LrcBaseListView_Holding(object sender, HoldingRoutedEventArgs e)
+        {
+            ScrollingLrcView();
+        }
+
+        async void ScrollingLrcView()
         {
             scrollCount++;
             inScroll = true;
