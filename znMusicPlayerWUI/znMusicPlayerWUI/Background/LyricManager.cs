@@ -146,7 +146,7 @@ namespace znMusicPlayerWUI.Background
             if (App.audioPlayer.NowOutObj?.PlaybackState == NAudio.Wave.PlaybackState.Playing && NowPlayingLyrics.Any() && !MainWindow.isMinSize)
             {
                 if (!timer.IsEnabled) timer.Start();
-                //System.Diagnostics.Debug.WriteLine("C");
+                //System.Diagnostics.Debug.WriteLine(App.audioPlayer.CurrentTime);
                 foreach (var data in NowPlayingLyrics)
                 {
                     if (data.LyricTimeSpan < App.audioPlayer.CurrentTime)

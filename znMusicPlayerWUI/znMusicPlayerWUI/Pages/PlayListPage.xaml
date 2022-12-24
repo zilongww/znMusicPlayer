@@ -19,7 +19,8 @@
             <Grid x:Name="BaseGridView_HeaderGrid">
                 <Rectangle x:Name="BaseGridView_HeaderRectangle" Fill="{ThemeResource AcrylicNormal}"/>
                 <TextBlock x:Name="BaseGridView_HeaderTextBlock" Text="播放列表" Style="{ThemeResource TBHeader}"/>
-                <CommandBar VerticalAlignment="Bottom" Margin="0,0,10,-6" OverflowButtonVisibility="Auto">
+                <CommandBar VerticalAlignment="Bottom" Margin="0,0,10,-6"
+                            OverflowButtonVisibility="Auto" DefaultLabelPosition="Right">
                     <AppBarButton Label="刷新" Click="AppBarButton_Click">
                         <AppBarButton.Icon>
                             <PathIcon Data="{StaticResource 刷新}"/>
@@ -35,7 +36,7 @@
         </GridView.Header>
         <GridView.ItemContainerStyle>
             <Style TargetType="GridViewItem">
-                <Setter Property="Margin" Value="10,0,0,16"/>
+                <Setter Property="Margin" Value="10,2,0,16"/>
             </Style>
         </GridView.ItemContainerStyle>
         <!--

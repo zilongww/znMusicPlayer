@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.Storage.Pickers;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Media;
+using Newtonsoft.Json.Linq;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -49,6 +50,10 @@ namespace znMusicPlayerWUI.Controls
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
+            if (Children.SelectionMode != ListViewSelectionMode.None)
+            {
+                Button_Click_2(null, null);
+            }
             await Task.Delay(500);
             scrollViewer?.ScrollToVerticalOffset(0);
             foreach (SongItem item in Children.Items)
@@ -112,7 +117,6 @@ namespace znMusicPlayerWUI.Controls
                     Result_Search_Header.Text = $"\"{searchData}\"的搜索结果";
                     NowPage.Text = pageNumber.ToString();
                     
-                    ToolsCommandBar.Margin = new Thickness(0);
                     Children.Items.Clear();
                     try
                     {
@@ -130,7 +134,6 @@ namespace znMusicPlayerWUI.Controls
                     break;
 
                 case DataType.歌单:
-                    ToolsCommandBar.Margin = new Thickness(126, 0, 0, 0);
                     PlayList_BaseGrid.Visibility = Visibility.Visible;
                     AddLocalFilesButton.Visibility = Visibility.Visible;
                     musicListData = NavToObj as MusicListData;
@@ -150,9 +153,10 @@ namespace znMusicPlayerWUI.Controls
                 LoadingRing.Margin = new(0, h + (ActualHeight - h) / 2, 0, 0);
                 */
                 await Task.Delay(500);
+                var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
                 foreach (var i in musicListData.Songs)
                 {
-                    var a = new SongItem(i, musicListData);
+                    var a = new SongItem(i, musicListData) { ImageScaleDPI = dpi };
                     Children.Items.Add(a);
                 }
                 System.Diagnostics.Debug.WriteLine("加载完成。");
@@ -191,7 +195,7 @@ namespace znMusicPlayerWUI.Controls
             if (scrollViewer == null) return;
 
             double anotherHeight = HeaderBaseGrid.ActualHeight;
-            if (NowShowMode == DataType.歌单) anotherHeight = 130;
+            if (NowShowMode == DataType.歌单) anotherHeight = 158;
             String progress = $"Clamp(-scroller.Translation.Y / {anotherHeight}, 0, 1.0)";
 
             if (scrollerPropertySet == null)
@@ -240,6 +244,13 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
+        private async void UpdataCommandToolBarWidth()
+        {
+            ToolsCommandBar.Width = 0;
+            await Task.Delay(1);
+            ToolsCommandBar.Width = double.NaN;
+        }
+
         private void menu_border_Loaded(object sender, RoutedEventArgs e)
         {
             if (scrollViewer == null)
@@ -255,6 +266,7 @@ namespace znMusicPlayerWUI.Controls
 
             UpdataShyHeader();
             CreatShadow();
+            UpdataCommandToolBarWidth();
         }
 
         private void Result_BaseGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -282,7 +294,7 @@ namespace znMusicPlayerWUI.Controls
         {
             if (Children.SelectionMode == ListViewSelectionMode.None)
             {
-                (sender as Button).Background = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as Brush;
+                SelectItemButton.Background = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as Brush;
                 Children.SelectionMode = ListViewSelectionMode.Multiple;
 
                 SelectorSeparator.Visibility = Visibility.Visible;
@@ -303,7 +315,7 @@ namespace znMusicPlayerWUI.Controls
             }
             else
             {
-                (sender as Button).Background = new SolidColorBrush(Colors.Transparent);
+                SelectItemButton.Background = new SolidColorBrush(Colors.Transparent);
                 Children.SelectionMode = ListViewSelectionMode.None;
 
                 SelectorSeparator.Visibility = Visibility.Collapsed;
@@ -322,10 +334,7 @@ namespace znMusicPlayerWUI.Controls
                     songItem.CanClickPlay = true;
                 }
             }
-
-            ToolsCommandBar.Width = 0;
-            await Task.Delay(1);
-            ToolsCommandBar.Width = double.NaN;
+            UpdataCommandToolBarWidth();
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
@@ -378,13 +387,38 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
-        private void DeleteSelectedButton_Click(object sender, RoutedEventArgs e)
+        private async void DeleteSelectedButton_Click(object sender, RoutedEventArgs e)
         {
             if (Children.SelectedItems.Any())
             {
                 if (NowShowMode == DataType.歌单)
                 {
-
+                    var result = await MainWindow.ShowDialog("移除歌曲", $"真的要从歌单中移除这{Children.SelectedItems.Count}首歌曲吗？", "取消", "确定");
+                    if (result == ContentDialogResult.Primary)
+                    {
+                        var jdata = JObject.Parse(await PlayListHelper.ReadData());
+                        MainWindow.ShowLoadingDialog("正在移除");
+                        int num = 0;
+                        foreach (SongItem item in Children.SelectedItems)
+                        {
+                            num++;
+                            MainWindow.SetLoadingText($"正在移除：{item.MusicData.Title} - {item.MusicData.ButtonName}");
+                            MainWindow.SetLoadingProgressRingValue(Children.SelectedItems.Count, num);
+                            jdata = PlayListHelper.DeleteMusicDataFromPlayList(musicListData.ListName, item.MusicData, jdata);
+                        }
+                        await PlayListHelper.SaveData(jdata.ToString());
+                        await App.playListReader.Refresh();
+                        foreach (var m in App.playListReader.NowMusicListDatas)
+                        {
+                            if (m.MD5 == musicListData.MD5)
+                            {
+                                NavToObj = m;
+                                break;
+                            }
+                        }
+                        MainWindow.HideDialog();
+                        InitData();
+                    }
                 }
                 else
                 {
@@ -422,33 +456,6 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
-        private async void MenuFlyout_Opening(object sender, object e)
-        {
-            AddToPlayListFlyout.Items.Clear();
-
-            foreach (var m in await PlayListHelper.ReadAllPlayList())
-            {
-                var a = new MenuFlyoutItem()
-                {
-                    Text = m.ListShowName,
-                    Tag = m
-                };
-                a.Click += A_Click;
-
-                AddToPlayListFlyout.Items.Add(a);
-            }
-        }
-
-        private async void A_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (SongItem item in Children.SelectedItems)
-            {
-                await PlayListHelper.AddMusicDataToPlayList(
-                    ((sender as MenuFlyoutItem).Tag as MusicListData).ListName,
-                    item.MusicData);
-            }
-        }
-
         private void AppBarButton_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
             FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
@@ -467,10 +474,29 @@ namespace znMusicPlayerWUI.Controls
                     App.SupportedMediaFormats);
                 if (files.Any())
                 {
+                    var jdata = JObject.Parse(await PlayListHelper.ReadData());
+                    MainWindow.HideDialog();
+                    MainWindow.ShowLoadingDialog("正在添加");
+                    int num = 0;
                     foreach (var i in files)
                     {
-                        await PlayListHelper.AddLocalMusicDataToPlayList(musicListData.ListName, new FileInfo(i.Path));
+                        num++;
+                        MainWindow.SetLoadingProgressRingValue(files.Count, num);
+                        MainWindow.SetLoadingText($"正在添加：{i.Name}");
+                        jdata = await PlayListHelper.AddLocalMusicDataToPlayList(musicListData.ListName, new FileInfo(i.Path), jdata);
                     }
+                    await PlayListHelper.SaveData(jdata.ToString());
+                    await App.playListReader.Refresh();
+                    foreach (var m in App.playListReader.NowMusicListDatas)
+                    {
+                        if (m.MD5 == musicListData.MD5)
+                        {
+                            NavToObj = m;
+                            break;
+                        }
+                    }
+                    MainWindow.HideDialog();
+                    InitData();
                 }
             };
             bb.Click += async (_, __) =>
@@ -478,14 +504,33 @@ namespace znMusicPlayerWUI.Controls
                 Windows.Storage.StorageFolder folder = await FileHelper.UserSelectFolder(PickerLocationId.MusicLibrary);
                 if (folder != null)
                 {
+                    var jdata = JObject.Parse(await PlayListHelper.ReadData());
+                    MainWindow.HideDialog();
+                    MainWindow.ShowLoadingDialog("正在添加");
                     DirectoryInfo directory = Directory.CreateDirectory(folder.Path);
+                    int num = 0;
                     foreach (var i in directory.GetFiles())
                     {
                         if (App.SupportedMediaFormats.Contains(i.Extension))
                         {
-                            await PlayListHelper.AddLocalMusicDataToPlayList(musicListData.ListName, i);
+                            num++;
+                            MainWindow.SetLoadingProgressRingValue(directory.GetFiles().Length, num);
+                            MainWindow.SetLoadingText($"正在添加：{i.Name}");
+                            jdata = await PlayListHelper.AddLocalMusicDataToPlayList(musicListData.ListName, i, jdata);
                         }
                     }
+                    await PlayListHelper.SaveData(jdata.ToString());
+                    await App.playListReader.Refresh();
+                    foreach (var m in App.playListReader.NowMusicListDatas)
+                    {
+                        if (m.MD5 == musicListData.MD5)
+                        {
+                            NavToObj = m;
+                            break;
+                        }
+                    }
+                    MainWindow.HideDialog();
+                    InitData();
                 }
             };
 
@@ -504,6 +549,43 @@ namespace znMusicPlayerWUI.Controls
                     App.downloadManager.Add(songItem.MusicData);
                 }
             }
+        }
+
+        private async void AddToPlayListFlyout_Opened(object sender, object e)
+        {
+            AddToPlayListFlyout.Items.Clear();
+            foreach (var m in await PlayListHelper.ReadAllPlayList())
+            {
+                var a = new MenuFlyoutItem()
+                {
+                    Text = m.ListShowName,
+                    Tag = m
+                };
+                a.Click += A_Click;
+
+                AddToPlayListFlyout.Items.Add(a);
+            }
+        }
+
+        private async void A_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.ShowLoadingDialog();
+            var text = JObject.Parse(await PlayListHelper.ReadData());
+            foreach (SongItem item in Children.SelectedItems)
+            {
+                MainWindow.SetLoadingText($"正在添加：{item.MusicData.Title} - {item.MusicData.ButtonName}");
+                
+                text = PlayListHelper.AddMusicDataToPlayList(
+                    ((sender as MenuFlyoutItem).Tag as MusicListData).ListName,
+                    item.MusicData, text);
+            }
+            await PlayListHelper.SaveData(text.ToString());
+            MainWindow.HideDialog();
+        }
+
+        private void AddToPlayListFlyout_Closed(object sender, object e)
+        {
+            //AddToPlayListFlyout.Items.Clear();
         }
     }
 }

@@ -285,6 +285,9 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         //todo：优化性能
         private void LyricManager_PlayingLyricSelectedChange1(DataEditor.LyricData nowLyricsData)
         {
+#if DEBUG
+            Debug.WriteLine($"MusicPage: 歌词列表选中元素已被更改为: {App.lyricManager.NowLyricsData.Lyric}.");
+#endif
             if (ShowLrcPage && ViewState == MusicPageViewState.View)
             {
                 SelectedChangedDo();
@@ -328,13 +331,13 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             {
                 if (audioPlayer.FileReader != null)
                 {
+                    isCodeChangedSliderValue = true;
                     PlaySlider.Minimum = 0;
                     PlaySlider.Maximum = audioPlayer.FileReader.TotalTime.Ticks;
-                    isCodeChangedSliderValue = true;
                     PlaySlider.Value = audioPlayer.CurrentTime.Ticks;
                     isCodeChangedSliderValue = false;
                     NowPlayTimeTb.Text =
-                        $"{audioPlayer.CurrentTime.ToString(@"mm\:ss")}/{audioPlayer.FileReader.TotalTime.ToString(@"mm\:ss")}";
+                        $"{audioPlayer.CurrentTime:mm\\:ss}/{audioPlayer.FileReader.TotalTime.ToString(@"mm\:ss")}";
                     NowAtherTimeTb.Text =
                         (audioPlayer.FileReader.TotalTime - audioPlayer.CurrentTime).ToString(@"mm\:ss");
                 }

@@ -39,7 +39,7 @@
                                                TextWrapping="Wrap"/>
                                 </StackPanel>
                                 <Grid x:Name="PlayList_BaseGrid" Loaded="menu_border_Loaded">
-                                    <Grid x:Name="PlayList_Image_BaseGrid" animations:Connected.AnchorElement="{x:Bind PlayList_Image}">
+                                    <Grid x:Name="PlayList_Image_BaseGrid" animations:Connected.AnchorElement="{x:Bind PlayList_Image}" Margin="0,0,0,24">
                                         <Rectangle x:Name="PlayList_Image_DropShadowBase"/>
                                         <Border Width="210"
                                                 Height="210"
@@ -69,7 +69,7 @@
 
                                 <CommandBar Grid.Column="1" x:Name="ToolsCommandBar"
                                             DefaultLabelPosition="Right"
-                                            Margin="0,0,10,0">
+                                            Margin="0,0,12,0">
                                     <AppBarButton x:Name="SelectAllButton"
                                                   Click="SelectAllButton_Click"
                                                   Label="选中全部"
@@ -106,7 +106,7 @@
                                                   Label="添加选中歌曲到播放列表中"
                                                   ToolTipService.ToolTip="添加选中歌曲到播放列表中">
                                         <AppBarButton.Flyout>
-                                            <MenuFlyout x:Name="AddToPlayListFlyout" Opened="MenuFlyout_Opening"/>
+                                            <MenuFlyout x:Name="AddToPlayListFlyout" Opened="AddToPlayListFlyout_Opened" Closed="AddToPlayListFlyout_Closed"/>
                                         </AppBarButton.Flyout>
                                         <Viewbox Width="16" Margin="2,0,0,0">
                                             <Grid>
@@ -159,7 +159,8 @@
                                     </AppBarButton>
                                     <AppBarButton Click="Button_Click_2"
                                                   Label="多选"
-                                                  ToolTipService.ToolTip="多选">
+                                                  ToolTipService.ToolTip="多选"
+                                                  x:Name="SelectItemButton">
                                         <AppBarButton.Icon>
                                             <PathIcon Data="{StaticResource 全选}"/>
                                         </AppBarButton.Icon>
@@ -242,6 +243,7 @@
             </ListView.Header>
         </ListView>
         <ProgressRing x:Name="LoadingRing"
-                      Width="48" Height="48"/>
+                      Width="48" Height="48"
+                      VerticalAlignment="Bottom" Margin="0,0,0,24"/>
     </Grid>
 </Page>

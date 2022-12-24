@@ -46,16 +46,8 @@ namespace znMusicPlayerWUI.DataEditor
             await SaveData(jdata.ToString());
         }
 
-        public static async Task AddMusicDataToPlayList(string listName, MusicData musicData)
+        public static JObject AddMusicDataToPlayList(string listName, MusicData musicData, JObject jdata)
         {
-            var text = await ReadData();
-            var jdata = JObject.Parse(text);
-
-            if (!jdata.ContainsKey(listName))
-            {
-                jdata = AddPlayList(new(listName, listName, null, MusicFrom.localMusic, null, null), jdata);
-            }
-
             var ml = JsonNewtonsoft.FromJSON<MusicListData>(jdata[listName].ToString());
 
             if (ml.Songs == null)
@@ -78,14 +70,17 @@ namespace znMusicPlayerWUI.DataEditor
                 jdata[listName] = JObject.FromObject(ml);
             }
 
-            await SaveData(jdata.ToString());
+            return jdata;
         }
 
-        public static async Task DeleteMusicDataFromPlayList(string listName, MusicData musicData)
+        public static async Task AddMusicDataToPlayList(string listName, MusicData musicData)
         {
-            var text = await ReadData();
-            var jdata = JObject.Parse(text);
+            JObject text = JObject.Parse(await ReadData());
+            await SaveData(AddMusicDataToPlayList(listName, musicData, text).ToString());
+        }
 
+        public static JObject DeleteMusicDataFromPlayList(string listName, MusicData musicData, JObject jdata)
+        {
             var ml = JsonNewtonsoft.FromJSON<MusicListData>(jdata[listName].ToString());
             for (int mc = 0; mc < ml.Songs.Count; mc++)
             {
@@ -97,8 +92,12 @@ namespace znMusicPlayerWUI.DataEditor
                 }
             }
             jdata[listName] = JObject.FromObject(ml);
+            return jdata;
+        }
 
-            await SaveData(jdata.ToString());
+        public static async Task DeleteMusicDataFromPlayList(string listName, MusicData musicData)
+        {
+            await SaveData(DeleteMusicDataFromPlayList(listName, musicData, JObject.Parse(await ReadData())).ToString());
         }
 
         public static JObject MackJsPlayListData(MusicListData musicListData)
@@ -106,7 +105,7 @@ namespace znMusicPlayerWUI.DataEditor
             return new JObject() { { musicListData.ListName, JObject.FromObject(musicListData) } };
         }
 
-        private static async Task SaveData(string data)
+        public static async Task SaveData(string data)
         {
             await Task.Run(() =>
             {
@@ -114,7 +113,7 @@ namespace znMusicPlayerWUI.DataEditor
             });
         }
 
-        private static async Task<string> ReadData()
+        public static async Task<string> ReadData()
         {
             return await Task.Run(() =>
             {
@@ -122,7 +121,7 @@ namespace znMusicPlayerWUI.DataEditor
             });
         }
 
-        public static async Task AddLocalMusicDataToPlayList(string listName, FileInfo localFlie)
+        public static async Task<JObject> AddLocalMusicDataToPlayList(string listName, FileInfo localFlie, JObject jdata)
         {
             MusicData localAudioData;
             TagLib.File tagFile;
@@ -131,9 +130,12 @@ namespace znMusicPlayerWUI.DataEditor
 
             try
             {
-                tagFile = TagLib.File.Create(localFlie.FullName);
-                tag = tagFile.Tag;
-                if (tag.IsEmpty) isNoError = false;
+                await Task.Run(() =>
+                {
+                    tagFile = TagLib.File.Create(localFlie.FullName);
+                    tag = tagFile.Tag;
+                    if (tag.IsEmpty) isNoError = false;
+                });
             }
             catch
             {
@@ -165,7 +167,7 @@ namespace znMusicPlayerWUI.DataEditor
                     );
             }
 
-            await AddMusicDataToPlayList(listName, localAudioData);
+            return AddMusicDataToPlayList(listName, localAudioData, jdata);
         }
     }
 }

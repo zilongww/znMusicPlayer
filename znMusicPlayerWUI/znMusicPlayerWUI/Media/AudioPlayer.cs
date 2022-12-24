@@ -270,6 +270,7 @@ namespace znMusicPlayerWUI.Media
         }
 
         MusicData PointMusicData = null;
+        string PointFilePath = null;
         List<MusicData> LoadingMusicDatas = new();
         public async Task SetSource(MusicData musicData)
         {
@@ -396,9 +397,6 @@ namespace znMusicPlayerWUI.Media
 
         public async Task SetSource(string filePath)
         {
-            if (IsInReading) return;
-
-            IsInReading = true;
             AudioFileReader fileReader = null;
             AudioEffects.SoundTouchWaveProvider fileProvider = null;
 
@@ -407,6 +405,7 @@ namespace znMusicPlayerWUI.Media
                 fileReader = new AudioFileReader(filePath);
                 fileProvider = new AudioEffects.SoundTouchWaveProvider(fileReader);
                 fileReader.EqEnabled = EqEnabled;
+                fileReader.CurrentTime = TimeSpan.Zero;
                 fileReader.Volume = Volume;
                 fileProvider.Pitch = Pitch;
                 fileProvider.Tempo = Tempo;

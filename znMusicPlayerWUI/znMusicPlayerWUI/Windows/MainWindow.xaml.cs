@@ -116,7 +116,10 @@ namespace znMusicPlayerWUI
                     AppTitleTextBlock.Text = $"{App.AppName} - {_.Lyric}";
                 //System.Diagnostics.Debug.WriteLine("233");
             };
-            
+
+            loadingst.Children.Add(loadingprogress);
+            loadingst.Children.Add(loadingtextBlock);
+
             // 第一次点击不会响应动画。。。
             App.LoadSettings();
             ReadLAE();
@@ -236,9 +239,27 @@ namespace znMusicPlayerWUI
             await ShowDialog("音频设置", equalizerPage);
         }
 
+        static StackPanel loadingst = new();
+        static ProgressRing loadingprogress = new() { IsIndeterminate = true, Width = 50, Height = 50 };
+        static TextBlock loadingtextBlock = new() { Text = "", HorizontalAlignment = HorizontalAlignment.Center, TextWrapping = TextWrapping.Wrap };
         public static async void ShowLoadingDialog(string title = "正在加载")
         {
-            await ShowDialog(title, new ProgressRing() { IsIndeterminate = true, Width = 50, Height = 50 }, null, null);
+            SetLoadingText("");
+            SetLoadingProgressRingValue(100, 0);
+            await ShowDialog(title, loadingst, null, null);
+        }
+
+        public static void SetLoadingText(string text)
+        {
+            loadingtextBlock.Text = text;
+        }
+
+        public static void SetLoadingProgressRingValue(int maximum, int value)
+        {
+            if (value == 0) loadingprogress.IsIndeterminate = true;
+            else loadingprogress.IsIndeterminate = false;
+            loadingprogress.Maximum = maximum;
+            loadingprogress.Value = value;
         }
 
         public static void HideDialog()
@@ -537,7 +558,7 @@ namespace znMusicPlayerWUI
         private static void Window_Activated(object sender, WindowActivatedEventArgs args)
         {
             //SetBackdrop(BackdropType.DesktopAcrylic);
-            UpdataWindowBackdropTheme();
+            if (!isAcrylicBackdrop) UpdataWindowBackdropTheme();
             if (m_currentBackdrop != BackdropType.DefaultColor)
             {
                 m_configurationSource.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
@@ -934,7 +955,7 @@ namespace znMusicPlayerWUI
                     0.2f, 1f, 0.22f, 1f,
                     out Visual contentGridVisual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
                 contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
-                compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
+                /*compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
                 {
                     if (InOpenMusicPage)
                     {
@@ -943,17 +964,17 @@ namespace znMusicPlayerWUI
                         System.Diagnostics.Debug.WriteLine("主界面被隐藏。");
 #endif
                     }
-                };
+                };*/
 
                 SMusicPage.MusicPageViewStateChange(MusicPageViewState.View);
             }
             else
             {
                 InOpenMusicPage = false;
-                SWindowGridBase.Visibility = Visibility.Visible;
+                /*SWindowGridBase.Visibility = Visibility.Visible;
 #if DEBUG
                 System.Diagnostics.Debug.WriteLine("主界面被显示。");
-#endif
+#endif*/
                 SMusicPageBaseFrame.Content = SMusicPage;
                 AnimateHelper.AnimateOffset(
                     SMusicPageBaseFrame,

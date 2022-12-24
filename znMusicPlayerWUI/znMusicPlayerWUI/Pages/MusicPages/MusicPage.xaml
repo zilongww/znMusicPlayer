@@ -10,7 +10,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="pageRoot" Loaded="pageRoot_Loaded"
-    mc:Ignorable="d" Background="{ThemeResource ButtonBorderThemeBrush}" Opacity="1" IsHitTestVisible="True">
+    mc:Ignorable="d" Opacity="1" IsHitTestVisible="True">
 
     <Page.Resources>
         <StaticResource x:Key="TextForeground" ResourceKey="ButtonForegroundThemeBrush"/>

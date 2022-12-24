@@ -89,6 +89,7 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal">
                     <Border x:Name="AlbumImage_BaseBorder"
+                            IsHitTestVisible="False"
                             CornerRadius="{ThemeResource ControlCornerRadius}"
                             Width="50"
                             Height="50">
