@@ -154,7 +154,40 @@ namespace znMusicPlayerWUI.Controls
                 */
                 await Task.Delay(500);
                 var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
-                foreach (var i in musicListData.Songs)
+                MusicData[] array = null;
+
+                switch (SortComboBox.SelectedIndex)
+                {
+                    case 0: //默认
+                        array = musicListData.Songs.ToArray();
+                        break;
+                    case 1: //名称升序
+                        array = musicListData.Songs.OrderBy(m => m.Title).ToArray();
+                        break;
+                    case 2: //名称降序
+                        array = musicListData.Songs.OrderByDescending(m => m.Title).ToArray();
+                        break;
+                    case 3: //艺术家升序
+                        array = musicListData.Songs.OrderBy(m => m.Artists[0].Name).ToArray();
+                        break;
+                    case 4: //艺术家降序
+                        array = musicListData.Songs.OrderByDescending(m => m.Artists[0].Name).ToArray();
+                        break;
+                    case 5: //专辑升序
+                        array = musicListData.Songs.OrderBy(m => m.Album).ToArray();
+                        break;
+                    case 6: //专辑降序
+                        array = musicListData.Songs.OrderByDescending(m => m.Album).ToArray();
+                        break;
+                    case 7: //时间升序
+                        array = musicListData.Songs.OrderBy(m => m.RelaseTime).ToArray();
+                        break;
+                    case 8: //时间降序
+                        array = musicListData.Songs.OrderByDescending(m => m.RelaseTime).ToArray();
+                        break;
+                }
+
+                foreach (var i in array)
                 {
                     var a = new SongItem(i, musicListData) { ImageScaleDPI = dpi };
                     Children.Items.Add(a);
@@ -483,7 +516,10 @@ namespace znMusicPlayerWUI.Controls
                         num++;
                         MainWindow.SetLoadingProgressRingValue(files.Count, num);
                         MainWindow.SetLoadingText($"正在添加：{i.Name}");
-                        jdata = await PlayListHelper.AddLocalMusicDataToPlayList(musicListData.ListName, new FileInfo(i.Path), jdata);
+
+                        FileInfo fi = null;
+                        await Task.Run(() => fi = new FileInfo(i.Path));
+                        jdata = await PlayListHelper.AddLocalMusicDataToPlayList(musicListData.ListName, fi, jdata);
                     }
                     await PlayListHelper.SaveData(jdata.ToString());
                     await App.playListReader.Refresh();
@@ -507,7 +543,8 @@ namespace znMusicPlayerWUI.Controls
                     var jdata = JObject.Parse(await PlayListHelper.ReadData());
                     MainWindow.HideDialog();
                     MainWindow.ShowLoadingDialog("正在添加");
-                    DirectoryInfo directory = Directory.CreateDirectory(folder.Path);
+                    DirectoryInfo directory = null;
+                    await Task.Run(() => directory = Directory.CreateDirectory(folder.Path));
                     int num = 0;
                     foreach (var i in directory.GetFiles())
                     {
@@ -586,6 +623,17 @@ namespace znMusicPlayerWUI.Controls
         private void AddToPlayListFlyout_Closed(object sender, object e)
         {
             //AddToPlayListFlyout.Items.Clear();
+        }
+
+        bool isfirst = true;
+        private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (isfirst)
+            {
+                isfirst = false;
+                return;
+            }
+            InitData();
         }
     }
 }

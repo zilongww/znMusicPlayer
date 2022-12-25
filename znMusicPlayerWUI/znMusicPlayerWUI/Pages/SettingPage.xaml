@@ -5,7 +5,7 @@
     xmlns:local="using:znMusicPlayerWUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Loaded="Page_Loaded" SizeChanged="Page_SizeChanged">
+    mc:Ignorable="d" Loaded="Page_Loaded" SizeChanged="Page_SizeChanged" KeyDown="Page_KeyDown">
 
     <ListView x:Name="ListViewBase" HorizontalContentAlignment="Center" SelectionMode="None">
         <ListView.Resources>
@@ -201,6 +201,26 @@
                     </StackPanel>
                 </Expander.Header>
                 <StackPanel>
+                    <Grid x:Name="PlayBehaviourBaseeGrid"
+                          Loaded="PlayBehaviourBaseeGrid_Loaded"
+                          Style="{StaticResource ItemGridStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="播放行为"/>
+                            <TextBlock Text="设置播放完成后的行为" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
+                        </StackPanel>
+                        <ComboBox Grid.Column="1"
+                                  x:Name="PlayBehaviourCb"
+                                  SelectionChanged="PlayBehaviourCb_SelectionChanged">
+                            <x:String>顺序播放</x:String>
+                            <x:String>随机播放</x:String>
+                            <x:String>单曲循环</x:String>
+                            <x:String>单曲播放完成后停止</x:String>
+                        </ComboBox>
+                    </Grid>
                     <Grid x:Name="OpenMediaBaseGrid"
                           Loaded="OpenMediaBaseGrid_Loaded">
                         <Grid.ColumnDefinitions>
@@ -213,7 +233,7 @@
                         </StackPanel>
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
                             <Button Content="打开文件" Margin="{ThemeResource ContentDialogButton1HostMargin}" Click="Button_Click_3"/>
-                            <Button Content="输入地址" Margin="{ThemeResource ContentDialogButton1HostMargin}" Click="Button_Click_3"/>
+                            <Button Content="输入地址" Click="Button_Click_3"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>

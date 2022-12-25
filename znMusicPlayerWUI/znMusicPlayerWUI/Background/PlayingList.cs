@@ -11,6 +11,7 @@ using znMusicPlayerWUI.Helpers;
 
 namespace znMusicPlayerWUI.Background
 {
+    public enum PlayBehaviour { 顺序播放, 随机播放, 单曲循环, 单曲播放完成后停止 }
     public class PlayingList
     {
         public delegate void PlayingListItemChangeDelegate(ObservableCollection<MusicData> nowPlayingList);
@@ -22,6 +23,7 @@ namespace znMusicPlayerWUI.Background
 
         public ObservableCollection<MusicData> NowPlayingList = new();
         public MusicData NowPlayingMusicData { get; set; }
+        public PlayBehaviour PlayBehaviour { get; set; } = PlayBehaviour.顺序播放;
         //public BitmapImage DefaultPlayingImage { get; set; } = new BitmapImage("")
 
         ImageSource _nowPlayingImage;
@@ -37,6 +39,28 @@ namespace znMusicPlayerWUI.Background
         public PlayingList()
         {
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
+            App.audioPlayer.PlayEnd += AudioPlayer_PlayEnd;
+        }
+
+        private async void AudioPlayer_PlayEnd(Media.AudioPlayer audioPlayer)
+        {
+            System.Diagnostics.Debug.WriteLine(App.playingList.PlayBehaviour);
+            switch (PlayBehaviour)
+            {
+                case PlayBehaviour.顺序播放:
+                    await App.playingList.PlayNext();
+                    break;
+                case PlayBehaviour.随机播放:
+                    await Play(NowPlayingList[new Random().Next(NowPlayingList.Count - 1)]);
+                    break;
+                case PlayBehaviour.单曲循环:
+                    await Play(NowPlayingMusicData);
+                    break;
+                case PlayBehaviour.单曲播放完成后停止:
+                    App.audioPlayer.CurrentTime = TimeSpan.Zero;
+                    App.audioPlayer.SetStop();
+                    break;
+            }
         }
 
         private async void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)

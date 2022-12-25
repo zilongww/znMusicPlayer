@@ -211,6 +211,8 @@ namespace znMusicPlayerWUI.Media
             get => _volume;
             set
             {
+                if (value < 0f) value = 0;
+                else if (value > 1f) value = 1f;
                 _volume = value;
                 VolumeChanged?.Invoke(this, value);
                 if (FileReader != null) FileReader.Volume = value;
@@ -405,7 +407,6 @@ namespace znMusicPlayerWUI.Media
                 fileReader = new AudioFileReader(filePath);
                 fileProvider = new AudioEffects.SoundTouchWaveProvider(fileReader);
                 fileReader.EqEnabled = EqEnabled;
-                fileReader.CurrentTime = TimeSpan.Zero;
                 fileReader.Volume = Volume;
                 fileProvider.Pitch = Pitch;
                 fileProvider.Tempo = Tempo;

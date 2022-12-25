@@ -19,6 +19,7 @@ using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.DataEditor;
 using Windows.Networking.Connectivity;
 using znMusicPlayerWUI.Windowed;
+using znMusicPlayerWUI.Background;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -76,7 +77,7 @@ namespace znMusicPlayerWUI.Pages
             LyricCachePath = DataFolderBase.LyricCacheFolder;
             DownloadPathTb.Text = DataFolderBase.DownloadFolder;
 
-            System.Diagnostics.Debug.WriteLine(App.downloadManager.br);
+            //System.Diagnostics.Debug.WriteLine(App.downloadManager.br);
             switch (App.downloadManager.br)
             {
                 case 128: DownloadFormatCb.SelectedIndex = 0; break;
@@ -301,6 +302,22 @@ namespace znMusicPlayerWUI.Pages
                     break;
             }
             MainWindow.UpdataWindowBackdropTheme();
+        }
+
+
+        private void PlayBehaviourBaseeGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            PlayBehaviourCb.SelectedIndex = (int)App.playingList.PlayBehaviour;
+        }
+
+        private void PlayBehaviourCb_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            App.playingList.PlayBehaviour = (PlayBehaviour)Enum.Parse(typeof(PlayBehaviour), PlayBehaviourCb.SelectedItem as string);
+            //System.Diagnostics.Debug.WriteLine(App.playingList.PlayBehaviour);
+        }
+
+        private void Page_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
         }
     }
 }

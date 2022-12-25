@@ -31,6 +31,8 @@ using NAudio.Gui;
 using System.Runtime.Intrinsics.Arm;
 using Windows.Services.Store;
 using znMusicPlayerWUI.Windowed;
+using System.Diagnostics;
+using System.Reflection.Metadata;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -123,6 +125,8 @@ namespace znMusicPlayerWUI
             // 第一次点击不会响应动画。。。
             App.LoadSettings();
             ReadLAE();
+
+            RegisterHotKeys();
         }
 
         public async void ReadLAE()
@@ -273,7 +277,7 @@ namespace znMusicPlayerWUI
         {
             if (!isPEntered)
             {
-                VolumeSlider.Value = (float)data * 100;
+                VolumeSlider.Value = (int)((float)data * 100);
             }
 
             if ((float)data == 0)
@@ -293,7 +297,6 @@ namespace znMusicPlayerWUI
             if (true)
             {
                 AudioPlayer_PlayStateChanged(audioPlayer);
-                await App.playingList.PlayNext();
             }
         }
 
@@ -1232,5 +1235,113 @@ namespace znMusicPlayerWUI
             }
         }
         #endregion
+
+        public void RegisterHotKeys()
+        {
+            Windows.Win32.Foundation.HWND hwnd = new Windows.Win32.Foundation.HWND(WinRT.Interop.WindowNative.GetWindowHandle(this));
+
+            // 需要注册热键的列表
+            var WillRegisterHotKeysList = new List<Tuple<Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS, uint>>()
+            {
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x25),
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x27),
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x28),
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x26),
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0xBD),
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0xBB),
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB0),
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB1),
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB2),
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB3),
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x4F),
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x4C),
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x52)
+            };
+
+            var ErrorCantCreatHotKeysList = new List<uint>();
+
+            // 循环列表注册热键
+            foreach (Tuple<Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS, uint> tuple in WillRegisterHotKeysList)
+            {
+                bool IsRegister = Windows.Win32.PInvoke.RegisterHotKey(
+                    hwnd, 0x9999,
+                    tuple.Item1,
+                    tuple.Item2);
+                if (!IsRegister) ErrorCantCreatHotKeysList.Add(tuple.Item2);
+            }
+
+            hotKeyPrc = HotKeyPrc;
+            var hotKeyPrcPointer = Marshal.GetFunctionPointerForDelegate(hotKeyPrc);
+            origPrc = Marshal.GetDelegateForFunctionPointer<Windows.Win32.UI.WindowsAndMessaging.WNDPROC>((IntPtr)Windows.Win32.PInvoke.SetWindowLongPtr(hwnd, Windows.Win32.UI.WindowsAndMessaging.WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, hotKeyPrcPointer));
+        }
+
+        private const uint WM_HOTKEY = 0x0312;
+        private Windows.Win32.UI.WindowsAndMessaging.WNDPROC origPrc;
+        private Windows.Win32.UI.WindowsAndMessaging.WNDPROC hotKeyPrc;
+
+        private Windows.Win32.Foundation.LRESULT HotKeyPrc(Windows.Win32.Foundation.HWND hwnd,
+            uint uMsg,
+            Windows.Win32.Foundation.WPARAM wParam,
+            Windows.Win32.Foundation.LPARAM lParam)
+        {
+            if (uMsg == WM_HOTKEY)
+            {
+                string code = lParam.Value.ToString();
+
+                if (code == "2424834" | code == "11599872")
+                {
+                    App.playingList.PlayPrevious();
+                }
+                else if (code == "2555906" || code == "11534336")
+                {
+                    App.playingList.PlayNext();
+                }
+                else if (code == "11665408" || code == "2490370")
+                {
+                    App.audioPlayer.CurrentTime = TimeSpan.Zero;
+                    App.audioPlayer.SetStop();
+                }
+                else if (code == "11730944" || code == "2621442")
+                {
+                    if (App.audioPlayer.NowOutObj?.PlaybackState == PlaybackState.Playing)
+                    {
+                        App.audioPlayer.SetPause();
+                    }
+                    else
+                    {
+                        App.audioPlayer.SetPlay();
+                    }
+                }
+                else if (code == "12255234")
+                {
+                    App.audioPlayer.Volume += 0.01f;
+                }
+                else if (code == "12386306")
+                {
+                    App.audioPlayer.Volume -= 0.01f;
+                }
+                else if (code == "4980742")
+                {
+                    // 打开桌面歌词
+                }
+                else if (code == "5373958")
+                {
+                    // 随机播放
+                }
+                else if (code == "5177350")
+                {
+                    Activate();
+                }
+                else
+                {
+                    Debug.WriteLine("Error Hotkey:");
+                    Debug.WriteLine(uMsg);
+                    Debug.WriteLine(wParam.Value);
+                    Debug.WriteLine(lParam.Value);
+                }
+                return (Windows.Win32.Foundation.LRESULT)IntPtr.Zero;
+            }
+            return Windows.Win32.PInvoke.CallWindowProc(origPrc, hwnd, uMsg, wParam, lParam);
+        }
     }
 }

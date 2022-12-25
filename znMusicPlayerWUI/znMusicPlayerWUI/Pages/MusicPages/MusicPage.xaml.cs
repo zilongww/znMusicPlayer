@@ -285,9 +285,6 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         //todo：优化性能
         private void LyricManager_PlayingLyricSelectedChange1(DataEditor.LyricData nowLyricsData)
         {
-#if DEBUG
-            Debug.WriteLine($"MusicPage: 歌词列表选中元素已被更改为: {App.lyricManager.NowLyricsData.Lyric}.");
-#endif
             if (ShowLrcPage && ViewState == MusicPageViewState.View)
             {
                 SelectedChangedDo();

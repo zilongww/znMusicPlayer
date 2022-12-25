@@ -167,6 +167,8 @@ namespace znMusicPlayerWUI.DataEditor
                     );
             }
 
+            localAudioData.RelaseTime = localFlie.CreationTime.Ticks.ToString();
+
             return AddMusicDataToPlayList(listName, localAudioData, jdata);
         }
     }
