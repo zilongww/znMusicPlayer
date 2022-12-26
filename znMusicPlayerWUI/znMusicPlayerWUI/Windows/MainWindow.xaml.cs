@@ -201,6 +201,7 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region Dialog
+        static ScrollViewer dialogScrollViewer = new();
         static bool dialogShow = false;
         static List<object[]> dialogShowObjects = new();
         public static async Task<ContentDialogResult> ShowDialog(
@@ -213,7 +214,14 @@ namespace znMusicPlayerWUI
                 dialogShow = true;
                 AsyncDialog.Title = title;
                 AsyncDialog.Width = 5000;
-                AsyncDialog.Content = content;
+                if (content is string)
+                {
+                    dialogScrollViewer.Content = content;
+                    dialogScrollViewer.ZoomMode = ZoomMode.Enabled;
+                    AsyncDialog.Content = dialogScrollViewer;
+                }
+                else
+                    AsyncDialog.Content = content;
                 AsyncDialog.Background = App.Current.Resources["AcrylicNormal"] as AcrylicBrush;
                 AsyncDialog.CloseButtonText = closeButtonText;
                 AsyncDialog.PrimaryButtonText = primaryButtonText;
@@ -1236,6 +1244,7 @@ namespace znMusicPlayerWUI
         }
         #endregion
 
+        #region HotKeys
         public void RegisterHotKeys()
         {
             Windows.Win32.Foundation.HWND hwnd = new Windows.Win32.Foundation.HWND(WinRT.Interop.WindowNative.GetWindowHandle(this));
@@ -1343,5 +1352,6 @@ namespace znMusicPlayerWUI
             }
             return Windows.Win32.PInvoke.CallWindowProc(origPrc, hwnd, uMsg, wParam, lParam);
         }
+        #endregion
     }
 }

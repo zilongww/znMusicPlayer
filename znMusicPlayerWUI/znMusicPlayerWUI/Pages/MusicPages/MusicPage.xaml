@@ -190,6 +190,7 @@
                           Background="Transparent"
                           SelectionChanged="LrcBaseListView_SelectionChanged"
                           ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                          IsFocusEngagementEnabled="True"
                           SizeChanged="LrcBaseListView_SizeChanged"
                           HorizontalContentAlignment="Stretch">
                     <ListView.ItemTemplate>

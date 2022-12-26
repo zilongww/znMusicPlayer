@@ -23,6 +23,8 @@ namespace znMusicPlayerWUI.DataEditor
         public string Name { get; set; }
         public string ID { get; set; }
         public string PicturePath { get; set; }
+        public string Describee { get; set; }
+        public MusicListData HotSongs { get; set; }
 
         public Artist(string name, string ID, string picturePath) : this()
         {

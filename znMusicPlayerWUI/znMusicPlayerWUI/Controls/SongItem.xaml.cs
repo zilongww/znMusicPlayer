@@ -45,12 +45,12 @@ namespace znMusicPlayerWUI.Controls
 
             foreach (var i in musicData.Artists)
             {
-                mfs.Items.Add(
-                    new MenuFlyoutItem() { Text = i.Name }
-                    );
-                rmfs.Items.Add(
-                    new MenuFlyoutItem() { Text = i.Name }
-                    );
+                var a1 = new MenuFlyoutItem() { Text = i.Name, Tag = i };
+                var a2 = new MenuFlyoutItem() { Text = i.Name, Tag = i };
+                a1.Click += A_Click;
+                a2.Click += A_Click;
+                mfs.Items.Add(a1);
+                rmfs.Items.Add(a2);
             }
             mfi.Text = $"专辑：{musicData.Album}";
             rmfi.Text = $"专辑：{musicData.Album}";
@@ -63,6 +63,17 @@ namespace znMusicPlayerWUI.Controls
             {
                 DeleteFlyoutBtn.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private async void A_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.SetNavViewContent(
+            typeof(ItemListView),
+            new List<object> { DataType.艺术家, (Artist)(sender as MenuFlyoutItem).Tag },
+            new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+
+            //var artist = await App.metingServices.NeteaseServices.GetArtist(((Artist)(sender as MenuFlyoutItem).Tag).ID);
+            //await MainWindow.ShowDialog("result", $"{artist.Name}\n{artist.PicturePath}\n{artist.Describee}\n{artist.HotSongs.Songs.Count}");
         }
 
         public void Dispose()

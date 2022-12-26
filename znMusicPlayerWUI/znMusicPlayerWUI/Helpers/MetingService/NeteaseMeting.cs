@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using NAudio.Gui;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -200,6 +201,33 @@ namespace znMusicPlayerWUI.Helpers.MetingService
             });
         }
 
+        public List<MusicData> UnpackMusicData(JToken token)
+        {
+            var datas = new List<MusicData>();
+            foreach (var md in token)
+            {
+                List<Artist> artists = new();
+                foreach (var artist in md["ar"])
+                {
+                    artists.Add(new(
+                        (string)artist["name"],
+                        (string)artist["id"], null
+                        ));
+                }
+                datas.Add(new(
+                    (string)md["name"],
+                    (string)md["id"],
+                    artists,
+                    (string)md["al"]["name"],
+                    (string)md["al"]["id"],
+                    (string)md["al"]["picUrl"],
+                    (string)md["publishTime"],
+                    MusicFrom.neteaseMusic// from
+                    ));
+            }
+            return datas;
+        }
+
         public async Task<MusicListData> GetPlayList(string id)
         {
             return await Task.Run(() =>
@@ -221,27 +249,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                         musicListData.ListDataType = DataType.歌单;
 
                         var plt = pld["tracks"];
-                        foreach (var md in plt)
-                        {
-                            List<Artist> artists = new();
-                            foreach (var artist in md["ar"])
-                            {
-                                artists.Add(new(
-                                    (string)artist["name"],
-                                    (string)artist["id"], null
-                                    ));
-                            }
-                            musicListData.Songs.Add(new(
-                                (string)md["name"],
-                                (string)md["id"],
-                                artists,
-                                (string)md["al"]["name"],
-                                (string)md["al"]["id"],
-                                (string)md["al"]["picUrl"],
-                                (string)md["publishTime"],
-                                MusicFrom.neteaseMusic
-                                ));
-                        }
+                        musicListData.Songs = UnpackMusicData(plt);
 
                         musicListData.ListName = $"{musicListData.ListShowName}{musicListData.ListFrom}{musicListData.PicturePath}";
                         musicListData.ReMD5();
@@ -267,6 +275,46 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                 }
 
                 return null;
+            });
+        }
+
+        public async Task<Artist> GetArtist(string id)
+        {
+            return await Task.Run(() =>
+            {
+                var getArtistAction = Artist () =>
+                {
+                    var data = JObject.Parse(Services.FormatMethod(false).Artist(id));
+                    //System.Diagnostics.Debug.WriteLine(data);
+                    Artist artist = default;
+                    if (data["code"].ToString() == "200")
+                    {
+                        var art = data["artist"];
+                        artist.Name = (string)art["name"];
+                        artist.ID = (string)art["id"];
+                        artist.PicturePath = (string)art["img1v1Url"];
+                        artist.Describee = (string)art["briefDesc"];
+
+                        artist.HotSongs = new()
+                        {
+                            ListFrom = MusicFrom.neteaseMusic,
+                            ListDataType = DataType.艺术家,
+                            Songs = UnpackMusicData(data["hotSongs"]),
+                            PicturePath = artist.PicturePath
+                        };
+                    }
+
+                    return artist;
+                };
+
+                for (int i = 0; i <= App.metingServices.RetryCount; i++)
+                {
+                    var a = getArtistAction();
+                    if (!string.IsNullOrEmpty(a.ID))
+                        return a;
+                }
+
+                return default;
             });
         }
     }

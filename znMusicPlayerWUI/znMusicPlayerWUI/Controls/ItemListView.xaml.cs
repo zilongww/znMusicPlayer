@@ -134,11 +134,22 @@ namespace znMusicPlayerWUI.Controls
                     break;
 
                 case DataType.歌单:
+                case DataType.艺术家:
                     PlayList_BaseGrid.Visibility = Visibility.Visible;
                     AddLocalFilesButton.Visibility = Visibility.Visible;
-                    musicListData = NavToObj as MusicListData;
-                    PlayList_TitleTextBlock.Text = musicListData.ListShowName;
-                    PlayList_OtherTextBlock.Text = $"共{musicListData.Songs.Count}首歌曲";
+                    if (NowShowMode == DataType.歌单)
+                    {
+                        musicListData = NavToObj as MusicListData;
+                        PlayList_TitleTextBlock.Text = musicListData.ListShowName;
+                        PlayList_OtherTextBlock.Text = $"共{musicListData.Songs.Count}首歌曲";
+                    }
+                    else
+                    {
+                        PlayList_TitleTextBlock.Text = ((Artist)NavToObj).Name;
+                        NavToObj = await App.metingServices.NeteaseServices.GetArtist(((Artist)NavToObj).ID);
+                        musicListData = ((Artist)NavToObj).HotSongs;
+                        PlayList_OtherTextBlock.Text = ((Artist)NavToObj).Describee; ;
+                    }
                     break;
             }
 
@@ -215,6 +226,12 @@ namespace znMusicPlayerWUI.Controls
             {
                 PlayList_Image.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(musicListData));
             }
+            else if (musicListData.ListDataType == DataType.艺术家)
+            {
+                var art = (Artist)NavToObj;
+                PlayList_Image.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(art.PicturePath));
+                System.Diagnostics.Debug.WriteLine(art.PicturePath);
+            }
         }
 
         CompositionPropertySet scrollerPropertySet;
@@ -228,7 +245,7 @@ namespace znMusicPlayerWUI.Controls
             if (scrollViewer == null) return;
 
             double anotherHeight = HeaderBaseGrid.ActualHeight;
-            if (NowShowMode == DataType.歌单) anotherHeight = 158;
+            if (NowShowMode == DataType.歌单 || NowShowMode == DataType.艺术家) anotherHeight = 158;
             String progress = $"Clamp(-scroller.Translation.Y / {anotherHeight}, 0, 1.0)";
 
             if (scrollerPropertySet == null)
@@ -249,7 +266,7 @@ namespace znMusicPlayerWUI.Controls
             backgroundVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             backgroundVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
 
-            if (NowShowMode == DataType.歌单)
+            if (NowShowMode == DataType.歌单 || NowShowMode == DataType.艺术家)
             {
                 // Logo scale and transform                                          from               to
                 var logoHeaderScaleAnimation = compositor.CreateExpressionAnimation("Lerp(Vector2(1,1), Vector2(0.5, 0.5), " + progress + ")");
