@@ -102,7 +102,7 @@ namespace znMusicPlayerWUI
                         AppDesktopLyricWindowHandle = WindowHelper.GetWindowHandle(l_window);
                         l_window.Activate();
             */
-
+            
             var displayArea = CodeHelper.GetDisplayArea(m_window);
             var dpi = CodeHelper.GetScaleAdjustment(m_window);
             double a = 2;

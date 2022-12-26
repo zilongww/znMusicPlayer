@@ -40,7 +40,7 @@ namespace znMusicPlayerWUI.Windowed
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var a = OverlappedPresenter.Create();
-            a.IsMaximizable = true;
+            a.IsMaximizable = false;
             a.IsMinimizable = false;
             a.SetBorderAndTitleBar(true, true);
             if (AppWindowTitleBar.IsCustomizationSupported())
