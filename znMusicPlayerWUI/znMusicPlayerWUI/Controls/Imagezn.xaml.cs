@@ -232,7 +232,7 @@ namespace znMusicPlayerWUI.Controls
             isPointEnter = false;
             AnimateHelper.AnimateScalar(
                 ImageMassAlpha, 0, 1,
-                0f, 0f, 0f, 0f,
+                0.39f, 0.575f, 0.565f, 1,
                 out var visual, out var compositor, out var scalarKeyFrameAnimation);
             visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
             compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>

@@ -158,7 +158,7 @@ namespace znMusicPlayerWUI.Helpers
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="NullReferenceException"></exception>
         /// <exception cref="WebException">internal not conncetd or timeout</exception>
-        public static async Task<MusicListData> SearchData(
+        public static async Task<object> SearchData(
             string keyword,
             int pageNumber = 1,
             int pageSize = 30,
@@ -166,7 +166,7 @@ namespace znMusicPlayerWUI.Helpers
             SearchDataType searchDataType = SearchDataType.歌曲)
         {
             // TODO!!!:设置ListDataType
-            MusicListData musicListData = new(keyword, keyword, null, searchFrom, null);
+            object listData = null;
             switch (searchFrom)
             {
                 case MusicFrom.kwMusic:
@@ -178,7 +178,7 @@ namespace znMusicPlayerWUI.Helpers
                 case MusicFrom.neteaseMusic:
                     try
                     {
-                        musicListData = await App.metingServices.NeteaseServices.GetSearch(keyword, pageNumber, pageSize, searchDataType);
+                        listData = await App.metingServices.NeteaseServices.GetSearch(keyword, pageNumber, pageSize, searchDataType);
                     }
                     catch (Exception ex)
                     {
@@ -200,7 +200,7 @@ namespace znMusicPlayerWUI.Helpers
                 default: throw new ArgumentOutOfRangeException(nameof(searchFrom));
             }
 
-            return musicListData;
+            return listData;
         }
     }
 }

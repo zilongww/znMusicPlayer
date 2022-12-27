@@ -1,0 +1,406 @@
+﻿using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using System.Threading.Tasks;
+using System;
+using System.Numerics;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using znMusicPlayerWUI.Helpers;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using znMusicPlayerWUI.Pages;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.Storage.Pickers;
+using znMusicPlayerWUI.DataEditor;
+using znMusicPlayerWUI.Media;
+using Newtonsoft.Json.Linq;
+
+namespace znMusicPlayerWUI.Controls
+{
+    public partial class ItemListViewSearch : Page
+    {
+        private ScrollViewer scrollViewer { get; set; }
+        public object NavToObj { get; set; }
+        public SearchDataType NowSearchMode { get; set; } = SearchDataType.歌曲;
+        public MusicFrom NowMusicFrom { get; set; } = MusicFrom.neteaseMusic;
+
+        public ItemListViewSearch()
+        {
+            InitializeComponent();
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            var a = (List<object>)e.Parameter;
+            NavToObj = a[0];
+            NowMusicFrom = (MusicFrom)a[1];
+            NowSearchMode = (SearchDataType)a[2];
+            InitData();
+        }
+
+        protected override async void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            if (Children.SelectionMode != ListViewSelectionMode.None)
+            {
+                Button_Click_2(null, null);
+            }
+            await Task.Delay(500);
+            scrollViewer?.ScrollToVerticalOffset(0);
+            foreach (IDisposable item in Children.Items)
+            {
+                item.Dispose();
+            }
+            Children.Items.Clear();
+        }
+
+        object searchDatas;
+        static bool firstInit = false;
+        int pageNumber = 1;
+        int pageSize = 30;
+        public async void InitData()
+        {
+            SelectorSeparator.Visibility = Visibility.Collapsed;
+            AddSelectedToPlayingListButton.Visibility = Visibility.Collapsed;
+            AddSelectedToPlayListButton.Visibility = Visibility.Collapsed;
+            DownloadSelectedButton.Visibility = Visibility.Collapsed;
+            SelectReverseButton.Visibility = Visibility.Collapsed;
+            SelectAllButton.Visibility = Visibility.Collapsed;
+            SearchHomeButton.Visibility = Visibility.Collapsed;
+            SearchPageSelectorSeparator.Visibility = Visibility.Collapsed;
+
+            SearchPageSelector.Visibility = Visibility.Collapsed;
+            SearchPageSelectorCustom.Visibility = Visibility.Collapsed;
+
+            SearchResult_BaseGrid.Visibility = Visibility.Visible;
+            SearchPageSelector.Visibility = Visibility.Visible;
+            SearchPageSelectorCustom.Visibility = Visibility.Visible;
+            SearchHomeButton.Visibility = Visibility.Visible;
+            var searchData = NavToObj as string;
+            Result_Search_Header.Text = $"\"{searchData}\"的搜索结果";
+            NowPage.Text = pageNumber.ToString();
+
+            Children.Items.Clear();
+            try
+            {
+                searchDatas = await WebHelper.SearchData(searchData, pageNumber, pageSize, NowMusicFrom, NowSearchMode);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                await MainWindow.ShowDialog("不支持的平台", "当前不支持此平台搜索。");
+            }
+            catch (Exception e)
+            {
+                await MainWindow.ShowDialog("搜索失败", e.Message);
+                searchDatas = null;
+            }
+
+            if (searchDatas != null)
+            {
+                Children.Items.Clear();
+                LoadingRing.Visibility = Visibility.Visible;
+                LoadingRing.IsIndeterminate = true;
+
+                await Task.Delay(500);
+                var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
+
+                switch (NowSearchMode)
+                {
+                    case SearchDataType.歌曲:
+                        MusicData[] array = (searchDatas as MusicListData).Songs.ToArray();
+                        foreach (var i in array)
+                        {
+                            var a = new SongItem(i, null) { ImageScaleDPI = dpi };
+                            Children.Items.Add(a);
+                        }
+                        ItemPresenterControlBridge.Margin = new(14, 0, 16, 0);
+                        break;
+                    case SearchDataType.艺术家:
+                        foreach (var i in searchDatas as List<Artist>)
+                        {
+                            var a = new ArtistCard() { Artist = i, ImageScaleDPI = dpi };
+                            Children.Items.Add(a);
+                        }
+                        ItemPresenterControlBridge.Margin = new(14, 14, 16, 14);
+                        break;
+                }
+            }
+
+            System.Diagnostics.Debug.WriteLine("加载完成。");
+            LoadingRing.IsIndeterminate = false;
+            LoadingRing.Visibility = Visibility.Collapsed;
+
+            if (firstInit)
+            {
+                firstInit = false;
+                await Task.Delay(1000);
+                Button_Click_2(null, null);
+            }
+        }
+
+        CompositionPropertySet scrollerPropertySet;
+        Compositor compositor;
+        Visual headerVisual;
+        Visual backgroundVisual;
+        Visual logoVisual;
+        Visual stackVisual;
+        public void UpdataShyHeader()
+        {
+            if (scrollViewer == null) return;
+
+            double anotherHeight = HeaderBaseGrid.ActualHeight;
+            String progress = $"Clamp(-scroller.Translation.Y / {anotherHeight}, 0, 1.0)";
+
+            if (scrollerPropertySet == null)
+            {
+                scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(scrollViewer);
+                compositor = scrollerPropertySet.Compositor;
+                headerVisual = ElementCompositionPreview.GetElementVisual(menu_border);
+                backgroundVisual = ElementCompositionPreview.GetElementVisual(BackColorBaseRectangle);
+            }
+
+            var offsetExpression = compositor.CreateExpressionAnimation($"-scroller.Translation.Y - {progress} * {anotherHeight}");
+            offsetExpression.SetReferenceParameter("scroller", scrollerPropertySet);
+            headerVisual.StartAnimation("Offset.Y", offsetExpression);
+
+            var backgroundVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 1, {progress})");
+            backgroundVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+            backgroundVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
+        }
+
+        private async void UpdataCommandToolBarWidth()
+        {
+            ToolsCommandBar.Width = 0;
+            await Task.Delay(1);
+            ToolsCommandBar.Width = double.NaN;
+        }
+
+        private void menu_border_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (scrollViewer == null)
+            {
+                scrollViewer = (VisualTreeHelper.GetChild(Children, 0) as Border).Child as ScrollViewer;
+                scrollViewer.CanContentRenderOutsideBounds = true;
+
+                // 设置header为顶层
+                var headerPresenter = (UIElement)VisualTreeHelper.GetParent((UIElement)Children.Header);
+                var headerContainer = (UIElement)VisualTreeHelper.GetParent(headerPresenter);
+                Canvas.SetZIndex(headerContainer, 1);
+            }
+
+            UpdataShyHeader();
+            UpdataCommandToolBarWidth();
+        }
+
+        private void Result_BaseGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdataShyHeader();
+        }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Children.Items.Any()) return;
+            foreach (SongItem songItem in Children.Items)
+            {
+                App.playingList.Add(songItem.MusicData, false);
+            }
+            await App.playingList.Play((Children.Items.First() as SongItem).MusicData);
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            InitData();
+        }
+
+        DropShadow dropShadow;
+        private async void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            if (Children.SelectionMode == ListViewSelectionMode.None)
+            {
+                SelectItemButton.Background = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as Brush;
+                Children.SelectionMode = ListViewSelectionMode.Multiple;
+
+                SelectorSeparator.Visibility = Visibility.Visible;
+                AddSelectedToPlayingListButton.Visibility = Visibility.Visible;
+                AddSelectedToPlayListButton.Visibility = Visibility.Visible;
+                DownloadSelectedButton.Visibility = Visibility.Visible;
+                SelectReverseButton.Visibility = Visibility.Visible;
+                SelectAllButton.Visibility = Visibility.Visible;
+
+                Children.AllowDrop = true;
+                Children.CanReorderItems = true;
+
+                foreach (SongItem songItem in Children.Items)
+                {
+                    songItem.CanClickPlay = false;
+                }
+            }
+            else
+            {
+                SelectItemButton.Background = new SolidColorBrush(Colors.Transparent);
+                Children.SelectionMode = ListViewSelectionMode.None;
+
+                SelectorSeparator.Visibility = Visibility.Collapsed;
+                AddSelectedToPlayingListButton.Visibility = Visibility.Collapsed;
+                AddSelectedToPlayListButton.Visibility = Visibility.Collapsed;
+                DownloadSelectedButton.Visibility = Visibility.Collapsed;
+                SelectReverseButton.Visibility = Visibility.Collapsed;
+                SelectAllButton.Visibility = Visibility.Collapsed;
+
+                Children.AllowDrop = false;
+                Children.CanReorderItems = false;
+
+                foreach (SongItem songItem in Children.Items)
+                {
+                    songItem.CanClickPlay = true;
+                }
+            }
+            UpdataCommandToolBarWidth();
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            pageNumber = 1;
+            InitData();
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            if (pageNumber - 1 > 0)
+            {
+                pageNumber--;
+                InitData();
+            }
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            pageNumber++;
+            InitData();
+        }
+
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            if (PageNumberTextBox.Text != String.Empty)
+                pageNumber = int.Parse(PageNumberTextBox.Text);
+            else pageNumber = 1;
+
+            if (PageSizeTextBox.Text != String.Empty)
+                pageSize = int.Parse(PageSizeTextBox.Text);
+            else pageSize = 30;
+
+            InitData();
+        }
+
+        private void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            SearchPageSelectorCustomFlyout.Hide();
+        }
+
+        private void AddSelectedToPlayingListButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Children.SelectedItems.Any())
+            {
+                foreach (SongItem item in Children.SelectedItems)
+                {
+                    App.playingList.Add(item.MusicData);
+                }
+            }
+        }
+
+        private async void DeleteSelectedButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Children.SelectedItems.Any())
+            {
+                List<SongItem> a = new List<SongItem>();
+                foreach (SongItem item in Children.SelectedItems) a.Add(item);
+                foreach (var b in a)
+                {
+                    Children.Items.Remove(b);
+                }
+            }
+        }
+
+        private void SelectAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            /*
+            foreach (SongItem item in Children.Items)
+            {
+                (Children.ContainerFromIndex(Children.Items.IndexOf(item)) as ListViewItem).IsSelected = true;
+            }*/
+            Children.SelectAll();
+        }
+
+        private void SelectReverseButton_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (SongItem item in Children.Items)
+            {
+                try
+                {
+                    var a = Children.ContainerFromIndex(Children.Items.IndexOf(item)) as ListViewItem;
+                    if (a!=null)
+                        a.IsSelected = !a.IsSelected;
+                }
+                catch { }
+            }
+        }
+
+        private void AppBarButton_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
+        }
+
+        private void DownloadSelectedButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Children.SelectedItems.Any())
+            {
+                foreach (SongItem songItem in Children.Items)
+                {
+                    App.downloadManager.Add(songItem.MusicData);
+                }
+            }
+        }
+
+        private async void AddToPlayListFlyout_Opened(object sender, object e)
+        {
+            AddToPlayListFlyout.Items.Clear();
+            foreach (var m in await PlayListHelper.ReadAllPlayList())
+            {
+                var a = new MenuFlyoutItem()
+                {
+                    Text = m.ListShowName,
+                    Tag = m
+                };
+                a.Click += A_Click;
+
+                AddToPlayListFlyout.Items.Add(a);
+            }
+        }
+
+        private async void A_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.ShowLoadingDialog();
+            var text = JObject.Parse(await PlayListHelper.ReadData());
+            foreach (SongItem item in Children.SelectedItems)
+            {
+                MainWindow.SetLoadingText($"正在添加：{item.MusicData.Title} - {item.MusicData.ButtonName}");
+                
+                text = PlayListHelper.AddMusicDataToPlayList(
+                    ((sender as MenuFlyoutItem).Tag as MusicListData).ListName,
+                    item.MusicData, text);
+            }
+            await PlayListHelper.SaveData(text.ToString());
+            MainWindow.HideDialog();
+        }
+
+        private void AddToPlayListFlyout_Closed(object sender, object e)
+        {
+            //AddToPlayListFlyout.Items.Clear();
+        }
+    }
+}

@@ -20,7 +20,7 @@ namespace znMusicPlayerWUI.DataEditor
     public enum MusicKbps { aac, wma, Kbps128, Kbps192, Kbps320, Kbps1000 }
     public enum PlaySort { 默认排序, 名称升序, 名称降序, 艺术家升序, 艺术家降序, 专辑升序, 专辑降序, 时间升序, 时间降序 }
 
-    public struct Artist
+    public class Artist
     {
         public string Name { get; set; }
         public string ID { get; set; }
@@ -28,7 +28,7 @@ namespace znMusicPlayerWUI.DataEditor
         public string Describee { get; set; }
         public MusicListData HotSongs { get; set; }
 
-        public Artist(string name, string ID, string picturePath) : this()
+        public Artist(string name = null, string ID = null, string picturePath = null)
         {
             Name = name;
             this.ID = ID;

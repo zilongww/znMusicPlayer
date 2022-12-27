@@ -829,7 +829,9 @@ namespace znMusicPlayerWUI
                     SNavView.SelectedItem = SNavView.SettingsItem;
                     break;
 
-                case "ItemListView":
+                case "ItemListViewSearch":
+                case "ItemListViewArtist":
+                case "ItemListViewPlayList":
                     SNavView.SelectedItem = null;
                     break;
 

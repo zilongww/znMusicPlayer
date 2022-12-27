@@ -44,7 +44,7 @@ namespace znMusicPlayerWUI.Background
 
         private async void AudioPlayer_PlayEnd(Media.AudioPlayer audioPlayer)
         {
-            System.Diagnostics.Debug.WriteLine(App.playingList.PlayBehaviour);
+            //System.Diagnostics.Debug.WriteLine(App.playingList.PlayBehaviour);
             switch (PlayBehaviour)
             {
                 case PlayBehaviour.顺序播放:

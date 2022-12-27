@@ -59,17 +59,20 @@ namespace znMusicPlayerWUI.Controls
             MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
             //MainWindow.DriveInTypeEvent += MainWindow_DriveInTypeEvent;
 
-            if (musicListData.ListDataType != DataType.本地歌单)
+            if (musicListData != null)
             {
-                DeleteFlyoutBtn.Visibility = Visibility.Collapsed;
+                if (musicListData.ListDataType != DataType.本地歌单)
+                {
+                    DeleteFlyoutBtn.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
         private async void A_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.SetNavViewContent(
-            typeof(ItemListView),
-            new List<object> { DataType.艺术家, (Artist)(sender as MenuFlyoutItem).Tag },
+            typeof(ItemListViewArtist),
+            (Artist)(sender as MenuFlyoutItem).Tag,
             new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
 
             //var artist = await App.metingServices.NeteaseServices.GetArtist(((Artist)(sender as MenuFlyoutItem).Tag).ID);

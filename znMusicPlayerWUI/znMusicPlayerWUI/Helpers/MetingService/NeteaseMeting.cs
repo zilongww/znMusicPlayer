@@ -133,7 +133,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
             });
         }
         
-        public async Task<MusicListData> GetSearch(
+        public async Task<object> GetSearch(
             string keyword,
             int pageNumber = 1,
             int pageSize = 30,
@@ -141,47 +141,77 @@ namespace znMusicPlayerWUI.Helpers.MetingService
         {
             return await Task.Run(() =>
             {
-                var getSearchAction = MusicListData () =>
+                var getSearchAction = object () =>
                 {
-                    string data = Services.FormatMethod(false).Search(keyword, new Meting4Net.Core.Models.Standard.Options() { page = pageNumber, limit = pageSize, type = 1/*(int)type*/ });
+                    string data = Services.FormatMethod(false).Search(keyword, new Meting4Net.Core.Models.Standard.Options() { page = pageNumber, limit = pageSize, type = (int)type });
 
                     if (data != null)
                     {
                         var a = JObject.Parse(data);
                         if (a.ContainsKey("result"))
                         {
-                            MusicListData ld = new(keyword, keyword, null, MusicFrom.neteaseMusic, null, null);
-                            ld.Songs = new();
-
-                            foreach (var song in a["result"]["songs"])
+                            if (type == SearchDataType.歌曲)
                             {
-                                List<Artist> artists = null;
-                                // 添加歌手
-                                if (song["ar"] != null)
+                                MusicListData ld = new(keyword, keyword, null, MusicFrom.neteaseMusic, null, null);
+                                ld.Songs = new();
+
+                                foreach (var song in a["result"]["songs"])
                                 {
-                                    artists = new();
-                                    foreach (var artist in song["ar"])
+                                    List<Artist> artists = null;
+                                    // 添加歌手
+                                    if (song["ar"] != null)
                                     {
-                                        artists.Add(new(
-                                            (string)artist["name"],
-                                            (string)artist["id"],
-                                            null
-                                            ));
+                                        artists = new();
+                                        foreach (var artist in song["ar"])
+                                        {
+                                            artists.Add(new(
+                                                (string)artist["name"],
+                                                (string)artist["id"],
+                                                null
+                                                ));
+                                        }
                                     }
+
+                                    // 初始化歌曲信息
+                                    ld.Songs.Add(new(
+                                        (string)song["name"], (string)song["id"],
+                                        artists,
+                                        (string)song["al"]["name"], (string)song["al"]["id"],
+                                        (string)song["al"]["picUrl"],
+                                        (string)song["publishTime"],
+                                        MusicFrom.neteaseMusic
+                                        ));
                                 }
 
-                                // 初始化歌曲信息
-                                ld.Songs.Add(new(
-                                    (string)song["name"], (string)song["id"],
-                                    artists,
-                                    (string)song["al"]["name"], (string)song["al"]["id"],
-                                    (string)song["al"]["picUrl"],
-                                    (string)song["publishTime"],
-                                    MusicFrom.neteaseMusic
-                                    ));
+                                return ld;
                             }
+                            else if (type == SearchDataType.歌单)
+                            {
 
-                            return ld;
+                            }
+                            else if (type == SearchDataType.艺术家)
+                            {
+                                List<Artist> artists = new();
+                                foreach (var artist in a["result"]["artists"])
+                                {
+                                    artists.Add(new()
+                                    {
+                                        ID = (string)artist["id"],
+                                        Name = (string)artist["name"],
+                                        PicturePath = (string)artist["img1v1Url"]
+                                    });
+                                }
+                                return artists;
+                            }
+                            else if (type == SearchDataType.用户)
+                            {
+
+                            }
+                            else if (type == SearchDataType.专辑)
+                            {
+
+                            }
+                            System.Diagnostics.Debug.WriteLine(data);
                         }
                     }
 
@@ -286,7 +316,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                 {
                     var data = JObject.Parse(Services.FormatMethod(false).Artist(id));
                     //System.Diagnostics.Debug.WriteLine(data);
-                    Artist artist = default;
+                    Artist artist = new();
                     if (data["code"].ToString() == "200")
                     {
                         var art = data["artist"];
@@ -303,6 +333,8 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                             PicturePath = artist.PicturePath
                         };
                     }
+                    else
+                        artist = null;
 
                     return artist;
                 };
@@ -310,8 +342,11 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                 for (int i = 0; i <= App.metingServices.RetryCount; i++)
                 {
                     var a = getArtistAction();
-                    if (!string.IsNullOrEmpty(a.ID))
-                        return a;
+                    if (a != null)
+                    {
+                        if (!string.IsNullOrEmpty(a.ID))
+                            return a;
+                    }
                 }
 
                 return default;

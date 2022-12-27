@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.Controls;
+using znMusicPlayerWUI.DataEditor;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -23,8 +24,7 @@ namespace znMusicPlayerWUI.Pages
             SearchSourceComboBox.ItemsSource = a;
             SearchSourceComboBox.SelectedIndex = 3;
 
-            var b = Enum.GetNames(typeof(DataEditor.DataType)).ToList();
-            b.RemoveAt(2);
+            var b = Enum.GetNames(typeof(SearchDataType)).ToList();
             SearchTypeComboBox.ItemsSource = b;
             SearchTypeComboBox.SelectedIndex = 0;
         }
@@ -32,8 +32,12 @@ namespace znMusicPlayerWUI.Pages
         public void StartSearch(string title)
         {
             MainWindow.SetNavViewContent(
-                typeof(ItemListView),
-                new List<object> { DataEditor.DataType.歌曲, title },
+                typeof(ItemListViewSearch),
+                new List<object> {
+                    title,
+                    Enum.Parse(typeof(MusicFrom), SearchSourceComboBox.SelectedItem as string),
+                    Enum.Parse(typeof(SearchDataType), SearchTypeComboBox.SelectedItem as string)
+                },
                 new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
         }
 

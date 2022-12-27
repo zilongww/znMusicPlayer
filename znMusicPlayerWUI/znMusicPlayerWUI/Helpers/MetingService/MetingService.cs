@@ -18,7 +18,7 @@ namespace znMusicPlayerWUI.Helpers
         public Task<string> GetUrl(string id, int br);
         public Task<Tuple<string, string>> GetLyric(string id);
         public Task<Tuple<string, string>> GetPic(string id);
-        public Task<MusicListData> GetSearch(string keyword, int pageNumber = 1, int pageSize = 30, SearchDataType type = default);
+        public Task<object> GetSearch(string keyword, int pageNumber = 1, int pageSize = 30, SearchDataType type = default);
         public Task<MusicListData> GetPlayList(string id);
         public Task<Artist> GetArtist(string id);
     }

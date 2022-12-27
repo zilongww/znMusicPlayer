@@ -15,9 +15,12 @@
   </PropertyGroup>
 	
   <ItemGroup>
+    <None Remove="Controls\ArtistCard.xaml" />
     <None Remove="Controls\DownloadCard.xaml" />
     <None Remove="Controls\Imagezn.xaml" />
-    <None Remove="Controls\ItemListView.xaml" />
+    <None Remove="Controls\ItemListViewArtist.xaml" />
+    <None Remove="Controls\ItemListViewPlayList.xaml" />
+    <None Remove="Controls\ItemListViewSearch.xaml" />
     <None Remove="Controls\MediaPlayStateViewer.xaml" />
     <None Remove="Controls\PlayListCard.xaml" />
     <None Remove="Controls\SongItem.xaml" />
@@ -79,11 +82,23 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Controls\ItemListViewPlayList.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\ItemListViewArtist.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\MediaPlayStateViewer.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\DownloadCard.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\ArtistCard.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
@@ -99,7 +114,7 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\ItemListView.xaml">
+    <Page Update="Controls\ItemListViewSearch.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

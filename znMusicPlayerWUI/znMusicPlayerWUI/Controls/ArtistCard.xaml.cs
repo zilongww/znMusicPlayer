@@ -16,19 +16,27 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media;
 using znMusicPlayerWUI.Media;
 using znMusicPlayerWUI.DataEditor;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace znMusicPlayerWUI.Controls
 {
-    public partial class PlayListCard : Grid, IDisposable
+    public partial class ArtistCard : Grid, IDisposable
     {
-        private MusicListData MusicListData { get; set; }
         public double ImageScaleDPI { get; set; } = 1.0;
+        Artist _artist;
+        public Artist Artist
+        {
+            get => _artist;
+            set
+            {
+                _artist = value;
+                DataContext = Artist;
+            }
+        }
 
-        public PlayListCard(MusicListData musicListData)
+        public ArtistCard()
         {
             InitializeComponent();
-            MusicListData = musicListData;
-            DataContext = musicListData;
         }
 
         Compositor compositor;
@@ -42,7 +50,7 @@ namespace znMusicPlayerWUI.Controls
             basicRectVisual.Size = new Vector2((float)(ActualWidth - 8), (float)ActualHeight);
 
             dropShadow = compositor.CreateDropShadow();
-            dropShadow.BlurRadius = 30f;
+            dropShadow.BlurRadius = 80f;
             dropShadow.Opacity = 0f;
             dropShadow.Offset = new Vector3(0, 2, 0);
 
@@ -53,18 +61,7 @@ namespace znMusicPlayerWUI.Controls
         private async void UILoaded(object sender, RoutedEventArgs e)
         {
             CreatShadow();
-            if (MusicListData.ListDataType == DataType.本地歌单)
-            {
-                PlayListImage.Source = await FileHelper.GetImageSource(MusicListData.PicturePath, (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
-            }
-            else if (MusicListData.ListDataType == DataType.歌单)
-            {
-                PlayListImage.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(MusicListData), (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
-            }
-            else
-            {
-                PlayListImage.Source = await FileHelper.GetImageSource("", (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
-            }
+            PlayListImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(Artist.PicturePath));
         }
 
         private void UIUnloaded(object sender, RoutedEventArgs e)
@@ -75,7 +72,7 @@ namespace znMusicPlayerWUI.Controls
         public void Dispose()
         {
             PlayListImage.Source = null;
-            MusicListData = null;
+            Artist = null;
             DataContext = null;
         }
 
@@ -136,14 +133,14 @@ namespace znMusicPlayerWUI.Controls
             {
                 if (isRightPressed)
                 {
-                    FlyoutMenu.ShowAt(sender as FrameworkElement);
+                    //FlyoutMenu.ShowAt(sender as FrameworkElement);
                     isRightPressed = false;
                 }
                 else
                 {
                     MainWindow.SetNavViewContent(
-                    typeof(ItemListViewPlayList),
-                    MusicListData,
+                    typeof(ItemListViewArtist),
+                    Artist,
                     new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
                 }
             }
@@ -152,24 +149,12 @@ namespace znMusicPlayerWUI.Controls
 
         private void Grid_RightTapped(object sender, Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs e)
         {
-            FlyoutMenu.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
+
         }
 
         private void Grid_Holding(object sender, Microsoft.UI.Xaml.Input.HoldingRoutedEventArgs e)
         {
-            FlyoutMenu.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
-        }
 
-        private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
-        {
-            var isDelete = await MainWindow.ShowDialog("确认删除列表", $"真的要删除列表 \"{MusicListData.ListShowName}\" 吗？\n此操作不可逆。", "取消", "确定");
-            if (isDelete == ContentDialogResult.Primary)
-            {
-                MainWindow.ShowLoadingDialog("正在删除");
-                await PlayListHelper.DeletePlayList(MusicListData);
-                await App.playListReader.Refresh();
-                MainWindow.HideDialog();
-            }
         }
     }
 }
