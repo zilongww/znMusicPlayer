@@ -50,7 +50,7 @@ namespace znMusicPlayerWUI.Controls
             basicRectVisual.Size = new Vector2((float)(ActualWidth - 8), (float)ActualHeight);
 
             dropShadow = compositor.CreateDropShadow();
-            dropShadow.BlurRadius = 80f;
+            dropShadow.BlurRadius = 40f;
             dropShadow.Opacity = 0f;
             dropShadow.Offset = new Vector3(0, 2, 0);
 

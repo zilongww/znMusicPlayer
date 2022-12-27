@@ -14,11 +14,11 @@
 
     <Rectangle x:Name="ShadowBaseRectangle" Margin="4,2,0,0"/>
     <Border CornerRadius="4"
-            Background="{ThemeResource CardBackgroundFillColorDefault}"
-            BorderThickness="0"
+            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+            BorderThickness="1"
             BorderBrush="{ThemeResource CardStrokeColorDefaultSolid}">
         <Grid>
-            <Rectangle x:Name="BackColorBaseRectAngle" Fill="{ThemeResource CardBackgroundFillColorDefault}" Opacity="1"/>
+            <Rectangle x:Name="BackColorBaseRectAngle" Opacity="1"/>
             <StackPanel Orientation="Horizontal">
                 <Border Width="80" Height="80" CornerRadius="0">
                     <local:Imagezn x:Name="PlayListImage" Stretch="UniformToFill" ShowMenuBehavior="None"/>
