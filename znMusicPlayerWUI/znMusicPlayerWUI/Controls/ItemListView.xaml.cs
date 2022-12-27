@@ -137,7 +137,7 @@ namespace znMusicPlayerWUI.Controls
                 case DataType.艺术家:
                     PlayList_BaseGrid.Visibility = Visibility.Visible;
                     AddLocalFilesButton.Visibility = Visibility.Visible;
-                    if (NowShowMode == DataType.歌单)
+                    if (NavToObj is MusicListData)
                     {
                         musicListData = NavToObj as MusicListData;
                         PlayList_TitleTextBlock.Text = musicListData.ListShowName;
@@ -167,6 +167,7 @@ namespace znMusicPlayerWUI.Controls
                 var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
                 MusicData[] array = null;
 
+                SortComboBox.SelectedIndex = (int)musicListData.PlaySort;
                 switch (SortComboBox.SelectedIndex)
                 {
                     case 0: //默认
@@ -643,14 +644,28 @@ namespace znMusicPlayerWUI.Controls
         }
 
         bool isfirst = true;
-        private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (isfirst)
             {
                 isfirst = false;
                 return;
             }
-            InitData();
+
+            if (NavToObj is MusicListData)
+            {
+                musicListData.PlaySort = (PlaySort)Enum.Parse(typeof(PlaySort), SortComboBox.SelectedItem as string);
+                NavToObj = musicListData;
+                InitData();
+                var data = JObject.Parse(await PlayListHelper.ReadData());
+                data[musicListData.ListName] = JObject.FromObject(musicListData);
+                await PlayListHelper.SaveData(data.ToString());
+            }
+            else if (NavToObj is Artist)
+            {
+                ((Artist)NavToObj).HotSongs.PlaySort = (PlaySort)Enum.Parse(typeof(PlaySort), SortComboBox.SelectedItem as string);
+                InitData();
+            }
         }
     }
 }

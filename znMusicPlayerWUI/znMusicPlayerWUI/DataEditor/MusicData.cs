@@ -8,15 +8,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
+using znMusicPlayerWUI.Background;
+using znMusicPlayerWUI.Helpers;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace znMusicPlayerWUI.DataEditor
 {
     public enum MusicFrom { kwMusic, kgMusic, qqMusic, neteaseMusic, miguMusic, localMusic, otherMusic }
-
     public enum DataType { 歌曲, 歌单, 本地歌单, 专辑, 用户, 艺术家 }
     public enum SearchDataType { 歌曲 = 1, 歌单 = 1000, 专辑 = 10, 用户 = 1002, 艺术家 = 100 }
     public enum MusicKbps { aac, wma, Kbps128, Kbps192, Kbps320, Kbps1000 }
+    public enum PlaySort { 默认排序, 名称升序, 名称降序, 艺术家升序, 艺术家降序, 专辑升序, 专辑降序, 时间升序, 时间降序 }
 
     public struct Artist
     {
@@ -129,6 +131,7 @@ namespace znMusicPlayerWUI.DataEditor
         public string ID { get; set; }
         public int ListCount { get; set; }
         public string MD5 { get; set; }
+        public PlaySort PlaySort { get; set; }
         public List<MusicData> Songs { get; set; }
 
         public MusicListData(string listName = null, string listShowName = null, string picturePath = null,

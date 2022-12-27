@@ -57,7 +57,7 @@ namespace znMusicPlayerWUI.Controls
 
 
             MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
-            MainWindow.DriveInTypeEvent += MainWindow_DriveInTypeEvent;
+            //MainWindow.DriveInTypeEvent += MainWindow_DriveInTypeEvent;
 
             if (musicListData.ListDataType != DataType.本地歌单)
             {
