@@ -22,6 +22,7 @@ using Windows.Storage.Streams;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Graphics.Imaging;
 using static System.Net.Mime.MediaTypeNames;
+using Windows.UI.ViewManagement;
 
 namespace znMusicPlayerWUI.Helpers
 {
@@ -314,6 +315,14 @@ namespace znMusicPlayerWUI.Helpers
             byte[] bytes = Encoding.Default.GetBytes(strs);//将要加密的字符串转换为字节数组
             byte[] encryptdata = md5.ComputeHash(bytes);//将字符串加密后也转换为字符数组
             return Convert.ToBase64String(encryptdata);//将加密后的字节数组转换为加密字符串
+        }
+
+        public static bool IsAccentColorDark()
+        {
+            var uiSettings = new UISettings();
+            var c = uiSettings.GetColorValue(UIColorType.Accent);
+            bool isDark = (5 * c.G + 2 * c.R + c.B) <= 8 * 128;
+            return isDark;
         }
     }
 

@@ -210,36 +210,23 @@ namespace znMusicPlayerWUI.Controls
         private async void Grid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
+            //ImageMassAlphaTransition.Duration = TimeSpan.FromMilliseconds(250);
             isPointEnter = true;
-            ImageMassAlpha.Visibility = Visibility.Visible;
-            AnimateHelper.AnimateScalar(
-                ImageMassAlpha, 0.6f, 0.5,
-                0.2f, 1, 0.22f, 1f,
-                out var visual, out var compositor, out var scalarKeyFrameAnimation);
-            visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
-
+            ImageMassAlpha.Opacity = 1;
+/*
             if (isFirstAnimate)
             {
                 isFirstAnimate = false;
                 await Task.Delay(1);
                 Grid_PointerEntered(null, null);
-            }
+            }*/
         }
 
         private void Grid_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
             isPointEnter = false;
-            AnimateHelper.AnimateScalar(
-                ImageMassAlpha, 0, 1,
-                0.39f, 0.575f, 0.565f, 1,
-                out var visual, out var compositor, out var scalarKeyFrameAnimation);
-            visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
-            compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
-            {
-                if (!isPointEnter)
-                    ImageMassAlpha.Visibility = Visibility.Collapsed;
-            };
+            ImageMassAlpha.Opacity = 0;
         }
 
         private void Grid_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)

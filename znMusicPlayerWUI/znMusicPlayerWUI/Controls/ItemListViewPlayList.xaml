@@ -146,9 +146,9 @@
 
                                     <AppBarButton Click="Button_Click"
                                                   Label="播放全部"
-                                                  Background="{ThemeResource AccentAAFillColorTertiaryBrush}"
-                                                  Foreground="{ThemeResource SystemControlForegroundAltHighBrush}"
-                                                  ToolTipService.ToolTip="播放全部">
+                                                  Background="{ThemeResource SystemAccentColorLight1}"
+                                                  ToolTipService.ToolTip="播放全部"
+                                                  x:Name="PlayAllButton">
                                         <AppBarButton.Icon>
                                             <PathIcon Data="{StaticResource 播放ol}"/>
                                         </AppBarButton.Icon>

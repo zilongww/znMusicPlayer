@@ -21,8 +21,11 @@
     <Rectangle x:Name="ImageMassAlpha" Opacity="0">
         <Rectangle.Fill>
             <brushs:BackdropGammaTransferBrush BlueDisable="True" RedDisable="True" GreenDisable="True"
-                                               AlphaAmplitude="1" AlphaExponent="1" AlphaOffset="1"/>
+                                               AlphaAmplitude="0.2" AlphaExponent="1" AlphaOffset="1"/>
         </Rectangle.Fill>
+        <Rectangle.OpacityTransition>
+            <ScalarTransition x:Name="ImageMassAlphaTransition"/>
+        </Rectangle.OpacityTransition>
     </Rectangle>
     <Rectangle x:Name="ImageMass" Fill="Black" Opacity="0.14"/>
 </Grid>

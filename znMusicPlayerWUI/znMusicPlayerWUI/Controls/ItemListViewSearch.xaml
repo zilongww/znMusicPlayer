@@ -109,7 +109,8 @@
                                                   Label="播放全部"
                                                   Background="{ThemeResource AccentAAFillColorTertiaryBrush}"
                                                   Foreground="{ThemeResource SystemControlForegroundAltHighBrush}"
-                                                  ToolTipService.ToolTip="播放全部">
+                                                  ToolTipService.ToolTip="播放全部"
+                                                  x:Name="PlayAllButton">
                                         <AppBarButton.Icon>
                                             <PathIcon Data="{StaticResource 播放ol}"/>
                                         </AppBarButton.Icon>
