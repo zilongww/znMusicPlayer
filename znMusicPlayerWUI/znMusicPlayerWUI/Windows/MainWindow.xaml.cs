@@ -115,7 +115,18 @@ namespace znMusicPlayerWUI
             App.lyricManager.PlayingLyricSelectedChange += (_) =>
             {
                 if (SWindowGridBase.Visibility == Visibility.Visible && !isMinSize)
-                    AppTitleTextBlock.Text = $"{App.AppName} - {_.Lyric}";
+                {
+                    if (_ != null)
+                    {
+                        AppTitleTextBlock.Text = $"{App.AppName} -";
+                        LyricTextBlock.Text = $" {_.Lyric}";
+                    }
+                    else
+                    {
+                        AppTitleTextBlock.Text = $"{App.AppName}";
+                        LyricTextBlock.Text = null;
+                    }
+                }
                 //System.Diagnostics.Debug.WriteLine("233");
             };
 
@@ -213,11 +224,9 @@ namespace znMusicPlayerWUI
             {
                 dialogShow = true;
                 AsyncDialog.Title = title;
-                AsyncDialog.Width = 5000;
                 if (content is string)
                 {
-                    dialogScrollViewer.Content = content;
-                    dialogScrollViewer.ZoomMode = ZoomMode.Enabled;
+                    dialogScrollViewer.Content = new TextBlock() { Text = content as string, TextWrapping = TextWrapping.Wrap };
                     AsyncDialog.Content = dialogScrollViewer;
                 }
                 else
@@ -300,7 +309,7 @@ namespace znMusicPlayerWUI
             }
         }
 
-        private async void AudioPlayer_PlayEnd(Media.AudioPlayer audioPlayer)
+        private void AudioPlayer_PlayEnd(Media.AudioPlayer audioPlayer)
         {
             if (true)
             {

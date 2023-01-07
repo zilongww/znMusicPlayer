@@ -1,8 +1,9 @@
 ﻿<Page
-    x:Class="znMusicPlayerWUI.Controls.ItemListViewPlayList"
+    x:Class="znMusicPlayerWUI.Pages.ItemListViewArtist"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:znMusicPlayerWUI.Controls"
+    xmlns:local="using:znMusicPlayerWUI.Pages"
+    xmlns:controlszn="using:znMusicPlayerWUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
@@ -11,7 +12,7 @@
     xmlns:behaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
     mc:Ignorable="d" NavigationCacheMode="Enabled">
-
+    
     <Page.Resources>
         <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="Transparent"/>
         <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
@@ -31,27 +32,30 @@
                         <Rectangle x:Name="BackColorBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
                         <StackPanel>
                             <Grid x:Name="HeaderBaseGrid">
-                                <Grid x:Name="PlayList_BaseGrid" Loaded="menu_border_Loaded">
-                                    <Grid x:Name="PlayList_Image_BaseGrid" animations:Connected.AnchorElement="{x:Bind PlayList_Image}" Margin="0,0,0,24">
-                                        <Rectangle x:Name="PlayList_Image_DropShadowBase"/>
-                                        <Border Width="210"
-                                                Height="210"
+                                <StackPanel x:Name="Artist_BaseGrid" Loaded="menu_border_Loaded" Orientation="Vertical">
+                                    <Grid x:Name="Artist_Image_BaseGrid" Margin="0,24,0,0" HorizontalAlignment="Center">
+                                        <Rectangle x:Name="Artist_Image_DropShadowBase"/>
+                                        <Border Width="220"
+                                                Height="220"
                                                 CornerRadius="8"
                                                 BorderThickness="0"
                                                 HorizontalAlignment="Left"
-                                                x:Name="PlayList_ImageBaseBorder">
-                                            <local:Imagezn x:Name="PlayList_Image" animations:Connected.Key="listItem"/>
+                                                x:Name="Artist_ImageBaseBorder">
+                                            <controlszn:Imagezn x:Name="Artist_Image"/>
                                         </Border>
                                     </Grid>
-                                    <StackPanel x:Name="InfosBaseStackPanel">
-                                        <TextBlock x:Name="PlayList_TitleTextBlock"
+                                    <StackPanel x:Name="InfosBaseStackPanel" Margin="24,18,24,24">
+                                        <TextBlock x:Name="Artist_TitleTextBlock"
                                                    Style="{ThemeResource SubTBHeader}"
-                                                   TextTrimming="WordEllipsis"
-                                                   TextWrapping="NoWrap"
-                                                   animations:Connected.Key="itemt"/>
-                                        <TextBlock x:Name="PlayList_OtherTextBlock" Text="共0首歌曲"/>
+                                                   TextWrapping="Wrap" IsTextSelectionEnabled="True"
+                                                   HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="Artist_OtherTextBlock"
+                                                   TextWrapping="Wrap"
+                                                   HorizontalAlignment="Center" IsTextSelectionEnabled="True"
+                                                   TextAlignment="Center"
+                                                   Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                                     </StackPanel>
-                                </Grid>
+                                </StackPanel>
                             </Grid>
 
                             <Grid>
@@ -59,6 +63,16 @@
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
+
+                                <StackPanel x:Name="ArtistTb"
+                                            Margin="36,0,0,0"
+                                            Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Border Width="38" Height="38" CornerRadius="19">
+                                        <controlszn:Imagezn x:Name="Artist_Image1"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding ElementName=Artist_TitleTextBlock,Path=Text}"
+                                               VerticalAlignment="Center" FontSize="18" Margin="8,0,0,0"/>
+                                </StackPanel>
 
                                 <CommandBar Grid.Column="1" x:Name="ToolsCommandBar"
                                             DefaultLabelPosition="Right"
@@ -146,19 +160,12 @@
 
                                     <AppBarButton Click="Button_Click"
                                                   Label="播放全部"
-                                                  Background="{ThemeResource SystemAccentColorLight1}"
+                                                  Background="{ThemeResource AccentAAFillColorTertiaryBrush}"
+                                                  Foreground="{ThemeResource SystemControlForegroundAltHighBrush}"
                                                   ToolTipService.ToolTip="播放全部"
                                                   x:Name="PlayAllButton">
                                         <AppBarButton.Icon>
                                             <PathIcon Data="{StaticResource 播放ol}"/>
-                                        </AppBarButton.Icon>
-                                    </AppBarButton>
-                                    <AppBarButton x:Name="AddLocalFilesButton"
-                                                  Click="AddLocalFilesButton_Click"
-                                                  Label="添加本地文件"
-                                                  ToolTipService.ToolTip="添加本地文件">
-                                        <AppBarButton.Icon>
-                                            <PathIcon Data="{StaticResource 添加文件}"/>
                                         </AppBarButton.Icon>
                                     </AppBarButton>
                                     <AppBarButton Click="Button_Click_1"
@@ -176,6 +183,7 @@
                                             <PathIcon Data="{StaticResource 全选}"/>
                                         </AppBarButton.Icon>
                                     </AppBarButton>
+
                                 </CommandBar>
                             </Grid>
 

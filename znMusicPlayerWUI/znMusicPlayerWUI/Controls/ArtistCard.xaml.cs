@@ -139,7 +139,7 @@ namespace znMusicPlayerWUI.Controls
                 else
                 {
                     MainWindow.SetNavViewContent(
-                    typeof(ItemListViewArtist),
+                    typeof(Pages.ItemListViewArtist),
                     Artist,
                     new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
                 }

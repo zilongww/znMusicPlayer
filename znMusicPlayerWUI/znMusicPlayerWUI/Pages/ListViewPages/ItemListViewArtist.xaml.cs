@@ -21,14 +21,15 @@ using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Media;
 using Newtonsoft.Json.Linq;
 
-namespace znMusicPlayerWUI.Controls
+namespace znMusicPlayerWUI.Pages
 {
-    public partial class ItemListViewPlayList : Page
+    public partial class ItemListViewArtist : Page
     {
         private ScrollViewer scrollViewer { get; set; }
-        public MusicListData NavToObj { get; set; }
+        public Artist NavToObj { get; set; }
+        public MusicFrom NowMusicFrom { get; set; } = MusicFrom.neteaseMusic;
 
-        public ItemListViewPlayList()
+        public ItemListViewArtist()
         {
             InitializeComponent();
         }
@@ -36,7 +37,7 @@ namespace znMusicPlayerWUI.Controls
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
-            var a = (MusicListData)e.Parameter;
+            Artist a = (Artist)e.Parameter;
             NavToObj = a;
             InitData();
         }
@@ -49,34 +50,38 @@ namespace znMusicPlayerWUI.Controls
             }
             await Task.Delay(500);
             scrollViewer?.ScrollToVerticalOffset(0);
-            foreach (SongItem item in Children.Items)
+            foreach (Controls.SongItem item in Children.Items)
             {
                 item.Dispose();
             }
             Children.Items.Clear();
             dropShadow.Dispose();
-            PlayList_Image.Dispose();
+            Artist_Image.Dispose();
             //System.Diagnostics.Debug.WriteLine("Clear");
         }
 
         private void CreatShadow()
         {
-            var visual = ElementCompositionPreview.GetElementVisual(PlayList_Image);
+            var visual = ElementCompositionPreview.GetElementVisual(Artist_Image);
             compositor = visual.Compositor;
 
             var basicRectVisual = compositor.CreateSpriteVisual();
-            basicRectVisual.Size = PlayList_Image.RenderSize.ToVector2();
+            basicRectVisual.Size = Artist_Image.RenderSize.ToVector2();
 
             dropShadow = compositor.CreateDropShadow();
-            dropShadow.BlurRadius = 30f;
+            dropShadow.BlurRadius = 45f;
+            dropShadow.Color = Colors.Black;
             dropShadow.Opacity = 0.3f;
             dropShadow.Offset = new Vector3(0, 4, 0);
 
             basicRectVisual.Shadow = dropShadow;
-            ElementCompositionPreview.SetElementChildVisual(PlayList_Image_DropShadowBase, basicRectVisual);
+            ElementCompositionPreview.SetElementChildVisual(Artist_Image_DropShadowBase, basicRectVisual);
         }
 
+        MusicListData musicListData = null;
         static bool firstInit = false;
+        int pageNumber = 1;
+        int pageSize = 30;
         public async void InitData()
         {
             SelectorSeparator.Visibility = Visibility.Collapsed;
@@ -86,65 +91,66 @@ namespace znMusicPlayerWUI.Controls
             DownloadSelectedButton.Visibility = Visibility.Collapsed;
             SelectReverseButton.Visibility = Visibility.Collapsed;
             SelectAllButton.Visibility = Visibility.Collapsed;
-            AddLocalFilesButton.Visibility = Visibility.Collapsed;
 
-            PlayList_BaseGrid.Visibility = Visibility.Visible;
-            AddLocalFilesButton.Visibility = Visibility.Visible;
-            PlayList_TitleTextBlock.Text = NavToObj.ListShowName;
-            PlayList_OtherTextBlock.Text = $"共{NavToObj.Songs.Count}首歌曲";
-            
-            if (NavToObj != null)
+            Artist_TitleTextBlock.Text = NavToObj.Name;
+            Artist_OtherTextBlock.Text = "";
+            var obj = await App.metingServices.NeteaseServices.GetArtist(NavToObj.ID);
+            if (obj == null)
+            {
+                await MainWindow.ShowDialog("加载艺术家信息时出现错误", "无法加载艺术家信息，请重试。");
+                return;
+            }
+            NavToObj = obj;
+            musicListData = NavToObj.HotSongs;
+            Artist_OtherTextBlock.Text = NavToObj.Describee;
+
+            if (musicListData != null)
             {
                 LoadImage();
-                Children.Items.Clear();
                 LoadingRing.Visibility = Visibility.Visible;
                 LoadingRing.IsIndeterminate = true;
-                /*
-                var h = (Children.Header as Border).ActualHeight;
-                LoadingRing.Margin = new(0, h + (ActualHeight - h) / 2, 0, 0);
-                */
-                await Task.Delay(500);
+                await Task.Delay(100);
                 var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
                 MusicData[] array = null;
 
-                SortComboBox.SelectedIndex = (int)NavToObj.PlaySort;
                 switch (SortComboBox.SelectedIndex)
                 {
                     case 0: //默认
-                        array = NavToObj.Songs.ToArray();
+                        array = musicListData.Songs.ToArray();
                         break;
                     case 1: //名称升序
-                        array = NavToObj.Songs.OrderBy(m => m.Title).ToArray();
+                        array = musicListData.Songs.OrderBy(m => m.Title).ToArray();
                         break;
                     case 2: //名称降序
-                        array = NavToObj.Songs.OrderByDescending(m => m.Title).ToArray();
+                        array = musicListData.Songs.OrderByDescending(m => m.Title).ToArray();
                         break;
                     case 3: //艺术家升序
-                        array = NavToObj.Songs.OrderBy(m => m.Artists[0].Name).ToArray();
+                        array = musicListData.Songs.OrderBy(m => m.Artists[0].Name).ToArray();
                         break;
                     case 4: //艺术家降序
-                        array = NavToObj.Songs.OrderByDescending(m => m.Artists[0].Name).ToArray();
+                        array = musicListData.Songs.OrderByDescending(m => m.Artists[0].Name).ToArray();
                         break;
                     case 5: //专辑升序
-                        array = NavToObj.Songs.OrderBy(m => m.Album).ToArray();
+                        array = musicListData.Songs.OrderBy(m => m.Album).ToArray();
                         break;
                     case 6: //专辑降序
-                        array = NavToObj.Songs.OrderByDescending(m => m.Album).ToArray();
+                        array = musicListData.Songs.OrderByDescending(m => m.Album).ToArray();
                         break;
                     case 7: //时间升序
-                        array = NavToObj.Songs.OrderBy(m => m.RelaseTime).ToArray();
+                        array = musicListData.Songs.OrderBy(m => m.RelaseTime).ToArray();
                         break;
                     case 8: //时间降序
-                        array = NavToObj.Songs.OrderByDescending(m => m.RelaseTime).ToArray();
+                        array = musicListData.Songs.OrderByDescending(m => m.RelaseTime).ToArray();
                         break;
                 }
 
+                Children.Items.Clear();
                 foreach (var i in array)
                 {
-                    var a = new SongItem(i, NavToObj) { ImageScaleDPI = dpi };
+                    var a = new Controls.SongItem(i, musicListData) { ImageScaleDPI = dpi };
                     Children.Items.Add(a);
                 }
-                System.Diagnostics.Debug.WriteLine("加载完成。");
+                System.Diagnostics.Debug.WriteLine(array.Count());
                 LoadingRing.IsIndeterminate = false;
                 LoadingRing.Visibility = Visibility.Collapsed;
             }
@@ -159,14 +165,21 @@ namespace znMusicPlayerWUI.Controls
 
         private async void LoadImage()
         {
-            if (NavToObj.ListDataType == DataType.本地歌单)
+            if (musicListData.ListDataType == DataType.本地歌单)
             {
-                PlayList_Image.Source = await FileHelper.GetImageSource(NavToObj.PicturePath);
+                Artist_Image.Source = await FileHelper.GetImageSource(musicListData.PicturePath);
             }
-            else if (NavToObj.ListDataType == DataType.歌单)
+            else if (musicListData.ListDataType == DataType.歌单)
             {
-                PlayList_Image.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(NavToObj));
+                Artist_Image.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(musicListData));
             }
+            else if (musicListData.ListDataType == DataType.艺术家)
+            {
+                var art = NavToObj;
+                Artist_Image.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(art.PicturePath));
+                System.Diagnostics.Debug.WriteLine(art.PicturePath);
+            }
+            Artist_Image1.Source = Artist_Image.Source;
         }
 
         CompositionPropertySet scrollerPropertySet;
@@ -175,11 +188,13 @@ namespace znMusicPlayerWUI.Controls
         Visual backgroundVisual;
         Visual logoVisual;
         Visual stackVisual;
+        Visual tbVisual;
+        Visual headerBaseGridVisual;
         public void UpdataShyHeader()
         {
             if (scrollViewer == null) return;
 
-            double anotherHeight = 158;
+            double anotherHeight = HeaderBaseGrid.ActualHeight;
             String progress = $"Clamp(-scroller.Translation.Y / {anotherHeight}, 0, 1.0)";
 
             if (scrollerPropertySet == null)
@@ -188,18 +203,29 @@ namespace znMusicPlayerWUI.Controls
                 compositor = scrollerPropertySet.Compositor;
                 headerVisual = ElementCompositionPreview.GetElementVisual(menu_border);
                 backgroundVisual = ElementCompositionPreview.GetElementVisual(BackColorBaseRectangle);
-                logoVisual = ElementCompositionPreview.GetElementVisual(PlayList_Image_BaseGrid);
+                logoVisual = ElementCompositionPreview.GetElementVisual(Artist_Image_BaseGrid);
                 stackVisual = ElementCompositionPreview.GetElementVisual(InfosBaseStackPanel);
+                tbVisual = ElementCompositionPreview.GetElementVisual(ArtistTb);
+                headerBaseGridVisual = ElementCompositionPreview.GetElementVisual(HeaderBaseGrid);
             }
 
             var offsetExpression = compositor.CreateExpressionAnimation($"-scroller.Translation.Y - {progress} * {anotherHeight}");
             offsetExpression.SetReferenceParameter("scroller", scrollerPropertySet);
             headerVisual.StartAnimation("Offset.Y", offsetExpression);
 
+            var headerBaseGridVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(1, 0, {progress})");
+            headerBaseGridVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+            headerBaseGridVisual.StartAnimation("Opacity", headerBaseGridVisualOpacityAnimation);
+            
             var backgroundVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 1, {progress})");
             backgroundVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             backgroundVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
+            
+            var tbVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 1, {progress})");
+            tbVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+            tbVisual.StartAnimation("Opacity", tbVisualOpacityAnimation);
 
+            /*
             // Logo scale and transform                                          from               to
             var logoHeaderScaleAnimation = compositor.CreateExpressionAnimation("Lerp(Vector2(1,1), Vector2(0.5, 0.5), " + progress + ")");
             logoHeaderScaleAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
@@ -216,13 +242,15 @@ namespace znMusicPlayerWUI.Controls
             var stackVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(246,24,0), Vector3(140,{anotherHeight} + 8,0), {progress})");
             stackVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             stackVisual.StartAnimation(nameof(stackVisual.Offset), stackVisualOffsetAnimation);
+            */
             /*
-            Visual textVisual = ElementCompositionPreview.GetElementVisual(Result_Search_Header);
-            Vector3 finalOffset = new Vector3(0, (float)Result_Search_Header.ActualHeight, 0);
-            var headerOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(0,0,0), finalOffset, {progress})");
-            headerOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
-            headerOffsetAnimation.SetVector3Parameter("finalOffset", finalOffset);
-            textVisual.StartAnimation(nameof(Visual.Offset), headerOffsetAnimation);*/
+                        Visual textVisual = ElementCompositionPreview.GetElementVisual(Result_Search_Header);
+                        Vector3 finalOffset = new Vector3(0, (float)Result_Search_Header.ActualHeight, 0);
+                        var headerOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(0,0,0), finalOffset, {progress})");
+                        headerOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+                        headerOffsetAnimation.SetVector3Parameter("finalOffset", finalOffset);
+                        textVisual.StartAnimation(nameof(Visual.Offset), headerOffsetAnimation);*/
+
         }
 
         private async void UpdataCommandToolBarWidth()
@@ -232,6 +260,7 @@ namespace znMusicPlayerWUI.Controls
             ToolsCommandBar.Width = double.NaN;
         }
 
+        Vector3 ATBOffset = default;
         private void menu_border_Loaded(object sender, RoutedEventArgs e)
         {
             if (scrollViewer == null)
@@ -244,6 +273,8 @@ namespace znMusicPlayerWUI.Controls
                 var headerContainer = (UIElement)VisualTreeHelper.GetParent(headerPresenter);
                 Canvas.SetZIndex(headerContainer, 1);
             }
+
+            ATBOffset = Artist_TitleTextBlock.ActualOffset;
 
             UpdataShyHeader();
             CreatShadow();
@@ -258,11 +289,11 @@ namespace znMusicPlayerWUI.Controls
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             if (!Children.Items.Any()) return;
-            foreach (SongItem songItem in Children.Items)
+            foreach (Controls.SongItem songItem in Children.Items)
             {
                 App.playingList.Add(songItem.MusicData, false);
             }
-            await App.playingList.Play((Children.Items.First() as SongItem).MusicData);
+            await App.playingList.Play((Children.Items.First() as Controls.SongItem).MusicData);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -289,7 +320,7 @@ namespace znMusicPlayerWUI.Controls
                 Children.AllowDrop = true;
                 Children.CanReorderItems = true;
 
-                foreach (SongItem songItem in Children.Items)
+                foreach (Controls.SongItem songItem in Children.Items)
                 {
                     songItem.CanClickPlay = false;
                 }
@@ -310,7 +341,7 @@ namespace znMusicPlayerWUI.Controls
                 Children.AllowDrop = false;
                 Children.CanReorderItems = false;
 
-                foreach (SongItem songItem in Children.Items)
+                foreach (Controls.SongItem songItem in Children.Items)
                 {
                     songItem.CanClickPlay = true;
                 }
@@ -318,11 +349,32 @@ namespace znMusicPlayerWUI.Controls
             UpdataCommandToolBarWidth();
         }
 
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            pageNumber = 1;
+            InitData();
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            if (pageNumber - 1 > 0)
+            {
+                pageNumber--;
+                InitData();
+            }
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            pageNumber++;
+            InitData();
+        }
+
         private void AddSelectedToPlayingListButton_Click(object sender, RoutedEventArgs e)
         {
             if (Children.SelectedItems.Any())
             {
-                foreach (SongItem item in Children.SelectedItems)
+                foreach (Controls.SongItem item in Children.SelectedItems)
                 {
                     App.playingList.Add(item.MusicData);
                 }
@@ -333,32 +385,13 @@ namespace znMusicPlayerWUI.Controls
         {
             if (Children.SelectedItems.Any())
             {
-                var result = await MainWindow.ShowDialog("移除歌曲", $"真的要从歌单中移除这{Children.SelectedItems.Count}首歌曲吗？", "取消", "确定");
-                if (result == ContentDialogResult.Primary)
+                List<Controls.SongItem> a = new List<Controls.SongItem>();
+                foreach (Controls.SongItem item in Children.SelectedItems) a.Add(item);
+                foreach (var b in a)
                 {
-                    var jdata = JObject.Parse(await PlayListHelper.ReadData());
-                    MainWindow.ShowLoadingDialog("正在移除");
-                    int num = 0;
-                    foreach (SongItem item in Children.SelectedItems)
-                    {
-                        num++;
-                        MainWindow.SetLoadingText($"正在移除：{item.MusicData.Title} - {item.MusicData.ButtonName}");
-                        MainWindow.SetLoadingProgressRingValue(Children.SelectedItems.Count, num);
-                        jdata = PlayListHelper.DeleteMusicDataFromPlayList(NavToObj.ListName, item.MusicData, jdata);
-                    }
-                    await PlayListHelper.SaveData(jdata.ToString());
-                    await App.playListReader.Refresh();
-                    foreach (var m in App.playListReader.NowMusicListDatas)
-                    {
-                        if (m.MD5 == NavToObj.MD5)
-                        {
-                            NavToObj = m;
-                            break;
-                        }
-                    }
-                    MainWindow.HideDialog();
-                    InitData();
+                    Children.Items.Remove(b);
                 }
+
             }
         }
 
@@ -374,12 +407,12 @@ namespace znMusicPlayerWUI.Controls
 
         private void SelectReverseButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (SongItem item in Children.Items)
+            foreach (Controls.SongItem item in Children.Items)
             {
                 try
                 {
                     var a = Children.ContainerFromIndex(Children.Items.IndexOf(item)) as ListViewItem;
-                    if (a != null)
+                    if (a!=null)
                         a.IsSelected = !a.IsSelected;
                 }
                 catch { }
@@ -391,94 +424,11 @@ namespace znMusicPlayerWUI.Controls
             FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
         }
 
-        private async void AddLocalFilesButton_Click(object sender, RoutedEventArgs e)
-        {
-            StackPanel stackPanel = new() { HorizontalAlignment = HorizontalAlignment.Stretch };
-            var ab = new Button() { Content = "多个音频文件", HorizontalAlignment = HorizontalAlignment.Stretch };
-            var bb = new Button() { Content = "单个文件夹", HorizontalAlignment = HorizontalAlignment.Stretch, Margin = new(0, 4, 0, 0) };
-
-            ab.Click += async (_, __) =>
-            {
-                var files = await FileHelper.UserSelectFiles(
-                    PickerViewMode.List, PickerLocationId.MusicLibrary,
-                    App.SupportedMediaFormats);
-                if (files.Any())
-                {
-                    var jdata = JObject.Parse(await PlayListHelper.ReadData());
-                    MainWindow.HideDialog();
-                    MainWindow.ShowLoadingDialog("正在添加");
-                    int num = 0;
-                    foreach (var i in files)
-                    {
-                        num++;
-                        MainWindow.SetLoadingProgressRingValue(files.Count, num);
-                        MainWindow.SetLoadingText($"正在添加：{i.Name}");
-
-                        FileInfo fi = null;
-                        await Task.Run(() => fi = new FileInfo(i.Path));
-                        jdata = await PlayListHelper.AddLocalMusicDataToPlayList(NavToObj.ListName, fi, jdata);
-                    }
-                    await PlayListHelper.SaveData(jdata.ToString());
-                    await App.playListReader.Refresh();
-                    foreach (var m in App.playListReader.NowMusicListDatas)
-                    {
-                        if (m.MD5 == NavToObj.MD5)
-                        {
-                            NavToObj = m;
-                            break;
-                        }
-                    }
-                    MainWindow.HideDialog();
-                    InitData();
-                }
-            };
-            bb.Click += async (_, __) =>
-            {
-                Windows.Storage.StorageFolder folder = await FileHelper.UserSelectFolder(PickerLocationId.MusicLibrary);
-                if (folder != null)
-                {
-                    var jdata = JObject.Parse(await PlayListHelper.ReadData());
-                    MainWindow.HideDialog();
-                    MainWindow.ShowLoadingDialog("正在添加");
-                    DirectoryInfo directory = null;
-                    await Task.Run(() => directory = Directory.CreateDirectory(folder.Path));
-                    int num = 0;
-                    foreach (var i in directory.GetFiles())
-                    {
-                        if (App.SupportedMediaFormats.Contains(i.Extension))
-                        {
-                            num++;
-                            MainWindow.SetLoadingProgressRingValue(directory.GetFiles().Length, num);
-                            MainWindow.SetLoadingText($"正在添加：{i.Name}");
-                            jdata = await PlayListHelper.AddLocalMusicDataToPlayList(NavToObj.ListName, i, jdata);
-                        }
-                    }
-                    await PlayListHelper.SaveData(jdata.ToString());
-                    await App.playListReader.Refresh();
-                    foreach (var m in App.playListReader.NowMusicListDatas)
-                    {
-                        if (m.MD5 == NavToObj.MD5)
-                        {
-                            NavToObj = m;
-                            break;
-                        }
-                    }
-                    MainWindow.HideDialog();
-                    InitData();
-                }
-            };
-
-            stackPanel.Children.Add(ab);
-            stackPanel.Children.Add(bb);
-
-            await MainWindow.ShowDialog("添加本地文件", stackPanel);
-        }
-
         private void DownloadSelectedButton_Click(object sender, RoutedEventArgs e)
         {
             if (Children.SelectedItems.Any())
             {
-                foreach (SongItem songItem in Children.Items)
+                foreach (Controls.SongItem songItem in Children.Items)
                 {
                     App.downloadManager.Add(songItem.MusicData);
                 }
@@ -505,10 +455,10 @@ namespace znMusicPlayerWUI.Controls
         {
             MainWindow.ShowLoadingDialog();
             var text = JObject.Parse(await PlayListHelper.ReadData());
-            foreach (SongItem item in Children.SelectedItems)
+            foreach (Controls.SongItem item in Children.SelectedItems)
             {
                 MainWindow.SetLoadingText($"正在添加：{item.MusicData.Title} - {item.MusicData.ButtonName}");
-
+                
                 text = PlayListHelper.AddMusicDataToPlayList(
                     ((sender as MenuFlyoutItem).Tag as MusicListData).ListName,
                     item.MusicData, text);
@@ -531,11 +481,8 @@ namespace znMusicPlayerWUI.Controls
                 return;
             }
 
-            NavToObj.PlaySort = (PlaySort)Enum.Parse(typeof(PlaySort), SortComboBox.SelectedItem as string);
             InitData();
-            var data = JObject.Parse(await PlayListHelper.ReadData());
-            data[NavToObj.ListName] = JObject.FromObject(NavToObj);
-            await PlayListHelper.SaveData(data.ToString());
+
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Meting4Net.Core.Models.Tencent;
+using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,8 +27,13 @@ namespace znMusicPlayerWUI.Background
             get => _nowLyricsData;
             set
             {
-                if (_nowLyricsData == null || value == null) return;
-                if (_nowLyricsData.MD5 != value.MD5)
+                //if (_nowLyricsData == null || value == null) return;
+                if (value == null)
+                {
+                    _nowLyricsData = value;
+                    PlayingLyricSelectedChange?.Invoke(value);
+                }
+                else if (_nowLyricsData?.MD5 != value.MD5)
                 {
                     _nowLyricsData = value;
                     PlayingLyricSelectedChange?.Invoke(value);
@@ -137,6 +143,10 @@ namespace znMusicPlayerWUI.Background
 
                 NowLyricsData = NowPlayingLyrics.First();
             }
+            else
+            {
+                NowLyricsData = null;
+            }
         }
 
         LyricData lastLyricData = null;
@@ -147,11 +157,25 @@ namespace znMusicPlayerWUI.Background
             {
                 if (!timer.IsEnabled) timer.Start();
                 //System.Diagnostics.Debug.WriteLine(App.audioPlayer.CurrentTime);
+                /*
                 foreach (var data in NowPlayingLyrics)
                 {
                     if (data.LyricTimeSpan < App.audioPlayer.CurrentTime)
                     {
                         lastLyricData = data;
+                    }
+                    else
+                    {
+                        NowLyricsData = lastLyricData;
+                        break;
+                    }
+                }*/
+                for (int i = 0; i < NowPlayingLyrics.Count; i++)
+                {
+                    var npl = NowPlayingLyrics[i];
+                    if (NowPlayingLyrics[i].LyricTimeSpan < App.audioPlayer.CurrentTime)
+                    {
+                        lastLyricData = npl;
                     }
                     else
                     {

@@ -184,7 +184,7 @@ namespace znMusicPlayerWUI.Helpers
                     {
                         System.Diagnostics.Debug.WriteLine(ex);
                         var d = await MainWindow.ShowDialog("搜索失败", $"搜索时出现错误：\n{ex.Message}", "确定", "重试");
-                        if (d == Microsoft.UI.Xaml.Controls.ContentDialogResult.Secondary)
+                        if (d == Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary)
                         {
                             await SearchData(keyword, pageNumber, pageSize, searchFrom, searchDataType);
                         }

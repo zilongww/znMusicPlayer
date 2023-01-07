@@ -165,4 +165,8 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\ListViewPages\" />
+  </ItemGroup>
 </Project>

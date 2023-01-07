@@ -55,6 +55,7 @@ namespace znMusicPlayerWUI.Media
                     OutDevice outDevice = new OutDevice(OutApi.WaveOut, n, name == "Microsoft 声音映射器" || name == "Microsoft Sound Mapper" ? defaultName : name);
                     outDevices.Add(outDevice);
                 }
+                if (outDevices.Count < 2) outDevices.Clear();
 
                 // DirectSound
                 foreach (var dev in DirectSoundOut.Devices)
@@ -63,12 +64,18 @@ namespace znMusicPlayerWUI.Media
                     OutDevice outDevice = new OutDevice(OutApi.DirectSound, dev, name == "主声音驱动程序" ? defaultName : name);
                     outDevices.Add(outDevice);
                 }
+                if (outDevices.Count < 2) outDevices.Clear();
 
                 // Wasapi
                 var enumerator = new MMDeviceEnumerator();
-                // 添加默认设备
-                OutDevice outDevice1 = new OutDevice(OutApi.Wasapi, enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia).ID, defaultName);
-                outDevices.Add(outDevice1);
+
+                try
+                {
+                    // 添加默认设备
+                    OutDevice outDevice1 = new OutDevice(OutApi.Wasapi, enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia).ID, defaultName);
+                    outDevices.Add(outDevice1);
+                }
+                catch { }
 
                 foreach (var wasapi in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
                 {
@@ -82,6 +89,11 @@ namespace znMusicPlayerWUI.Media
                 {
                     OutDevice outDevice = new OutDevice(OutApi.Asio, asio, asio);
                     outDevices.Add(outDevice);
+                }
+
+                if (!outDevices.Any())
+                {
+                    outDevices.Add(new(OutApi.None, null, "无音频输出设备"));
                 }
             });
 
@@ -104,7 +116,7 @@ namespace znMusicPlayerWUI.Media
         public event AudioPlayerDelegate EqualizerBandChanged;
 
         DispatcherTimer timer;
-        public enum OutApi { WaveOut, DirectSound, Wasapi, Asio }
+        public enum OutApi { WaveOut, DirectSound, Wasapi, Asio, None }
         public Media.AudioFileReader FileReader { get; set; } = null;
         public AudioEffects.SoundTouchWaveProvider FileProvider { get; set; } = null;
         public IWavePlayer NowOutObj { get; set; } = null;
@@ -347,7 +359,6 @@ namespace znMusicPlayerWUI.Media
 
             if (resultPath != null)
             {
-                string errMessage = null;
                 // 检查文件是否没有下载完成
                 bool downloaded = await Task.Run(() =>
                 {
@@ -376,6 +387,7 @@ namespace znMusicPlayerWUI.Media
                 {
                     var m = MusicData;
                     MusicData = musicData;
+                    Exception exception = null;
                     try
                     {
                         await SetSource(resultPath);
@@ -383,10 +395,16 @@ namespace znMusicPlayerWUI.Media
                     catch (Exception err)
                     {
                         MusicData = m;
+                        exception = err;
                     }
                     finally
                     {
                         CacheLoadedChanged?.Invoke(this);
+                    }
+
+                    if (exception != null)
+                    {
+                        throw exception;
                     }
                 }
             }
@@ -399,6 +417,15 @@ namespace znMusicPlayerWUI.Media
 
         public async Task SetSource(string filePath)
         {
+            if (NowOutDevice.DeviceType == OutApi.None)
+            {
+                NowOutDevice = (await OutDevice.GetOutDevices()).First();
+                if (NowOutDevice.DeviceType == OutApi.None)
+                {
+                    throw new Exception("当前没有音频输出设备，请检查音频设置是否正确、输出设备是否插入和音频设备驱动是否正常工作。");
+                }
+            }
+
             AudioFileReader fileReader = null;
             AudioEffects.SoundTouchWaveProvider fileProvider = null;
 

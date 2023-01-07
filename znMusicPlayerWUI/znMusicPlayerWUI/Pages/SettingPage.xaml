@@ -131,6 +131,11 @@
                 </StackPanel>
             </Expander>
             <Expander x:Name="DownloadEpd">
+                <Expander.Transitions>
+                    <TransitionCollection>
+                        <RepositionThemeTransition/>
+                    </TransitionCollection>
+                </Expander.Transitions>
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal">
                         <Viewbox Width="16">
@@ -190,6 +195,11 @@
                 </StackPanel>
             </Expander>
             <Expander x:Name="FutureEpd">
+                <Expander.Transitions>
+                    <TransitionCollection>
+                        <RepositionThemeTransition/>
+                    </TransitionCollection>
+                </Expander.Transitions>
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal">
                         <Viewbox Width="16">
@@ -239,6 +249,11 @@
                 </StackPanel>
             </Expander>
             <Expander x:Name="ThemeEpd">
+                <Expander.Transitions>
+                    <TransitionCollection>
+                        <RepositionThemeTransition/>
+                    </TransitionCollection>
+                </Expander.Transitions>
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal">
                         <Viewbox Width="16">

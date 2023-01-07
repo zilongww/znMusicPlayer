@@ -150,6 +150,10 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                         var a = JObject.Parse(data);
                         if (a.ContainsKey("result"))
                         {
+                            if (((int)a["result"]["songCount"]) == 0)
+                            {
+                                throw new NullReferenceException("搜索没有结果，请尝试换个关键词或调整当前页数和页大小。");
+                            }
                             if (type == SearchDataType.歌曲)
                             {
                                 MusicListData ld = new(keyword, keyword, null, MusicFrom.neteaseMusic, null, null);

@@ -20,12 +20,21 @@
                   VerticalAlignment="Top"
                   Height="48"
                   Margin="0,0,0,0">
-                <TextBlock x:Name="AppTitleTextBlock"
-                           Text="znMusicPlayer"
-                           TextWrapping="NoWrap"
-                           Margin="0,0,0,0"
-                           Style="{StaticResource CaptionTextBlockStyle}" 
-                           VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock x:Name="AppTitleTextBlock"
+                               Text="znMusicPlayer"
+                               TextWrapping="NoWrap"
+                               Style="{StaticResource CaptionTextBlockStyle}"/>
+                    <TextBlock x:Name="LyricTextBlock"
+                               TextWrapping="NoWrap"
+                               Style="{StaticResource CaptionTextBlockStyle}">
+                        <TextBlock.Transitions>
+                            <TransitionCollection>
+                                <ContentThemeTransition/>
+                            </TransitionCollection>
+                        </TextBlock.Transitions>
+                    </TextBlock>
+                </StackPanel>
             </Grid>
 
             <NavigationView x:Name="NavView"

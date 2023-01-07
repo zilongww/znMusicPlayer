@@ -278,7 +278,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     scrollViewer.ChangeView(null, b.ActualOffset.Y + b.ActualSize.Y / 2, null);
             }
 #if DEBUG
-            Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData.Lyric}.");
+            Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData?.Lyric}.");
 #endif
         }
 

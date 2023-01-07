@@ -225,9 +225,10 @@ namespace znMusicPlayerWUI.Windowed
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            appWindow.SetPresenter(appWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen ? AppWindowPresenterKind.Default : AppWindowPresenterKind.FullScreen);
-            FullScreenIcon.Symbol = appWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen ? Symbol.Redo : Symbol.FullScreen;
-            (sender as Button).Margin = appWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen ? new(0) : new(0, 0, 138, 0);
+            MPE.IsFullWindow = true;
+            //appWindow.SetPresenter(appWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen ? AppWindowPresenterKind.Default : AppWindowPresenterKind.FullScreen);
+            //FullScreenIcon.Symbol = appWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen ? Symbol.Redo : Symbol.FullScreen;
+            //(sender as Button).Margin = appWindow.Presenter.Kind == AppWindowPresenterKind.FullScreen ? new(0) : new(0, 0, 138, 0);
         }
 
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
