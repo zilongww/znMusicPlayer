@@ -185,6 +185,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             {
                 (InfoBaseGrid.Children[1] as Grid).Width = double.NaN;
                 (InfoBaseGrid.Children[1] as Grid).HorizontalAlignment = HorizontalAlignment.Center;
+                ((InfoBaseGrid.Children[1] as Grid).Children[0] as Border).Margin = new Thickness(12, 4, 12, 4);
                 if (InfoBaseGrid.ActualHeight >= 850)
                 {
                     Grid.SetRow((FrameworkElement)InfoBaseGrid.Children[0], 1);
@@ -235,6 +236,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
                     (InfoBaseGrid.Children[0] as StackPanel).Margin = new Thickness(0);
                     (InfoBaseGrid.Children[1] as Grid).Margin = new Thickness(0, 32, 0, 32);
+                    ((InfoBaseGrid.Children[1] as Grid).Children[0] as Border).Margin = new Thickness(12, 4, 12, 4);
                     LrcBaseGrid.Margin = new Thickness(0);
 
                     InfoBaseTitle.TextAlignment = TextAlignment.Center;
@@ -253,6 +255,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     (InfoBaseGrid.Children[1] as Grid).Margin = new Thickness(0, 0, 0, 0);
                     (InfoBaseGrid.Children[1] as Grid).Width = 100;
                     (InfoBaseGrid.Children[1] as Grid).HorizontalAlignment = HorizontalAlignment.Left;
+                    ((InfoBaseGrid.Children[1] as Grid).Children[0] as Border).Margin = new Thickness(0);
                     (InfoBaseGrid.Children[0] as StackPanel).Margin = new Thickness(112, 20, 0, 0);
 
                     InfoBaseTitle.TextAlignment = TextAlignment.Left;
@@ -275,7 +278,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData);
                 }
                 if (b != null)
-                    scrollViewer.ChangeView(null, b.ActualOffset.Y + b.ActualSize.Y / 2, null);
+                    scrollViewer.ChangeView(null, b.ActualOffset.Y + b.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 68, null);
             }
 #if DEBUG
             Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData?.Lyric}.");
@@ -426,7 +429,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void LrcBaseListView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            LrcBaseListView.Padding = new Thickness(0, LrcBaseListView.ActualHeight / 2, 0, LrcBaseListView.ActualHeight / 2);
+            LrcBaseListView.Padding = new Thickness(0, LrcBaseListView.ActualHeight / 2 + 68, 0, LrcBaseListView.ActualHeight / 2);
         }
 
         private void pageRoot_Loaded(object sender, RoutedEventArgs e)

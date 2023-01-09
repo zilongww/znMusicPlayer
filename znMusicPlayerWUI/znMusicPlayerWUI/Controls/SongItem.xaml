@@ -13,7 +13,7 @@
     
     <Grid.Resources>
         <MenuFlyout x:Name="rmf" Opened="rmf_Opened" Closed="rmf_Closed">
-            <MenuFlyoutItem Text="{Binding MusicData.Title}" IsEnabled="False"/>
+            <MenuFlyoutItem Text="{Binding Title}" IsEnabled="False"/>
             <MenuFlyoutItem Text="播放" Click="Play_Click">
                 <MenuFlyoutItem.Icon>
                     <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 播放ol}"/>
@@ -97,7 +97,7 @@
                     </Border>
                     <StackPanel VerticalAlignment="Center"
                                 Margin="10,0,0,0">
-                        <TextBlock Text="{Binding MusicData.Title}" IsHitTestVisible="False"/>
+                        <TextBlock Text="{Binding Title}" IsHitTestVisible="False"/>
                         <Grid>
                             <Button BorderThickness="0"
                                     Background="Transparent"
@@ -106,14 +106,14 @@
                                     x:Name="InfoButton"
                                     Flyout="{ThemeResource mf}"
                                     Content=" "
-                                    Width="{Binding ElementName=ButtonNameTextBlock,Path=ActualWidth}"/>
-                            <TextBlock x:Name="ButtonNameTextBlock" IsHitTestVisible="False" FontSize="12" Text="{Binding MusicData.ButtonName}" Foreground="{ThemeResource SystemChromeDisabledLowColor}"/>
+                                    HorizontalAlignment="Stretch"/>
+                            <TextBlock x:Name="ButtonNameTextBlock" IsHitTestVisible="False" FontSize="12" Text="{Binding ButtonName}" Foreground="{ThemeResource SystemChromeDisabledLowColor}"/>
                         </Grid>
 
                     </StackPanel>
                 </StackPanel>
 
-                <StackPanel x:Name="RightToolBar" Visibility="Collapsed" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="LeftToRight">
+                <StackPanel x:Name="RightToolBar" Grid.Column="1" Opacity="0" Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="LeftToRight">
                     <Button Width="36" Height="36" CornerRadius="18" ToolTipService.ToolTip="播放" Click="Play_Click">
                         <Viewbox Width="12">
                             <SymbolIcon Symbol="Play"/>

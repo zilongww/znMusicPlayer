@@ -368,15 +368,14 @@ namespace znMusicPlayerWUI.Helpers
                             timesb +
                             TimeSpan.FromMilliseconds(int.Parse(times[1]));
                         var text = timesAndLyric[1];
-                        if (text == "") text = "······";
+                        if (text == "") text = "·········";
 
                         if (lyricDictionary.ContainsKey(timesResult))
                         {
                             var l = lyricDictionary[timesResult];
-                            if (l.Lyric != text && text != "······")
+                            if (l.Lyric != text && text != "·········")
                             {
                                 l.Translate = text;
-                                l.LyricAndTranslate = $"{l.Lyric}\n{l.Translate}";
                             }
                         }
                         else
@@ -388,6 +387,7 @@ namespace znMusicPlayerWUI.Helpers
 
                 if (lyricDictionary.Any())
                 {
+                    //lastLyric
                     lyricDictionary.Add(lyricDictionary.Last().Key + TimeSpan.FromSeconds(0.1),
                         new("", null, lyricDictionary.Last().Key + TimeSpan.FromSeconds(0.1)));
                 }

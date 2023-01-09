@@ -29,10 +29,10 @@
         </Rectangle>
         <Grid Padding="0,48,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" x:Name="InfoPageColumn"/>
+                <ColumnDefinition Width="0.8*" x:Name="InfoPageColumn"/>
                 <ColumnDefinition Width="1.35*" x:Name="LrcPageColumn"/>
             </Grid.ColumnDefinitions>
-            <Grid x:Name="InfoBaseGrid" VerticalAlignment="Stretch" Padding="24,0,24,24" Grid.Column="0">
+            <Grid x:Name="InfoBaseGrid" VerticalAlignment="Stretch" Padding="40,0,40,40" Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
@@ -55,7 +55,7 @@
                             <RepositionThemeTransition/>
                         </TransitionCollection>
                     </Grid.Transitions>
-                    <Border CornerRadius="8">
+                    <Border CornerRadius="8" Margin="12">
                         <controls:Imagezn x:Name="AlbumImageBase" IsMassImage="False"/>
                     </Border>
                 </Grid>
@@ -179,7 +179,7 @@
                 </Grid>
             </Grid>
 
-            <Grid x:Name="LrcBaseGrid" Grid.Column="1" PointerWheelChanged="LrcBaseListView_PointerWheelChanged">
+            <Grid x:Name="LrcBaseGrid" Grid.Column="1" PointerWheelChanged="LrcBaseListView_PointerWheelChanged" Margin="24,0,0,0">
                 <Grid.Transitions>
                     <TransitionCollection>
                         <RepositionThemeTransition/>
@@ -196,9 +196,10 @@
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="data:LyricData">
                             <StackPanel>
-                                <TextBlock Text="{Binding LyricAndTranslate}"
-                                           TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
-                                           FontSize="24" TextWrapping="Wrap" Margin="0,0,0,48"/>
+                                <TextBlock TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
+                                           TextWrapping="Wrap">
+                                    <Run Text="{x:Bind Lyric}" FontSize="29"/><LineBreak/><Run Text="{x:Bind Translate}" FontSize="22"/>
+                                </TextBlock>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -233,7 +234,13 @@
                                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                             ContentMargin="{TemplateBinding Padding}"
                                             HorizontalAlignment="{Binding ElementName=BridgeTb,Path=HorizontalAlignment}"
-                                            CheckMode="Inline"/>
+                                            CheckMode="Inline"
+                                            MinWidth="0"
+                                            Margin="0,0,0,32">
+                                            <ListViewItemPresenter.SelectedBorderThickness>
+                                                2
+                                            </ListViewItemPresenter.SelectedBorderThickness>
+                                        </ListViewItemPresenter>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>

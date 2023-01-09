@@ -1,13 +1,16 @@
-﻿using Microsoft.UI.Xaml.Media;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Helpers;
+using WinRT;
 
 namespace znMusicPlayerWUI.Background
 {
@@ -120,6 +123,9 @@ namespace znMusicPlayerWUI.Background
                 a = false;
                 await MainWindow.ShowDialog("播放音频时出现错误", e.Message);
             }
+
+            //UWPInterop.SystemMediaTransportControlsInterop.GetForWindow(App.AppWindowLocalHandle);
+
             return a;
         }
 

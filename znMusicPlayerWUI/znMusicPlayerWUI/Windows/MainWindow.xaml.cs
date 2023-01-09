@@ -112,6 +112,7 @@ namespace znMusicPlayerWUI
             App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
             App.playingList.NowPlayingImageLoading += PlayingList_NowPlayingImageLoading;
             App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
+            App.SMTC.ButtonPressed += SMTC_ButtonPressed;
             App.lyricManager.PlayingLyricSelectedChange += (_) =>
             {
                 if (SWindowGridBase.Visibility == Visibility.Visible && !isMinSize)
@@ -186,7 +187,15 @@ namespace znMusicPlayerWUI
         {
             bar.ExtendsContentIntoTitleBar = true;
 
-            if (theme == ElementTheme.Light)
+            bool defaultLightTheme = false; ;
+            bool defaultDarkTheme = false; ;
+            if (theme == ElementTheme.Default)
+            {
+                defaultLightTheme = App.Current.RequestedTheme == ApplicationTheme.Light;
+                defaultDarkTheme = App.Current.RequestedTheme == ApplicationTheme.Dark;
+            }
+
+            if (theme == ElementTheme.Light || defaultLightTheme)
             {
                 bar.ButtonBackgroundColor = Colors.Transparent;
                 bar.ButtonForegroundColor = Colors.Black;
@@ -197,7 +206,7 @@ namespace znMusicPlayerWUI
                 bar.ButtonInactiveBackgroundColor = Colors.Transparent;
                 bar.ButtonInactiveForegroundColor = Color.FromArgb(50, 0, 0, 0);
             }
-            else
+            else if (theme == ElementTheme.Dark || defaultDarkTheme)
             {
                 bar.ButtonBackgroundColor = Colors.Transparent;
                 bar.ButtonForegroundColor = Colors.White;
@@ -226,7 +235,7 @@ namespace znMusicPlayerWUI
                 AsyncDialog.Title = title;
                 if (content is string)
                 {
-                    dialogScrollViewer.Content = new TextBlock() { Text = content as string, TextWrapping = TextWrapping.Wrap };
+                    dialogScrollViewer.Content = new TextBlock() { Text = content as string, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true };
                     AsyncDialog.Content = dialogScrollViewer;
                 }
                 else
@@ -290,6 +299,33 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region AudioPlayer Events
+        public static void Invoke(Action action)
+        {
+            SWindowGridBase.DispatcherQueue.TryEnqueue(() => { action(); });
+        }
+
+        private void SMTC_ButtonPressed(Windows.Media.SystemMediaTransportControls sender, Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs args)
+        {
+            Invoke(() =>
+            {
+                switch (args.Button)
+                {
+                    case Windows.Media.SystemMediaTransportControlsButton.Play:
+                        App.audioPlayer.SetPlay();
+                        break;
+                    case Windows.Media.SystemMediaTransportControlsButton.Pause:
+                        App.audioPlayer.SetPause();
+                        break;
+                    case Windows.Media.SystemMediaTransportControlsButton.Previous:
+                        PlayBeforeButton_Click(null, null);
+                        break;
+                    case Windows.Media.SystemMediaTransportControlsButton.Next:
+                        PlayNextButton_Click(null, null);
+                        break;
+                }
+            });
+        }
+
         private void AudioPlayer_VolumeChanged(Media.AudioPlayer audioPlayer, object data)
         {
             if (!isPEntered)
@@ -373,16 +409,16 @@ namespace znMusicPlayerWUI
 
         private void AudioPlayer_PlayStateChanged(Media.AudioPlayer audioPlayer)
         {
-            if (audioPlayer.NowOutObj?.PlaybackState == PlaybackState.Playing)
-            {
-                PlayRing.Foreground = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
-            }
-            else
-            {
-                PlayRing.Foreground = new SolidColorBrush(Color.FromArgb(255, 225, 225, 0));
-            }
+                if (audioPlayer.NowOutObj?.PlaybackState == PlaybackState.Playing)
+                {
+                    PlayRing.Foreground = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
+                }
+                else
+                {
+                    PlayRing.Foreground = new SolidColorBrush(Color.FromArgb(255, 225, 225, 0));
+                }
 
-            MediaPlayStateViewer.PlaybackState = audioPlayer.NowOutObj != null ? audioPlayer.NowOutObj.PlaybackState : PlaybackState.Paused;
+                MediaPlayStateViewer.PlaybackState = audioPlayer.NowOutObj != null ? audioPlayer.NowOutObj.PlaybackState : PlaybackState.Paused;
         }
 
         private void AudioPlayer_TimingChanged(Media.AudioPlayer audioPlayer)

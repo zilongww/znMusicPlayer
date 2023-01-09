@@ -27,6 +27,9 @@ using NAudio.Wave;
 using Microsoft.UI.Xaml.Hosting;
 using System.Collections.ObjectModel;
 using Windows.Media.Core;
+using Windows.Media;
+using Windows.Media.Playback;
+using CommunityToolkit.WinUI.UI.Controls;
 
 namespace znMusicPlayerWUI.Windowed
 {
@@ -42,10 +45,30 @@ namespace znMusicPlayerWUI.Windowed
             {
                 if (mediaUri != value)
                 {
-                    MPE.Source = MediaSource.CreateFromUri(new Uri(value));
-                    MPE.MediaPlayer.Play();
+                    mediaUri = value;
+                    SetSMTC();
                 }
             }
+        }
+
+        public void SetSMTC()
+        {
+            var _mediaSource = MediaSource.CreateFromUri(new Uri(mediaUri));
+            var _mediaPlaybackItem = new MediaPlaybackItem(_mediaSource);/*
+            var props = _mediaPlaybackItem.GetDisplayProperties();
+            props.Type = MediaPlaybackType.Music;
+            props.MusicProperties.Title = "znMusicPlayer";
+            props.MusicProperties.Artist = "请问您今天要来点兔唇吗";
+            props.Thumbnail = Windows.Storage.Streams.RandomAccessStreamReference.CreateFromUri(new Uri("C:\\Users\\zilong\\Pictures\\2023-01-05 (3).png"));
+            _mediaPlaybackItem.ApplyDisplayProperties(props);*/
+            var _mediaPlayer = new MediaPlayer();
+            _mediaPlayer.Source = _mediaPlaybackItem;
+            MPE.SetMediaPlayer(_mediaPlayer);
+            /*
+                        _mediaPlaybackItem.AudioTracksChanged += PlaybackItem_AudioTracksChanged;
+                        _mediaPlaybackItem.VideoTracksChanged += MediaPlaybackItem_VideoTracksChanged;
+                        _mediaPlaybackItem.TimedMetadataTracksChanged += MediaPlaybackItem_TimedMetadataTracksChanged;
+            */
         }
 
         public MediaPlayerWindow(string videoUri = null)
@@ -269,7 +292,7 @@ namespace znMusicPlayerWUI.Windowed
         private void Window_Closed(object sender, WindowEventArgs args)
         {
             System.Diagnostics.Debug.WriteLine("Closed");
-            MPE.Source = null;
+            MPE.MediaPlayer.Source = null;
         }
     }
 }

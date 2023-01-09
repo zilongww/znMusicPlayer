@@ -159,23 +159,14 @@ namespace znMusicPlayerWUI.DataEditor
     {
         public string Lyric { get; set; }
         public string Translate { get; set; }
-        public string LyricAndTranslate { get; set; }
         public TimeSpan LyricTimeSpan { get; set; }
         public bool InSelected { get; set; }
         public string MD5 { get; set; }
         public LyricData(string lyric, string translate, TimeSpan timeSpan)
         {
             Lyric = lyric;
-            if (translate != null)
-            {
-                LyricAndTranslate = lyric + "\n" + translate;
-            }
-            else
-            {
-                LyricAndTranslate = lyric;
-            }
             LyricTimeSpan = timeSpan;
-            MD5 = Helpers.CodeHelper.ToMD5($"{Lyric}{Translate}{LyricTimeSpan.Ticks}");
+            MD5 = CodeHelper.ToMD5($"{Lyric}{Translate}{LyricTimeSpan.Ticks}");
         }
     }
 

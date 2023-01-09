@@ -30,6 +30,7 @@ using Microsoft.UI.Xaml.Markup;
 using System.Threading.Tasks;
 using znMusicPlayerWUI.Background;
 using static znMusicPlayerWUI.DataEditor.DataFolderBase;
+using Windows.Media.Playback;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -41,6 +42,8 @@ namespace znMusicPlayerWUI
     /// </summary>
     public partial class App : Application
     {
+        public static readonly MediaPlayer BMP = BackgroundMediaPlayer.Current;
+        public static readonly Windows.Media.SystemMediaTransportControls SMTC = BackgroundMediaPlayer.Current?.SystemMediaTransportControls;
         public static readonly MetingServices metingServices = new();
         public static readonly AudioPlayer audioPlayer = new();
         public static readonly PlayingList playingList = new();
@@ -56,7 +59,7 @@ namespace znMusicPlayerWUI
         public static IntPtr AppDesktopLyricWindowHandle;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.1.81 Preview";
+        public static readonly string AppVersion = "0.1.82 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code

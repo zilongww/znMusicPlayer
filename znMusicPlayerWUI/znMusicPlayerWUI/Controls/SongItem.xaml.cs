@@ -39,7 +39,7 @@ namespace znMusicPlayerWUI.Controls
             InitializeComponent();
             MusicData = musicData;
             MusicListData = musicListData;
-            DataContext = this;
+            DataContext = MusicData;
 
             if (musicData.PicturePath == null) ShowImage = false;
 
@@ -56,7 +56,7 @@ namespace znMusicPlayerWUI.Controls
             rmfi.Text = $"专辑：{musicData.Album}";
 
 
-            MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
+            //MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
             //MainWindow.DriveInTypeEvent += MainWindow_DriveInTypeEvent;
 
             if (musicListData != null)
@@ -86,7 +86,7 @@ namespace znMusicPlayerWUI.Controls
                 DataContext = null;
                 AlbumImage.Dispose();
                 MusicData = null;
-                MainWindow.DriveInTypeEvent -= MainWindow_DriveInTypeEvent;
+                //MainWindow.DriveInTypeEvent -= MainWindow_DriveInTypeEvent;
             }
             catch (Exception err)
             {
@@ -121,7 +121,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
-            AlbumImage.Source = null;
+            AlbumImage.Dispose();
         }
 
         // 当点击类型不是鼠标时为其添加间距以方便点击
@@ -147,7 +147,7 @@ namespace znMusicPlayerWUI.Controls
             }
             else
             {
-                BaseGrid.Margin = new Thickness(0);
+                BaseGrid.Margin = new Thickness(0, 2, 0, 2);
             }
         }
 
@@ -161,13 +161,14 @@ namespace znMusicPlayerWUI.Controls
             rmf.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
         }
 
+        bool isShowRightToolBar = false;
         // 鼠标进入时改变颜色
         private void Grid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             if (e.Pointer.PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Mouse)
             {
+                isShowRightToolBar = true;
                 RightToolBar.Visibility = Visibility.Visible;
-
                 Storyboard storyboard = new Storyboard();
                 DoubleAnimation doubleAnimation = new DoubleAnimation();
 
@@ -179,6 +180,19 @@ namespace znMusicPlayerWUI.Controls
 
                 storyboard.Children.Add(doubleAnimation);
                 storyboard.Begin();
+
+
+                Storyboard storyboard1 = new Storyboard();
+                DoubleAnimation doubleAnimation1 = new DoubleAnimation();
+
+                doubleAnimation1.From = RightToolBar.Opacity;
+                doubleAnimation1.To = 1;
+                doubleAnimation1.Duration = new Duration(TimeSpan.FromSeconds(0.1));
+                Storyboard.SetTarget(doubleAnimation1, RightToolBar);
+                Storyboard.SetTargetProperty(doubleAnimation1, "Opacity");
+
+                storyboard1.Children.Add(doubleAnimation1);
+                storyboard1.Begin();
             }
         }
 
@@ -187,8 +201,7 @@ namespace znMusicPlayerWUI.Controls
         {
             if (e.Pointer.PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Mouse)
             {
-                RightToolBar.Visibility = Visibility.Collapsed;
-
+                isShowRightToolBar = false;
                 Storyboard storyboard = new Storyboard();
                 DoubleAnimation doubleAnimation = new DoubleAnimation();
 
@@ -200,6 +213,26 @@ namespace znMusicPlayerWUI.Controls
 
                 storyboard.Children.Add(doubleAnimation);
                 storyboard.Begin();
+
+
+                Storyboard storyboard1 = new Storyboard();
+                DoubleAnimation doubleAnimation1 = new DoubleAnimation();
+
+                doubleAnimation1.From = RightToolBar.Opacity;
+                doubleAnimation1.To = 0;
+                doubleAnimation1.Duration = new Duration(TimeSpan.FromSeconds(0.1));
+                Storyboard.SetTarget(doubleAnimation1, RightToolBar);
+                Storyboard.SetTargetProperty(doubleAnimation1, "Opacity");
+
+                storyboard1.Children.Add(doubleAnimation1);
+                storyboard1.Completed += (_, __) =>
+                {
+                    if (!isShowRightToolBar)
+                    {
+                        RightToolBar.Visibility = Visibility.Collapsed;
+                    }
+                };
+                storyboard1.Begin();
             }
         }
 

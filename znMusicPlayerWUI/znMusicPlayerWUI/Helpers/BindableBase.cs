@@ -30,6 +30,13 @@ using Windows.UI.Xaml.Data;
 
 namespace znMusicPlayerWUI.Helpers
 {
+    public class SongItemBindBase
+    {
+        public DataEditor.MusicData MusicData { get; set; }
+        public DataEditor.MusicListData ListData { get; set; }
+        public double ImageScaleDPI { get; set; } = 1.0;
+    }
+
     /// <summary>
     /// Implementation of <see cref="INotifyPropertyChanged"/> to simplify models.
     /// </summary>

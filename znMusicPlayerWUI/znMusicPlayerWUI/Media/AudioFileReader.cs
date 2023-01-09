@@ -87,13 +87,13 @@ namespace znMusicPlayerWUI.Media
                     //addr = "-1";
                     FileAddr = addr;
                     switch (addr)
-                    {/*
+                    {
                         case "10276":
                             readerStream = new NAudio.Flac.FlacReader(fileName);
 #if DEBUG
                             System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Flac 解码器");
 #endif
-                            break;*/
+                            break;
                         case "7368":
                             readerStream = new Mp3FileReader(fileName);
 #if DEBUG

@@ -33,11 +33,23 @@
                     <ComboBox x:Name="SearchSourceComboBox"
                           Margin="0,12,0,0"
                           VerticalAlignment="Center"
-                          Header="搜索源"/>
-                    <ComboBox x:Name="SearchTypeComboBox"
+                          Header="搜索源">
+                        <ComboBox.Transitions>
+                            <TransitionCollection>
+                                <RepositionThemeTransition/>
+                            </TransitionCollection>
+                        </ComboBox.Transitions>
+                    </ComboBox>
+                        <ComboBox x:Name="SearchTypeComboBox"
                           Margin="12,12,0,0"
                           VerticalAlignment="Center"
-                          Header="搜索类型"/>
+                          Header="搜索类型">
+                        <ComboBox.Transitions>
+                            <TransitionCollection>
+                                <RepositionThemeTransition/>
+                            </TransitionCollection>
+                        </ComboBox.Transitions>
+                    </ComboBox>
                 </StackPanel>
             </StackPanel>
         </StackPanel>

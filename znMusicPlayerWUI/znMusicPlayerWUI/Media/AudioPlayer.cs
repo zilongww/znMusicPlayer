@@ -18,6 +18,10 @@ using System.Reflection.Metadata;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.DataEditor;
 using static znMusicPlayerWUI.DataEditor.DataFolderBase;
+using Windows.Media;
+using Windows.Storage.Pickers;
+using Windows.Media.Playback;
+using Windows.Media.Core;
 
 namespace znMusicPlayerWUI.Media
 {
@@ -463,6 +467,15 @@ namespace znMusicPlayerWUI.Media
 
             await Task.Run(() => DisposeAll());
 
+            App.SMTC.IsPlayEnabled = true;
+            App.SMTC.IsPauseEnabled = true;
+            App.SMTC.IsNextEnabled = true;
+            App.SMTC.IsPreviousEnabled = true;
+            App.SMTC.DisplayUpdater.Type = MediaPlaybackType.Music;
+            App.SMTC.DisplayUpdater.MusicProperties.Title = $"{MusicData.Title} - {App.AppName}";
+            App.SMTC.DisplayUpdater.MusicProperties.Artist = $"{MusicData.ButtonName}";
+            App.SMTC.DisplayUpdater.Update();
+
             FileReader = fileReader;
             FileProvider = fileProvider;
 
@@ -575,6 +588,7 @@ namespace znMusicPlayerWUI.Media
             NowOutObj?.Play();
             PlayStateChanged?.Invoke(this);
             timer.Start();
+            App.SMTC.PlaybackStatus = MediaPlaybackStatus.Playing;
             return true;
         }
         
@@ -582,6 +596,7 @@ namespace znMusicPlayerWUI.Media
         {
             NowOutObj?.Pause();
             PlayStateChanged?.Invoke(this);
+            App.SMTC.PlaybackStatus = MediaPlaybackStatus.Paused;
             return true;
         }
         
@@ -589,6 +604,7 @@ namespace znMusicPlayerWUI.Media
         {
             NowOutObj?.Stop();
             PlayStateChanged?.Invoke(this);
+            App.SMTC.PlaybackStatus = MediaPlaybackStatus.Stopped;
             return true;
         }
 

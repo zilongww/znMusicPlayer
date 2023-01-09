@@ -21,6 +21,7 @@ using Windows.Storage;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 using Windows.Media.Devices;
+using znMusicPlayerWUI.DataEditor;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -51,6 +52,24 @@ namespace znMusicPlayerWUI.Controls
                 UpdataSource();
             }
         }
+
+        double dataDPI = 1.0;
+        public double DataDPI
+        {
+            get => dataDPI; set => dataDPI = value;
+        }
+
+        MusicData musicData = null;
+        public MusicData DataSource
+        {
+            get => musicData;
+            set
+            {
+                musicData = value;
+                UpdataDatas();
+            }
+        }
+
 
         private bool _isMassImage = true;
         public bool IsMassImage
@@ -83,6 +102,17 @@ namespace znMusicPlayerWUI.Controls
             Source = null;
             Source = null;
             firstLoad = true;
+        }
+
+        private async void UpdataDatas()
+        {
+            var imageSource = await FileHelper.GetImageSource(await ImageManage.GetImageSource(DataSource), (int)(50 * dataDPI), (int)(50 * dataDPI), true);
+            if (imageSource != null)
+            {
+
+                System.Diagnostics.Debug.WriteLine(musicData.Title);
+                Source = imageSource;
+            }
         }
 
         private void UpdataTheme()
