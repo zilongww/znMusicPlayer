@@ -70,7 +70,7 @@ namespace znMusicPlayerWUI.Background
         {
             bool sameAlbum = true;
 
-            if (audioPlayer.MusicData.AlbumID != NowPlayingMusicData?.AlbumID) sameAlbum = false;
+            if (audioPlayer?.MusicData?.AlbumID != NowPlayingMusicData?.AlbumID) sameAlbum = false;
             else if (audioPlayer.MusicData.InLocal != null)
             {
                 if (audioPlayer.MusicData.Album != NowPlayingMusicData?.Album)
@@ -84,7 +84,7 @@ namespace znMusicPlayerWUI.Background
                 NowPlayingImageLoading?.Invoke(null);
                 ImageSource a = null;
 
-                if (audioPlayer.MusicData.InLocal != null)
+                if (audioPlayer.MusicData?.InLocal != null)
                 {
                     a = await CodeHelper.GetCover(audioPlayer.MusicData.InLocal);
                 }
