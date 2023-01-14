@@ -31,6 +31,9 @@ using System.Threading.Tasks;
 using znMusicPlayerWUI.Background;
 using static znMusicPlayerWUI.DataEditor.DataFolderBase;
 using Windows.Media.Playback;
+using Windows.Media;
+using Windows.Storage.Streams;
+using Windows.Storage;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -59,7 +62,7 @@ namespace znMusicPlayerWUI
         public static IntPtr AppDesktopLyricWindowHandle;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.1.83 Preview";
+        public static readonly string AppVersion = "0.1.84 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -70,6 +73,40 @@ namespace znMusicPlayerWUI
             DataFolderBase.InitFiles();
             this.InitializeComponent();
             UnhandledException += App_UnhandledException;
+
+            SMTC.IsPlayEnabled = true;
+            SMTC.IsPauseEnabled = true;
+            SMTC.IsNextEnabled = true;
+            SMTC.IsPreviousEnabled = true;
+            SMTC.DisplayUpdater.Type = MediaPlaybackType.Music;
+            SMTC.DisplayUpdater.MusicProperties.Title = AppName;
+            SMTC.DisplayUpdater.MusicProperties.Artist = "没有正在播放的歌曲";
+            SMTC.DisplayUpdater.Update();
+
+            audioPlayer.CacheLoadingChanged += (_, __) =>
+            {
+                SMTC.DisplayUpdater.MusicProperties.Title = _.MusicData?.Title;
+                SMTC.DisplayUpdater.MusicProperties.Artist = "加载中...";
+                SMTC.DisplayUpdater.Update();
+            };
+            audioPlayer.CacheLoadedChanged += (_) =>
+            {
+                SMTC.DisplayUpdater.MusicProperties.Title = _.MusicData.Title;
+                SMTC.DisplayUpdater.MusicProperties.Artist = _.MusicData.ButtonName;
+                SMTC.DisplayUpdater.Update();
+            };
+            playingList.NowPlayingImageLoading += (_, __) =>
+            {
+                SMTC.DisplayUpdater.Thumbnail = null;
+                SMTC.DisplayUpdater.Update();
+            };
+            playingList.NowPlayingImageLoaded += async (_, __) =>
+            {
+                Debug.WriteLine(__);
+                SMTC.DisplayUpdater.Thumbnail = RandomAccessStreamReference.CreateFromFile(await StorageFile.GetFileFromPathAsync(__));
+                SMTC.DisplayUpdater.Update();
+            };
+
             TaskScheduler.UnobservedTaskException +=
             (object sender, UnobservedTaskExceptionEventArgs excArgs) =>
             {

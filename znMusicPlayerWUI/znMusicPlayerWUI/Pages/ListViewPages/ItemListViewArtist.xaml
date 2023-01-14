@@ -76,7 +76,8 @@
 
                                 <CommandBar Grid.Column="1" x:Name="ToolsCommandBar"
                                             DefaultLabelPosition="Right"
-                                            Margin="0,0,12,0">
+                                            Margin="0,0,12,0"
+                                            Background="Transparent">
                                     <CommandBar.SecondaryCommands>
                                         <AppBarElementContainer AllowFocusOnInteraction="True">
                                             <ComboBox x:Name="SortComboBox"

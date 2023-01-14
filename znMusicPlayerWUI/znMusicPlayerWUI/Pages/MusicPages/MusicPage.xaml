@@ -24,9 +24,10 @@
         <Rectangle>
             <Rectangle.Fill>
                 <!--<SolidColorBrush Color="#55000000"/>-->
-                <AcrylicBrush x:Name="BlueImageAcrylicBrush" TintLuminosityOpacity="0.85" TintOpacity="0.0" FallbackColor="#60000000" TintColor="{ThemeResource BlurImageAcrylicBrush}" Opacity="1"/>
+                <AcrylicBrush x:Name="BlueImageAcrylicBrush" TintLuminosityOpacity="0.85" TintOpacity="0.0" FallbackColor="{ThemeResource MusicPageImageBlurFallbackColor}" TintColor="{ThemeResource BlurImageAcrylicBrush}" Opacity="1"/>
             </Rectangle.Fill>
         </Rectangle>
+        <Rectangle Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" Opacity="0.0001"/>
         <Grid Padding="0,48,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.8*" x:Name="InfoPageColumn"/>
@@ -120,7 +121,7 @@
                         <ToggleButton x:Name="LrcButton" Padding="12" Width="44" Height="44"
                                       Checked="LrcButton_Checked" Unchecked="LrcButton_Unchecked"
                                       Background="Transparent" BorderThickness="0" FontWeight="Normal">
-                            词
+                            <FontIcon Glyph="词" FontSize="14" FontFamily="{StaticResource ContentControlThemeFontFamily}"/>
                         </ToggleButton>
                     </StackPanel>
                     <Grid Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center">
@@ -157,7 +158,8 @@
                                 HorizontalAlignment="Right" VerticalAlignment="Center"
                                 IsDynamicOverflowEnabled="True"
                                 OverflowButtonVisibility="Auto"
-                                DefaultLabelPosition="Collapsed">
+                                DefaultLabelPosition="Collapsed"
+                                Background="Transparent">
                         <CommandBar.Transitions>
                             <TransitionCollection>
                                 <RepositionThemeTransition/>
@@ -179,7 +181,7 @@
                 </Grid>
             </Grid>
 
-            <Grid x:Name="LrcBaseGrid" Grid.Column="1" PointerWheelChanged="LrcBaseListView_PointerWheelChanged" Margin="24,0,0,0">
+            <Grid x:Name="LrcBaseGrid" Grid.Column="1" PointerWheelChanged="LrcBaseListView_PointerWheelChanged">
                 <Grid.Transitions>
                     <TransitionCollection>
                         <RepositionThemeTransition/>
@@ -195,12 +197,10 @@
                           HorizontalContentAlignment="Stretch">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="data:LyricData">
-                            <StackPanel>
-                                <TextBlock TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
+                            <TextBlock TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
                                            TextWrapping="Wrap">
                                     <Run Text="{x:Bind Lyric}" FontSize="29"/><LineBreak/><Run Text="{x:Bind Translate}" FontSize="22"/>
-                                </TextBlock>
-                            </StackPanel>
+                            </TextBlock>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                     <ListView.ItemContainerStyle>
@@ -209,9 +209,10 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListViewItem">
                                         <ListViewItemPresenter
+                                            BorderBrush="Transparent"
+                                            Background="{x:Null}"
                                             Foreground="{ThemeResource MusicPageLrcForeground}"
-                                            SelectionIndicatorCornerRadius="4"
-                                            CornerRadius="4"
+                                            SelectedForeground="{ThemeResource AccentAAFillColorTertiaryBrush}"
                                             ContentTransitions="{TemplateBinding ContentTransitions}"
                                             SelectionCheckMarkVisualEnabled="True"
                                             CheckBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
@@ -220,26 +221,22 @@
                                             DragForeground="{ThemeResource ListViewItemDragForegroundThemeBrush}"
                                             FocusBorderBrush="{ThemeResource SystemControlForegroundAltHighBrush}"
                                             FocusSecondaryBorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
-                                            PlaceholderBackground="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}"
+                                            PlaceholderBackground="Transparent"
                                             PointerOverBackground="Transparent"
+                                            PointerOverBorderBrush="Transparent"
                                             SelectedBackground="Transparent"
-                                            SelectedForeground="{ThemeResource SystemAccentColorLight2}"
                                             SelectedPointerOverBackground="Transparent"
-                                            PressedBackground="Transparent"
                                             SelectedPressedBackground="Transparent"
+                                            PressedBackground="Transparent"
                                             DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
                                             DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
                                             ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}"
-                                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            HorizontalContentAlignment="Stretch"
                                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                             ContentMargin="{TemplateBinding Padding}"
-                                            HorizontalAlignment="{Binding ElementName=BridgeTb,Path=HorizontalAlignment}"
-                                            CheckMode="Inline"
+                                            CheckMode="Overlay"
                                             MinWidth="0"
-                                            Margin="0,0,0,32">
-                                            <ListViewItemPresenter.SelectedBorderThickness>
-                                                2
-                                            </ListViewItemPresenter.SelectedBorderThickness>
+                                            Margin="0,16">
                                         </ListViewItemPresenter>
                                     </ControlTemplate>
                                 </Setter.Value>

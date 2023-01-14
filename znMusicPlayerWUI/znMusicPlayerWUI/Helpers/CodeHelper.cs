@@ -389,7 +389,7 @@ namespace znMusicPlayerWUI.Helpers
                 {
                     //lastLyric
                     lyricDictionary.Add(lyricDictionary.Last().Key + TimeSpan.FromSeconds(0.1),
-                        new("", null, lyricDictionary.Last().Key + TimeSpan.FromSeconds(0.1)));
+                        new(null, null, lyricDictionary.Last().Key + TimeSpan.FromSeconds(0.1)));
                 }
             });
 

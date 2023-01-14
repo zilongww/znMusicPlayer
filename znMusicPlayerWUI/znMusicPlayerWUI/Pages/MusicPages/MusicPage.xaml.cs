@@ -94,7 +94,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             UpdataInterfaceDesign();
         }
 
-        private void PlayingList_NowPlayingImageLoading(ImageSource imageSource)
+        private void PlayingList_NowPlayingImageLoading(ImageSource imageSource, string _)
         {
             /*if (App.audioPlayer.MusicData?.AlbumID != MusicData?.AlbumID)
             {
@@ -106,7 +106,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             }*/
         }
 
-        private void PlayingList_NowPlayingImageLoaded(ImageSource imageSource)
+        private void PlayingList_NowPlayingImageLoaded(ImageSource imageSource, string _)
         {
             if (ViewState == MusicPageViewState.View)
             {
@@ -132,7 +132,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             {
                 AudioPlayer_SourceChanged(App.audioPlayer);
                 AudioPlayer_PlayStateChanged(App.audioPlayer);
-                PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage);
+                PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
 
                 if (ShowLrcPage)
                 {
@@ -226,8 +226,8 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
                 if (ActualWidth >= 800)
                 {
+                    //LyricItem.TextAlignments = TextAlignment.Left;
                     BridgeTb.TextAlignment = TextAlignment.Left;
-                    BridgeTb.HorizontalAlignment = HorizontalAlignment.Stretch;
                     LrcPageColumn.Width = new GridLength(1.35, GridUnitType.Star);
                     LrcPageColumn.MaxWidth = double.MaxValue;
 
@@ -243,12 +243,12 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 }
                 else
                 {
+                    //LyricItem.TextAlignments = TextAlignment.Center;
                     BridgeTb.TextAlignment = TextAlignment.Center;
-                    BridgeTb.HorizontalAlignment = HorizontalAlignment.Center;
                     Grid.SetColumn(LrcBaseGrid, 0);
                     LrcPageColumn.MaxWidth = 0;
-                    LrcBaseGrid.Margin = new Thickness(12, 112, 12,
-                        (InfoBaseGrid.Children[2] as Grid).ActualHeight + (InfoBaseGrid.Children[3] as Grid).ActualHeight + 24
+                    LrcBaseGrid.Margin = new Thickness(28, 112, 28,
+                        (InfoBaseGrid.Children[2] as Grid).ActualHeight + (InfoBaseGrid.Children[3] as Grid).ActualHeight + 36
                         );
 
                     Grid.SetRow((FrameworkElement)InfoBaseGrid.Children[1], 0);
@@ -313,7 +313,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             InfoBaseTitle.Text = audioPlayer.MusicData.Title;
             InfoBaseArtist.Text = audioPlayer.MusicData.ButtonName;
 
-            if (audioPlayer.MusicData?.AlbumID != MusicData?.AlbumID)
+            if (audioPlayer.MusicData?.MD5 != MusicData?.MD5)
             {
                 MusicData = audioPlayer.MusicData;
             }

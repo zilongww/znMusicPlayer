@@ -20,7 +20,7 @@ namespace znMusicPlayerWUI.Background
         public delegate void PlayingListItemChangeDelegate(ObservableCollection<MusicData> nowPlayingList);
         public event PlayingListItemChangeDelegate PlayingListItemChange;
 
-        public delegate void NowPlayingImageChangeDelegate(ImageSource imageSource);
+        public delegate void NowPlayingImageChangeDelegate(ImageSource imageSource, string path);
         public event NowPlayingImageChangeDelegate NowPlayingImageLoading;
         public event NowPlayingImageChangeDelegate NowPlayingImageLoaded;
 
@@ -81,20 +81,24 @@ namespace znMusicPlayerWUI.Background
 
             if (!sameAlbum)
             {
-                NowPlayingImageLoading?.Invoke(null);
+                NowPlayingImageLoading?.Invoke(null, null);
+                string path = null;
                 ImageSource a = null;
 
                 if (audioPlayer.MusicData?.InLocal != null)
                 {
                     a = await CodeHelper.GetCover(audioPlayer.MusicData.InLocal);
+                    path = audioPlayer.MusicData.InLocal;
                 }
                 else
                 {
-                    a = await FileHelper.GetImageSource(await Media.ImageManage.GetImageSource(audioPlayer.MusicData));
+                    var _ = await Media.ImageManage.GetImageSource(audioPlayer.MusicData);
+                    a = await FileHelper.GetImageSource(_);
+                    path = _;
                 }
 
                 NowPlayingImage = a;
-                NowPlayingImageLoaded?.Invoke(_nowPlayingImage);
+                NowPlayingImageLoaded?.Invoke(_nowPlayingImage, path);
             }
         }
 

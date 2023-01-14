@@ -27,5 +27,5 @@
             <ScalarTransition x:Name="ImageMassAlphaTransition"/>
         </Rectangle.OpacityTransition>
     </Rectangle>
-    <Rectangle x:Name="ImageMass" Fill="Black" Opacity="0.14"/>
+    <Rectangle x:Name="ImageMass" Fill="#3F000000" Opacity="1"/>
 </Grid>

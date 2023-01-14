@@ -16,7 +16,7 @@
     <Border CornerRadius="4"
             Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
             BorderThickness="1"
-            BorderBrush="{ThemeResource CardStrokeColorDefaultSolid}">
+            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}">
         <Grid>
             <Rectangle x:Name="BackColorBaseRectAngle" Opacity="1"/>
             <StackPanel Orientation="Horizontal">

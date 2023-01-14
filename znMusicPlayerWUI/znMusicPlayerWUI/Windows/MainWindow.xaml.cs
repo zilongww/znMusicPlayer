@@ -370,7 +370,7 @@ namespace znMusicPlayerWUI
         }
 
         static bool isDeleteImage = true;
-        private static void PlayingList_NowPlayingImageLoading(ImageSource imageSource)
+        private static void PlayingList_NowPlayingImageLoading(ImageSource imageSource, string _)
         {
             if (!(SPlayContent.Content is Imagezn))
             {
@@ -378,7 +378,7 @@ namespace znMusicPlayerWUI
             }
         }
 
-        public static void PlayingList_NowPlayingImageLoaded(ImageSource imageSource)
+        public static void PlayingList_NowPlayingImageLoaded(ImageSource imageSource, string _)
         {
             if (!isMinSize && !InOpenMusicPage)
             {
@@ -592,7 +592,7 @@ namespace znMusicPlayerWUI
                     App.lyricManager.ReCallUpdata();
                     if (!InOpenMusicPage)
                     {
-                        PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage);
+                        PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
                     }
                     else
                     {
@@ -1049,7 +1049,7 @@ namespace znMusicPlayerWUI
                 };
 
                 SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
-                PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage);
+                PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
             }
         }
         #endregion

@@ -467,15 +467,6 @@ namespace znMusicPlayerWUI.Media
 
             await Task.Run(() => DisposeAll());
 
-            App.SMTC.IsPlayEnabled = true;
-            App.SMTC.IsPauseEnabled = true;
-            App.SMTC.IsNextEnabled = true;
-            App.SMTC.IsPreviousEnabled = true;
-            App.SMTC.DisplayUpdater.Type = MediaPlaybackType.Music;
-            App.SMTC.DisplayUpdater.MusicProperties.Title = $"{MusicData.Title} - {App.AppName}";
-            App.SMTC.DisplayUpdater.MusicProperties.Artist = $"{MusicData.ButtonName}";
-            App.SMTC.DisplayUpdater.Update();
-
             FileReader = fileReader;
             FileProvider = fileProvider;
 
@@ -577,7 +568,7 @@ namespace znMusicPlayerWUI.Media
                 else
                 {
                     var a = FileReader.CurrentTime + TimeSpan.FromSeconds(1.5);
-                    if (a >= FileReader.TotalTime)
+                    if (a >= FileReader?.TotalTime)
                         PlayEnd?.Invoke(this);
                 }
             }

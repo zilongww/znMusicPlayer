@@ -173,7 +173,7 @@ namespace znMusicPlayerWUI.Controls
                 DoubleAnimation doubleAnimation = new DoubleAnimation();
 
                 doubleAnimation.From = BackgroundBaseGrid.Opacity;
-                doubleAnimation.To = 0.06;
+                doubleAnimation.To = 1;
                 doubleAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.1));
                 Storyboard.SetTarget(doubleAnimation, BackgroundBaseGrid);
                 Storyboard.SetTargetProperty(doubleAnimation, "Opacity");

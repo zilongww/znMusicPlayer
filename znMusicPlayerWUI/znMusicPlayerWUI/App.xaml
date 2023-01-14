@@ -13,20 +13,22 @@
 
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
-                    <SolidColorBrush x:Key="ItemBorderBackground" Color="White"/>
+                    <SolidColorBrush x:Key="ItemBorderBackground" Color="#11FFFFFF"/>
                     <SolidColorBrush x:Key="BottomBackground" Color="Black"/>
                     <SolidColorBrush x:Key="HeaderLowForeground" Color="#FF878787"/>
                     <SolidColorBrush x:Key="BorderNormal" Color="#10FFFFFF"/>
-                    <SolidColorBrush x:Key="MusicPageLrcForeground" Color="#3AFFFFFF"/>
+                    <SolidColorBrush x:Key="MusicPageLrcForeground" Color="#4DFFFFFF"/>
+                    <Color x:Key="MusicPageImageBlurFallbackColor">#BA000000</Color>
                     <StaticResource x:Key="AcrylicNormal" ResourceKey="AcrylicInAppFillColorDefaultBrush"/>
                     <Color x:Key="BlurImageAcrylicBrush">#FF202020</Color>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
-                    <SolidColorBrush x:Key="ItemBorderBackground" Color="Black"/>
+                    <SolidColorBrush x:Key="ItemBorderBackground" Color="#11000000"/>
                     <SolidColorBrush x:Key="BottomBackground" Color="White"/>
                     <SolidColorBrush x:Key="HeaderLowForeground" Color="#FF424242"/>
                     <SolidColorBrush x:Key="BorderNormal" Color="#15000000"/>
                     <SolidColorBrush x:Key="MusicPageLrcForeground" Color="#5F000000"/>
+                    <Color x:Key="MusicPageImageBlurFallbackColor">#EADDDDDD</Color>
                     <StaticResource x:Key="AcrylicNormal" ResourceKey="AcrylicInAppFillColorBaseBrush"/>
                     <Color x:Key="BlurImageAcrylicBrush">#EEEEEE</Color>
                 </ResourceDictionary>

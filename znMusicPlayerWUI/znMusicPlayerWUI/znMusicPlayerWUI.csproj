@@ -21,6 +21,7 @@
     <None Remove="Controls\ItemListViewArtist.xaml" />
     <None Remove="Controls\ItemListViewPlayList.xaml" />
     <None Remove="Controls\ItemListViewSearch.xaml" />
+    <None Remove="Controls\LyricItem.xaml" />
     <None Remove="Controls\MediaPlayStateViewer.xaml" />
     <None Remove="Controls\PlayListCard.xaml" />
     <None Remove="Controls\SongItem.xaml" />
@@ -79,6 +80,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\LyricItem.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\Imagezn.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
