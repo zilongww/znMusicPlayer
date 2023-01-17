@@ -20,174 +20,63 @@
         <controls:Imagezn x:Name="BackgroundBaseImage" IsHitTestVisible="False"
                           VerticalAlignment="Center" HorizontalAlignment="Center"
                           Stretch="UniformToFill" Loaded="BackgroundBaseImage_Loaded"/>
-        <TextBlock x:Name="BridgeTb" TextAlignment="Center" HorizontalAlignment="Left"/>
+        <TextBlock x:Name="BridgeTb" TextAlignment="Left" HorizontalAlignment="Left"/>
         <Rectangle>
             <Rectangle.Fill>
                 <!--<SolidColorBrush Color="#55000000"/>-->
-                <AcrylicBrush x:Name="BlueImageAcrylicBrush" TintLuminosityOpacity="0.85" TintOpacity="0.0" FallbackColor="{ThemeResource MusicPageImageBlurFallbackColor}" TintColor="{ThemeResource BlurImageAcrylicBrush}" Opacity="1"/>
+                <AcrylicBrush TintLuminosityOpacity="0.85" TintOpacity="0.0" FallbackColor="{ThemeResource MusicPageImageBlurFallbackColor}" TintColor="{ThemeResource BlurImageAcrylicBrush}" Opacity="1"/>
             </Rectangle.Fill>
         </Rectangle>
         <Rectangle Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" Opacity="0.0001"/>
-        <Grid Padding="0,48,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.8*" x:Name="InfoPageColumn"/>
-                <ColumnDefinition Width="1.35*" x:Name="LrcPageColumn"/>
-            </Grid.ColumnDefinitions>
-            <Grid x:Name="InfoBaseGrid" VerticalAlignment="Stretch" Padding="40,0,40,40" Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="0.06*" MinHeight="34"/>
-                    <RowDefinition Height="0.17*"/>
-                </Grid.RowDefinitions>
-                <StackPanel>
-                    <StackPanel.Transitions>
-                        <TransitionCollection>
-                            <RepositionThemeTransition/>
-                        </TransitionCollection>
-                    </StackPanel.Transitions>
-                    <TextBlock x:Name="InfoBaseTitle" TextAlignment="Center" FontSize="24" IsTextSelectionEnabled="True"/>
-                    <TextBlock x:Name="InfoBaseArtist" TextAlignment="{Binding ElementName=InfoBaseTitle,Path=TextAlignment}" IsTextSelectionEnabled="True"/>
-                </StackPanel>
-                <Grid Grid.Row="1" Margin="0,32,0,32"
-                      HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Grid.Transitions>
-                        <TransitionCollection>
-                            <RepositionThemeTransition/>
-                        </TransitionCollection>
-                    </Grid.Transitions>
-                    <Border CornerRadius="8" Margin="12">
+        <Grid Padding="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid Padding="38,54,38,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" x:Name="InfoPageColumn"/>
+                    <ColumnDefinition Width="1.4*" x:Name="LrcPageColumn"/>
+                </Grid.ColumnDefinitions>
+                <Grid x:Name="InfoBaseGrid" VerticalAlignment="Stretch" Margin="0,0,38,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Border CornerRadius="8" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <controls:Imagezn x:Name="AlbumImageBase" IsMassImage="False"/>
                     </Border>
+                    <StackPanel x:Name="InfoBaseTitle" Margin="0,8,0,0" Grid.Row="1">
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                                <Setter Property="IsTextSelectionEnabled" Value="True"/>
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                                <Setter Property="TextAlignment" Value="Left"/>
+                                <Setter Property="Margin" Value="0,4,0,0"/>
+                                <Setter Property="Transitions">
+                                    <Setter.Value>
+                                        <TransitionCollection>
+                                            <ContentThemeTransition/>
+                                        </TransitionCollection>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </StackPanel.Resources>
+                        <TextBlock x:Name="ArtistRunText"/>
+                        <TextBlock x:Name="TitleRunText" FontWeight="Bold" FontSize="24" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                        <TextBlock x:Name="AlbumRunText"/>
+                        <TextBlock x:Name="OtherRunText"/>
+                    </StackPanel>
                 </Grid>
-                <Grid Grid.Row="2">
+
+                <Grid x:Name="LrcBaseGrid" Grid.Column="1" PointerWheelChanged="LrcBaseListView_PointerWheelChanged" Grid.Row="0">
                     <Grid.Transitions>
                         <TransitionCollection>
                             <RepositionThemeTransition/>
                         </TransitionCollection>
                     </Grid.Transitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock x:Name="NowPlayTimeTb"
-                               Text="00:00"
-                               FontSize="12"
-                               VerticalAlignment="Center"
-                               Grid.Column="0">
-                        <TextBlock.Transitions>
-                            <TransitionCollection>
-                                <RepositionThemeTransition/>
-                            </TransitionCollection>
-                        </TextBlock.Transitions>
-                    </TextBlock>
-                    <Slider x:Name="PlaySlider"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-                            IsThumbToolTipEnabled="False"
-                            Padding="12,0,12,0"
-                            Grid.Column="1"
-                            ValueChanged="PlaySlider_ValueChanged">
-                        <Slider.Background>
-                            <brush:BackdropGammaTransferBrush RedDisable="True" GreenDisable="True" BlueDisable="True"
-                                                              AlphaAmplitude="1" AlphaExponent="1" AlphaOffset="1"/>
-                        </Slider.Background>
-                    </Slider>
-                    <TextBlock x:Name="NowAtherTimeTb"
-                               Text="00:00"
-                               FontSize="12"
-                               VerticalAlignment="Center"
-                               Grid.Column="2">
-                        <TextBlock.Transitions>
-                            <TransitionCollection>
-                                <RepositionThemeTransition/>
-                            </TransitionCollection>
-                        </TextBlock.Transitions>
-                    </TextBlock>
-                </Grid>
-                <Grid Grid.Row="3">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <StackPanel.Transitions>
-                            <TransitionCollection>
-                                <RepositionThemeTransition/>
-                            </TransitionCollection>
-                        </StackPanel.Transitions>
-                        <ToggleButton x:Name="LrcButton" Padding="12" Width="44" Height="44"
-                                      Checked="LrcButton_Checked" Unchecked="LrcButton_Unchecked"
-                                      Background="Transparent" BorderThickness="0" FontWeight="Normal">
-                            <FontIcon Glyph="词" FontSize="14" FontFamily="{StaticResource ContentControlThemeFontFamily}"/>
-                        </ToggleButton>
-                    </StackPanel>
-                    <Grid Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                        <Grid.Transitions>
-                            <TransitionCollection>
-                                <RepositionThemeTransition/>
-                            </TransitionCollection>
-                        </Grid.Transitions>
-                        <StackPanel Orientation="Horizontal">
-                            <Button x:Name="BeforeButton" Padding="12" Width="44" Height="44" Margin="0,0,4,0"
-                                    IsEnabled="{Binding ElementName=PlayButton, Path=IsEnabled}"
-                                    Background="Transparent" BorderThickness="0" FontWeight="Normal" Click="BeforeButton_Click">
-                                <Path Data="{StaticResource 上一首}"
-                                      Fill="{ThemeResource ButtonForegroundThemeBrush}"
-                                      Stretch="UniformToFill" Margin="2"/>
-                            </Button>
-                            <Button x:Name="PlayButton" Padding="13" Width="50" Height="50" CornerRadius="25"
-                                    Background="Transparent" BorderThickness="0" FontWeight="Normal" Click="PlayButton_Click">
-                                <controls:MediaPlayStateViewer x:Name="MediaPlayStateViewer1" PlaybackState="Paused" Margin="1"/>
-                            </Button>
-                            <Button x:Name="NextButton" Padding="12" Width="44" Height="44" Margin="4,0,0,0"
-                                    IsEnabled="{Binding ElementName=PlayButton, Path=IsEnabled}"
-                                    Background="Transparent" BorderThickness="0" FontWeight="Normal" Click="NextButton_Click">
-                                <Path Data="{StaticResource 下一首}"
-                                      Fill="{ThemeResource ButtonForegroundThemeBrush}"
-                                      Stretch="UniformToFill" Margin="2"/>
-                            </Button>
-                        </StackPanel>
-                        <ProgressRing x:Name="AudioLoadingProressRing"
-                                      Width="54" IsIndeterminate="True"
-                                      Height="{Binding ElementName=AudioLoadingProressRing, Path=ActualWidth, Mode=TwoWay}"/>
-                    </Grid>
-                    <CommandBar Grid.Column="3"
-                                HorizontalAlignment="Right" VerticalAlignment="Center"
-                                IsDynamicOverflowEnabled="True"
-                                OverflowButtonVisibility="Auto"
-                                DefaultLabelPosition="Collapsed"
-                                Background="Transparent">
-                        <CommandBar.Transitions>
-                            <TransitionCollection>
-                                <RepositionThemeTransition/>
-                            </TransitionCollection>
-                        </CommandBar.Transitions>
-                        <AppBarButton x:Name="VloumeButton" Label="音量" Style="{ThemeResource AppBarStyle}"
-                                      Background="Transparent" BorderThickness="0" FontWeight="Normal" Click="VloumeButton_Click">
-                            <AppBarButton.Icon>
-                                <PathIcon Data="{StaticResource 音量2}"/>
-                            </AppBarButton.Icon>
-                        </AppBarButton>
-                        <AppBarButton x:Name="PlayListButton" Label="播放列表" Style="{ThemeResource AppBarStyle}"
-                                      Background="Transparent" BorderThickness="0" FontWeight="Normal" Click="PlayListButton_Click">
-                            <AppBarButton.Icon>
-                                <PathIcon Data="{StaticResource 播放列表}"/>
-                            </AppBarButton.Icon>
-                        </AppBarButton>
-                    </CommandBar>
-                </Grid>
-            </Grid>
-
-            <Grid x:Name="LrcBaseGrid" Grid.Column="1" PointerWheelChanged="LrcBaseListView_PointerWheelChanged">
-                <Grid.Transitions>
-                    <TransitionCollection>
-                        <RepositionThemeTransition/>
-                    </TransitionCollection>
-                </Grid.Transitions>
-                <ListView x:Name="LrcBaseListView"
+                    <ListView x:Name="LrcBaseListView"
                           Loaded="LrcBaseListView_Loaded"
                           Background="Transparent"
                           SelectionChanged="LrcBaseListView_SelectionChanged"
@@ -195,20 +84,20 @@
                           IsFocusEngagementEnabled="True"
                           SizeChanged="LrcBaseListView_SizeChanged"
                           HorizontalContentAlignment="Stretch">
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="data:LyricData">
-                            <TextBlock TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="data:LyricData">
+                                <TextBlock TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
                                            TextWrapping="Wrap">
                                     <Run Text="{x:Bind Lyric}" FontSize="29"/><LineBreak/><Run Text="{x:Bind Translate}" FontSize="22"/>
-                            </TextBlock>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListViewItem">
-                                        <ListViewItemPresenter
+                                </TextBlock>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <ListViewItemPresenter
                                             BorderBrush="Transparent"
                                             Background="{x:Null}"
                                             Foreground="{ThemeResource MusicPageLrcForeground}"
@@ -237,13 +126,144 @@
                                             CheckMode="Overlay"
                                             MinWidth="0"
                                             Margin="0,16">
-                                        </ListViewItemPresenter>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
+                                            </ListViewItemPresenter>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="1" Padding="36,0">
+                <Grid x:Name="ControlBar" Padding="0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid x:Name="PositionGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="NowPlayTimeTb"
+                                   Text="00:00"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="0">
+                            <TextBlock.Transitions>
+                                <TransitionCollection>
+                                    <RepositionThemeTransition/>
+                                </TransitionCollection>
+                            </TextBlock.Transitions>
+                        </TextBlock>
+                        <Slider x:Name="PlaySlider"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                IsThumbToolTipEnabled="False"
+                                Padding="12,0,12,0"
+                                Grid.Column="1"
+                                ValueChanged="PlaySlider_ValueChanged">
+                            <Slider.Background>
+                                <brush:BackdropGammaTransferBrush RedDisable="True" GreenDisable="True" BlueDisable="True"
+                                                                AlphaAmplitude="1" AlphaExponent="1" AlphaOffset="1"/>
+                            </Slider.Background>
+                        </Slider>
+                        <TextBlock x:Name="NowAtherTimeTb"
+                                   Text="00:00"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="2">
+                            <TextBlock.Transitions>
+                                <TransitionCollection>
+                                    <RepositionThemeTransition/>
+                                </TransitionCollection>
+                            </TextBlock.Transitions>
+                        </TextBlock>
+                    </Grid>
+
+                    <Grid Grid.Row="3" Grid.Column="1" Margin="0,10,0,18">
+                        <!--
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <StackPanel.Transitions>
+                                <TransitionCollection>
+                                    <RepositionThemeTransition/>
+                                </TransitionCollection>
+                            </StackPanel.Transitions>
+                            <ToggleButton x:Name="LrcButton" Padding="12" Width="44" Height="44"
+                                          Checked="LrcButton_Checked" Unchecked="LrcButton_Unchecked"
+                                          Background="Transparent" BorderThickness="0" FontWeight="Normal">
+                                <FontIcon Glyph="词" FontSize="14" FontFamily="{StaticResource ContentControlThemeFontFamily}"/>
+                            </ToggleButton>
+                        </StackPanel>-->
+                        <Grid VerticalAlignment="Center">
+                            <Grid.Transitions>
+                                <TransitionCollection>
+                                    <RepositionThemeTransition/>
+                                </TransitionCollection>
+                            </Grid.Transitions>
+                            <Grid.Resources>
+                                <Style TargetType="Button">
+                                    <Setter Property="CornerRadius" Value="100"/>
+                                    <Setter Property="Height" Value="44"/>
+                                    <Setter Property="Width" Value="44"/>
+                                    <Setter Property="Margin" Value="0,0,8,0"/>
+                                    <Setter Property="BorderThickness" Value="2"/>
+                                    <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorForAAFillOnImage}"/>
+                                </Style>
+                            </Grid.Resources>
+                            <ScrollViewer  VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled"
+                                           HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"
+                                           HorizontalAlignment="Stretch">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button x:Name="BeforeButton" Padding="12"
+                                            IsEnabled="{Binding ElementName=PlayButton, Path=IsEnabled}"
+                                            FontWeight="Normal" Click="BeforeButton_Click"
+                                            ToolTipService.ToolTip="上一首">
+                                        <Path Data="{StaticResource 上一首}"
+                                              Fill="{ThemeResource ButtonForegroundThemeBrush}"
+                                              Stretch="UniformToFill" Margin="2"/>
+                                    </Button>
+                                    <Button x:Name="PlayButton" Width="50" Height="50" Padding="0"
+                                            FontWeight="Normal" Click="PlayButton_Click"
+                                            ToolTipService.ToolTip="播放/暂停">
+                                        <Grid>
+                                            <controls:MediaPlayStateViewer x:Name="MediaPlayStateViewer1" PlaybackState="Paused" Margin="15"/>
+                                            <ProgressRing x:Name="AudioLoadingProressRing" Width="48" Height="48" IsIndeterminate="True"/>
+                                        </Grid>
+                                    </Button>
+                                    <Button x:Name="NextButton" Padding="12" Width="44" Height="44"
+                                            IsEnabled="{Binding ElementName=PlayButton, Path=IsEnabled}"
+                                            FontWeight="Normal" Click="NextButton_Click"
+                                            ToolTipService.ToolTip="下一首">
+                                        <Path Data="{StaticResource 下一首}"
+                                              Fill="{ThemeResource ButtonForegroundThemeBrush}"
+                                              Stretch="UniformToFill" Margin="2"/>
+                                    </Button>
+                                    <Button x:Name="VloumeButton" Click="VloumeButton_Click" Padding="13" ToolTipService.ToolTip="音频">
+                                        <Path Data="{StaticResource 音量2}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform"/>
+                                    </Button>
+                                    <Button x:Name="PlayListButton" Click="PlayListButton_Click" Padding="13" ToolTipService.ToolTip="正在播放列表">
+                                        <Path Data="{StaticResource 播放列表}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform"/>
+                                    </Button>
+                                    <Button x:Name="EqButton" Click="EqButton_Click" Padding="13" ToolTipService.ToolTip="音频设置">
+                                        <Path Data="{StaticResource 均衡器}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform"/>
+                                    </Button>
+                                    <Button x:Name="FullScreenButton" Click="FullScreenButton_Click" Padding="14" ToolTipService.ToolTip="全屏/退出全屏">
+                                        <Grid>
+                                            <Path x:Name="FullScreenIcon" Data="{StaticResource 全屏}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform"/>
+                                            <Path x:Name="UnFullScreenIcon" Data="{StaticResource 退出全屏}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform" Visibility="Collapsed"/>
+                                        </Grid>
+                                    </Button>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
         <Button x:Name="CloseMusicPageButton" Click="Button_Click"

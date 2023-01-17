@@ -259,19 +259,26 @@ namespace znMusicPlayerWUI.Controls
             ImageMassAlpha.Opacity = 0;
         }
 
+        bool IsMouse4Click = false;
         private void Grid_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-
+            if (e.GetCurrentPoint(this).Properties.IsXButton1Pressed)
+            {
+                IsMouse4Click = true;
+            }
         }
 
         private void Grid_PointerReleased(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-
         }
 
         private void Grid_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
-            MenuFlyoutItem_Click(null, null);
+            if (!IsMouse4Click)
+            {
+                MenuFlyoutItem_Click(null, null);
+            }
+            IsMouse4Click = false;
         }
     }
 }

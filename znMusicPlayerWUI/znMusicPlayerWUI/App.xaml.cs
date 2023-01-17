@@ -57,12 +57,13 @@ namespace znMusicPlayerWUI
         public static Window WindowLocal;
         public static AppWindow AppWindowLocal;
         public static AppWindow AppDesktopLyricWindow;
-        public static OverlappedPresenter AppWindowLocalPresenter;
+        public static OverlappedPresenter AppWindowLocalOverlappedPresenter;
+        public static FullScreenPresenter AppWindowLocalFullScreenPresenter;
         public static IntPtr AppWindowLocalHandle;
         public static IntPtr AppDesktopLyricWindowHandle;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.1.84 Preview";
+        public static readonly string AppVersion = "0.1.9 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -78,6 +79,7 @@ namespace znMusicPlayerWUI
             SMTC.IsPauseEnabled = true;
             SMTC.IsNextEnabled = true;
             SMTC.IsPreviousEnabled = true;
+            SMTC.IsStopEnabled = true;
             SMTC.DisplayUpdater.Type = MediaPlaybackType.Music;
             SMTC.DisplayUpdater.MusicProperties.Title = AppName;
             SMTC.DisplayUpdater.MusicProperties.Artist = "没有正在播放的歌曲";
@@ -135,7 +137,9 @@ namespace znMusicPlayerWUI
             m_window = new MainWindow();
             WindowLocal = m_window;
             AppWindowLocalHandle = WindowHelper.GetWindowHandle(m_window);
-            AppWindowLocalPresenter = OverlappedPresenter.Create();
+            AppWindowLocalOverlappedPresenter = OverlappedPresenter.Create();
+            AppWindowLocalFullScreenPresenter = FullScreenPresenter.Create();
+            App.AppWindowLocal.SetPresenter(AppWindowLocalOverlappedPresenter);
             LAE = args;
             /*
                         var l_window = new DesktopLyricWindow();

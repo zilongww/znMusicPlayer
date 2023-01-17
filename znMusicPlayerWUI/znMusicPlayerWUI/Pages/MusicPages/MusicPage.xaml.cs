@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using znMusicPlayerWUI.Controls;
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Windowing;
 
 namespace znMusicPlayerWUI.Pages.MusicPages
 {
@@ -33,7 +34,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         {
             get => _showLrcPage;
             set
-            {
+            {/*
                 if (value == _showLrcPage) return;
                 _showLrcPage = value;
                 if (LrcButton.IsChecked != value) LrcButton.IsChecked = value;
@@ -49,7 +50,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     LrcPageColumn.MaxWidth = 0;
                     LrcBaseGrid.Visibility = Visibility.Collapsed;
                 }
-                UpdataInterfaceDesign();
+                UpdataInterfaceDesign();*/
             }
         }
 
@@ -180,7 +181,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         }
 
         public void UpdataInterfaceDesign()
-        {
+        {/*
             if (!ShowLrcPage)
             {
                 (InfoBaseGrid.Children[1] as Grid).Width = double.NaN;
@@ -260,7 +261,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
                     InfoBaseTitle.TextAlignment = TextAlignment.Left;
                 }
-            }
+            }*/
         }
 
         public void SelectedChangedDo()
@@ -278,7 +279,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData);
                 }
                 if (b != null)
-                    scrollViewer.ChangeView(null, b.ActualOffset.Y + b.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 68, null);
+                    scrollViewer.ChangeView(null, b.ActualOffset.Y + b.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48, null);
             }
 #if DEBUG
             Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData?.Lyric}.");
@@ -310,8 +311,10 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
         {
             if (ViewState == MusicPageViewState.Hidden || audioPlayer.MusicData == null) return;
-            InfoBaseTitle.Text = audioPlayer.MusicData.Title;
-            InfoBaseArtist.Text = audioPlayer.MusicData.ButtonName;
+            TitleRunText.Text = audioPlayer.MusicData.Title;
+            ArtistRunText.Text = audioPlayer.MusicData.ArtistName;
+            AlbumRunText.Text = audioPlayer.MusicData.Album;
+            OtherRunText.Text = audioPlayer.MusicData.From.ToString();
 
             if (audioPlayer.MusicData?.MD5 != MusicData?.MD5)
             {
@@ -391,12 +394,12 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void PlayListButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.OpenOrClosePlayingList();
+            MainWindow.OpenOrClosePlayingList(TeachingTipPlacementMode.BottomLeft, new(0, 0, 0, 0));
         }
 
         private void VloumeButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.OpenOrCloseVolume();
+            MainWindow.OpenOrCloseVolume(TeachingTipPlacementMode.BottomLeft, new(0, 0, 0, 0));
         }
 
         static ScrollViewer scrollViewer = null;
@@ -405,6 +408,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             var a = VisualTreeHelper.GetChild(LrcBaseListView, 0) as Border;
             if (a != null)
                 scrollViewer = a.Child as ScrollViewer;
+            scrollViewer.CanContentRenderOutsideBounds = false;
             LrcBaseListView.AddHandler(PointerWheelChangedEvent, new PointerEventHandler(LrcBaseListView_PointerWheelChanged), true);
             LrcBaseListView.AddHandler(HoldingEvent, new HoldingEventHandler(LrcBaseListView_Holding), true);
             UpdataInterfaceDesign();
@@ -482,6 +486,27 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 SelectedChangedDo();
             }
             scrollCount--;
+        }
+
+        private void FullScreenButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (App.AppWindowLocal.Presenter.Kind == AppWindowPresenterKind.FullScreen)
+            {
+                FullScreenIcon.Visibility = Visibility.Visible;
+                UnFullScreenIcon.Visibility = Visibility.Collapsed;
+                App.AppWindowLocal.SetPresenter(AppWindowPresenterKind.Default);
+            }
+            else
+            {
+                FullScreenIcon.Visibility = Visibility.Collapsed;
+                UnFullScreenIcon.Visibility = Visibility.Visible;
+                App.AppWindowLocal.SetPresenter(AppWindowPresenterKind.FullScreen);
+            }
+        }
+
+        private async void EqButton_Click(object sender, RoutedEventArgs e)
+        {
+            await MainWindow.ShowEqualizerDialog();
         }
     }
 }

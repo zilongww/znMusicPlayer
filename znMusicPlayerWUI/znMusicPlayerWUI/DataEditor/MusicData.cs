@@ -53,8 +53,8 @@ namespace znMusicPlayerWUI.DataEditor
         public MusicFrom From { get; set; }
         public MusicKbps Kbps { get; set; }
         public string InLocal { get; set; }
+        public string ArtistName { get; set; }
         public string ButtonName { get; set; }
-
         private string md5 = null;
         public string MD5
         {
@@ -90,10 +90,11 @@ namespace znMusicPlayerWUI.DataEditor
 
             for (int i = 0; i < (Artists.Count); i++)
             {
-                ButtonName += $"{Artists[i].ToString()}{(i < (Artists.Count - 1) ? (i < Artists.Count - 2 ? ", " : " & ") : " · ")}";
+                ArtistName += $"{Artists[i].ToString()}{(i < (Artists.Count - 1) ? (i < Artists.Count - 2 ? ", " : " & ") : "")}";
             }
 
-            ButtonName += Album;
+            //ArtistName.Replace(" & ", "");
+            ButtonName = $"{ArtistName} · {Album}";
         }
 
         public static bool operator ==(MusicData left, MusicData right)

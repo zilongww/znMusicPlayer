@@ -54,7 +54,7 @@ namespace znMusicPlayerWUI.Pages
                 item.Dispose();
             }
             Children.Items.Clear();
-            dropShadow.Dispose();
+            dropShadow?.Dispose();
             PlayList_Image.Dispose();
             //System.Diagnostics.Debug.WriteLine("Clear");
         }

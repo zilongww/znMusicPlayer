@@ -33,6 +33,7 @@ using Windows.Services.Store;
 using znMusicPlayerWUI.Windowed;
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using znMusicPlayerWUI.DataEditor;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -100,6 +101,7 @@ namespace znMusicPlayerWUI
 
             NavView.SelectedItem = NavView.MenuItems[1];
             NavView.IsBackEnabled = false;
+            //Windows.UI.Core.SystemNavigationManager.GetForCurrentView().BackRequested += (_, __) => { TryGoBack(); };
 
             Activated += MainWindow_Activated;
             WindowGridBase.ActualThemeChanged += WindowGridBase_ActualThemeChanged;
@@ -130,6 +132,7 @@ namespace znMusicPlayerWUI
                 }
                 //System.Diagnostics.Debug.WriteLine("233");
             };
+            App.playListReader.Updataed += () => UpdataPlayListButtonUI();
 
             loadingst.Children.Add(loadingprogress);
             loadingst.Children.Add(loadingtextBlock);
@@ -143,6 +146,9 @@ namespace znMusicPlayerWUI
 
         public async void ReadLAE()
         {
+            await App.playListReader.Refresh();
+            if (NavView.DisplayMode == NavigationViewDisplayMode.Expanded) MusicPlayListButton.IsExpanded = true;
+            return;
             if (App.LAE == null) return;
 
             string b = "";
@@ -152,6 +158,20 @@ namespace znMusicPlayerWUI
             }
             await ShowDialog("LAE", b);
             AppTitleTextBlock.Text = b;
+        }
+
+        public void UpdataPlayListButtonUI()
+        {
+            foreach (NavigationViewItem nvi in MusicPlayListButton.MenuItems)
+            {
+                nvi.Tag = null;
+            }
+            MusicPlayListButton.MenuItems.Clear();
+            foreach (var i in App.playListReader.NowMusicListDatas)
+            {
+                var nvi = new NavigationViewItem() { Content = i.ListShowName, Tag = i };
+                MusicPlayListButton.MenuItems.Add(nvi);
+            }
         }
 
         #region init TitleBar
@@ -321,6 +341,9 @@ namespace znMusicPlayerWUI
                         break;
                     case Windows.Media.SystemMediaTransportControlsButton.Next:
                         PlayNextButton_Click(null, null);
+                        break;
+                    case Windows.Media.SystemMediaTransportControlsButton.Stop:
+                        App.audioPlayer.SetStop();
                         break;
                 }
             });
@@ -832,7 +855,17 @@ namespace znMusicPlayerWUI
                     SetNavViewContent(typeof(SettingPage));
                     break;
                 default:
-                    await ShowDialog("未添加此功能", $"未添加 \"{(sender.SelectedItem as NavigationViewItem).Content}\" 功能。");
+                    if ((args.SelectedItem as NavigationViewItem)?.Tag.GetType() == typeof(MusicListData))
+                    {
+                        SetNavViewContent(
+                            typeof(ItemListViewPlayList),
+                            (args.SelectedItem as NavigationViewItem).Tag,
+                            new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+                    }
+                    else
+                    {
+                        await ShowDialog("未添加此功能", $"未添加 \"{(sender.SelectedItem as NavigationViewItem).Content}\" 功能。");
+                    }
                     break;
             }
 
@@ -858,11 +891,11 @@ namespace znMusicPlayerWUI
                     SNavView.SelectedItem = SNavView.MenuItems[3];
                     break;
 
-                case "DownloadPage":
+                case "PlayListPage":
                     SNavView.SelectedItem = SNavView.MenuItems[5];
                     break;
 
-                case "PlayListPage":
+                case "DownloadPage":
                     SNavView.SelectedItem = SNavView.MenuItems[6];
                     break;
 
@@ -876,8 +909,19 @@ namespace znMusicPlayerWUI
 
                 case "ItemListViewSearch":
                 case "ItemListViewArtist":
-                case "ItemListViewPlayList":
                     SNavView.SelectedItem = null;
+                    break;
+
+                case "ItemListViewPlayList":
+                    //TODO:优化写法
+                    foreach (NavigationViewItem item in (SNavView.MenuItems[5] as NavigationViewItem).MenuItems)
+                    {
+                        if ((SContentFrame.Content as ItemListViewPlayList).NavToObj == item.Tag as MusicListData)
+                        {
+                            SNavView.SelectedItem = item;
+                            break;
+                        }
+                    }
                     break;
 
                 case "EmptyPage":
@@ -984,14 +1028,22 @@ namespace znMusicPlayerWUI
             OpenOrCloseMusicPage();
         }
 
-        public static void OpenOrCloseVolume()
+        public static void OpenOrCloseVolume(
+            TeachingTipPlacementMode teachingTipPlacementMode = TeachingTipPlacementMode.BottomRight,
+            Thickness placementMargin = default)
         {
+            teachingTipVolume.PreferredPlacement = teachingTipPlacementMode;
+            teachingTipVolume.PlacementMargin = placementMargin == default ? new(0, 0, -24, 62) : placementMargin;
             teachingTipVolume.IsOpen = !teachingTipVolume.IsOpen;
             teachingTipVolume.IsLightDismissEnabled = true;
         }
 
-        public static void OpenOrClosePlayingList()
+        public static void OpenOrClosePlayingList(
+            TeachingTipPlacementMode teachingTipPlacementMode = TeachingTipPlacementMode.BottomRight,
+            Thickness placementMargin = default)
         {
+            teachingTipPlayingList.PreferredPlacement = teachingTipPlacementMode;
+            teachingTipPlayingList.PlacementMargin = placementMargin == default ? new(0, 0, -24, 62) : placementMargin;
             teachingTipPlayingList.IsOpen = !teachingTipPlayingList.IsOpen;
             teachingTipPlayingList.IsLightDismissEnabled = true;
             SPlayingListBaseView.ScrollIntoView(App.playingList.NowPlayingMusicData);
@@ -1386,7 +1438,7 @@ namespace znMusicPlayerWUI
                 }
                 else if (code == "5177350")
                 {
-                    Activate();
+                    App.AppWindowLocalOverlappedPresenter.Restore();
                 }
                 else
                 {

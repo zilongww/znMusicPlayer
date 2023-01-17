@@ -72,14 +72,17 @@
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
                     <NavigationViewItemHeader Content="本地" Margin="0,16,0,0"/>
+                    <NavigationViewItem Content="播放列表" x:Name="MusicPlayListButton">
+                        <NavigationViewItem.Icon>
+                            <PathIcon Scale="1.05,1.05,1" Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 播放列表}"/>
+                        </NavigationViewItem.Icon>
+                        <NavigationViewItem.MenuItems>
+                            <NavigationViewItem Content="asdasdadsa"/>
+                        </NavigationViewItem.MenuItems>
+                    </NavigationViewItem>
                     <NavigationViewItem Content="下载">
                         <NavigationViewItem.Icon>
                             <PathIcon Scale="1.05,1.05,1" Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 下载}"/>
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-                    <NavigationViewItem Content="播放列表">
-                        <NavigationViewItem.Icon>
-                            <PathIcon Scale="1.05,1.05,1" Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 播放列表}"/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
                     <NavigationViewItem Content="历史">

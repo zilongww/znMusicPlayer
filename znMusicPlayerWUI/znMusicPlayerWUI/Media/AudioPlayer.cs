@@ -208,6 +208,7 @@ namespace znMusicPlayerWUI.Media
             set
             {
                 FileReader.CurrentTime = value;
+                TimingChanged?.Invoke(this);
             }
         }
 

@@ -11,7 +11,7 @@
     xmlns:brushes="using:CommunityToolkit.WinUI.UI.Media"
     xmlns:behaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
-    mc:Ignorable="d" NavigationCacheMode="Enabled">
+    mc:Ignorable="d">
     
     <Page.Resources>
         <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="Transparent"/>

@@ -15,6 +15,7 @@
   </PropertyGroup>
 	
   <ItemGroup>
+    <None Remove="Background.zip" />
     <None Remove="Controls\ArtistCard.xaml" />
     <None Remove="Controls\DownloadCard.xaml" />
     <None Remove="Controls\Imagezn.xaml" />
