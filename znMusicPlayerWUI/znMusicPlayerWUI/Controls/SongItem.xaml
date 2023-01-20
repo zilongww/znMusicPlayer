@@ -9,7 +9,7 @@
     RightTapped="Button_RightTapped" Background="Transparent"
     PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
     PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited"
-    DoubleTapped="Grid_DoubleTapped" Holding="Grid_Holding">
+    DoubleTapped="Grid_DoubleTapped" Holding="Grid_Holding" x:Name="root">
     
     <Grid.Resources>
         <MenuFlyout x:Name="rmf" Opened="rmf_Opened" Closed="rmf_Closed">
@@ -79,7 +79,8 @@
             VerticalAlignment="Stretch"
             BorderThickness="0"
             CornerRadius="4"
-            Background="Transparent">
+            Background="Transparent"
+            x:Name="rootBorder">
         <Grid>
             <Rectangle x:Name="BackgroundBaseGrid" Tapped="Grid_Tapped" Opacity="0" Fill="{ThemeResource ItemBorderBackground}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             <Grid x:Name="BaseGrid" Padding="10,6">
@@ -87,7 +88,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal">
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
                     <Border x:Name="AlbumImage_BaseBorder"
                             IsHitTestVisible="False"
                             CornerRadius="{ThemeResource ControlCornerRadius}"
@@ -95,10 +101,16 @@
                             Height="50">
                         <local:Imagezn x:Name="AlbumImage" ShowMenuBehavior="None"/>
                     </Border>
-                    <StackPanel VerticalAlignment="Center"
-                                Margin="10,0,0,0">
-                        <TextBlock Text="{Binding Title}" IsHitTestVisible="False"/>
-                        <Grid>
+                    <Grid VerticalAlignment="Center"
+                          HorizontalAlignment="Left"
+                          Margin="10,0,0,0"
+                          Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="{Binding Title}" IsHitTestVisible="False" Grid.Row="0"/>
+                        <Grid Grid.Row="1">
                             <Button BorderThickness="0"
                                     Background="Transparent"
                                     Margin="0,0,0,0"
@@ -107,11 +119,11 @@
                                     Flyout="{ThemeResource mf}"
                                     Content=" "
                                     HorizontalAlignment="Stretch"/>
-                            <TextBlock x:Name="ButtonNameTextBlock" IsHitTestVisible="False" FontSize="12" Text="{Binding ButtonName}" Foreground="{ThemeResource SystemChromeDisabledLowColor}"/>
+                            <TextBlock x:Name="ButtonNameTextBlock" IsHitTestVisible="False" FontSize="12" Text="{Binding ButtonName}" Foreground="{ThemeResource SystemChromeDisabledLowColor}" TextTrimming="CharacterEllipsis"/>
                         </Grid>
 
-                    </StackPanel>
-                </StackPanel>
+                    </Grid>
+                </Grid>
 
                 <StackPanel x:Name="RightToolBar" Grid.Column="1" Opacity="0" Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="LeftToRight">
                     <Button Width="36" Height="36" CornerRadius="18" ToolTipService.ToolTip="播放" Click="Play_Click">

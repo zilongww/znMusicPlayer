@@ -46,14 +46,12 @@
                     <Border CornerRadius="8" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <controls:Imagezn x:Name="AlbumImageBase" IsMassImage="False"/>
                     </Border>
-                    <StackPanel x:Name="InfoBaseTitle" Margin="0,8,0,0" Grid.Row="1">
+                    <StackPanel x:Name="InfoBaseTitle" Margin="0,8,0,0" Grid.Row="1" Loaded="InfoBaseTitle_Loaded">
                         <StackPanel.Resources>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                                <Setter Property="IsTextSelectionEnabled" Value="True"/>
                                 <Setter Property="HorizontalAlignment" Value="Left"/>
                                 <Setter Property="TextAlignment" Value="Left"/>
-                                <Setter Property="Margin" Value="0,4,0,0"/>
                                 <Setter Property="Transitions">
                                     <Setter.Value>
                                         <TransitionCollection>
@@ -62,11 +60,40 @@
                                     </Setter.Value>
                                 </Setter>
                             </Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Background" Value="{x:Null}"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="CornerRadius" Value="4"/>
+                                <Setter Property="Margin" Value="0,4,0,0"/>
+                            </Style>
                         </StackPanel.Resources>
-                        <TextBlock x:Name="ArtistRunText"/>
-                        <TextBlock x:Name="TitleRunText" FontWeight="Bold" FontSize="24" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/>
-                        <TextBlock x:Name="AlbumRunText"/>
-                        <TextBlock x:Name="OtherRunText"/>
+                        <Button x:Name="ArtistRunButton" Click="ArtistRunButton_Click">
+                            <Button.Flyout>
+                                <MenuFlyout x:Name="ArtistFlyout" Opening="ArtistFlyout_Opening" Opened="ArtistFlyout_Opened"/>
+                            </Button.Flyout>
+                            <TextBlock x:Name="ArtistRunText"/>
+                        </Button>
+                        <Button x:Name="TitleRunButton" Click="TitleRunButton_Click">
+                            <Button.Flyout>
+                                <MenuFlyout x:Name="TitleFlyout">
+                                    <MenuFlyoutItem x:Name="TitleSearchMenuItem" Click="TitleSearchMenuItem_Click" Text="去搜索" Icon="find"/>
+                                    <MenuFlyoutItem x:Name="CopyMenuItem" Click="CopyMenuItem_Click" Text="复制" Icon="copy"/>
+                                </MenuFlyout>
+                            </Button.Flyout>
+                            <TextBlock x:Name="TitleRunText" FontWeight="Bold" FontSize="24" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                        </Button>
+                        <Button x:Name="AlbumRunButton" Click="AlbumRunButton_Click">
+                            <Button.Flyout>
+                                <MenuFlyout x:Name="AlbumFlyout">
+                                    <MenuFlyoutItem x:Name="AlbumMenuItem" Click="AlbumMenuItem_Click"/>
+                                </MenuFlyout>
+                            </Button.Flyout>
+                            <TextBlock x:Name="AlbumRunText"/>
+                        </Button>
+                        <Button x:Name="OtherRunButton" Click="OtherRunButton_Click">
+                            <TextBlock x:Name="OtherRunText"/>
+                        </Button>
                     </StackPanel>
                 </Grid>
 

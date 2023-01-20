@@ -55,7 +55,6 @@ namespace znMusicPlayerWUI.Controls
             mfi.Text = $"专辑：{musicData.Album}";
             rmfi.Text = $"专辑：{musicData.Album}";
 
-
             //MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
             //MainWindow.DriveInTypeEvent += MainWindow_DriveInTypeEvent;
 
@@ -84,7 +83,7 @@ namespace znMusicPlayerWUI.Controls
             try
             {
                 DataContext = null;
-                AlbumImage.Dispose();
+                AlbumImage?.Dispose();
                 MusicData = null;
                 //MainWindow.DriveInTypeEvent -= MainWindow_DriveInTypeEvent;
             }
@@ -98,6 +97,7 @@ namespace znMusicPlayerWUI.Controls
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
+            if (InfoButton == null) return;
             MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
 
             if (ShowImage)
@@ -121,7 +121,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
-            AlbumImage.Dispose();
+            AlbumImage?.Dispose();
         }
 
         // 当点击类型不是鼠标时为其添加间距以方便点击

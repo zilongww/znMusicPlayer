@@ -17,6 +17,8 @@ using znMusicPlayerWUI.Controls;
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Windowing;
+using znMusicPlayerWUI.DataEditor;
+using Windows.System;
 
 namespace znMusicPlayerWUI.Pages.MusicPages
 {
@@ -281,6 +283,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 if (b != null)
                     scrollViewer.ChangeView(null, b.ActualOffset.Y + b.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48, null);
             }
+            
 #if DEBUG
             Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData?.Lyric}.");
 #endif
@@ -507,6 +510,110 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private async void EqButton_Click(object sender, RoutedEventArgs e)
         {
             await MainWindow.ShowEqualizerDialog();
+        }
+
+        private void InfoBaseTitle_Loaded(object sender, RoutedEventArgs e)
+        {
+            foreach (var data in App.playingList.NowPlayingMusicData.Artists)
+            {
+                var item = new MenuFlyoutItem()
+                {
+                    Text = data.Name,
+                    Tag = data
+                };
+                item.Click += (sender, e) =>
+                {
+                    MainWindow.SetNavViewContent(
+                    typeof(ItemListViewArtist),
+                    (sender as MenuFlyoutItem).Tag,
+                    new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+                    MainWindow.OpenOrCloseMusicPage();
+                };
+                ArtistFlyout.Items.Add(item);
+            }
+        }
+
+        private void ArtistFlyout_Opening(object sender, object e)
+        {
+            ArtistFlyout.Items.Clear();
+            foreach (var data in App.playingList.NowPlayingMusicData.Artists)
+            {
+                var item = new MenuFlyoutItem()
+                {
+                    Text = data.Name,
+                    Tag = data
+                };
+                item.Click += (sender, e) =>
+                {
+                    MainWindow.SetNavViewContent(
+                        typeof(ItemListViewArtist),
+                        (sender as MenuFlyoutItem).Tag,
+                        new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+                    MainWindow.OpenOrCloseMusicPage();
+                };
+                ArtistFlyout.Items.Add(item);
+            }
+        }
+
+        private async void ArtistFlyout_Opened(object sender, object e)
+        {
+            await Task.Delay(1);
+        }
+
+        private void ArtistRunButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TitleRunButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AlbumRunButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void OtherRunButton_Click(object sender, RoutedEventArgs e)
+        {
+            Uri uri = null;
+            switch (MusicData.From)
+            {
+                case MusicFrom.neteaseMusic:
+                    uri = new($"https://music.163.com/#/song?id={MusicData.ID}");
+                    break;
+            }
+
+            if (uri != null)
+            {
+                var success = await Launcher.LaunchUriAsync(uri);
+            }
+        }
+
+        private void TitleSearchMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.SetNavViewContent(
+                typeof(ItemListViewSearch),
+                new List<object> {
+                    MusicData.Title,
+                    MusicData.From,
+                    SearchDataType.歌曲
+                },
+                new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+            MainWindow.OpenOrCloseMusicPage();
+        }
+
+        private void CopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var dp = new Windows.ApplicationModel.DataTransfer.DataPackage();
+            dp.RequestedOperation = Windows.ApplicationModel.DataTransfer.DataPackageOperation.Copy;
+            dp.SetText(MusicData.Title);
+            Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dp);
+        }
+
+        private async void AlbumMenuItem_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }
