@@ -45,6 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CoelWu.Music.SDK" Version="1.0.7" />
     <PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.Notifications" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.UI" Version="7.1.2" />
@@ -63,20 +64,21 @@
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.2.164-beta">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221209.1" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.230118.102" />
     <PackageReference Include="NAudio" Version="2.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="PInvoke.BCrypt" Version="0.7.124" />
     <PackageReference Include="PInvoke.NCrypt" Version="0.7.124" />
     <PackageReference Include="PInvoke.User32" Version="0.7.124" />
     <PackageReference Include="PInvoke.Windows.Core" Version="0.7.124" />
     <PackageReference Include="SoundTouch.Net.NAudioSupport" Version="2.3.2" />
     <PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Helpers\SDKs\NeteaseCloudMusicApi\NeteaseCloudMusicApi.csproj" />
     <None Include="Media\TaglibSharp\TaglibSharp.csproj" />
   </ItemGroup>
 

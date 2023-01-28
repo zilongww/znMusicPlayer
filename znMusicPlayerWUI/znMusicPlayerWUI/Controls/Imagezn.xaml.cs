@@ -99,8 +99,8 @@ namespace znMusicPlayerWUI.Controls
 
         public void Dispose()
         {
-            Source = null;
-            Source = null;
+            ImageSource.Source = null;
+            ImageSourceBefore.Source = null;
             firstLoad = true;
         }
 
@@ -137,6 +137,7 @@ namespace znMusicPlayerWUI.Controls
         bool firstLoad = true;
         public void UpdataSource()
         {
+            System.Diagnostics.Debug.WriteLine("Asdasd");
             UpdataTheme();
             if (!firstLoad)
             {

@@ -117,7 +117,7 @@ namespace znMusicPlayerWUI
             App.SMTC.ButtonPressed += SMTC_ButtonPressed;
             App.lyricManager.PlayingLyricSelectedChange += (_) =>
             {
-                if (SWindowGridBase.Visibility == Visibility.Visible && !isMinSize)
+                if (SWindowGridBase.Visibility == Visibility.Visible && !isMinSize && !InOpenMusicPage)
                 {
                     if (_ != null)
                     {
@@ -1286,8 +1286,27 @@ namespace znMusicPlayerWUI
         }
         #endregion
 
+        bool IsDesktopLyricWindowOpen = false;
+        DesktopLyricWindow DesktopLyricWindow = null;
         private void Button_Click_6(object sender, RoutedEventArgs e)
         {
+            if (DesktopLyricWindow == null)
+            {
+                DesktopLyricWindow = new();
+                DesktopLyricWindow.Closed += DesktopLyricWindow_Closed;
+                DesktopLyricWindow.Activate();
+            }
+            else
+            {
+                DesktopLyricWindow.Closed -= DesktopLyricWindow_Closed;
+                DesktopLyricWindow.Close();
+                DesktopLyricWindow = null;
+            }
+        }
+
+        private void DesktopLyricWindow_Closed(object sender, WindowEventArgs args)
+        {
+            DesktopLyricWindow = null;
         }
 
         #region PlayTimePopup

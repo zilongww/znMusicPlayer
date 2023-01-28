@@ -5,8 +5,29 @@
     xmlns:local="using:znMusicPlayerWUI.Windowed"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-    <Grid>
-        <Button Content="Test" VerticalAlignment="Center" HorizontalAlignment="Center" Click="Button_Click"/>
+    mc:Ignorable="d" SizeChanged="Window_SizeChanged">
+    <Grid Padding="8,4">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Viewbox x:Name="V1" HorizontalAlignment="Stretch">
+            <TextBlock x:Name="T1" Text="znMusicPlayer">
+                <TextBlock.Transitions>
+                    <TransitionCollection>
+                        <ContentThemeTransition/>
+                    </TransitionCollection>
+                </TextBlock.Transitions>
+            </TextBlock>
+        </Viewbox>
+        <Viewbox x:Name="V2" Grid.Row="1" HorizontalAlignment="Stretch">
+            <TextBlock x:Name="T2" Text="No Lyrics">
+                <TextBlock.Transitions>
+                    <TransitionCollection>
+                        <ContentThemeTransition/>
+                    </TransitionCollection>
+                </TextBlock.Transitions>
+            </TextBlock>
+        </Viewbox>
     </Grid>
 </Window>

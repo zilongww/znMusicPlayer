@@ -1,10 +1,12 @@
 ﻿using Meting4Net.Core.Models.Netease;
+using NeteaseCloudMusicApi;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Web.Http.Diagnostics;
 using znMusicPlayerWUI.DataEditor;
@@ -35,7 +37,7 @@ namespace znMusicPlayerWUI.Helpers
             NeteaseServices = new NeteaseMeting(NeteaseMeting);
         }
 
-        public void InitMeting()
+        public async void InitMeting()
         {
             NeteaseMeting.Cookie("os=pc; " + NeteaseCookie);
         }

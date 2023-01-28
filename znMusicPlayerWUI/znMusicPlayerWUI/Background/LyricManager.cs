@@ -153,7 +153,7 @@ namespace znMusicPlayerWUI.Background
         public void ReCallUpdata()
         {
             //timer.Interval = TimeSpan.FromMilliseconds(5);
-            if (App.audioPlayer.NowOutObj?.PlaybackState == NAudio.Wave.PlaybackState.Playing && NowPlayingLyrics.Any() && !MainWindow.isMinSize)
+            if (App.audioPlayer.NowOutObj?.PlaybackState == NAudio.Wave.PlaybackState.Playing && NowPlayingLyrics.Any())
             {
                 if (!timer.IsEnabled) timer.Start();
                 //System.Diagnostics.Debug.WriteLine(App.audioPlayer.CurrentTime);
@@ -173,7 +173,7 @@ namespace znMusicPlayerWUI.Background
                 for (int i = 0; i < NowPlayingLyrics.Count; i++)
                 {
                     var npl = NowPlayingLyrics[i];
-                    if (NowPlayingLyrics[i].LyricTimeSpan < App.audioPlayer.CurrentTime)
+                    if (npl.LyricTimeSpan < App.audioPlayer.CurrentTime)
                     {
                         lastLyricData = npl;
                     }

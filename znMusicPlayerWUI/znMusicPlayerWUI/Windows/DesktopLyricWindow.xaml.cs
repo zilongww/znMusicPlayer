@@ -26,127 +26,127 @@ using WinRT.Interop;
 using NAudio.Wave;
 using Microsoft.UI.Xaml.Hosting;
 using System.Collections.ObjectModel;
+using Windows.Devices.Input;
+using znMusicPlayerWUI.DataEditor;
 
 namespace znMusicPlayerWUI.Windowed
 {
     public sealed partial class DesktopLyricWindow : Window
     {
+        public AppWindow AppWindow { get; private set; }
+
         public DesktopLyricWindow()
         {
             InitializeComponent();
-            App.AppDesktopLyricWindow = WindowHelper.GetAppWindowForCurrentWindow(this);
-        }
+            AppWindow = WindowHelper.GetAppWindowForCurrentWindow(this);
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
             var a = OverlappedPresenter.Create();
             a.IsMaximizable = false;
             a.IsMinimizable = false;
-            a.SetBorderAndTitleBar(true, true);
+            a.IsAlwaysOnTop = true;
             if (AppWindowTitleBar.IsCustomizationSupported())
             {
-                App.AppDesktopLyricWindow.SetPresenter(a);
-                App.AppDesktopLyricWindow.TitleBar.ExtendsContentIntoTitleBar = true;
-                App.AppDesktopLyricWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
-                App.AppDesktopLyricWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+                AppWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay);
+                AppWindow.SetPresenter(a);
+                AppWindow.IsShownInSwitchers = false;
+                AppWindow.Title = this.ToString();
+                AppWindow.SetIcon(null);
+                AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+                AppWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
+                AppWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+                AppWindow.TitleBar.ForegroundColor = Colors.Transparent;
+                AppWindow.TitleBar.ButtonForegroundColor = Colors.Transparent;
+                AppWindow.TitleBar.InactiveForegroundColor = Colors.Transparent;
+                AppWindow.TitleBar.ButtonInactiveForegroundColor = Colors.Transparent;
+                AppWindow.Resize(new SizeInt32() { Width = 400, Height = 100 });
+                PointInt32 pointInt32 = new(
+                    App.AppWindowLocal.Position.X + App.AppWindowLocal.Size.Width - AppWindow.Size.Width,
+                    App.AppWindowLocal.Position.Y + App.AppWindowLocal.Size.Height - AppWindow.Size.Height);
+                AppWindow.Move(pointInt32);
             }
-            SetBackdrop(BackdropType.DesktopAcrylic);
+            TrySetAcrylicBackdrop();
+
+            App.lyricManager.PlayingLyricSourceChange += LyricManager_PlayingLyricSourceChange;
+            App.lyricManager.PlayingLyricSelectedChange += LyricManager_PlayingLyricSelectedChange;
+            LyricManager_PlayingLyricSelectedChange(App.lyricManager.NowLyricsData);
+        }
+
+        private void LyricManager_PlayingLyricSourceChange(ObservableCollection<LyricData> nowPlayingLyrics)
+        {
+            LyricManager_PlayingLyricSelectedChange(nowPlayingLyrics[0]);
+        }
+
+        bool IsT1Focus = true;
+        private void LyricManager_PlayingLyricSelectedChange(LyricData nowLyricsData)
+        {
+            if (nowLyricsData == null) return;
+            if (nowLyricsData.Translate != null)
+            {
+                IsT1Focus = true;
+                V1.HorizontalAlignment = HorizontalAlignment.Center;
+                V2.HorizontalAlignment = HorizontalAlignment.Center;
+                T1.Text = nowLyricsData.Lyric;
+                T2.Text = nowLyricsData.Translate;
+                T1.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
+                T2.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
+            }
+            else
+            {
+                V1.HorizontalAlignment = HorizontalAlignment.Left;
+                V2.HorizontalAlignment = HorizontalAlignment.Right;
+                LyricData nextData = new(null, null, TimeSpan.Zero);
+                try
+                {
+                    nextData = App.lyricManager.NowPlayingLyrics[App.lyricManager.NowPlayingLyrics.IndexOf(nowLyricsData) + 1];
+                }
+                catch { }
+                if (IsT1Focus)
+                {
+                    IsT1Focus = false;
+                    T1.Text = nowLyricsData.Lyric;
+                    T2.Text = nextData.Lyric;
+                    T1.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
+                    T2.Foreground = App.Current.Resources["MusicPageLrcForeground"] as SolidColorBrush;
+                }
+                else
+                {
+                    IsT1Focus = true;
+                    T1.Text = nextData.Lyric;
+                    T2.Text = nowLyricsData.Lyric;
+                    T1.Foreground = App.Current.Resources["MusicPageLrcForeground"] as SolidColorBrush;
+                    T2.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
+                }
+            }
+        }
+
+        private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs args)
+        {
+            double dpi = CodeHelper.GetScaleAdjustment(this);
+            RectInt32[] rectInt32s = { new(0, 0, (int)(AppWindow.Size.Width * dpi), (int)(AppWindow.Size.Height * dpi)) };
+            AppWindow.TitleBar.SetDragRectangles(rectInt32s);
         }
 
         #region Enable Window Backdrop
-        public static ApplicationTheme ActualTheme = ApplicationTheme.Dark;
-        static ElementTheme requestedTheme = ElementTheme.Default;
-        public static ElementTheme RequestedTheme
+        SystemBackdropConfiguration m_configurationSource = new SystemBackdropConfiguration();
+        DesktopAcrylicController m_acrylicController = new DesktopAcrylicController()
         {
-            get => requestedTheme;
-            set
-            {
-                requestedTheme = value;
+            TintColor = Color.FromArgb(255, 35, 35, 35),
+            LuminosityOpacity = 0.8f,
+            TintOpacity = 0f,
+            FallbackColor = Color.FromArgb(255, 40, 40, 40)
+        };
 
-                switch (value)
-                {
-                    case ElementTheme.Dark: ActualTheme = ApplicationTheme.Dark; break;
-                    case ElementTheme.Light: ActualTheme = ApplicationTheme.Light; break;
-                    case ElementTheme.Default:
-                        var uiSettings = new Windows.UI.ViewManagement.UISettings();
-                        var defaultthemecolor = uiSettings.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background);
-                        ActualTheme = defaultthemecolor == Colors.Black ? ApplicationTheme.Dark : ApplicationTheme.Light;
-                        break;
-                }
-            }
-        }
-
-        public enum BackdropType
+        bool TrySetAcrylicBackdrop()
         {
-            Mica,
-            DesktopAcrylic,
-            DefaultColor,
-        }
-
-        static WindowsSystemDispatcherQueueHelper m_wsdqHelper;
-        static BackdropType m_currentBackdrop;
-        static MicaController m_micaController;
-        static DesktopAcrylicController m_acrylicController;
-        static SystemBackdropConfiguration m_configurationSource;
-
-        public void SetBackdrop(BackdropType type)
-        {
-            m_currentBackdrop = BackdropType.DefaultColor;
-            if (m_micaController != null)
+            if (DesktopAcrylicController.IsSupported())
             {
-                m_micaController.Dispose();
-                m_micaController = null;
-            }
-            if (m_acrylicController != null)
-            {
-                m_acrylicController.Dispose();
-                m_acrylicController = null;
-            }
-            this.Activated -= DesktopLyricWindow_Activated;
-            this.Closed -= DesktopLyricWindow_Closed;
-            m_configurationSource = null;
-
-            if (type == BackdropType.Mica)
-            {
-                if (TrySetMicaBackdrop())
-                {
-                    m_currentBackdrop = type;
-                }
-                else
-                {
-                    type = BackdropType.DesktopAcrylic;
-                }
-            }
-            if (type == BackdropType.DesktopAcrylic)
-            {
-                if (TrySetAcrylicBackdrop())
-                {
-                    m_currentBackdrop = type;
-                }
-                else
-                {
-                }
-            }
-        }
-
-        bool TrySetMicaBackdrop()
-        {
-            if (MicaController.IsSupported())
-            {
-                m_configurationSource = new SystemBackdropConfiguration();
-                this.Activated += DesktopLyricWindow_Activated;
+                
+                this.Activated += DesktopLyricWindow_Activated; ;
                 this.Closed += DesktopLyricWindow_Closed;
 
                 m_configurationSource.IsInputActive = true;
-                switch (RequestedTheme)
-                {
-                    case ElementTheme.Dark: m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
-                    case ElementTheme.Light: m_configurationSource.Theme = SystemBackdropTheme.Light; break;
-                    case ElementTheme.Default: m_configurationSource.Theme = SystemBackdropTheme.Default; break;
-                }
-                m_micaController = new MicaController();
-                m_micaController.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
-                m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
+                m_acrylicController.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
+                m_acrylicController.SetSystemBackdropConfiguration(m_configurationSource);
                 return true;
             }
 
@@ -155,48 +155,15 @@ namespace znMusicPlayerWUI.Windowed
 
         private void DesktopLyricWindow_Closed(object sender, WindowEventArgs args)
         {
-
+            m_acrylicController.Dispose();
+            App.lyricManager.PlayingLyricSourceChange -= LyricManager_PlayingLyricSourceChange;
+            App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange;
         }
 
         private void DesktopLyricWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
-            if (m_currentBackdrop != BackdropType.DesktopAcrylic)
-            {
-                m_configurationSource.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
-            }
-        }
 
-        bool TrySetAcrylicBackdrop()
-        {
-            if (DesktopAcrylicController.IsSupported())
-            {
-                m_configurationSource = new SystemBackdropConfiguration();
-                this.Activated += DesktopLyricWindow_Activated;
-                this.Closed += DesktopLyricWindow_Closed;
-
-                m_configurationSource.IsInputActive = true;
-                switch (RequestedTheme)
-                {
-                    case ElementTheme.Dark: m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
-                    case ElementTheme.Light: m_configurationSource.Theme = SystemBackdropTheme.Light; break;
-                    case ElementTheme.Default: m_configurationSource.Theme = SystemBackdropTheme.Default; break;
-                }
-
-                m_acrylicController = new DesktopAcrylicController()
-                {
-                    TintColor = Color.FromArgb(255, 40, 40, 40),
-                    LuminosityOpacity = 0.9f,
-                    TintOpacity = 0f
-                };
-
-                m_acrylicController.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
-                m_acrylicController.SetSystemBackdropConfiguration(m_configurationSource);
-                return true;
-            }
-
-            return false;
         }
         #endregion
-
     }
 }

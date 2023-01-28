@@ -78,7 +78,7 @@
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.Media" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.Primitives" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.UI.Media" Version="7.1.2" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221209.1" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.230118.102" />
     <PackageReference Include="NAudio" Version="2.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="PInvoke.BCrypt" Version="0.7.124" />

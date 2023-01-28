@@ -95,35 +95,6 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (InfoButton == null) return;
-            MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
-
-            if (ShowImage)
-            {
-                ImageSource a = null;
-                if (MusicData.InLocal != null)
-                {
-                    //a = await CodeHelper.GetCover(MusicData.InLocal);
-                }
-                else
-                {
-                    try
-                    {
-                        a = await FileHelper.GetImageSource(await Media.ImageManage.GetImageSource(MusicData), (int)(50 * ImageScaleDPI), (int)(50 * ImageScaleDPI), true);
-                    }
-                    catch { }
-                }
-                AlbumImage.Source = a;
-            }
-        }
-
-        private void Grid_Unloaded(object sender, RoutedEventArgs e)
-        {
-            AlbumImage?.Dispose();
-        }
-
         // 当点击类型不是鼠标时为其添加间距以方便点击
         private void MainWindow_DriveInTypeEvent(Microsoft.UI.Input.PointerDeviceType deviceType)
         {
@@ -335,6 +306,51 @@ namespace znMusicPlayerWUI.Controls
             {
                 await PlayListHelper.DeleteMusicDataFromPlayList(MusicListData.ListName, MusicData);
             }
+        }
+
+        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (InfoButton == null) return;
+            //MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
+
+            if (ShowImage)
+            {
+                if (AlbumImage.Source == null)
+                {
+                    if (MusicData.InLocal != null)
+                    {
+                        //a = await CodeHelper.GetCover(MusicData.InLocal);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            AlbumImage.Source = await FileHelper.GetImageSource(await Media.ImageManage.GetImageSource(MusicData), (int)(50 * ImageScaleDPI), (int)(50 * ImageScaleDPI), true);
+                        }
+                        catch { }
+                    }
+                    //AlbumImage.Source = a;
+                }
+                else
+                {
+                    AlbumImage.UpdataSource();
+                }
+            }
+        }
+
+        private void Grid_Unloaded(object sender, RoutedEventArgs e)
+        {
+            AlbumImage?.Dispose();
+        }
+
+        private void ViewportBehavior_EnteringViewport(object sender, EventArgs e)
+        {
+            //Grid_Loaded(null, null);
+        }
+
+        private void ViewportBehavior_ExitedViewport(object sender, EventArgs e)
+        {
+            //Grid_Unloaded(null, null);
         }
     }
 }

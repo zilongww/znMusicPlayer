@@ -5,6 +5,7 @@
     xmlns:local="using:znMusicPlayerWUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
 
     <ScrollViewer HorizontalScrollBarVisibility="Auto" ScrollViewer.ZoomMode="Enabled" ScrollViewer.CanContentRenderOutsideBounds="True">
@@ -13,9 +14,10 @@
                     Margin="0,14,0,0">
             <StackPanel Orientation="Horizontal">
                 <Border CornerRadius="6">
-                    <Image Source="/Images/SugarAndSalt.jpg"
-                       Width="120" Height="120"
-                       Opacity="1" Loaded="Image_Loaded"/>
+                    <controls:ImageEx x:Name="abcd"
+                                      Source="/Images/SugarAndSalt.jpg"
+                                      Width="120" Height="120"
+                                      Opacity="1" Loaded="Image_Loaded"/>
                 </Border>
                 <StackPanel VerticalAlignment="Center"
                             Margin="10,0,0,0">
