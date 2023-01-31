@@ -137,7 +137,6 @@ namespace znMusicPlayerWUI.Controls
         bool firstLoad = true;
         public void UpdataSource()
         {
-            System.Diagnostics.Debug.WriteLine("Asdasd");
             UpdataTheme();
             if (!firstLoad)
             {

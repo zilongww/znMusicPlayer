@@ -134,7 +134,7 @@ namespace znMusicPlayerWUI.Controls
 
         bool isShowRightToolBar = false;
         // 鼠标进入时改变颜色
-        private void Grid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        public void Grid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             if (e.Pointer.PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Mouse)
             {
@@ -172,39 +172,44 @@ namespace znMusicPlayerWUI.Controls
         {
             if (e.Pointer.PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Mouse)
             {
-                isShowRightToolBar = false;
-                Storyboard storyboard = new Storyboard();
-                DoubleAnimation doubleAnimation = new DoubleAnimation();
-
-                doubleAnimation.From = BackgroundBaseGrid.Opacity;
-                doubleAnimation.To = 0;
-                doubleAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.1));
-                Storyboard.SetTarget(doubleAnimation, BackgroundBaseGrid);
-                Storyboard.SetTargetProperty(doubleAnimation, "Opacity");
-
-                storyboard.Children.Add(doubleAnimation);
-                storyboard.Begin();
-
-
-                Storyboard storyboard1 = new Storyboard();
-                DoubleAnimation doubleAnimation1 = new DoubleAnimation();
-
-                doubleAnimation1.From = RightToolBar.Opacity;
-                doubleAnimation1.To = 0;
-                doubleAnimation1.Duration = new Duration(TimeSpan.FromSeconds(0.1));
-                Storyboard.SetTarget(doubleAnimation1, RightToolBar);
-                Storyboard.SetTargetProperty(doubleAnimation1, "Opacity");
-
-                storyboard1.Children.Add(doubleAnimation1);
-                storyboard1.Completed += (_, __) =>
-                {
-                    if (!isShowRightToolBar)
-                    {
-                        RightToolBar.Visibility = Visibility.Collapsed;
-                    }
-                };
-                storyboard1.Begin();
+                AnimateMouseLeavingBackground();
             }
+        }
+
+        public void AnimateMouseLeavingBackground(bool opacityStartAtHeighest = false)
+        {
+            isShowRightToolBar = false;
+            Storyboard storyboard = new Storyboard();
+            DoubleAnimation doubleAnimation = new DoubleAnimation();
+
+            doubleAnimation.From = opacityStartAtHeighest ? 1 : BackgroundBaseGrid.Opacity;
+            doubleAnimation.To = 0;
+            doubleAnimation.Duration = new Duration(TimeSpan.FromSeconds(opacityStartAtHeighest ? 2.5 : 0.1));
+            Storyboard.SetTarget(doubleAnimation, BackgroundBaseGrid);
+            Storyboard.SetTargetProperty(doubleAnimation, "Opacity");
+
+            storyboard.Children.Add(doubleAnimation);
+            storyboard.Begin();
+
+
+            Storyboard storyboard1 = new Storyboard();
+            DoubleAnimation doubleAnimation1 = new DoubleAnimation();
+
+            doubleAnimation1.From = RightToolBar.Opacity;
+            doubleAnimation1.To = 0;
+            doubleAnimation1.Duration = new Duration(TimeSpan.FromSeconds(0.1));
+            Storyboard.SetTarget(doubleAnimation1, RightToolBar);
+            Storyboard.SetTargetProperty(doubleAnimation1, "Opacity");
+
+            storyboard1.Children.Add(doubleAnimation1);
+            storyboard1.Completed += (_, __) =>
+            {
+                if (!isShowRightToolBar)
+                {
+                    RightToolBar.Visibility = Visibility.Collapsed;
+                }
+            };
+            storyboard1.Begin();
         }
 
         private void Grid_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)

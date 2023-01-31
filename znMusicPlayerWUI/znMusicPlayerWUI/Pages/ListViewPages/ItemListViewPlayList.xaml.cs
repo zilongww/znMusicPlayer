@@ -20,6 +20,8 @@ using Windows.Storage.Pickers;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Media;
 using Newtonsoft.Json.Linq;
+using CommunityToolkit.WinUI.UI;
+using znMusicPlayerWUI.Controls;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -49,13 +51,15 @@ namespace znMusicPlayerWUI.Pages
             }
             await Task.Delay(500);
             scrollViewer?.ScrollToVerticalOffset(0);
-            foreach (Controls.SongItem item in Children.Items)
+            foreach (SongItem item in Children.Items)
             {
                 item.Dispose();
             }
             Children.Items.Clear();
             dropShadow?.Dispose();
             PlayList_Image.Dispose();
+            searchMusicDatas.Clear();
+            searchMusicDatas = null;
             //System.Diagnostics.Debug.WriteLine("Clear");
         }
 
@@ -258,11 +262,11 @@ namespace znMusicPlayerWUI.Pages
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             if (!Children.Items.Any()) return;
-            foreach (Controls.SongItem songItem in Children.Items)
+            foreach (SongItem songItem in Children.Items)
             {
                 App.playingList.Add(songItem.MusicData, false);
             }
-            await App.playingList.Play((Children.Items.First() as Controls.SongItem).MusicData);
+            await App.playingList.Play((Children.Items.First() as SongItem).MusicData);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -289,7 +293,7 @@ namespace znMusicPlayerWUI.Pages
                 Children.AllowDrop = true;
                 Children.CanReorderItems = true;
 
-                foreach (Controls.SongItem songItem in Children.Items)
+                foreach (SongItem songItem in Children.Items)
                 {
                     songItem.CanClickPlay = false;
                 }
@@ -310,7 +314,7 @@ namespace znMusicPlayerWUI.Pages
                 Children.AllowDrop = false;
                 Children.CanReorderItems = false;
 
-                foreach (Controls.SongItem songItem in Children.Items)
+                foreach (SongItem songItem in Children.Items)
                 {
                     songItem.CanClickPlay = true;
                 }
@@ -322,7 +326,7 @@ namespace znMusicPlayerWUI.Pages
         {
             if (Children.SelectedItems.Any())
             {
-                foreach (Controls.SongItem item in Children.SelectedItems)
+                foreach (SongItem item in Children.SelectedItems)
                 {
                     App.playingList.Add(item.MusicData);
                 }
@@ -339,7 +343,7 @@ namespace znMusicPlayerWUI.Pages
                     var jdata = JObject.Parse(await PlayListHelper.ReadData());
                     MainWindow.ShowLoadingDialog("正在移除");
                     int num = 0;
-                    foreach (Controls.SongItem item in Children.SelectedItems)
+                    foreach (SongItem item in Children.SelectedItems)
                     {
                         num++;
                         MainWindow.SetLoadingText($"正在移除：{item.MusicData.Title} - {item.MusicData.ButtonName}");
@@ -374,7 +378,7 @@ namespace znMusicPlayerWUI.Pages
 
         private void SelectReverseButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Controls.SongItem item in Children.Items)
+            foreach (SongItem item in Children.Items)
             {
                 try
                 {
@@ -536,6 +540,40 @@ namespace znMusicPlayerWUI.Pages
             var data = JObject.Parse(await PlayListHelper.ReadData());
             data[NavToObj.ListName] = JObject.FromObject(NavToObj);
             await PlayListHelper.SaveData(data.ToString());
+        }
+
+        List<SongItem> searchMusicDatas = new();
+        bool isQuery = false;
+        int searchNum = -1;
+        private async void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            if (string.IsNullOrEmpty(SearchBox.Text)) return;
+            if (!isQuery)
+            {
+                isQuery = true;
+                searchNum = -1;
+                searchMusicDatas.Clear();
+                foreach (SongItem i in Children.Items)
+                {
+                    if (i.MusicData.Title.ToLower().Contains(SearchBox.Text.ToLower()))
+                    {
+                        searchMusicDatas.Add(i);
+                    }
+                }
+            }
+            if (searchMusicDatas.Any())
+            {
+                searchNum++;
+                if (searchNum > searchMusicDatas.Count - 1) searchNum = 0;
+                var item = searchMusicDatas[searchNum];
+                item.AnimateMouseLeavingBackground(true);
+                await Children.SmoothScrollIntoViewWithItemAsync(item, ScrollItemPlacement.Center);
+            }
+        }
+
+        private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            isQuery = false;
         }
     }
 }

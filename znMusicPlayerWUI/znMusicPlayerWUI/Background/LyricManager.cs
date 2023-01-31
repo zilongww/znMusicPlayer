@@ -21,7 +21,7 @@ namespace znMusicPlayerWUI.Background
         DispatcherTimer timer;
 
         public ObservableCollection<LyricData> NowPlayingLyrics = new();
-        private LyricData _nowLyricsData = new(null, null, TimeSpan.Zero);
+        private LyricData _nowLyricsData = null;
         public LyricData NowLyricsData
         {
             get => _nowLyricsData;
@@ -65,7 +65,7 @@ namespace znMusicPlayerWUI.Background
 
         private void AudioPlayer_PlayStateChanged(Media.AudioPlayer audioPlayer)
         {
-            if (App.audioPlayer.NowOutObj?.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+            if (App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing)
             {
                 timer.Start();
             }
@@ -153,7 +153,7 @@ namespace znMusicPlayerWUI.Background
         public void ReCallUpdata()
         {
             //timer.Interval = TimeSpan.FromMilliseconds(5);
-            if (App.audioPlayer.NowOutObj?.PlaybackState == NAudio.Wave.PlaybackState.Playing && NowPlayingLyrics.Any())
+            if (App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing && NowPlayingLyrics.Any())
             {
                 if (!timer.IsEnabled) timer.Start();
                 //System.Diagnostics.Debug.WriteLine(App.audioPlayer.CurrentTime);

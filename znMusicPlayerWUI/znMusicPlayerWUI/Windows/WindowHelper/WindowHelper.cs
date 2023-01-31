@@ -13,7 +13,7 @@ using WinRT.Interop;
 using Windows.UI;
 using WinRT;
 
-namespace znMusicPlayerWUI.Helpers
+namespace znMusicPlayerWUI.WindowHelperzn
 {
     public static class WindowHelper
     {
@@ -29,15 +29,15 @@ namespace znMusicPlayerWUI.Helpers
             return WindowNative.GetWindowHandle(window);
         }
 
-        public const int GWL_STYLE = (-16);
-        public const UInt32 WS_POPUP = 0x80000000;
-        public const UInt32 WS_CHILD = 0x40000000;
+        public const int GWL_STYLE = -16;
+        public const uint WS_POPUP = 0x80000000;
+        public const uint WS_CHILD = 0x40000000;
 
         [DllImport("user32.dll")]
-        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, UInt32 dwNewLong);
+        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, uint dwNewLong);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern UInt32 GetWindowLong(IntPtr hWnd, int nIndex);
+        public static extern uint GetWindowLong(IntPtr hWnd, int nIndex);
     }
 
     class WindowsSystemDispatcherQueueHelper

@@ -87,14 +87,14 @@ namespace znMusicPlayerWUI
             equalizerPage = new Pages.DialogPages.EqualizerPage();
             SubClassing();
 
-            App.AppWindowLocal = WindowHelper.GetAppWindowForCurrentWindow(this);
+            App.AppWindowLocal = WindowHelperzn.WindowHelper.GetAppWindowForCurrentWindow(this);
             App.AppWindowLocal.Title = App.AppName;
             App.AppWindowLocal.SetIcon("icon.ico");
 
             InitializeTitleBar(SWindowGridBaseTop.RequestedTheme);
 
             //RequestedTheme = App.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : ElementTheme.Light;
-            m_wsdqHelper = new WindowsSystemDispatcherQueueHelper();
+            m_wsdqHelper = new WindowHelperzn.WindowsSystemDispatcherQueueHelper();
             m_wsdqHelper.EnsureWindowsSystemDispatcherQueueController();
             SetBackdrop(BackdropType.Mica);
             SetDragRegionForCustomTitleBar(App.AppWindowLocal);
@@ -248,39 +248,46 @@ namespace znMusicPlayerWUI
             object title, object content,
             string closeButtonText = "确定", string primaryButtonText = null)
         {
-            ContentDialogResult result = default;
-            if (!dialogShow)
+            try
             {
-                dialogShow = true;
-                AsyncDialog.Title = title;
-                if (content is string)
+                ContentDialogResult result = default;
+                if (!dialogShow)
                 {
-                    dialogScrollViewer.Content = new TextBlock() { Text = content as string, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true };
-                    AsyncDialog.Content = dialogScrollViewer;
+                    dialogShow = true;
+                    AsyncDialog.Title = title;
+                    if (content is string)
+                    {
+                        dialogScrollViewer.Content = new TextBlock() { Text = content as string, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true };
+                        AsyncDialog.Content = dialogScrollViewer;
+                    }
+                    else
+                        AsyncDialog.Content = content;
+                    AsyncDialog.Background = App.Current.Resources["AcrylicNormal"] as AcrylicBrush;
+                    AsyncDialog.CloseButtonText = closeButtonText;
+                    AsyncDialog.PrimaryButtonText = primaryButtonText;
+                    AsyncDialog.CloseButtonCommand = null;
+                    AsyncDialog.XamlRoot = SContent.XamlRoot;
+                    AsyncDialog.RequestedTheme = SWindowGridBaseTop.RequestedTheme;
+                    result = await AsyncDialog.ShowAsync();
+                    dialogShow = false;
+
+                    if (dialogShowObjects.Any())
+                    {
+                        var a = dialogShowObjects[0];
+                        dialogShowObjects.Remove(a);
+                        await ShowDialog(a[0], a[1], (string)a[2], (string)a[3]);
+                    }
                 }
                 else
-                    AsyncDialog.Content = content;
-                AsyncDialog.Background = App.Current.Resources["AcrylicNormal"] as AcrylicBrush;
-                AsyncDialog.CloseButtonText = closeButtonText;
-                AsyncDialog.PrimaryButtonText = primaryButtonText;
-                AsyncDialog.CloseButtonCommand = null;
-                AsyncDialog.XamlRoot = SContent.XamlRoot;
-                AsyncDialog.RequestedTheme = SWindowGridBaseTop.RequestedTheme;
-                result = await AsyncDialog.ShowAsync();
-                dialogShow = false;
-
-                if (dialogShowObjects.Any())
                 {
-                    var a = dialogShowObjects[0];
-                    dialogShowObjects.Remove(a);
-                    await ShowDialog(a[0], a[1], (string)a[2], (string)a[3]);
+                    dialogShowObjects.Add(new object[] { title, content, closeButtonText, primaryButtonText });
                 }
+                return result;
             }
-            else
+            catch
             {
-                dialogShowObjects.Add(new object[] { title, content, closeButtonText, primaryButtonText });
+                return ContentDialogResult.None;
             }
-            return result;
         }
 
         static Pages.DialogPages.EqualizerPage equalizerPage;
@@ -321,7 +328,7 @@ namespace znMusicPlayerWUI
         #region AudioPlayer Events
         public static void Invoke(Action action)
         {
-            SWindowGridBase.DispatcherQueue.TryEnqueue(() => { action(); });
+            SWindowGridBase.DispatcherQueue.TryEnqueue(() => action());
         }
 
         private void SMTC_ButtonPressed(Windows.Media.SystemMediaTransportControls sender, Windows.Media.SystemMediaTransportControlsButtonPressedEventArgs args)
@@ -432,16 +439,16 @@ namespace znMusicPlayerWUI
 
         private void AudioPlayer_PlayStateChanged(Media.AudioPlayer audioPlayer)
         {
-                if (audioPlayer.NowOutObj?.PlaybackState == PlaybackState.Playing)
-                {
-                    PlayRing.Foreground = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
-                }
-                else
-                {
-                    PlayRing.Foreground = new SolidColorBrush(Color.FromArgb(255, 225, 225, 0));
-                }
+            if (audioPlayer.PlaybackState == PlaybackState.Playing)
+            {
+                PlayRing.Foreground = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
+            }
+            else
+            {
+                PlayRing.Foreground = new SolidColorBrush(Color.FromArgb(255, 225, 225, 0));
+            }
 
-                MediaPlayStateViewer.PlaybackState = audioPlayer.NowOutObj != null ? audioPlayer.NowOutObj.PlaybackState : PlaybackState.Paused;
+            MediaPlayStateViewer.PlaybackState = audioPlayer.PlaybackState;
         }
 
         private void AudioPlayer_TimingChanged(Media.AudioPlayer audioPlayer)
@@ -451,7 +458,7 @@ namespace znMusicPlayerWUI
                 if (audioPlayer.FileReader != null)
                 {
                     PlayRing.Minimum = 0;
-                    PlayRing.Maximum = audioPlayer.FileReader.TotalTime.Ticks;
+                    PlayRing.Maximum = audioPlayer.TotalTime.Ticks;
                     PlayRing.Value = audioPlayer.CurrentTime.Ticks;
                 }
             }
@@ -466,7 +473,7 @@ namespace znMusicPlayerWUI
             DefaultColor,
         }
 
-        static WindowsSystemDispatcherQueueHelper m_wsdqHelper;
+        static WindowHelperzn.WindowsSystemDispatcherQueueHelper m_wsdqHelper;
         static BackdropType m_currentBackdrop;
         static MicaController m_micaController;
         static DesktopAcrylicController m_acrylicController;
@@ -991,7 +998,7 @@ namespace znMusicPlayerWUI
         #region Bottom Buttons Events
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            if (App.audioPlayer.NowOutObj?.PlaybackState == PlaybackState.Playing)
+            if (App.audioPlayer.PlaybackState == PlaybackState.Playing)
             {
                 App.audioPlayer.SetPause();
             }
@@ -1288,20 +1295,33 @@ namespace znMusicPlayerWUI
 
         bool IsDesktopLyricWindowOpen = false;
         DesktopLyricWindow DesktopLyricWindow = null;
+        bool isInChangingLyricWindow = false;
+
+        public async void OpenDesktopLyricWindow()
+        {
+            if (!isInChangingLyricWindow)
+            {
+                isInChangingLyricWindow = true;
+                if (DesktopLyricWindow == null)
+                {
+                    DesktopLyricWindow = new();
+                    DesktopLyricWindow.Closed += DesktopLyricWindow_Closed;
+                    DesktopLyricWindow.Activate();
+                }
+                else
+                {
+                    DesktopLyricWindow.Closed -= DesktopLyricWindow_Closed;
+                    DesktopLyricWindow.Close();
+                    DesktopLyricWindow = null;
+                }
+                await Task.Delay(400);
+                isInChangingLyricWindow = false;
+            }
+        }
+
         private void Button_Click_6(object sender, RoutedEventArgs e)
         {
-            if (DesktopLyricWindow == null)
-            {
-                DesktopLyricWindow = new();
-                DesktopLyricWindow.Closed += DesktopLyricWindow_Closed;
-                DesktopLyricWindow.Activate();
-            }
-            else
-            {
-                DesktopLyricWindow.Closed -= DesktopLyricWindow_Closed;
-                DesktopLyricWindow.Close();
-                DesktopLyricWindow = null;
-            }
+            OpenDesktopLyricWindow();
         }
 
         private void DesktopLyricWindow_Closed(object sender, WindowEventArgs args)
@@ -1341,14 +1361,14 @@ namespace znMusicPlayerWUI
             if (audioPlayer.FileReader != null)
             {
                 PlayTimeSlider.Minimum = 0;
-                PlayTimeSlider.Maximum = audioPlayer.FileReader.TotalTime.Ticks;
+                PlayTimeSlider.Maximum = audioPlayer.TotalTime.Ticks;
 
                 isCodeChangedSilderValue = true;
                 PlayTimeSlider.Value = audioPlayer.CurrentTime.Ticks;
                 isCodeChangedSilderValue = false;
 
                 PlayTimeTextBlock.Text =
-                        $"{audioPlayer.CurrentTime:mm\\:ss}/{audioPlayer.FileReader.TotalTime:mm\\:ss}";
+                        $"{audioPlayer.CurrentTime:mm\\:ss}/{audioPlayer.TotalTime:mm\\:ss}";
             }
         }
 
@@ -1430,7 +1450,7 @@ namespace znMusicPlayerWUI
                 }
                 else if (code == "11730944" || code == "2621442")
                 {
-                    if (App.audioPlayer.NowOutObj?.PlaybackState == PlaybackState.Playing)
+                    if (App.audioPlayer.PlaybackState == PlaybackState.Playing)
                     {
                         App.audioPlayer.SetPause();
                     }
@@ -1449,7 +1469,7 @@ namespace znMusicPlayerWUI
                 }
                 else if (code == "4980742")
                 {
-                    // 打开桌面歌词
+                    OpenDesktopLyricWindow();
                 }
                 else if (code == "5373958")
                 {

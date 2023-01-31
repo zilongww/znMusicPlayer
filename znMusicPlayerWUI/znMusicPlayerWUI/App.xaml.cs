@@ -63,7 +63,7 @@ namespace znMusicPlayerWUI
         public static IntPtr AppDesktopLyricWindowHandle;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.1.92 Preview";
+        public static readonly string AppVersion = "0.1.94 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -93,9 +93,16 @@ namespace znMusicPlayerWUI
             };
             audioPlayer.CacheLoadedChanged += (_) =>
             {
-                SMTC.DisplayUpdater.MusicProperties.Title = _.MusicData.Title;
-                SMTC.DisplayUpdater.MusicProperties.Artist = _.MusicData.ButtonName;
-                SMTC.DisplayUpdater.Update();
+                if (_.MusicData == null)
+                {
+                    SMTC.DisplayUpdater.MusicProperties.Title = _.FileReader.FileName;
+                }
+                else
+                {
+                    SMTC.DisplayUpdater.MusicProperties.Title = _.MusicData.Title;
+                    SMTC.DisplayUpdater.MusicProperties.Artist = _.MusicData.ButtonName;
+                }
+                    SMTC.DisplayUpdater.Update();
             };
             playingList.NowPlayingImageLoading += (_, __) =>
             {
@@ -136,7 +143,7 @@ namespace znMusicPlayerWUI
         {
             m_window = new MainWindow();
             WindowLocal = m_window;
-            AppWindowLocalHandle = WindowHelper.GetWindowHandle(m_window);
+            AppWindowLocalHandle = WindowHelperzn.WindowHelper.GetWindowHandle(m_window);
             AppWindowLocalOverlappedPresenter = OverlappedPresenter.Create();
             AppWindowLocalFullScreenPresenter = FullScreenPresenter.Create();
             App.AppWindowLocal.SetPresenter(AppWindowLocalOverlappedPresenter);
@@ -222,8 +229,6 @@ namespace znMusicPlayerWUI
             ".asf", ".wma", ".wmv",
             // ADTS
             ".aac", ".adts",
-            // AVI
-            ".avi",
             // MP3
             ".mp3",
             // MPEG-4
@@ -231,7 +236,7 @@ namespace znMusicPlayerWUI
             // SAMI
             ".sami", ".smi",
             // other
-            ".wav", ".ogg", ".flac", ".aiff", ".aif"
+            ".wav", ".avi",".ogg", ".flac", ".aiff", ".aif", ".mid"
         };
     }
 }

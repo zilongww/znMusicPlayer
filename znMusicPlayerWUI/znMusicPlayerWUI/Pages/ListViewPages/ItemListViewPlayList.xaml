@@ -6,9 +6,11 @@
     xmlns:controlszn="using:znMusicPlayerWUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:m="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:brushes="using:CommunityToolkit.WinUI.UI.Media"
+    xmlns:ui="using:CommunityToolkit.WinUI.UI"
     xmlns:behaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
     mc:Ignorable="d">
@@ -23,7 +25,8 @@
                   Background="Transparent"
                   ScrollViewer.CanContentRenderOutsideBounds="True"
                   Padding="0,0,0,12"
-                  SelectionMode="None">
+                  SelectionMode="None"
+                  ui:ScrollViewerExtensions.EnableMiddleClickScrolling="True">
             <ListView.Header>
                 <Border VerticalAlignment="Top"
                         x:Name="menu_border"
@@ -81,6 +84,25 @@
                                                 <x:String>时间升序</x:String>
                                                 <x:String>时间降序</x:String>
                                             </ComboBox>
+                                        </AppBarElementContainer>
+                                        <AppBarElementContainer AllowFocusOnInteraction="True">
+                                            <AutoSuggestBox Header="搜索歌曲"
+                                                            PlaceholderText="搜索列表歌曲"
+                                                            TextChanged="AutoSuggestBox_TextChanged"
+                                                            QuerySubmitted="AutoSuggestBox_QuerySubmitted"
+                                                            Margin="12, 4"
+                                                            x:Name="SearchBox">
+                                                <AutoSuggestBox.QueryIcon>
+                                                    <AnimatedIcon x:Name='SearchAnimatedIcon'>
+                                                        <AnimatedIcon.Source>
+                                                            <m:AnimatedFindVisualSource/>
+                                                        </AnimatedIcon.Source>
+                                                        <AnimatedIcon.FallbackIconSource>
+                                                            <SymbolIconSource Symbol='Find'/>
+                                                        </AnimatedIcon.FallbackIconSource>
+                                                    </AnimatedIcon>
+                                                </AutoSuggestBox.QueryIcon>
+                                            </AutoSuggestBox>
                                         </AppBarElementContainer>
                                     </CommandBar.SecondaryCommands>
                                     <AppBarButton x:Name="SelectAllButton"

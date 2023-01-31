@@ -328,6 +328,7 @@ namespace znMusicPlayerWUI.Helpers
 
     public static class LyricHelper
     {
+        public static string NoneLyricString = "·········";
         public async static Task<DataEditor.LyricData[]> LyricToLrcData(string lyricText)
         {
             Dictionary<TimeSpan, DataEditor.LyricData> lyricDictionary = new();
@@ -368,12 +369,12 @@ namespace znMusicPlayerWUI.Helpers
                             timesb +
                             TimeSpan.FromMilliseconds(int.Parse(times[1]));
                         var text = timesAndLyric[1];
-                        if (text == "") text = "·········";
+                        if (text == "") text = NoneLyricString;
 
                         if (lyricDictionary.ContainsKey(timesResult))
                         {
                             var l = lyricDictionary[timesResult];
-                            if (l.Lyric != text && text != "·········")
+                            if (l.Lyric != text && text != NoneLyricString)
                             {
                                 l.Translate = text;
                             }

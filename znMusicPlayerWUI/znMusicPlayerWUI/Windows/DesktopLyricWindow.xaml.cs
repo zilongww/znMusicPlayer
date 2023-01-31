@@ -38,7 +38,9 @@ namespace znMusicPlayerWUI.Windowed
         public DesktopLyricWindow()
         {
             InitializeComponent();
-            AppWindow = WindowHelper.GetAppWindowForCurrentWindow(this);
+            AppWindow = WindowHelperzn.WindowHelper.GetAppWindowForCurrentWindow(this);/*
+            WindowHelper.Window.hWnd = WindowHelper.Window.GetHWnd(this);
+            WindowHelper.Window.MakeTransparent();*/
 
             var a = OverlappedPresenter.Create();
             a.IsMaximizable = false;
@@ -49,7 +51,7 @@ namespace znMusicPlayerWUI.Windowed
                 AppWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay);
                 AppWindow.SetPresenter(a);
                 AppWindow.IsShownInSwitchers = false;
-                AppWindow.Title = this.ToString();
+                AppWindow.Title = "Desktop Lyric Window";
                 AppWindow.SetIcon(null);
                 AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
                 AppWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
@@ -58,11 +60,14 @@ namespace znMusicPlayerWUI.Windowed
                 AppWindow.TitleBar.ButtonForegroundColor = Colors.Transparent;
                 AppWindow.TitleBar.InactiveForegroundColor = Colors.Transparent;
                 AppWindow.TitleBar.ButtonInactiveForegroundColor = Colors.Transparent;
-                AppWindow.Resize(new SizeInt32() { Width = 400, Height = 100 });
-                PointInt32 pointInt32 = new(
-                    App.AppWindowLocal.Position.X + App.AppWindowLocal.Size.Width - AppWindow.Size.Width,
-                    App.AppWindowLocal.Position.Y + App.AppWindowLocal.Size.Height - AppWindow.Size.Height);
-                AppWindow.Move(pointInt32);
+                AppWindow.Resize(new SizeInt32() { Width = 450, Height = 100 });
+                if (!MainWindow.isMinSize)
+                {
+                    PointInt32 pointInt32 = new(
+                        App.AppWindowLocal.Position.X + App.AppWindowLocal.Size.Width - AppWindow.Size.Width,
+                        App.AppWindowLocal.Position.Y + App.AppWindowLocal.Size.Height - AppWindow.Size.Height);
+                    AppWindow.Move(pointInt32);
+                }
             }
             TrySetAcrylicBackdrop();
 
@@ -79,7 +84,13 @@ namespace znMusicPlayerWUI.Windowed
         bool IsT1Focus = true;
         private void LyricManager_PlayingLyricSelectedChange(LyricData nowLyricsData)
         {
-            if (nowLyricsData == null) return;
+            if (nowLyricsData == null)
+            {
+                T1.Text = App.AppName;
+                T2.Text = "无歌词";
+                return;
+            }
+            if (nowLyricsData.Lyric == LyricHelper.NoneLyricString) return;
             if (nowLyricsData.Translate != null)
             {
                 IsT1Focus = true;
@@ -97,7 +108,13 @@ namespace znMusicPlayerWUI.Windowed
                 LyricData nextData = new(null, null, TimeSpan.Zero);
                 try
                 {
-                    nextData = App.lyricManager.NowPlayingLyrics[App.lyricManager.NowPlayingLyrics.IndexOf(nowLyricsData) + 1];
+                    int num = App.lyricManager.NowPlayingLyrics.IndexOf(nowLyricsData);
+                    do
+                    {
+                        num++;
+                        nextData = App.lyricManager.NowPlayingLyrics[num];
+                    }
+                    while (nextData.Lyric == LyricHelper.NoneLyricString);
                 }
                 catch { }
                 if (IsT1Focus)
@@ -131,7 +148,7 @@ namespace znMusicPlayerWUI.Windowed
         DesktopAcrylicController m_acrylicController = new DesktopAcrylicController()
         {
             TintColor = Color.FromArgb(255, 35, 35, 35),
-            LuminosityOpacity = 0.8f,
+            LuminosityOpacity = 0.5f,
             TintOpacity = 0f,
             FallbackColor = Color.FromArgb(255, 40, 40, 40)
         };

@@ -8,20 +8,24 @@ using System.Diagnostics;
 using NAudio;
 using NAudio.Wave;
 using NAudio.Dsp;
-using NAudio.Midi;
 using SoundTouch.Net;
 using System.Net;
 using NAudio.CoreAudioApi;
-using static znMusicPlayerWUI.Media.AudioPlayer;
 using Microsoft.UI.Xaml;
 using System.Reflection.Metadata;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.DataEditor;
-using static znMusicPlayerWUI.DataEditor.DataFolderBase;
 using Windows.Media;
 using Windows.Storage.Pickers;
 using Windows.Media.Playback;
 using Windows.Media.Core;
+using Microsoft.VisualBasic.Logging;
+using System.Windows.Forms;
+using Melanchall.DryWetMidi.Multimedia;
+using Melanchall.DryWetMidi.Core;
+using Melanchall.DryWetMidi.Interaction;
+using static znMusicPlayerWUI.Media.AudioPlayer;
+using static znMusicPlayerWUI.DataEditor.DataFolderBase;
 
 namespace znMusicPlayerWUI.Media
 {
@@ -124,7 +128,10 @@ namespace znMusicPlayerWUI.Media
         public Media.AudioFileReader FileReader { get; set; } = null;
         public AudioEffects.SoundTouchWaveProvider FileProvider { get; set; } = null;
         public IWavePlayer NowOutObj { get; set; } = null;
-        public DataEditor.MusicData MusicData { get; set; }
+        public MidiFile MidiFile { get; set; } = null;
+        public OutputDevice MidiOutputDevice { get; set; } = OutputDevice.GetByIndex(0);
+        public Playback MidiPlayback { get; set; } = null;
+        public MusicData MusicData { get; set; }
         public bool IsReloadErrorFile { get; set; }
 
         public string NameOfBand { get; set; }
@@ -202,13 +209,60 @@ namespace znMusicPlayerWUI.Media
             get
             {
                 if (FileReader != null)
-                    return FileReader.CurrentTime;// - TimeSpan.FromMilliseconds(Latency);
+                {
+                    return FileReader.isMidi ? TimeSpan.FromMilliseconds((MidiPlayback.GetCurrentTime(TimeSpanType.Metric) as MetricTimeSpan).TotalMilliseconds) : FileReader.CurrentTime;// - TimeSpan.FromMilliseconds(Latency);
+                }
                 else return TimeSpan.Zero;
             }
             set
             {
-                FileReader.CurrentTime = value;
-                TimingChanged?.Invoke(this);
+                if (FileReader != null)
+                {
+                    if (FileReader.isMidi)
+                    {
+                        MidiPlayback.MoveToTime(new MetricTimeSpan(value.Hours, value.Minutes, value.Seconds, value.Milliseconds));
+                    }
+                    else
+                    {
+                        FileReader.CurrentTime = value;
+                    }
+                    TimingChanged?.Invoke(this);
+                }
+            }
+        }
+        
+        public TimeSpan TotalTime
+        {
+            get
+            {
+                if (FileReader != null)
+                {
+                    return FileReader.isMidi ? TimeSpan.FromMilliseconds((MidiPlayback.GetDuration(TimeSpanType.Metric) as MetricTimeSpan).TotalMilliseconds) : FileReader.TotalTime;// - TimeSpan.FromMilliseconds(Latency);
+                }
+                else return TimeSpan.Zero;
+            }
+        }
+
+        public PlaybackState PlaybackState
+        {
+            get
+            {
+                if (FileReader != null)
+                {
+                    if (FileReader.isMidi)
+                    {
+                        if (MidiPlayback.IsRunning)
+                            return PlaybackState.Playing;
+                        else return PlaybackState.Paused;
+                    }
+                    else
+                    {
+                        if (NowOutObj != null)
+                            return NowOutObj.PlaybackState;
+                        else return PlaybackState.Stopped;
+                    }
+                }
+                return PlaybackState.Stopped;
             }
         }
 
@@ -232,7 +286,13 @@ namespace znMusicPlayerWUI.Media
                 else if (value > 1f) value = 1f;
                 _volume = value;
                 VolumeChanged?.Invoke(this, value);
-                if (FileReader != null) FileReader.Volume = value;
+                if (FileReader != null)
+                {
+                    if (!FileReader.isMidi)
+                    {
+                        FileReader.Volume = value;
+                    }
+                }
             }
         }
 
@@ -261,6 +321,10 @@ namespace znMusicPlayerWUI.Media
             {
                 _tempo = value;
                 if (FileProvider != null) FileProvider.Tempo = value;
+                if (FileReader.isMidi)
+                {
+                    MidiPlayback.Speed = value;
+                }
             }
         }
         
@@ -437,6 +501,13 @@ namespace znMusicPlayerWUI.Media
             await Task.Run(() =>
             {
                 fileReader = new AudioFileReader(filePath);
+
+                if (fileReader.isMidi)
+                {
+                    WaveInfo = "播放Midi格式的音频时，一些选项可能不可用。";
+                    return;
+                }
+
                 fileProvider = new AudioEffects.SoundTouchWaveProvider(fileReader);
                 fileReader.EqEnabled = EqEnabled;
                 fileReader.Volume = Volume;
@@ -452,7 +523,7 @@ namespace znMusicPlayerWUI.Media
                 }
                 catch
                 {
-                    WaveInfo = $"{fileReader.WaveFormat.AsStandardWaveFormat().Encoding} - {fileReader.WaveFormat.SampleRate / (decimal)1000}kHz-{(int)(File.ReadAllBytes(filePath).Length * 8 / fileReader.TotalTime.TotalSeconds / 1000)}kbps";
+                    WaveInfo = $"{fileReader.WaveFormat.AsStandardWaveFormat().Encoding} - {fileReader.WaveFormat.SampleRate / (decimal)1000}kHz-{(int)(File.ReadAllBytes(filePath).Length * 8 / TotalTime.TotalSeconds / 1000)}kbps";
                 }
             });
             if (EqEnabled)
@@ -471,55 +542,65 @@ namespace znMusicPlayerWUI.Media
             FileReader = fileReader;
             FileProvider = fileProvider;
 
-            bool notDefaultLatency = false;
-            if (Latency != (int)SettingDefault[SettingParams.AudioLatency.ToString()])
+            if (!FileReader.isMidi)
             {
-                notDefaultLatency = true;
-            }
+                bool notDefaultLatency = false;
+                if (Latency != (int)SettingDefault[SettingParams.AudioLatency.ToString()])
+                {
+                    notDefaultLatency = true;
+                }
 
-            switch (NowOutDevice.DeviceType)
+                switch (NowOutDevice.DeviceType)
+                {
+                    case OutApi.WaveOut:
+                        NowOutObj = new WaveOutEvent();
+                        (NowOutObj as WaveOutEvent).DeviceNumber = NowOutDevice.Device == null ? -1 : (int)NowOutDevice.Device;
+                        if (notDefaultLatency) (NowOutObj as WaveOutEvent).NumberOfBuffers = Latency;
+                        NowOutObj.Init(FileProvider);
+                        NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
+                        break;
+                    case OutApi.DirectSound:
+                        if (NowOutDevice.Device == null)
+                        {
+                            if (notDefaultLatency)
+                                NowOutObj = new DirectSoundOut(Latency);
+                            else
+                                NowOutObj = new DirectSoundOut();
+                        }
+                        else
+                        {
+                            if (notDefaultLatency)
+                                NowOutObj = new DirectSoundOut((NowOutDevice.Device as DirectSoundDeviceInfo).Guid, Latency);
+                            else
+                                NowOutObj = new DirectSoundOut((NowOutDevice.Device as DirectSoundDeviceInfo).Guid);
+                        }
+                        NowOutObj.Init(FileProvider);
+                        NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
+                        break;
+                    case OutApi.Wasapi:
+                        var device = new MMDeviceEnumerator().GetDevice(NowOutDevice.Device as string);
+                        NowOutObj = new WasapiOut(
+                            device,
+                            WasapiOnly ? AudioClientShareMode.Exclusive : AudioClientShareMode.Shared, false,
+                            Latency);
+                        NowOutObj.Init(FileProvider);
+                        NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
+                        device.Dispose();
+                        break;
+                    case OutApi.Asio:
+                        NowOutObj = new AsioOut(NowOutDevice.Device.ToString());
+                        //if (notDefaultLatency) (NowOutObj as AsioOut).PlaybackLatency = Latency;
+                        NowOutObj.Init(FileProvider);
+                        NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
+                        break;
+                }
+            }
+            else
             {
-                case OutApi.WaveOut:
-                    NowOutObj = new WaveOutEvent();
-                    (NowOutObj as WaveOutEvent).DeviceNumber = NowOutDevice.Device == null ? -1 : (int)NowOutDevice.Device;
-                    if (notDefaultLatency) (NowOutObj as WaveOutEvent).NumberOfBuffers = Latency;
-                    NowOutObj.Init(FileProvider);
-                    NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
-                    break;
-                case OutApi.DirectSound:
-                    if (NowOutDevice.Device == null)
-                    {
-                        if (notDefaultLatency)
-                            NowOutObj = new DirectSoundOut(Latency);
-                        else
-                            NowOutObj = new DirectSoundOut();
-                    }
-                    else
-                    {
-                        if (notDefaultLatency)
-                            NowOutObj = new DirectSoundOut((NowOutDevice.Device as DirectSoundDeviceInfo).Guid, Latency);
-                        else
-                            NowOutObj = new DirectSoundOut((NowOutDevice.Device as DirectSoundDeviceInfo).Guid);
-                    }
-                    NowOutObj.Init(FileProvider);
-                    NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
-                    break;
-                case OutApi.Wasapi:
-                    var device = new MMDeviceEnumerator().GetDevice(NowOutDevice.Device as string);
-                    NowOutObj = new WasapiOut(
-                        device,
-                        WasapiOnly ? AudioClientShareMode.Exclusive : AudioClientShareMode.Shared, false,
-                        Latency);
-                    NowOutObj.Init(FileProvider);
-                    NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
-                    device.Dispose();
-                    break;
-                case OutApi.Asio:
-                    NowOutObj = new AsioOut(NowOutDevice.Device.ToString());
-                    //if (notDefaultLatency) (NowOutObj as AsioOut).PlaybackLatency = Latency;
-                    NowOutObj.Init(FileProvider);
-                    NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
-                    break;
+                MidiFile = MidiFile.Read(filePath);
+                MidiPlayback = MidiFile.GetPlayback(MidiOutputDevice);
+                MidiPlayback.Finished += (_, __) => MainWindow.Invoke(() => AudioPlayer_PlaybackStopped(null, null));
+                MidiPlayback.Speed = Tempo;
             }
         }
 
@@ -527,8 +608,9 @@ namespace znMusicPlayerWUI.Media
         {
             if (FileReader != null)
             {
+                if (FileReader.isMidi) return;
                 TimeSpan nowPosition = FileReader.CurrentTime;
-                var nowPlayState = NowOutObj.PlaybackState;
+                var nowPlayState = NowOutObj?.PlaybackState;
                 string filePath = FileReader.FileName;
 
                 await Task.Run(() => DisposeAll());
@@ -552,7 +634,7 @@ namespace znMusicPlayerWUI.Media
             catch (Exception err) { Debug.WriteLine(err.ToString()); }
         }
 
-        [Obsolete]
+        [Obsolete(message:"不建议使用，性能较差")]
         public void SetEqualizer(int position, float db)
         {
             EqualizerBand[position][2] = db;
@@ -568,8 +650,8 @@ namespace znMusicPlayerWUI.Media
                     PlayEnd?.Invoke(this);
                 else
                 {
-                    var a = FileReader.CurrentTime + TimeSpan.FromSeconds(1.5);
-                    if (a >= FileReader?.TotalTime)
+                    var a = CurrentTime + TimeSpan.FromSeconds(1.5);
+                    if (a >= TotalTime)
                         PlayEnd?.Invoke(this);
                 }
             }
@@ -578,6 +660,7 @@ namespace znMusicPlayerWUI.Media
         public bool SetPlay()
         {
             NowOutObj?.Play();
+            MidiPlayback?.Start();
             PlayStateChanged?.Invoke(this);
             timer.Start();
             App.SMTC.PlaybackStatus = MediaPlaybackStatus.Playing;
@@ -587,6 +670,7 @@ namespace znMusicPlayerWUI.Media
         public bool SetPause()
         {
             NowOutObj?.Pause();
+            MidiPlayback?.Stop();
             PlayStateChanged?.Invoke(this);
             App.SMTC.PlaybackStatus = MediaPlaybackStatus.Paused;
             return true;
@@ -595,6 +679,7 @@ namespace znMusicPlayerWUI.Media
         public bool SetStop()
         {
             NowOutObj?.Stop();
+            MidiPlayback?.Stop();
             PlayStateChanged?.Invoke(this);
             App.SMTC.PlaybackStatus = MediaPlaybackStatus.Stopped;
             return true;
@@ -602,7 +687,7 @@ namespace znMusicPlayerWUI.Media
 
         public void ReCallTiming()
         {
-            if (NowOutObj?.PlaybackState == PlaybackState.Playing)
+            if (PlaybackState == PlaybackState.Playing)
             {
                 TimingChanged?.Invoke(this);
             }
@@ -612,20 +697,23 @@ namespace znMusicPlayerWUI.Media
             }
         }
 
-        bool isDosposing = false;
+        bool isDisposing = false;
         public void DisposeAll()
         {
-            if (isDosposing) return;
-            isDosposing = true;
+            if (isDisposing) return;
+            isDisposing = true;
 
             (NowOutObj as IDisposable)?.Dispose();
             NowOutObj = null;
+            MidiFile = null;
+            MidiPlayback?.Dispose();
+            MidiPlayback = null;
             FileReader?.Dispose();
             FileReader = null;
             FileProvider?.Clear();
             FileProvider = null;
 
-            isDosposing = false;
+            isDisposing = false;
         }
     }
 }

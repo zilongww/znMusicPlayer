@@ -169,6 +169,30 @@ namespace znMusicPlayerWUI.DataEditor
             LyricTimeSpan = timeSpan;
             MD5 = CodeHelper.ToMD5($"{Lyric}{Translate}{LyricTimeSpan.Ticks}");
         }
+
+        public static bool operator ==(LyricData left, LyricData right)
+        {
+            if (left is null && right is null) return true;
+            if (left is null || right is null) return false;
+            return left.MD5 == right.MD5;
+        }
+
+        public static bool operator !=(LyricData left, LyricData right)
+        {
+            if (left is null && right is null) return false;
+            return !(left == right);
+        }
+
+        public override bool Equals(object other)
+        {
+            if (!(other is LyricData)) return false;
+            return string.Equals(MD5, (other as LyricData).MD5, StringComparison.InvariantCulture);
+        }
+
+        public override int GetHashCode()
+        {
+            return (MD5 != null ? StringComparer.InvariantCulture.GetHashCode(MD5) : 0);
+        }
     }
 
     public class Music

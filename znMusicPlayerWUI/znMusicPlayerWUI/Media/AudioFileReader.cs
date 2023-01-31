@@ -8,6 +8,7 @@ using NAudio.Codecs;
 using System.IO;
 using System.Linq;
 using znMusicPlayerWUI.Helpers;
+using NAudio.Midi;
 
 namespace znMusicPlayerWUI.Media
 {
@@ -25,7 +26,7 @@ namespace znMusicPlayerWUI.Media
         public string FileName { get; }
         public string FileAddr { get; private set; }
 
-        public override WaveFormat WaveFormat => sampleChannel.WaveFormat;
+        public override WaveFormat WaveFormat => sampleChannel?.WaveFormat;
 
         public override long Length => length;
 
@@ -56,11 +57,15 @@ namespace znMusicPlayerWUI.Media
             }
         }
 
+        public string addr = null;
+        public bool isMidi = false;
+
         public AudioFileReader(string fileName)
         {
             lockObject = new object();
             FileName = fileName;
             CreateReaderStream(fileName);
+            if (isMidi) return;
             sourceBytesPerSample = readerStream.WaveFormat.BitsPerSample / 8 * readerStream.WaveFormat.Channels;
             sampleChannel = new SampleChannel(readerStream, forceStereo: false);
             destBytesPerSample = 4 * sampleChannel.WaveFormat.Channels;
@@ -75,7 +80,6 @@ namespace znMusicPlayerWUI.Media
                 var f = File.ReadAllBytes(fileName);
                 if (f.Length > 0)
                 {
-                    string addr = null;
                     try
                     {
                         addr = FileHelper.FileTypeGet(fileName);
@@ -117,13 +121,16 @@ namespace znMusicPlayerWUI.Media
                             System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Aiff 解码器");
 #endif
                             break;
+                        case "7784":
+                            isMidi = true;
+                            break;
                         default:
                             if (File.Exists(fileName))
                             {
-                                readerStream = new MediaFoundationReader(fileName);
 #if DEBUG
                                 System.Diagnostics.Debug.WriteLine($"AudioFileReader: 正在使用 Microsoft MediaFoundationReader 解码器，文件标识符为：{addr}");
 #endif
+                                readerStream = new MediaFoundationReader(fileName);
                             }
                             break;
                     }

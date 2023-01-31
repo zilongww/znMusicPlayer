@@ -13,6 +13,8 @@ using znMusicPlayerWUI.Helpers;
 using Microsoft.UI.Xaml.Navigation;
 using znMusicPlayerWUI.Controls;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Reflection.Emit;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -77,8 +79,7 @@ namespace znMusicPlayerWUI.Pages
             var padingSize = 40;
             // Get the visual that represents our HeaderTextBlock 
             // And define the progress animation string
-            String progress = $"Clamp(-scroller.Translation.Y / {padingSize}, 0, 1.0)";
-
+            var progress = $"Clamp(-scroller.Translation.Y / {padingSize}, 0, 1.0)";
 
             if (scrollerPropertySet == null)
             {
@@ -90,7 +91,7 @@ namespace znMusicPlayerWUI.Pages
             }
 
             // Shift the header by 50 pixels when scrolling down
-            var offsetExpression = compositor.CreateExpressionAnimation($"-scroller.Translation.Y - {progress} * {padingSize}");
+            var offsetExpression = compositor.CreateExpressionAnimation($"-scroller.Translation.Y - Round({progress} * {padingSize})");
             offsetExpression.SetReferenceParameter("scroller", scrollerPropertySet);
             headerVisual.StartAnimation("Offset.Y", offsetExpression);
 
@@ -140,6 +141,11 @@ namespace znMusicPlayerWUI.Pages
         private async void AppBarButton_Click_1(object sender, RoutedEventArgs e)
         {
             await DialogPages.AddPlayListPage.ShowDialog();
+        }
+
+        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdataShyHeader();
         }
     }
 }

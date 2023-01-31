@@ -75,7 +75,7 @@ namespace znMusicPlayerWUI.Windowed
         {
             InitializeComponent();
             Title = "Media Player Window";
-            appWindow = WindowHelper.GetAppWindowForCurrentWindow(this);
+            appWindow = WindowHelperzn.WindowHelper.GetAppWindowForCurrentWindow(this);
             appWindow.SetIcon("icon.ico");
 
             overlappedPresenter = OverlappedPresenter.Create();
@@ -122,7 +122,7 @@ namespace znMusicPlayerWUI.Windowed
             DefaultColor,
         }
 
-        static WindowsSystemDispatcherQueueHelper m_wsdqHelper;
+        static WindowHelperzn.WindowsSystemDispatcherQueueHelper m_wsdqHelper;
         static BackdropType m_currentBackdrop;
         static MicaController m_micaController;
         static DesktopAcrylicController m_acrylicController;

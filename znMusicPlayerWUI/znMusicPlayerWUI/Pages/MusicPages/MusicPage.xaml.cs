@@ -19,11 +19,14 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Windowing;
 using znMusicPlayerWUI.DataEditor;
 using Windows.System;
+using Microsoft.UI.Input;
+using System.Xml.Linq;
 
 namespace znMusicPlayerWUI.Pages.MusicPages
 {
     public partial class MusicPage : Page, IMusicPage
     {
+        private GestureRecognizer _recognizer;
         public MusicPageViewStateChangeDelegate MusicPageViewStateChange { get; set; }
 
         public string Title
@@ -183,7 +186,9 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         }
 
         public void UpdataInterfaceDesign()
-        {/*
+        {
+
+            /*
             if (!ShowLrcPage)
             {
                 (InfoBaseGrid.Children[1] as Grid).Width = double.NaN;
@@ -271,17 +276,17 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             isCodeChangedLrcItem = true;
             LrcBaseListView.SelectedItem = App.lyricManager.NowLyricsData;
             isCodeChangedLrcItem = false;
-            if (scrollViewer != null && !inScroll)
+            if (scrollViewer != null && !inScroll && App.lyricManager.NowLyricsData != null)
             {
-                var b = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
-                if (b == null)
+                var c = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
+                if (c == null)
                 {
-                    LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData);
-                    b = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
-                    LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData);
+                    LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData, ScrollIntoViewAlignment.Default);
+                    c = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
+                    LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData, ScrollIntoViewAlignment.Default);
                 }
-                if (b != null)
-                    scrollViewer.ChangeView(null, b.ActualOffset.Y + b.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48, null);
+                if (c != null)
+                    scrollViewer.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48, null);
             }
             
 #if DEBUG
@@ -328,7 +333,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private void AudioPlayer_PlayStateChanged(Media.AudioPlayer audioPlayer)
         {
             if (ViewState == MusicPageViewState.Hidden) return;
-            MediaPlayStateViewer1.PlaybackState = audioPlayer.NowOutObj != null ? audioPlayer.NowOutObj.PlaybackState : PlaybackState.Paused;
+            MediaPlayStateViewer1.PlaybackState = audioPlayer.PlaybackState;
         }
 
         private void AudioPlayer_TimingChanged(Media.AudioPlayer audioPlayer)
@@ -339,13 +344,13 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 {
                     isCodeChangedSliderValue = true;
                     PlaySlider.Minimum = 0;
-                    PlaySlider.Maximum = audioPlayer.FileReader.TotalTime.Ticks;
+                    PlaySlider.Maximum = audioPlayer.TotalTime.Ticks;
                     PlaySlider.Value = audioPlayer.CurrentTime.Ticks;
                     isCodeChangedSliderValue = false;
                     NowPlayTimeTb.Text =
-                        $"{audioPlayer.CurrentTime:mm\\:ss}/{audioPlayer.FileReader.TotalTime.ToString(@"mm\:ss")}";
+                        $"{audioPlayer.CurrentTime:mm\\:ss}/{audioPlayer.TotalTime.ToString(@"mm\:ss")}";
                     NowAtherTimeTb.Text =
-                        (audioPlayer.FileReader.TotalTime - audioPlayer.CurrentTime).ToString(@"mm\:ss");
+                        (audioPlayer.TotalTime - audioPlayer.CurrentTime).ToString(@"mm\:ss");
                 }
             }
         }
@@ -380,7 +385,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            if (App.audioPlayer.NowOutObj?.PlaybackState == PlaybackState.Playing)
+            if (App.audioPlayer.PlaybackState == PlaybackState.Playing)
             {
                 App.audioPlayer.SetPause();
             }
@@ -413,8 +418,62 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 scrollViewer = a.Child as ScrollViewer;
             scrollViewer.CanContentRenderOutsideBounds = false;
             LrcBaseListView.AddHandler(PointerWheelChangedEvent, new PointerEventHandler(LrcBaseListView_PointerWheelChanged), true);
-            LrcBaseListView.AddHandler(HoldingEvent, new HoldingEventHandler(LrcBaseListView_Holding), true);
+            _recognizer = new GestureRecognizer()
+            {
+                GestureSettings = GestureSettings.ManipulationTranslateY
+                // 此处为手势识别器需要识别的手势, 这里只需识别纵向滑动
+            };
+
+            LrcBaseListView.AddHandler(PointerMovedEvent, new PointerEventHandler(LrcBaseListView_PointerMoved), true);
+
+            _recognizer.ManipulationUpdated += Recognizer_ManipulationUpdated;
+            _recognizer.ManipulationCompleted += Recognizer_ManipulationCompleted;
+
             UpdataInterfaceDesign();
+        }
+
+        private void LrcBaseListView_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        {
+            ScrollingLrcView();
+        }
+
+        private void LrcBaseListView_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (e.GetCurrentPoint(LrcBaseListView).PointerDeviceType != PointerDeviceType.Mouse)
+                ScrollingLrcView();
+            //e.Handled = true;
+            //System.Diagnostics.Debug.WriteLine("M");
+            //_recognizer.ProcessMoveEvents(e.GetIntermediatePoints(LrcBaseListView));
+        }
+
+        private void Recognizer_ManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
+        {
+            System.Diagnostics.Debug.WriteLine("U");
+            /*double destY = (PlaybackDetailFrame.RenderTransform as CompositeTransform).TranslateY + args.Delta.Translation.Y;
+            if (destY <= 0) destY = 0;
+            if (destY >= ActualHeight) destY = ActualHeight;
+            (PlaybackDetailFrame.RenderTransform as CompositeTransform).TranslateY = destY;*/
+        }
+
+        private void Recognizer_ManipulationCompleted(GestureRecognizer sender, ManipulationCompletedEventArgs args)
+        {
+            System.Diagnostics.Debug.WriteLine("C");
+            /*
+            double destY = (PlaybackDetailFrame.RenderTransform as CompositeTransform).TranslateY;
+            SetPlaybackDetailFrameVisibility(destY <= ActualHeight * 0.4);*/
+        }
+
+        async void ScrollingLrcView()
+        {
+            scrollCount++;
+            inScroll = true;
+            await Task.Delay(2500);
+            if (scrollCount <= 1)
+            {
+                inScroll = false;
+                SelectedChangedDo();
+            }
+            scrollCount--;
         }
 
         bool inScroll = false;
@@ -466,29 +525,6 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.OpenOrCloseMusicPage();
-        }
-
-        private void LrcBaseListView_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
-        {
-            ScrollingLrcView();
-        }
-
-        private void LrcBaseListView_Holding(object sender, HoldingRoutedEventArgs e)
-        {
-            ScrollingLrcView();
-        }
-
-        async void ScrollingLrcView()
-        {
-            scrollCount++;
-            inScroll = true;
-            await Task.Delay(2500);
-            if (scrollCount <= 1)
-            {
-                inScroll = false;
-                SelectedChangedDo();
-            }
-            scrollCount--;
         }
 
         private void FullScreenButton_Click(object sender, RoutedEventArgs e)
