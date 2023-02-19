@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:znMusicPlayerWUI"
+    xmlns:triggers="using:CommunityToolkit.WinUI.UI.Triggers"    
     xmlns:data="using:znMusicPlayerWUI.DataEditor"
     xmlns:controls="using:znMusicPlayerWUI.Controls"
     xmlns:m="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
@@ -38,7 +39,7 @@
                     <ColumnDefinition Width="*" x:Name="InfoPageColumn"/>
                     <ColumnDefinition Width="1.4*" x:Name="LrcPageColumn"/>
                 </Grid.ColumnDefinitions>
-                <Grid x:Name="InfoBaseGrid" VerticalAlignment="Stretch" Margin="0,0,38,0">
+                <Grid x:Name="InfoBaseGrid" VerticalAlignment="Stretch" Margin="0,0,30,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="auto"/>
@@ -77,6 +78,7 @@
                         <Button x:Name="TitleRunButton" Click="TitleRunButton_Click">
                             <Button.Flyout>
                                 <MenuFlyout x:Name="TitleFlyout">
+                                    <MenuFlyoutItem IsEnabled="False" Text="{Binding Title, Mode=TwoWay}"/>
                                     <MenuFlyoutItem x:Name="TitleSearchMenuItem" Click="TitleSearchMenuItem_Click" Text="去搜索" Icon="find"/>
                                     <MenuFlyoutItem x:Name="CopyMenuItem" Click="CopyMenuItem_Click" Text="复制" Icon="copy"/>
                                 </MenuFlyout>
@@ -113,10 +115,33 @@
                           HorizontalContentAlignment="Stretch">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="data:LyricData">
-                                <TextBlock TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
-                                           TextWrapping="Wrap">
-                                    <Run Text="{x:Bind Lyric}" FontSize="29"/><LineBreak/><Run Text="{x:Bind Translate}" FontSize="22"/>
-                                </TextBlock>
+                                <StackPanel Background="Transparent">
+                                    <!--
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup x:Name="TextBoxStates">
+                                            <VisualState x:Name="TextBoxNotEmptyState"/>
+                                            <VisualState x:Name="TextBoxEmptyState">
+                                                <VisualState.StateTriggers>
+                                                    <triggers:IsNullOrEmptyStateTrigger Value="{Binding Text, ElementName=TranslateTextBlock, Mode=OneWay}"/>
+                                                </VisualState.StateTriggers>
+                                                <VisualState.Setters>
+                                                    <Setter Target="TranslateTextBlock.Visibility"  Value="Collapsed" />
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
+                                    -->
+                                    <TextBlock TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
+                                               TextWrapping="Wrap"
+                                               FontSize="29"
+                                               Text="{Binding Lyric}"/>
+                                    <TextBlock x:Name="TranslateTextBlock"
+                                               TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
+                                               TextWrapping="Wrap"
+                                               Text="{Binding Translate}"
+                                               FontSize="22"
+                                               Height="auto"/>
+                                </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                         <ListView.ItemContainerStyle>
@@ -152,7 +177,7 @@
                                             ContentMargin="{TemplateBinding Padding}"
                                             CheckMode="Overlay"
                                             MinWidth="0"
-                                            Margin="0,16">
+                                            Margin="0,20">
                                             </ListViewItemPresenter>
                                         </ControlTemplate>
                                     </Setter.Value>

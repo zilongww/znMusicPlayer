@@ -264,34 +264,36 @@ namespace znMusicPlayerWUI.Helpers.MetingService
             {
                 var getPlayListAction = MusicListData () =>
                 {
-                    JObject pls = JObject.Parse(Services.FormatMethod(false).Playlist(id));
-                    //System.Diagnostics.Debug.WriteLine(pls);
-
-                    if (pls["code"].ToString() == "200")
+                    try
                     {
-                        MusicListData musicListData = new();
+                        JObject pls = JObject.Parse(Services.FormatMethod(false).Playlist(id));
+                        //System.Diagnostics.Debug.WriteLine(pls);
 
-                        var pld = pls["playlist"];
-                        musicListData.ListShowName = (string)pld["name"];
-                        musicListData.ID = (string)pld["id"];
-                        musicListData.PicturePath = (string)pld["coverImgUrl"];
-                        musicListData.ListFrom = MusicFrom.neteaseMusic;
-                        musicListData.ListDataType = DataType.歌单;
+                        if (pls["code"].ToString() == "200")
+                        {
+                            MusicListData musicListData = new();
 
-                        var plt = pld["tracks"];
-                        musicListData.Songs = UnpackMusicData(plt);
+                            var pld = pls["playlist"];
+                            musicListData.ListShowName = (string)pld["name"];
+                            musicListData.ID = (string)pld["id"];
+                            musicListData.PicturePath = (string)pld["coverImgUrl"];
+                            musicListData.ListFrom = MusicFrom.neteaseMusic;
+                            musicListData.ListDataType = DataType.歌单;
 
-                        musicListData.ListName = $"{musicListData.ListShowName}{musicListData.ListFrom}{musicListData.PicturePath}";
-                        musicListData.ReMD5();
+                            var plt = pld["tracks"];
+                            musicListData.Songs = UnpackMusicData(plt);
 
-                        //System.Diagnostics.Debug.WriteLine(musicListData.MD5);
-                        if (musicListData.Songs.Any()) return musicListData;
+                            musicListData.ListName = $"{musicListData.ListFrom}{musicListData.ListDataType}{musicListData.ID}";
+
+                            //System.Diagnostics.Debug.WriteLine(musicListData.MD5);
+                            if (musicListData.Songs.Any()) return musicListData;
+                        }
+                        else
+                        {
+                            //System.Diagnostics.Debug.WriteLine(pls["message"]);
+                        }
                     }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine(pls["message"]);
-                    }
-
+                    catch { }
                     return null;
                 };
 

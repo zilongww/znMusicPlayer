@@ -20,6 +20,7 @@ namespace znMusicPlayerWUI.Controls
     {
         private bool _ShowImage = true;
 
+        public bool AutoLoadImage = false;
         public bool CanClickPlay { get; set; } = true;
         public MusicData MusicData { get; set; }
         public MusicListData MusicListData { get; set; }
@@ -57,14 +58,15 @@ namespace znMusicPlayerWUI.Controls
 
             //MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
             //MainWindow.DriveInTypeEvent += MainWindow_DriveInTypeEvent;
-
+/*
             if (musicListData != null)
             {
                 if (musicListData.ListDataType != DataType.本地歌单)
                 {
                     DeleteFlyoutBtn.Visibility = Visibility.Collapsed;
                 }
-            }
+            }*/
+            MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
         }
 
         private async void A_Click(object sender, RoutedEventArgs e)
@@ -85,6 +87,7 @@ namespace znMusicPlayerWUI.Controls
                 DataContext = null;
                 AlbumImage?.Dispose();
                 MusicData = null;
+                UnloadObject(this);
                 //MainWindow.DriveInTypeEvent -= MainWindow_DriveInTypeEvent;
             }
             catch (Exception err)
@@ -101,8 +104,10 @@ namespace znMusicPlayerWUI.Controls
             if (deviceType != Microsoft.UI.Input.PointerDeviceType.Mouse)
             {
                 InfoButton.Visibility = Visibility.Collapsed;
+                RightToolBar.Opacity = 1;
                 RightToolBar.Visibility = Visibility.Visible;
                 RightToolBar.Children[0].Visibility = Visibility.Collapsed;
+                if (!ShowImage) BaseGrid.Padding = new(10, 12, 10, 12);
             }
             else
             {
@@ -307,14 +312,17 @@ namespace znMusicPlayerWUI.Controls
 
         private async void DeleteFlyoutBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (MusicListData.ListDataType == DataType.本地歌单)
+            if (MusicListData.ListDataType == DataType.本地歌单 || MusicListData.ListDataType == DataType.歌单)
             {
                 await PlayListHelper.DeleteMusicDataFromPlayList(MusicListData.ListName, MusicData);
+                await App.playListReader.Refresh();
             }
         }
 
+        bool isLoaded = false;
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
+            isLoaded = true;
             if (InfoButton == null) return;
             //MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
 
@@ -345,6 +353,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
+            isLoaded = false;
             AlbumImage?.Dispose();
         }
 

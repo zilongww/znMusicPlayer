@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +10,41 @@ namespace znMusicPlayerWUI.Media
     public static class ImageManage
     {
         public static List<DataEditor.MusicData> LoadingImages = new();
+        static int loadNum = 0;
+        static int maxLoadNum = 0;
 
-        public static async Task<string> GetImageSource(DataEditor.MusicData musicData)
+        public static async Task<bool> DownloadPic(string a, string b)
+        {
+            try
+            {
+                await Helpers.WebHelper.DownloadFileAsync(a, b);
+            }
+            catch { }
+
+            bool error = await Task.Run(() =>
+            {
+                if (System.IO.File.Exists(b))
+                {
+                    if (System.IO.File.ReadAllBytes(b).Length == 0)
+                    {
+                        System.IO.File.Delete(b);
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            return error;
+        }
+
+        public static async Task<string> GetImageSource(DataEditor.MusicData musicData, bool IsDownload = true)
         {
             while (LoadingImages.Contains(musicData))
+            {
+                await Task.Delay(500);
+            }
+
+            while (loadNum > maxLoadNum)
             {
                 await Task.Delay(500);
             }
@@ -26,7 +58,9 @@ namespace znMusicPlayerWUI.Media
             }
             else
             {
+                loadNum++;
                 LoadingImages.Add(musicData);
+
                 if (Helpers.WebHelper.IsNetworkConnected)
                 {
                     //System.Diagnostics.Debug.WriteLine(musicData.AlbumID);
@@ -53,25 +87,7 @@ namespace znMusicPlayerWUI.Media
                         a = await Helpers.WebHelper.GetPicturePathAsync(musicData);
                     }
 
-                    try
-                    {
-                        await Helpers.WebHelper.DownloadFileAsync(a, b);
-                    }
-                    catch { }
-
-                    bool error = await Task.Run(() =>
-                    {
-                        if (System.IO.File.Exists(b))
-                        {
-                            if (System.IO.File.ReadAllBytes(b).Length == 0)
-                            {
-                                System.IO.File.Delete(b);
-                                return true;
-                            }
-                        }
-                        return false;
-                    });
-
+                    bool error = await DownloadPic(a, b);
                     if (error) resultPath = resultPath = null;//await GetImageSource(musicData);
                     else resultPath = b;
                 }
@@ -79,7 +95,9 @@ namespace znMusicPlayerWUI.Media
                 {
                     resultPath = "/Images/SugarAndSalt.jpg";
                 }
+
                 LoadingImages.Remove(musicData);
+                loadNum--;
             }
 
             return resultPath;

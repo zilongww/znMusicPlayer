@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" Loaded="Grid_Loaded" Unloaded="Grid_Unloaded"
-    RightTapped="Button_RightTapped" Background="Transparent"
+    RightTapped="Button_RightTapped" Background="{x:Null}"
     PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
     PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited"
     DoubleTapped="Grid_DoubleTapped" Holding="Grid_Holding" x:Name="root">
@@ -83,7 +83,7 @@
             x:Name="rootBorder">
         <Grid>
             <Rectangle x:Name="BackgroundBaseGrid" Tapped="Grid_Tapped" Opacity="0" Fill="{ThemeResource ItemBorderBackground}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-            <Grid x:Name="BaseGrid" Padding="10,6">
+            <Grid x:Name="BaseGrid" Padding="10,4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
@@ -110,7 +110,7 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Text="{Binding Title}" IsHitTestVisible="False" Grid.Row="0"/>
-                        <Grid Grid.Row="1">
+                        <Grid Grid.Row="1" HorizontalAlignment="Left">
                             <Button BorderThickness="0"
                                     Background="Transparent"
                                     Margin="0,0,0,0"

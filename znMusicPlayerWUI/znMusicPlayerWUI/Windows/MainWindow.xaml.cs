@@ -535,7 +535,7 @@ namespace znMusicPlayerWUI
                     case ElementTheme.Default: m_configurationSource.Theme = SystemBackdropTheme.Default; break;
                 }
 
-                m_micaController = new MicaController();
+                m_micaController = new MicaController(); //{ Kind = MicaKind.BaseAlt };
                 m_micaController.AddSystemBackdropTarget(SWindow.As<ICompositionSupportsSystemBackdrop>());
                 m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
                 isAcrylicBackdrop = false;
@@ -663,6 +663,7 @@ namespace znMusicPlayerWUI
                     m_configurationSource.Theme = SystemBackdropTheme.Default; break;
             }
             m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
+            //m_micaController.Kind = MicaKind.BaseAlt;
         }
 
         private static void Window_Closed(object sender, WindowEventArgs args)
@@ -1293,6 +1294,7 @@ namespace znMusicPlayerWUI
         }
         #endregion
 
+        #region Desktop Lyric Window Events
         bool IsDesktopLyricWindowOpen = false;
         DesktopLyricWindow DesktopLyricWindow = null;
         bool isInChangingLyricWindow = false;
@@ -1328,6 +1330,7 @@ namespace znMusicPlayerWUI
         {
             DesktopLyricWindow = null;
         }
+        #endregion
 
         #region PlayTimePopup
         private void PlayButton_Holding(object sender, HoldingRoutedEventArgs e)

@@ -41,10 +41,15 @@ namespace znMusicPlayerWUI.Pages
             var a = (MusicListData)e.Parameter;
             NavToObj = a;
             InitData();
+            App.playListReader.Updataed += PlayListReader_Updataed;
+            App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
         }
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
+            base.OnNavigatedFrom(e);
+            App.playListReader.Updataed -= PlayListReader_Updataed;
+
             if (Children.SelectionMode != ListViewSelectionMode.None)
             {
                 Button_Click_2(null, null);
@@ -60,6 +65,7 @@ namespace znMusicPlayerWUI.Pages
             PlayList_Image.Dispose();
             searchMusicDatas.Clear();
             searchMusicDatas = null;
+            UnloadObject(this);
             //System.Diagnostics.Debug.WriteLine("Clear");
         }
 
@@ -80,7 +86,6 @@ namespace znMusicPlayerWUI.Pages
             ElementCompositionPreview.SetElementChildVisual(PlayList_Image_DropShadowBase, basicRectVisual);
         }
 
-        static bool firstInit = false;
         public async void InitData()
         {
             SelectorSeparator.Visibility = Visibility.Collapsed;
@@ -145,20 +150,31 @@ namespace znMusicPlayerWUI.Pages
 
                 foreach (var i in array)
                 {
-                    var a = new Controls.SongItem(i, NavToObj) { ImageScaleDPI = dpi };
+                    var a = new SongItem(i, NavToObj) { ImageScaleDPI = dpi };
                     Children.Items.Add(a);
                 }
                 System.Diagnostics.Debug.WriteLine("加载完成。");
                 LoadingRing.IsIndeterminate = false;
                 LoadingRing.Visibility = Visibility.Collapsed;
             }
+        }
 
-            if (firstInit)
+        private void PlayListReader_Updataed()
+        {
+            foreach (var data in App.playListReader.NowMusicListDatas)
             {
-                firstInit = false;
-                await Task.Delay(1000);
-                Button_Click_2(null, null);
+                if (data == NavToObj)
+                {
+                    NavToObj = data;
+                    InitData();
+                    break;
+                }
             }
+        }
+
+        private void AudioPlayer_SourceChanged(AudioPlayer audioPlayer)
+        {
+
         }
 
         private async void LoadImage()

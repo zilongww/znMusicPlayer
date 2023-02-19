@@ -15,10 +15,9 @@ namespace znMusicPlayerWUI.Background
         public DataEditor.MusicListData[] NowMusicListDatas
         {
             get => nowMusicListDatas;
-            set
+            private set
             {
                 nowMusicListDatas = value;
-                Updataed?.Invoke();
             }
         }
 
@@ -30,6 +29,7 @@ namespace znMusicPlayerWUI.Background
             if (inRefresh) return;
             inRefresh = true;
             NowMusicListDatas = await DataEditor.PlayListHelper.ReadAllPlayList();
+            Updataed?.Invoke();
             inRefresh = false;
         }
     }

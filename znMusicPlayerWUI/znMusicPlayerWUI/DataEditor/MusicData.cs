@@ -6,7 +6,9 @@ using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml.Linq;
+using Meting4Net.Core.Models.Tencent;
 using Newtonsoft.Json.Linq;
 using znMusicPlayerWUI.Background;
 using znMusicPlayerWUI.Helpers;
@@ -19,6 +21,46 @@ namespace znMusicPlayerWUI.DataEditor
     public enum SearchDataType { 歌曲 = 1, 歌单 = 1000, 专辑 = 10, 用户 = 1002, 艺术家 = 100 }
     public enum MusicKbps { aac, wma, Kbps128, Kbps192, Kbps320, Kbps1000 }
     public enum PlaySort { 默认排序, 名称升序, 名称降序, 艺术家升序, 艺术家降序, 专辑升序, 专辑降序, 时间升序, 时间降序 }
+
+    public abstract class OnlyClass
+    {
+        string md5;
+        public string MD5
+        {
+            get
+            {
+                if (md5 == null)
+                    md5 = GetMD5();
+                return md5;
+            }
+        }
+
+        public abstract string GetMD5();
+
+        public static bool operator ==(OnlyClass left, OnlyClass right)
+        {
+            if (left is null && right is null) return true;
+            if (left is null || right is null) return false;
+            return left.MD5 == right.MD5;
+        }
+
+        public static bool operator !=(OnlyClass left, OnlyClass right)
+        {
+            if (left is null && right is null) return false;
+            return !(left == right);
+        }
+
+        public override bool Equals(object other)
+        {
+            if (!(other is OnlyClass)) return false;
+            return string.Equals(MD5, (other as OnlyClass).MD5, StringComparison.InvariantCulture);
+        }
+
+        public override int GetHashCode()
+        {
+            return (MD5 != null ? StringComparer.InvariantCulture.GetHashCode(MD5) : 0);
+        }
+    }
 
     public class Artist
     {
@@ -41,7 +83,7 @@ namespace znMusicPlayerWUI.DataEditor
         }
     }
 
-    public class MusicData
+    public class MusicData : OnlyClass
     {
         public string Title { get; set; }
         public string ID { get; set; }
@@ -55,17 +97,6 @@ namespace znMusicPlayerWUI.DataEditor
         public string InLocal { get; set; }
         public string ArtistName { get; set; }
         public string ButtonName { get; set; }
-        private string md5 = null;
-        public string MD5
-        {
-            get
-            {
-                if (md5 == null)
-                    md5 = Helpers.CodeHelper.ToMD5($"{Title}{Artists[0]}{Artists.Count}{Album}{ID}{AlbumID}{From}{InLocal}");
-                return md5;
-            }
-        }
-
         public MusicData(string title = "",
                          string ID = "",
                          List<Artist> artists = null,
@@ -97,32 +128,13 @@ namespace znMusicPlayerWUI.DataEditor
             ButtonName = $"{ArtistName} · {Album}";
         }
 
-        public static bool operator ==(MusicData left, MusicData right)
+        public override string GetMD5()
         {
-            if (left is null && right is null) return true;
-            if (left is null || right is null) return false;
-            return left.MD5 == right.MD5;
-        }
-
-        public static bool operator !=(MusicData left, MusicData right)
-        {
-            if (left is null && right is null) return false;
-            return !(left == right);
-        }
-
-        public override bool Equals(object other)
-        {
-            if (!(other is MusicData)) return false;
-            return string.Equals(MD5, (other as MusicData).MD5, StringComparison.InvariantCulture);
-        }
-
-        public override int GetHashCode()
-        {
-            return (MD5 != null ? StringComparer.InvariantCulture.GetHashCode(MD5) : 0);
+            return CodeHelper.ToMD5($"{Title}{Artists[0]}{Artists.Count}{Album}{ID}{AlbumID}{From}{InLocal}");
         }
     }
 
-    public class MusicListData
+    public class MusicListData : OnlyClass
     {
         public string ListName { get; set; }
         public string ListShowName { get; set; }
@@ -131,7 +143,6 @@ namespace znMusicPlayerWUI.DataEditor
         public DataType ListDataType { get; set; }
         public string ID { get; set; }
         public int ListCount { get; set; }
-        public string MD5 { get; set; }
         public PlaySort PlaySort { get; set; }
         public List<MusicData> Songs { get; set; }
 
@@ -146,56 +157,33 @@ namespace znMusicPlayerWUI.DataEditor
             this.ID = ID;
             this.Songs = songs == null ? new() : songs;
             this.ListCount = songs == null ? 0 : songs.Count;
-            MD5 = Helpers.CodeHelper.ToMD5($"{listShowName}{listName}{picturePath}{listFrom}{listDataType}{ID}{ListCount}");
             ListDataType = listDataType;
         }
 
-        public void ReMD5()
+        public override string GetMD5()
         {
-            MD5 = Helpers.CodeHelper.ToMD5($"{ListShowName}{ListName}{PicturePath}{ListFrom}{ListDataType}{ID}{ListCount}");
+            return CodeHelper.ToMD5($"{ListShowName}{ListName}{PicturePath}{ListFrom}{ListDataType}{ID}{ListCount}");
         }
     }
 
-    public class LyricData
+    public class LyricData : OnlyClass
     {
         public string Lyric { get; set; }
         public string Translate { get; set; }
         public TimeSpan LyricTimeSpan { get; set; }
-        public bool InSelected { get; set; }
-        public string MD5 { get; set; }
         public LyricData(string lyric, string translate, TimeSpan timeSpan)
         {
             Lyric = lyric;
             LyricTimeSpan = timeSpan;
-            MD5 = CodeHelper.ToMD5($"{Lyric}{Translate}{LyricTimeSpan.Ticks}");
         }
 
-        public static bool operator ==(LyricData left, LyricData right)
+        public override string GetMD5()
         {
-            if (left is null && right is null) return true;
-            if (left is null || right is null) return false;
-            return left.MD5 == right.MD5;
-        }
-
-        public static bool operator !=(LyricData left, LyricData right)
-        {
-            if (left is null && right is null) return false;
-            return !(left == right);
-        }
-
-        public override bool Equals(object other)
-        {
-            if (!(other is LyricData)) return false;
-            return string.Equals(MD5, (other as LyricData).MD5, StringComparison.InvariantCulture);
-        }
-
-        public override int GetHashCode()
-        {
-            return (MD5 != null ? StringComparer.InvariantCulture.GetHashCode(MD5) : 0);
+            return CodeHelper.ToMD5($"{Lyric}{Translate}{LyricTimeSpan.Ticks}");
         }
     }
 
-    public class Music
+    public static class Music
     {
         public static List<string> GetArtistStrings(List<Artist> artists)
         {
@@ -207,7 +195,7 @@ namespace znMusicPlayerWUI.DataEditor
             return a;
         }
 
-        public static MusicFrom MusicFromFromString(string text)
+        public static MusicFrom MusicFromFromString(this string text)
         {
             MusicFrom musicFrom = MusicFrom.localMusic;
 

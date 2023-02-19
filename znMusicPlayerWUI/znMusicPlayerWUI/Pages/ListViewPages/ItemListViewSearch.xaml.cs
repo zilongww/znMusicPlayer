@@ -47,6 +47,7 @@ namespace znMusicPlayerWUI.Pages
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
+            base.OnNavigatedFrom(e);
             if (Children.SelectionMode != ListViewSelectionMode.None)
             {
                 Button_Click_2(null, null);
@@ -58,6 +59,7 @@ namespace znMusicPlayerWUI.Pages
                 item.Dispose();
             }
             Children.Items.Clear();
+            UnloadObject(this);
         }
 
         object searchDatas;

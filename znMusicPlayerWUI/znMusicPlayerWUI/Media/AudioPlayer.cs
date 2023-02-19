@@ -361,13 +361,14 @@ namespace znMusicPlayerWUI.Media
             {
                 if (FileReader != null)
                 {
-                    FileReader.CurrentTime = TimeSpan.Zero;
+                    CurrentTime = TimeSpan.Zero;
                 }
                 return;
             }
 
             if (LoadingMusicDatas.Contains(musicData))
             {
+                //TODO:用户视觉反馈
                 return;
                 throw new Exception("音频正在缓存，请稍后。");
             }

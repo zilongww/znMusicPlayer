@@ -82,8 +82,7 @@ namespace znMusicPlayerWUI.DataEditor
             { SettingParams.EqualizerCustomData.ToString(), "0,0,0,0,0,0,0,0,0,0" },
             { SettingParams.WasapiOnly.ToString(), false },
             { SettingParams.AudioLatency.ToString(), 100 },
-            { SettingParams.MusicPageShowLyricPage.ToString(), true },
-            { SettingParams.NeteaseMusicCookie.ToString(), "_ntes_nnid=0590a8d6b6be9cad6bc23b97c07f7cdc,1672820325011; _ntes_nuid=0590a8d6b6be9cad6bc23b97c07f7cdc; MUSIC_U=1fa8ee41e5cb7a93558f6fe5781266a120a5ac8ba95f2857b1719f55981cc8b7993166e004087dd39757487608ec50e8fdc139a335c8b6b345ada784b502bc8c0b0c7730e42f4911d4dbf082a8813684; __csrf=5c924b1202e872757af5f56ea59ac441; JSESSIONID-WYYY=ufAHUdqDfl2Q9CJE4b0Y23xnkU+Ftht4CobzRYX1drX4ZZKCCvZjzm61snefbUg+BJ3df8vDQ3PBISREiEFtQpVSzNtQXmiB4JBsH3aJ0xEyJ0lWDTJXqnz6d8KJrEEYMoDJd2drgEzDlZnGU+8b\\RYQrKMtJ9KRbVcflIsoewdARU/b:1674910726348; _iuqxldmzr_=32; NMTID=00Okv0AU8pm-iXtw0cng-N9OVAXvUcAAAGF-FoJUA; WEVNSM=1.0.0; WNMCID=cjgazi.1674908926514.01.0; ntes_kaola_ad=1" }
+            { SettingParams.MusicPageShowLyricPage.ToString(), true }
         };
         
         /// <summary>
@@ -106,8 +105,7 @@ namespace znMusicPlayerWUI.DataEditor
             EqualizerCustomData,
             WasapiOnly,
             AudioLatency,
-            MusicPageShowLyricPage,
-            NeteaseMusicCookie
+            MusicPageShowLyricPage
         }
 
         public static void InitFiles()

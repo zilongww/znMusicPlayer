@@ -21,6 +21,7 @@ using znMusicPlayerWUI.DataEditor;
 using Windows.System;
 using Microsoft.UI.Input;
 using System.Xml.Linq;
+using CommunityToolkit.WinUI.UI;
 
 namespace znMusicPlayerWUI.Pages.MusicPages
 {
@@ -276,8 +277,12 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             isCodeChangedLrcItem = true;
             LrcBaseListView.SelectedItem = App.lyricManager.NowLyricsData;
             isCodeChangedLrcItem = false;
+
             if (scrollViewer != null && !inScroll && App.lyricManager.NowLyricsData != null)
+            //if (LrcBaseListView.SelectedItem != null)
             {
+                //LrcBaseListView.SmoothScrollIntoViewWithItemAsync(LrcBaseListView.SelectedItem, ScrollItemPlacement.Center);
+                
                 var c = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
                 if (c == null)
                 {
@@ -288,7 +293,6 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 if (c != null)
                     scrollViewer.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48, null);
             }
-            
 #if DEBUG
             Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData?.Lyric}.");
 #endif

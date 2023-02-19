@@ -44,6 +44,7 @@ namespace znMusicPlayerWUI.Pages
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
+            base.OnNavigatedFrom(e);
             if (Children.SelectionMode != ListViewSelectionMode.None)
             {
                 Button_Click_2(null, null);
@@ -57,6 +58,7 @@ namespace znMusicPlayerWUI.Pages
             Children.Items.Clear();
             dropShadow.Dispose();
             Artist_Image.Dispose();
+            UnloadObject(this);
             //System.Diagnostics.Debug.WriteLine("Clear");
         }
 

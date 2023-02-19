@@ -5,10 +5,20 @@
     xmlns:local="using:znMusicPlayerWUI.Pages.DialogPages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Margin="0,-24,0,0">
+    mc:Ignorable="d" Margin="0,-36,0,0">
     <Grid>
-        <Pivot x:Name="PivotList">
-            <PivotItem Header="添加本地列表">
+        <NavigationView x:Name="PivotList"
+                        PaneDisplayMode="Top"
+                        IsSettingsVisible="False"
+                        IsBackButtonVisible="Collapsed"
+                        SelectionChanged="PivotList_SelectionChanged"
+                        Loaded="PivotList_Loaded">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="添加播放列表"/>
+                <NavigationViewItem Content="添加外部列表"/>
+            </NavigationView.MenuItems>
+
+            <Grid>
                 <StackPanel x:Name="AddLocalPage"
                             Orientation="Vertical">
                     <TextBox Header="播放列表名称"
@@ -26,15 +36,13 @@
                                 VerticalAlignment="Bottom" Margin="0,2,0,0"/>
                     </VariableSizedWrapGrid>
                 </StackPanel>
-            </PivotItem>
-            <PivotItem Header="解析外部列表">
-                <Grid x:Name="AddOutSidePage">
+                <Grid x:Name="AddOutSidePage" Visibility="Collapsed">
                     <StackPanel>
                         <ComboBox x:Name="AddOutSidePage_PlatfromCb" Header="外部平台" Margin="0,10,0,0"/>
                         <TextBox x:Name="AddOutSidePage_IDTb" Header="歌单ID" Margin="0,10,0,0"/>
                     </StackPanel>
                 </Grid>
-            </PivotItem>
-        </Pivot>
+            </Grid>
+        </NavigationView>
     </Grid>
 </Page>

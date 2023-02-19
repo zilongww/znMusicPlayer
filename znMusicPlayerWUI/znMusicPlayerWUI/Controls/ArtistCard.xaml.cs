@@ -61,7 +61,8 @@ namespace znMusicPlayerWUI.Controls
         private async void UILoaded(object sender, RoutedEventArgs e)
         {
             CreatShadow();
-            PlayListImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(Artist.PicturePath));
+            if (Artist != null)
+                PlayListImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(Artist.PicturePath));
         }
 
         private void UIUnloaded(object sender, RoutedEventArgs e)
@@ -129,7 +130,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void Grid_PointerReleased(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            if (isPressed)
+            if (isPressed && Artist != null)
             {
                 if (isRightPressed)
                 {

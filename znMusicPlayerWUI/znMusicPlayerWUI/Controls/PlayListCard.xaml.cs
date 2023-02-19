@@ -23,10 +23,22 @@ namespace znMusicPlayerWUI.Controls
     {
         private MusicListData MusicListData { get; set; }
         public double ImageScaleDPI { get; set; } = 1.0;
+        public string ID { get; set; }
 
-        public PlayListCard(MusicListData musicListData)
+        public PlayListCard()
         {
             InitializeComponent();
+        }
+
+        public async Task Init(MusicFrom musicFrom, string id)
+        {
+            MusicListData = await App.metingServices.NeteaseServices.GetPlayList(id);
+            Init(MusicListData);
+            UILoaded(null, null);
+        }
+
+        public void Init(MusicListData musicListData)
+        {
             MusicListData = musicListData;
             DataContext = musicListData;
         }
@@ -53,17 +65,20 @@ namespace znMusicPlayerWUI.Controls
         private async void UILoaded(object sender, RoutedEventArgs e)
         {
             CreatShadow();
-            if (MusicListData.ListDataType == DataType.本地歌单)
+            if (MusicListData != null)
             {
-                PlayListImage.Source = await FileHelper.GetImageSource(MusicListData.PicturePath, (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
-            }
-            else if (MusicListData.ListDataType == DataType.歌单)
-            {
-                PlayListImage.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(MusicListData), (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
-            }
-            else
-            {
-                PlayListImage.Source = await FileHelper.GetImageSource("", (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
+                if (MusicListData.ListDataType == DataType.本地歌单)
+                {
+                    PlayListImage.Source = await FileHelper.GetImageSource(MusicListData.PicturePath, (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
+                }
+                else if (MusicListData.ListDataType == DataType.歌单)
+                {
+                    PlayListImage.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(MusicListData), (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
+                }
+                else
+                {
+                    PlayListImage.Source = await FileHelper.GetImageSource("", (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
+                }
             }
         }
 
@@ -132,7 +147,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void Grid_PointerReleased(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            if (isPressed)
+            if (isPressed && MusicListData != null)
             {
                 if (isRightPressed)
                 {

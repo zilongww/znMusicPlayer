@@ -63,7 +63,7 @@ namespace znMusicPlayerWUI
         public static IntPtr AppDesktopLyricWindowHandle;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.1.94 Preview";
+        public static readonly string AppVersion = "0.1.95 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -95,7 +95,7 @@ namespace znMusicPlayerWUI
             {
                 if (_.MusicData == null)
                 {
-                    SMTC.DisplayUpdater.MusicProperties.Title = _.FileReader.FileName;
+                    SMTC.DisplayUpdater.MusicProperties.Title = _.FileReader?.FileName;
                 }
                 else
                 {
@@ -193,8 +193,11 @@ namespace znMusicPlayerWUI
             audioPlayer.WasapiOnly = (bool)b[SettingParams.WasapiOnly.ToString()];
             audioPlayer.Latency = (int)b[SettingParams.AudioLatency.ToString()];
             MainWindow.SMusicPage.ShowLrcPage = (bool)b[SettingParams.MusicPageShowLyricPage.ToString()];
-            //metingServices.NeteaseCookie = (string)b[SettingParams.NeteaseMusicCookie.ToString()];
-            metingServices.NeteaseCookie = (string)SettingDefault[SettingParams.NeteaseMusicCookie.ToString()];
+            string nmc = "NeteaseMusicCookie";
+            if (b.ContainsKey(nmc))
+            {
+                metingServices.NeteaseCookie = (string)b[nmc];
+            }
             metingServices.InitMeting();
         }
 
