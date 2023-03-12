@@ -98,10 +98,16 @@ namespace znMusicPlayerWUI.Helpers.MetingService
             });
         }
 
+        private List<string> PictureLoadingList = new();
         public async Task<Tuple<string, string>> GetPic(string id)
         {
+            while (PictureLoadingList.Count > 3)
+            {
+                await Task.Delay(250);
+            }
             return await Task.Run(() =>
             {
+                PictureLoadingList.Add(id);
                 var getPicAction = Tuple<string, string> () =>
                 {
                     string pic = Services.FormatMethod().Pic(id, 5000);
@@ -125,10 +131,12 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                     var a = getPicAction();
                     if (a != null)
                     {
+                        PictureLoadingList.Remove(id);
                         return a;
                     }
                 }
 
+                PictureLoadingList.Remove(id);
                 return null;
             });
         }
@@ -258,10 +266,16 @@ namespace znMusicPlayerWUI.Helpers.MetingService
             return datas;
         }
 
+        private List<string> PlayListLoadingList = new();
         public async Task<MusicListData> GetPlayList(string id)
         {
+            while (PlayListLoadingList.Count > 3)
+            {
+                await Task.Delay(250);
+            }
             return await Task.Run(() =>
             {
+                PlayListLoadingList.Add(id);
                 var getPlayListAction = MusicListData () =>
                 {
                     try
@@ -302,10 +316,12 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                     var a = getPlayListAction();
                     if (a != null)
                     {
+                        PlayListLoadingList.Remove(id);
                         return a;
                     }
                 }
 
+                PlayListLoadingList.Remove(id);
                 return null;
             });
         }

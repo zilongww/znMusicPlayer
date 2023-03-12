@@ -40,7 +40,7 @@ namespace znMusicPlayerWUI.Pages
         {
             try
             {
-                abcd.Source = App.playingList.NowPlayingList[new Random().Next(0, 100)].PicturePath;
+                abcd.Source = App.playingList.NowPlayingList[new Random().Next(0, App.playingList.NowPlayingList.Count - 1)].PicturePath;
             }
             catch { }
             //System.Diagnostics.Debug.WriteLine(a[0].ListName);

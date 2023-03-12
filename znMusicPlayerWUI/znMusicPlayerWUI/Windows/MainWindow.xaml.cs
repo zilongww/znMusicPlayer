@@ -122,7 +122,7 @@ namespace znMusicPlayerWUI
                     if (_ != null)
                     {
                         AppTitleTextBlock.Text = $"{App.AppName} -";
-                        LyricTextBlock.Text = $" {_.Lyric}";
+                        LyricTextBlock.Text = $" {_.Lyric.FirstOrDefault()}";
                     }
                     else
                     {

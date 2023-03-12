@@ -327,8 +327,9 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             ArtistRunText.Text = audioPlayer.MusicData.ArtistName;
             AlbumRunText.Text = audioPlayer.MusicData.Album;
             OtherRunText.Text = audioPlayer.MusicData.From.ToString();
+            AudioInfoRunText.Text = audioPlayer.WaveInfo;
 
-            if (audioPlayer.MusicData?.MD5 != MusicData?.MD5)
+            if (audioPlayer.MusicData != MusicData)
             {
                 MusicData = audioPlayer.MusicData;
             }
@@ -654,6 +655,11 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private async void AlbumMenuItem_Click(object sender, RoutedEventArgs e)
         {
+        }
+
+        private async void AudioInfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            await MainWindow.ShowDialog("播放信息", new DialogPages.AudioInfoPage());
         }
     }
 }

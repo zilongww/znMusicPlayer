@@ -1,0 +1,84 @@
+﻿<Page
+    x:Class="znMusicPlayerWUI.Pages.DialogPages.AudioInfoPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:znMusicPlayerWUI.Pages.DialogPages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <ScrollViewer>
+        <ScrollViewer.Resources>
+            <Style TargetType="Path">
+                <Setter Property="Fill" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                <Setter Property="Width" Value="21"/>
+                <Setter Property="Height" Value="21"/>
+                <Setter Property="Stretch" Value="Uniform"/>
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="IsTextSelectionEnabled" Value="True"/>
+            </Style>
+            <Style TargetType="TextBlock" x:Name="TitleTextStyle">
+                <Setter Property="FontSize" Value="18"/>
+            </Style>
+            <Style TargetType="TextBlock" x:Name="SubTextStyle">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Margin" Value="0,4,0,0"/>
+                <Setter Property="Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+            </Style>
+            <Style TargetType="Rectangle">
+                <Setter Property="Margin" Value="0,2,0,0"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="Width" Value="1"/>
+                <Setter Property="Fill" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
+            </Style>
+        </ScrollViewer.Resources>
+        <StackPanel Orientation="Vertical">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Path Data="{ThemeResource 添加文件}"/>
+                    <Rectangle Grid.Row="1"/>
+                </Grid>
+                <StackPanel Grid.Column="1" Margin="8,-2,0,0">
+                    <TextBlock Text="文件" Style="{ThemeResource TitleTextStyle}"/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="文件路径"/>
+                    <TextBlock x:Name="FileSourceInfoPathTB" Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="文件大小"/>
+                    <TextBlock x:Name="FileSourceInfoSizeTB" Text="加载中..."/>
+                </StackPanel>
+            </Grid>
+            <Grid Margin="0,8,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Path Data="{ThemeResource 播放ol}"/>
+                    <Rectangle Grid.Row="1"/>
+                </Grid>
+                <StackPanel Grid.Column="1" Margin="8,-2,0,0">
+                    <TextBlock Text="音频" Style="{ThemeResource TitleTextStyle}"/>
+                    <TextBlock x:Name="AudioInfoTB" Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="每秒平均字节"/>
+                    <TextBlock x:Name="AudioInfoABPSTB" Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="每帧的多通道总字节数"/>
+                    <TextBlock x:Name="AudioInfoBATB" Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="额外大小"/>
+                    <TextBlock x:Name="AudioInfoESTB" Text="加载中..."/>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

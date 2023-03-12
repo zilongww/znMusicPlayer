@@ -70,8 +70,8 @@ namespace znMusicPlayerWUI.Background
         {
             bool sameAlbum = true;
 
-            if (audioPlayer?.MusicData?.AlbumID != NowPlayingMusicData?.AlbumID) sameAlbum = false;
-            else if (audioPlayer.MusicData.InLocal != null)
+            if (audioPlayer.MusicData?.AlbumID != NowPlayingMusicData?.AlbumID) sameAlbum = false;
+            else if (audioPlayer.MusicData?.InLocal != null)
             {
                 if (audioPlayer.MusicData.Album != NowPlayingMusicData?.Album)
                 {
@@ -125,7 +125,7 @@ namespace znMusicPlayerWUI.Background
             catch (Exception e)
             {
                 a = false;
-                await MainWindow.ShowDialog("播放音频时出现错误", e.Message);
+                await MainWindow.ShowDialog("播放音频时出现错误", e.ToString());
             }
 
             //UWPInterop.SystemMediaTransportControlsInterop.GetForWindow(App.AppWindowLocalHandle);

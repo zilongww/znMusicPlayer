@@ -90,14 +90,14 @@ namespace znMusicPlayerWUI.Windowed
                 T2.Text = "无歌词";
                 return;
             }
-            if (nowLyricsData.Lyric == LyricHelper.NoneLyricString) return;
-            if (nowLyricsData.Translate != null)
+            if (nowLyricsData.Lyric.FirstOrDefault() == LyricHelper.NoneLyricString) return;
+            if (nowLyricsData.Lyric.Count > 1)
             {
                 IsT1Focus = true;
                 V1.HorizontalAlignment = HorizontalAlignment.Center;
                 V2.HorizontalAlignment = HorizontalAlignment.Center;
-                T1.Text = nowLyricsData.Lyric;
-                T2.Text = nowLyricsData.Translate;
+                T1.Text = nowLyricsData.Lyric.FirstOrDefault();
+                T2.Text = nowLyricsData.Lyric[1];
                 T1.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
                 T2.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
             }
@@ -114,22 +114,22 @@ namespace znMusicPlayerWUI.Windowed
                         num++;
                         nextData = App.lyricManager.NowPlayingLyrics[num];
                     }
-                    while (nextData.Lyric == LyricHelper.NoneLyricString);
+                    while (nextData.Lyric.FirstOrDefault() == LyricHelper.NoneLyricString);
                 }
                 catch { }
                 if (IsT1Focus)
                 {
                     IsT1Focus = false;
-                    T1.Text = nowLyricsData.Lyric;
-                    T2.Text = nextData.Lyric;
+                    T1.Text = nowLyricsData.Lyric.FirstOrDefault();
+                    T2.Text = nextData.Lyric.FirstOrDefault();
                     T1.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
                     T2.Foreground = App.Current.Resources["MusicPageLrcForeground"] as SolidColorBrush;
                 }
                 else
                 {
                     IsT1Focus = true;
-                    T1.Text = nextData.Lyric;
-                    T2.Text = nowLyricsData.Lyric;
+                    T1.Text = nextData.Lyric.FirstOrDefault();
+                    T2.Text = nowLyricsData.Lyric.FirstOrDefault();
                     T1.Foreground = App.Current.Resources["MusicPageLrcForeground"] as SolidColorBrush;
                     T2.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
                 }

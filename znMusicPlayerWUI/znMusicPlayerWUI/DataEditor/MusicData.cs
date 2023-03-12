@@ -93,10 +93,32 @@ namespace znMusicPlayerWUI.DataEditor
         public string PicturePath { get; set; }
         public string RelaseTime { get; set; }
         public MusicFrom From { get; set; }
-        public MusicKbps Kbps { get; set; }
         public string InLocal { get; set; }
-        public string ArtistName { get; set; }
-        public string ButtonName { get; set; }
+
+        string _artistName = null;
+        public string ArtistName
+        {
+            get
+            {
+                if (_artistName == null)
+                    SetABName();
+                return _artistName;
+            }
+        }
+
+        string _buttonName = null;
+        public string ButtonName
+        {
+            get
+            {
+                if (_buttonName == null)
+                {
+                    SetABName();
+                }
+                return _buttonName;
+            }
+        }
+
         public MusicData(string title = "",
                          string ID = "",
                          List<Artist> artists = null,
@@ -105,7 +127,6 @@ namespace znMusicPlayerWUI.DataEditor
                          string picturePath = null,
                          string relaseTime = null,
                          MusicFrom from = MusicFrom.kwMusic,
-                         MusicKbps Kbps = MusicKbps.Kbps192,
                          string inLocal = null)
         {
             this.Title = title;
@@ -116,21 +137,23 @@ namespace znMusicPlayerWUI.DataEditor
             this.PicturePath = picturePath;
             this.RelaseTime = relaseTime;
             this.From = from;
-            this.Kbps = Kbps;
             this.InLocal = inLocal;
 
+        }
+
+        private void SetABName()
+        {
             for (int i = 0; i < (Artists.Count); i++)
             {
-                ArtistName += $"{Artists[i].ToString()}{(i < (Artists.Count - 1) ? (i < Artists.Count - 2 ? ", " : " & ") : "")}";
+                _artistName += $"{Artists[i].ToString()}{(i < (Artists.Count - 1) ? (i < Artists.Count - 2 ? ", " : " & ") : "")}";
             }
 
-            //ArtistName.Replace(" & ", "");
-            ButtonName = $"{ArtistName} · {Album}";
+            _buttonName = $"{ArtistName} · {Album}";
         }
 
         public override string GetMD5()
         {
-            return CodeHelper.ToMD5($"{Title}{Artists[0]}{Artists.Count}{Album}{ID}{AlbumID}{From}{InLocal}");
+            return CodeHelper.ToMD5($"{Title}{Artists.Count}{Artists[0].ID}{Artists.Count}{Album}{ID}{AlbumID}{From}{InLocal}");
         }
     }
 
@@ -168,10 +191,21 @@ namespace znMusicPlayerWUI.DataEditor
 
     public class LyricData : OnlyClass
     {
-        public string Lyric { get; set; }
-        public string Translate { get; set; }
+        public List<string> Lyric { get; set; }
         public TimeSpan LyricTimeSpan { get; set; }
-        public LyricData(string lyric, string translate, TimeSpan timeSpan)
+        string lyricAllString = null;
+        public string LyricAllString
+        {
+            get
+            {
+                if (lyricAllString == null && Lyric != null)
+                {
+                    lyricAllString = string.Join("\n", Lyric);
+                }
+                return lyricAllString;
+            }
+        }
+        public LyricData(List<string> lyric, string translate, TimeSpan timeSpan)
         {
             Lyric = lyric;
             LyricTimeSpan = timeSpan;
@@ -179,7 +213,8 @@ namespace znMusicPlayerWUI.DataEditor
 
         public override string GetMD5()
         {
-            return CodeHelper.ToMD5($"{Lyric}{Translate}{LyricTimeSpan.Ticks}");
+            if (Lyric == null) return null;
+            return CodeHelper.ToMD5($"{string.Join<string>(' ', Lyric)}{Lyric.Count}{LyricTimeSpan.Ticks}");
         }
     }
 

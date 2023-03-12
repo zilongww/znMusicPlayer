@@ -96,6 +96,9 @@
                         <Button x:Name="OtherRunButton" Click="OtherRunButton_Click">
                             <TextBlock x:Name="OtherRunText"/>
                         </Button>
+                        <Button x:Name="AudioInfoButton" Click="AudioInfoButton_Click">
+                            <TextBlock x:Name="AudioInfoRunText" Text="{Binding App.audioPlayer}"/>
+                        </Button>
                     </StackPanel>
                 </Grid>
 
@@ -133,14 +136,8 @@
                                     -->
                                     <TextBlock TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
                                                TextWrapping="Wrap"
-                                               FontSize="29"
-                                               Text="{Binding Lyric}"/>
-                                    <TextBlock x:Name="TranslateTextBlock"
-                                               TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
-                                               TextWrapping="Wrap"
-                                               Text="{Binding Translate}"
-                                               FontSize="22"
-                                               Height="auto"/>
+                                               FontSize="27"
+                                               Text="{Binding LyricAllString}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>

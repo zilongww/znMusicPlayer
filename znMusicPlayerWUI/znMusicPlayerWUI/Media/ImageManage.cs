@@ -37,7 +37,7 @@ namespace znMusicPlayerWUI.Media
             return error;
         }
 
-        public static async Task<string> GetImageSource(DataEditor.MusicData musicData, bool IsDownload = true)
+        public static async Task<string> GetImageSource(DataEditor.MusicData musicData)
         {
             while (LoadingImages.Contains(musicData))
             {

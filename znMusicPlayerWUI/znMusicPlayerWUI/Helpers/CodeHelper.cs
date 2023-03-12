@@ -337,6 +337,7 @@ namespace znMusicPlayerWUI.Helpers
                 foreach (var lyric in lyricText.Split('\n'))
                 {
                     var timesAndLyric = lyric.Split(']');
+                    //当一句歌词在不同时间段时
                     if (timesAndLyric.Count() > 2)
                     {
                         for (int i = timesAndLyric.Count(); i > 0; i--)
@@ -353,10 +354,11 @@ namespace znMusicPlayerWUI.Helpers
 
                             if (!lyricDictionary.ContainsKey(timesResult))
                             {
-                                lyricDictionary.Add(timesResult, new(timesAndLyric.Last(), null, timesResult));
+                                lyricDictionary.Add(timesResult, new(new() { timesAndLyric.Last() }, null, timesResult));
                             }
                         }
                     }
+                    //当一句歌词在只在同一时间段时
                     else
                     {
                         var times = timesAndLyric[0].Replace("[", "").Split('.');
@@ -371,17 +373,19 @@ namespace znMusicPlayerWUI.Helpers
                         var text = timesAndLyric[1];
                         if (text == "") text = NoneLyricString;
 
+                        //当有相同时间的歌词时
                         if (lyricDictionary.ContainsKey(timesResult))
                         {
                             var l = lyricDictionary[timesResult];
-                            if (l.Lyric != text && text != NoneLyricString)
+                            if (text != NoneLyricString)
                             {
-                                l.Translate = text;
+                                l.Lyric.Add(text);
                             }
                         }
+                        //当没有相同时间的歌词时
                         else
                         {
-                            lyricDictionary.Add(timesResult, new(text, null, timesResult));
+                            lyricDictionary.Add(timesResult, new(new() { text }, null, timesResult));
                         }
                     }
                 }

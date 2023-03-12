@@ -484,7 +484,9 @@ namespace znMusicPlayerWUI.Media
                 throw new Exception("播放缓存文件时出现未知错误。");
             }
         }
-
+        public string FileType = null;
+        public int FileSize = 0;
+        public string AudioBitrate = null;
         public async Task SetSource(string filePath)
         {
             if (NowOutDevice.DeviceType == OutApi.None)
@@ -505,7 +507,7 @@ namespace znMusicPlayerWUI.Media
 
                 if (fileReader.isMidi)
                 {
-                    WaveInfo = "播放Midi格式的音频时，一些选项可能不可用。";
+                    WaveInfo = "midi";
                     return;
                 }
 
@@ -516,16 +518,25 @@ namespace znMusicPlayerWUI.Media
                 fileProvider.Tempo = Tempo;
                 fileProvider.Rate = Rate;
 
+                FileSize = File.ReadAllBytes(filePath).Length;
+
+                TagLib.File tagfile = null;
                 try
+                { tagfile = TagLib.File.Create(filePath); }
+                catch { }
+
+                if (tagfile != null)
                 {
-                    var tagfile = TagLib.File.Create(filePath);
-                    WaveInfo = $"{tagfile.Properties.Codecs.First().Description} - {fileReader.WaveFormat.SampleRate / (decimal)1000}kHz-{tagfile.Properties.AudioBitrate}kbps";
-                    
+                    FileType = tagfile.MimeType.Replace("taglib/", "");
+                    AudioBitrate = tagfile.Properties.AudioBitrate.ToString();
                 }
-                catch
+
+                else
                 {
-                    WaveInfo = $"{fileReader.WaveFormat.AsStandardWaveFormat().Encoding} - {fileReader.WaveFormat.SampleRate / (decimal)1000}kHz-{(int)(File.ReadAllBytes(filePath).Length * 8 / TotalTime.TotalSeconds / 1000)}kbps";
+                    FileType = new FileInfo(filePath).Extension;
+                    AudioBitrate = (FileSize * 8 / TotalTime.TotalSeconds / 1000).ToString();
                 }
+                WaveInfo = $"{fileReader.WaveFormat.SampleRate / (decimal)1000}kHz-{AudioBitrate}kbps-{FileType}";
             });
             if (EqEnabled)
             {
