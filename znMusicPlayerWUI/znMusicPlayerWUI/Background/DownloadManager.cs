@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Downloader;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using Windows.Media.Protection.PlayReady;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Helpers;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace znMusicPlayerWUI.Background
 {
@@ -17,6 +19,8 @@ namespace znMusicPlayerWUI.Background
         public class DownloadData
         {
             public MusicData MusicData;
+            public long FileSize;
+            public long DownloadedSize;
             public decimal DownloadPercent;
             //public DownloadStates DownloadState;
         }
@@ -98,6 +102,7 @@ namespace znMusicPlayerWUI.Background
         public int br { get; set; } = 960;
         public async void StartDownload(DownloadData dm)
         {
+            System.Diagnostics.Debug.WriteLine($"d:{dm.MusicData.Title}");
             string downloadPath1 =
                 $"{DataFolderBase.DownloadFolder}\\{CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.Title)} - {CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.ButtonName)}";
             string addressPath = null;
@@ -109,7 +114,6 @@ namespace znMusicPlayerWUI.Background
             catch
             {
                 isErr = true;
-                return;
             }
             if (string.IsNullOrEmpty(addressPath) || isErr)
             {
@@ -127,44 +131,26 @@ namespace znMusicPlayerWUI.Background
             System.Diagnostics.Debug.WriteLine(addressPath);
             System.Diagnostics.Debug.WriteLine(lastName);
             System.Diagnostics.Debug.WriteLine(downloadPath);*/
-
-            var response = await WebHelper.Client.GetAsync(addressPath);
-            var file = new FileInfo(downloadPath);
-
-            var n = response.Content.Headers.ContentLength;
-            var fileStream = file.Create();
-            var stream = await response.Content.ReadAsStreamAsync();
-            using (fileStream)
+            var downloader = new DownloadService();
+            await downloader.DownloadFileTaskAsync(addressPath, downloadPath);
+            downloader.Dispose();
+/*
+            System.Net.WebClient TheDownloader = new System.Net.WebClient();
+            await TheDownloader.DownloadFileTaskAsync(new Uri(addressPath), downloadPath);*/
+            /*TheDownloader.DownloadProgressChanged += (s, e) =>
             {
-                using (stream)
-                {
-                    byte[] buffer = new byte[1024];
-                    var readLength = 0;
-                    int length;
-                    int dcount = 0;
-                    while ((length = await stream.ReadAsync(buffer, 0, buffer.Length)) != 0)
-                    {
-                        readLength += length;
+                dm.DownloadPercent = e.ProgressPercentage;
+                dm.FileSize = e.TotalBytesToReceive;
+                dm.DownloadedSize = e.BytesReceived;
+                OnDownloading(dm);
+                System.Diagnostics.Debug.WriteLine(e.ProgressPercentage);
+                //Set1(e.ProgressPercentage, (Convert.ToDouble(e.BytesReceived) / Convert.ToDouble(e.TotalBytesToReceive) * 100).ToString("0.0") + "%", zilongcn.Others.GetAutoSizeString(e.BytesReceived, 2) + "/" + zilongcn.Others.GetAutoSizeString(e.TotalBytesToReceive, 2));
+            };
+            TheDownloader.DownloadFileCompleted += (s, e) =>
+            {
+                TheDownloader.Dispose();
+            };*/
 
-                        dcount += 1;
-                        if (dcount == 3550)
-                        {
-                            dcount = 0;
-                            var a = Math.Round(readLength / (decimal)n * 100, 1);
-                            dm.DownloadPercent = a;
-                            OnDownloading?.Invoke(dm);
-                            //DownloadingData[DownloadingData.IndexOf(dm)].DownloadPercent = a;
-                            //System.Diagnostics.Debug.WriteLine(a);
-                        }
-
-                        // 写入到文件
-                        await fileStream.WriteAsync(buffer, 0, length);
-                    }
-                }
-            }
-            await fileStream.DisposeAsync();
-            await stream.DisposeAsync();
-            response.Dispose();
             OnDownloadedPreview?.Invoke(dm);
 
             bool picDownloaded = false;
@@ -172,6 +158,14 @@ namespace znMusicPlayerWUI.Background
             {
                 await Task.Run(() => File.Create(picPath).Dispose());
                 await WebHelper.DownloadFileAsync(await WebHelper.GetPicturePathAsync(dm.MusicData), picPath);
+                await Task.Run(() =>
+                {
+                    System.Drawing.Image image = System.Drawing.Image.FromFile(picPath);
+                    System.Drawing.Bitmap bitmap = new(image, new(500, 500));
+                    image.Dispose();
+                    bitmap.Save(picPath);
+                    bitmap.Dispose();
+                });
                 picDownloaded = true;
             }
             catch (Exception err)
@@ -179,15 +173,11 @@ namespace znMusicPlayerWUI.Background
                 System.Diagnostics.Debug.WriteLine(err.ToString());
             }
 
+            TagLib.File tagFile = TagLib.File.Create(downloadPath);
+            TagLib.Tag tag = tagFile.Tag;
+
             await Task.Run(() =>
             {
-                TagLib.File tagFile = TagLib.File.Create(downloadPath);
-                TagLib.Tag tag = tagFile.Tag;
-                tag.Title = dm.MusicData.Title;
-                tag.Album = dm.MusicData.Album;
-                tag.Comment = $"Download with {App.AppName}";
-                tag.Description = tag.Comment;
-
                 if (picDownloaded)
                 {
                     try
@@ -203,6 +193,11 @@ namespace znMusicPlayerWUI.Background
                     }
                 }
 
+                tag.Title = dm.MusicData.Title;
+                tag.Album = dm.MusicData.Album;
+                tag.Comment = $"Download with {App.AppName}";
+                tag.Description = tag.Comment;
+
                 List<string> artists = new();
                 foreach (var a in dm.MusicData.Artists)
                 {
@@ -210,43 +205,50 @@ namespace znMusicPlayerWUI.Background
                 }
                 tag.Performers = artists.ToArray();
                 tag.AlbumArtists = tag.Performers;
-
-                // 在上面的异步操作完成后，似乎不会很快地将下载的数据从内存中写入到磁盘中，
-                // 因此导致文件被占用。在此每间隔1秒尝试保存。
-                int retryCount = 0;
-                while (retryCount <= 12)
-                {
-                    try
-                    {
-                        tagFile.Save();
-                        break;
-                    }
-                    catch
-                    {
-                        Thread.Sleep(1000);
-                        retryCount++;
-                    }
-                }
-                
-                tagFile.Dispose();
             });
 
             var lyric = await App.metingServices.NeteaseServices.GetLyric(dm.MusicData.ID);
             if (!lyric.Item1.Contains("纯音乐，请欣赏"))
             {
-                await Task.Run(() =>
+                if (true)
                 {
-                    File.Create(lyricPath).Dispose();
+                    await Task.Run(() =>
+                    {
+                        File.Create(lyricPath).Dispose();
 
-                    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                    File.WriteAllText(lyricPath, $"{lyric.Item1}\n{lyric.Item2}", Encoding.GetEncoding("GB2312"));
-                });
+                        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                        File.WriteAllText(lyricPath, $"{lyric.Item1}\n{lyric.Item2}", Encoding.GetEncoding("GB2312"));
+                    });
+
+                    tag.Lyrics = $"{lyric.Item1}\n{lyric.Item2}";
+                }
+                else
+                {
+
+                }
             }
 
+            // 在上面的异步操作完成后，似乎不会很快地将下载的数据从内存中写入到磁盘中，
+            // 因此导致文件被占用。在此每间隔1秒尝试保存。
+            int retryCount = 0;
+            while (retryCount <= 12)
+            {
+                try
+                {
+                    tagFile.Save();
+                    break;
+                }
+                catch (Exception err)
+                {
+                    System.Diagnostics.Debug.WriteLine(err.ToString());
+                    retryCount++;
+                }
+            }
+
+            tagFile.Dispose();
             DownloadingData.Remove(dm);
             DownloadedData.Add(dm);
             OnDownloaded?.Invoke(dm);
-            UpdataDownload();
         }
 
         public void CallOnDownloadingEvent(DownloadData dm)

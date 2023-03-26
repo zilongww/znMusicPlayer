@@ -535,7 +535,7 @@ namespace znMusicPlayerWUI
                     case ElementTheme.Default: m_configurationSource.Theme = SystemBackdropTheme.Default; break;
                 }
 
-                m_micaController = new MicaController(); //{ Kind = MicaKind.BaseAlt };
+                m_micaController = new MicaController() { Kind = MicaKind.BaseAlt };
                 m_micaController.AddSystemBackdropTarget(SWindow.As<ICompositionSupportsSystemBackdrop>());
                 m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
                 isAcrylicBackdrop = false;
