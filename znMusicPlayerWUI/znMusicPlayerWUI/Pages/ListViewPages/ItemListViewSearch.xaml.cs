@@ -20,6 +20,7 @@ using Windows.Storage.Pickers;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Media;
 using Newtonsoft.Json.Linq;
+using Microsoft.VisualBasic.Devices;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -62,12 +63,15 @@ namespace znMusicPlayerWUI.Pages
             UnloadObject(this);
         }
 
-        object searchDatas;
+        object searchDatas = null;
         static bool firstInit = false;
         int pageNumber = 1;
         int pageSize = 30;
         public async void InitData()
         {
+            LoadingRing.Visibility = Visibility.Visible;
+            LoadingRing.IsIndeterminate = true;
+
             SelectorSeparator.Visibility = Visibility.Collapsed;
             AddSelectedToPlayingListButton.Visibility = Visibility.Collapsed;
             AddSelectedToPlayListButton.Visibility = Visibility.Collapsed;
@@ -89,27 +93,43 @@ namespace znMusicPlayerWUI.Pages
             NowPage.Text = pageNumber.ToString();
 
             Children.Items.Clear();
-            try
+
+            bool isComplete = false;
+            while (!isComplete)
             {
-                searchDatas = await WebHelper.SearchData(searchData, pageNumber, pageSize, NowMusicFrom, NowSearchMode);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                await MainWindow.ShowDialog("不支持的平台", "当前不支持此平台搜索。");
-            }
-            catch (Exception e)
-            {
-                await MainWindow.ShowDialog("搜索失败", e.Message);
-                searchDatas = null;
+                try
+                {
+                    searchDatas = await WebHelper.SearchData(searchData, pageNumber, pageSize, NowMusicFrom, NowSearchMode);
+                    isComplete = true;
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    await MainWindow.ShowDialog("不支持的平台", "当前不支持此平台搜索。");
+                    searchDatas = null;
+                    break;
+                }
+                catch (NullReferenceException)
+                {
+                    await MainWindow.ShowDialog("搜索失败", "无相关结果。");
+                    searchDatas = null;
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    string errString = $"搜索时出现错误：\n{ex.Message}";
+                    var d = await MainWindow.ShowDialog("搜索失败", errString, "重试", "确定");
+                    if (d == ContentDialogResult.Primary)
+                    {
+                        searchDatas = null;
+                        break;
+                    }
+                }
             }
 
             if (searchDatas != null)
             {
                 Children.Items.Clear();
-                LoadingRing.Visibility = Visibility.Visible;
-                LoadingRing.IsIndeterminate = true;
 
-                await Task.Delay(500);
                 var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
 
                 switch (NowSearchMode)

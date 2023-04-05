@@ -58,11 +58,13 @@ namespace znMusicPlayerWUI.Helpers
             if (!File.Exists(downloadPath))
                 throw new FileNotFoundException("找不到目标文件。");
 
-            await Task.Run(() =>
+            try
             {
-                byte[] fileBytes = Client.GetByteArrayAsync(address).Result;
-                File.WriteAllBytes(downloadPath, fileBytes);
-            });
+                var downloader = new Downloader.DownloadService();
+                await downloader.DownloadFileTaskAsync(address, downloadPath);
+                downloader.Dispose();
+            }
+            catch { }
         }
 
         /// <summary>
@@ -79,34 +81,47 @@ namespace znMusicPlayerWUI.Helpers
             return await Client.GetStringAsync(address);
         }
 
+        static List<MusicData> loadingImages = new();
         public static async Task<string> GetPicturePathAsync(MusicData musicData)
         {
-            switch (musicData.From)
+            while (loadingImages.Count > 3)
             {
-                case MusicFrom.neteaseMusic:
-
-                    //string address = MetingService.NeteaseMeting.PicObj(musicData.AlbumID).url;
-
-                    string address = $"http://music.163.com/api/song/detail/?id={musicData.ID}&ids=%5B{musicData.ID}%5D";
-                    
-                    string result = null;
-                    try
-                    {
-                        result = await GetStringAsync(address);
-                    }
-                    catch { }
-                    if (!string.IsNullOrEmpty(result))
-                    {
-                        if (!result.Contains("操作频繁"))
-                        {
-                            result = JObject.Parse(result)["songs"][0]["album"]["picUrl"].ToString();
-                            return result;
-                        }
-                    }
-                    return null;
-                default:
-                    return musicData.PicturePath;
+                await Task.Delay(250);
             }
+            loadingImages.Add(musicData);
+
+            string addressResult = null;
+
+            try
+            {
+                switch (musicData.From)
+                {
+                    case MusicFrom.neteaseMusic:
+
+                        //string address = MetingService.NeteaseMeting.PicObj(musicData.AlbumID).url;
+
+                        string address = $"http://music.163.com/api/song/detail/?id={musicData.ID}&ids=%5B{musicData.ID}%5D";
+
+                        string result = null;
+                        result = await GetStringAsync(address);
+                        if (!string.IsNullOrEmpty(result))
+                        {
+                            if (!result.Contains("操作频繁"))
+                            {
+                                result = JObject.Parse(result)["songs"][0]["album"]["picUrl"].ToString();
+                                addressResult = result;
+                            }
+                        }
+                        break;
+                    default:
+                        addressResult = musicData.PicturePath;
+                        break;
+                }
+            }
+            catch { addressResult = null; }
+
+            loadingImages.Remove(musicData);
+            return addressResult;
         }
 
         /// <summary>
@@ -176,19 +191,7 @@ namespace znMusicPlayerWUI.Helpers
                     break;
 
                 case MusicFrom.neteaseMusic:
-                    try
-                    {
-                        listData = await App.metingServices.NeteaseServices.GetSearch(keyword, pageNumber, pageSize, searchDataType);
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(ex);
-                        var d = await MainWindow.ShowDialog("搜索失败", $"搜索时出现错误：\n{ex.Message}", "确定", "重试");
-                        if (d == Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary)
-                        {
-                            await SearchData(keyword, pageNumber, pageSize, searchFrom, searchDataType);
-                        }
-                    }
+                    listData = await App.metingServices.NeteaseServices.GetSearch(keyword, pageNumber, pageSize, searchDataType);
                     break;
 
                 case MusicFrom.qqMusic:

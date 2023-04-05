@@ -125,7 +125,11 @@ namespace znMusicPlayerWUI.Background
             catch (Exception e)
             {
                 a = false;
+#if DEBUG
                 await MainWindow.ShowDialog("播放音频时出现错误", e.ToString());
+#else
+                await MainWindow.ShowDialog("播放音频时出现错误", e.Message);
+#endif
             }
 
             //UWPInterop.SystemMediaTransportControlsInterop.GetForWindow(App.AppWindowLocalHandle);

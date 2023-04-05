@@ -481,7 +481,8 @@ namespace znMusicPlayerWUI.Media
             else
             {
                 CacheLoadedChanged?.Invoke(this);
-                throw new Exception("播放缓存文件时出现未知错误。");
+                LoadingMusicDatas.Remove(musicData);
+                throw new Exception("缓存文件获取失败，可能是源服务器没有相关资源。");
             }
         }
         public string FileType = null;

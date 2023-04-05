@@ -34,6 +34,7 @@ using znMusicPlayerWUI.Windowed;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using znMusicPlayerWUI.DataEditor;
+using CommunityToolkit.WinUI.UI;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -57,8 +58,8 @@ namespace znMusicPlayerWUI
         public static Grid SPlayingListBaseGrid;
         public static Frame SMusicPageBaseFrame;
         public static Frame SPlayContent;
-        public static TeachingTip teachingTipVolume;
-        public static TeachingTip teachingTipPlayingList;
+        public static Flyout teachingTipVolume;
+        public static Flyout teachingTipPlayingList;
         static ContentDialog AsyncDialog = null;
 
         public delegate void WindowViewStateChangedDelegate(bool isView);
@@ -119,12 +120,12 @@ namespace znMusicPlayerWUI
             {
                 if (SWindowGridBase.Visibility == Visibility.Visible && !isMinSize && !InOpenMusicPage)
                 {
-                    if (_ != null)
+                    try
                     {
                         AppTitleTextBlock.Text = $"{App.AppName} -";
-                        LyricTextBlock.Text = $" {_.Lyric.FirstOrDefault()}";
+                        LyricTextBlock.Text = $" {_?.Lyric.FirstOrDefault()}";
                     }
-                    else
+                    catch
                     {
                         AppTitleTextBlock.Text = $"{App.AppName}";
                         LyricTextBlock.Text = null;
@@ -388,10 +389,12 @@ namespace znMusicPlayerWUI
             PlayRing.Value = 0;
             PlayRing.IsIndeterminate = false;
             PlayingListBaseView.SelectedItem = audioPlayer.MusicData;
+            isCodeChangedSilderValue = false;
         }
 
         private void AudioPlayer_CacheLoadingChanged(Media.AudioPlayer audioPlayer, object data)
         {
+            isCodeChangedSilderValue = true;
             if (!isMinSize)
             {
                 PlayRing.IsIndeterminate = true;
@@ -535,7 +538,7 @@ namespace znMusicPlayerWUI
                     case ElementTheme.Default: m_configurationSource.Theme = SystemBackdropTheme.Default; break;
                 }
 
-                m_micaController = new MicaController() { Kind = MicaKind.BaseAlt };
+                m_micaController = new MicaController() { Kind = MicaKind.Base };
                 m_micaController.AddSystemBackdropTarget(SWindow.As<ICompositionSupportsSystemBackdrop>());
                 m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
                 isAcrylicBackdrop = false;
@@ -686,19 +689,24 @@ namespace znMusicPlayerWUI
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             SetDragRegionForCustomTitleBar(App.AppWindowLocal);
-
-            try
-            {
-                PlayingListBaseGrid.Height = TopControlsBaseGrid.ActualHeight - 172;
-                PlayingListBaseGrid.Width = 400;
-                PlayingListBaseGrid.MaxHeight = 800;
-            }
-            catch { }
+            UpdataPlayListFlyoutHeight();
         }
 
         private void ContentFrame_Loaded(object sender, RoutedEventArgs e)
         {
             SContentFrame = ContentFrame;
+        }
+
+        public static void UpdataPlayListFlyoutHeight()
+        {
+            try
+            {
+                if (InOpenMusicPage)
+                    SPlayingListBaseGrid.Height = SWindowGridBase.ActualHeight - 130;
+                else
+                    SPlayingListBaseGrid.Height = SWindowGridBase.ActualHeight - 146;
+            }
+            catch { }
         }
         #endregion
 
@@ -1037,24 +1045,37 @@ namespace znMusicPlayerWUI
         }
 
         public static void OpenOrCloseVolume(
-            TeachingTipPlacementMode teachingTipPlacementMode = TeachingTipPlacementMode.BottomRight,
+            HorizontalAlignment horizontalAlignment = HorizontalAlignment.Right,
+            VerticalAlignment verticalAlignment = VerticalAlignment.Bottom,
+            Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode flyoutPlacementMode = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.RightEdgeAlignedBottom,
             Thickness placementMargin = default)
         {
-            teachingTipVolume.PreferredPlacement = teachingTipPlacementMode;
-            teachingTipVolume.PlacementMargin = placementMargin == default ? new(0, 0, -24, 62) : placementMargin;
-            teachingTipVolume.IsOpen = !teachingTipVolume.IsOpen;
-            teachingTipVolume.IsLightDismissEnabled = true;
+            STopControlsBaseGrid.HorizontalAlignment = horizontalAlignment;
+            STopControlsBaseGrid.VerticalAlignment = verticalAlignment;
+            STopControlsBaseGrid.Margin = placementMargin == default ? new(0, 0, 4, 94) : placementMargin;
+            teachingTipVolume.LightDismissOverlayMode = LightDismissOverlayMode.Off;
+            teachingTipVolume.Placement = flyoutPlacementMode;
+            teachingTipVolume.ShowAt(STopControlsBaseGrid);
         }
 
-        public static void OpenOrClosePlayingList(
-            TeachingTipPlacementMode teachingTipPlacementMode = TeachingTipPlacementMode.BottomRight,
+        public static async void OpenOrClosePlayingList(
+            HorizontalAlignment horizontalAlignment = HorizontalAlignment.Right,
+            VerticalAlignment verticalAlignment = VerticalAlignment.Bottom,
+            Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode flyoutPlacementMode = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.RightEdgeAlignedBottom,
             Thickness placementMargin = default)
         {
-            teachingTipPlayingList.PreferredPlacement = teachingTipPlacementMode;
-            teachingTipPlayingList.PlacementMargin = placementMargin == default ? new(0, 0, -24, 62) : placementMargin;
-            teachingTipPlayingList.IsOpen = !teachingTipPlayingList.IsOpen;
-            teachingTipPlayingList.IsLightDismissEnabled = true;
-            SPlayingListBaseView.ScrollIntoView(App.playingList.NowPlayingMusicData);
+            UpdataPlayListFlyoutHeight();
+            STopControlsBaseGrid.HorizontalAlignment = horizontalAlignment;
+            STopControlsBaseGrid.VerticalAlignment = verticalAlignment;
+            STopControlsBaseGrid.Margin = placementMargin == default ? new(0, 0, 4, 94) : placementMargin;
+            teachingTipPlayingList.LightDismissOverlayMode = LightDismissOverlayMode.Off;
+            teachingTipPlayingList.Placement = flyoutPlacementMode;
+            teachingTipPlayingList.ShowAt(STopControlsBaseGrid);
+            try
+            {
+                await SPlayingListBaseView.SmoothScrollIntoViewWithItemAsync(App.playingList.NowPlayingMusicData);
+            }
+            catch { }
         }
 
         public static bool InOpenMusicPage { get; set; } = false;
@@ -1363,10 +1384,9 @@ namespace znMusicPlayerWUI
         {
             if (audioPlayer.FileReader != null)
             {
+                isCodeChangedSilderValue = true;
                 PlayTimeSlider.Minimum = 0;
                 PlayTimeSlider.Maximum = audioPlayer.TotalTime.Ticks;
-
-                isCodeChangedSilderValue = true;
                 PlayTimeSlider.Value = audioPlayer.CurrentTime.Ticks;
                 isCodeChangedSilderValue = false;
 

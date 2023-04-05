@@ -15,6 +15,7 @@
     <Grid.Resources>
         <MenuFlyout x:Name="FlyoutMenu">
             <MenuFlyoutItem Icon="delete" Text="删除播放列表" Click="MenuFlyoutItem_Click"/>
+            <MenuFlyoutItem x:Name="RefreshPlayListButton" Icon="refresh" Text="更新播放列表" Click="MenuFlyoutItem_Click_1"/>
         </MenuFlyout>
     </Grid.Resources>
     

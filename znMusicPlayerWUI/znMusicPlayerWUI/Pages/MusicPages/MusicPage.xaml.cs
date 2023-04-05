@@ -186,115 +186,77 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             ElementCompositionPreview.SetElementChildVisual(BackgroundBaseImageAnimate, blurVisual1);*/
         }
 
+        bool isMiniPage = false;
         public void UpdataInterfaceDesign()
         {
-
-            /*
             if (!ShowLrcPage)
             {
-                (InfoBaseGrid.Children[1] as Grid).Width = double.NaN;
-                (InfoBaseGrid.Children[1] as Grid).HorizontalAlignment = HorizontalAlignment.Center;
-                ((InfoBaseGrid.Children[1] as Grid).Children[0] as Border).Margin = new Thickness(12, 4, 12, 4);
                 if (InfoBaseGrid.ActualHeight >= 850)
                 {
-                    Grid.SetRow((FrameworkElement)InfoBaseGrid.Children[0], 1);
-                    Grid.SetRow((FrameworkElement)InfoBaseGrid.Children[1], 0);
-
-                    InfoBaseGrid.RowDefinitions[1].Height = GridLength.Auto;
-                    InfoBaseGrid.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
-
-                    (InfoBaseGrid.Children[0] as StackPanel).Margin = new Thickness(0, 0, 0, 12);
-                    (InfoBaseGrid.Children[1] as Grid).Margin = new Thickness(0, 0, 0, 48);
-
-                    InfoBaseTitle.TextAlignment = TextAlignment.Left;
                 }
                 else
                 {
-                    Grid.SetRow((FrameworkElement)InfoBaseGrid.Children[0], 0);
-                    Grid.SetRow((FrameworkElement)InfoBaseGrid.Children[1], 1);
-
-                    InfoBaseGrid.RowDefinitions[0].Height = GridLength.Auto;
-                    InfoBaseGrid.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
-
-                    (InfoBaseGrid.Children[0] as StackPanel).Margin = new Thickness(0);
-                    (InfoBaseGrid.Children[1] as Grid).Margin = new Thickness(0, 32, 0, 32);
-
-                    InfoBaseTitle.TextAlignment = TextAlignment.Center;
                 }
             }
             else
             {
-                InfoBaseGrid.RowDefinitions[0].Height = GridLength.Auto;
-                InfoBaseGrid.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
-
-                (InfoBaseGrid.Children[1] as Grid).Width = double.NaN;
-                (InfoBaseGrid.Children[1] as Grid).HorizontalAlignment = HorizontalAlignment.Center;
-                Grid.SetColumn(LrcBaseGrid, 1);
-                Grid.SetRow((FrameworkElement)InfoBaseGrid.Children[0], 0);
-                Grid.SetRow((FrameworkElement)InfoBaseGrid.Children[1], 1);
-
-                if (ActualWidth >= 800)
+                if (ActualWidth >= 1000)
                 {
-                    //LyricItem.TextAlignments = TextAlignment.Left;
+                    isMiniPage = false;
+                    LyricSccondRow.Height = new(0);
+                    LrcPageColumn.Width = new(1.4, GridUnitType.Star);
+                    LrcBaseGrid.Visibility = Visibility.Visible;
                     BridgeTb.TextAlignment = TextAlignment.Left;
-                    LrcPageColumn.Width = new GridLength(1.35, GridUnitType.Star);
-                    LrcPageColumn.MaxWidth = double.MaxValue;
-
-                    InfoBaseGrid.RowDefinitions[0].Height = GridLength.Auto;
-                    InfoBaseGrid.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
-
-                    (InfoBaseGrid.Children[0] as StackPanel).Margin = new Thickness(0);
-                    (InfoBaseGrid.Children[1] as Grid).Margin = new Thickness(0, 32, 0, 32);
-                    ((InfoBaseGrid.Children[1] as Grid).Children[0] as Border).Margin = new Thickness(12, 4, 12, 4);
-                    LrcBaseGrid.Margin = new Thickness(0);
-
-                    InfoBaseTitle.TextAlignment = TextAlignment.Center;
+                    InfoBaseGrid.Margin = new(0, 0, 30, 0);
                 }
                 else
                 {
-                    //LyricItem.TextAlignments = TextAlignment.Center;
+                    isMiniPage = true;
+                    LyricSccondRow.Height = new(0.65, GridUnitType.Star);
+                    LrcPageColumn.Width = new(0);
+                    LrcBaseGrid.Visibility = Visibility.Collapsed;
                     BridgeTb.TextAlignment = TextAlignment.Center;
-                    Grid.SetColumn(LrcBaseGrid, 0);
-                    LrcPageColumn.MaxWidth = 0;
-                    LrcBaseGrid.Margin = new Thickness(28, 112, 28,
-                        (InfoBaseGrid.Children[2] as Grid).ActualHeight + (InfoBaseGrid.Children[3] as Grid).ActualHeight + 36
-                        );
-
-                    Grid.SetRow((FrameworkElement)InfoBaseGrid.Children[1], 0);
-                    (InfoBaseGrid.Children[1] as Grid).Margin = new Thickness(0, 0, 0, 0);
-                    (InfoBaseGrid.Children[1] as Grid).Width = 100;
-                    (InfoBaseGrid.Children[1] as Grid).HorizontalAlignment = HorizontalAlignment.Left;
-                    ((InfoBaseGrid.Children[1] as Grid).Children[0] as Border).Margin = new Thickness(0);
-                    (InfoBaseGrid.Children[0] as StackPanel).Margin = new Thickness(112, 20, 0, 0);
-
-                    InfoBaseTitle.TextAlignment = TextAlignment.Left;
+                    InfoBaseGrid.Margin = new(0);
                 }
-            }*/
+            }
         }
 
-        public void SelectedChangedDo()
+        public async void SelectedChangedDo()
         {
             isCodeChangedLrcItem = true;
             LrcBaseListView.SelectedItem = App.lyricManager.NowLyricsData;
+            LrcSecondListView.SelectedItem = App.lyricManager.NowLyricsData;
             isCodeChangedLrcItem = false;
 
-            if (scrollViewer != null && !inScroll && App.lyricManager.NowLyricsData != null)
-            //if (LrcBaseListView.SelectedItem != null)
+            var sv = isMiniPage ? scrollViewer1 : scrollViewer;
+            if (sv != null && !inScroll && App.lyricManager.NowLyricsData.Lyric != null)
             {
-                //LrcBaseListView.SmoothScrollIntoViewWithItemAsync(LrcBaseListView.SelectedItem, ScrollItemPlacement.Center);
-                
                 var c = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
                 if (c == null)
                 {
-                    LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData, ScrollIntoViewAlignment.Default);
-                    c = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
-                    LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData, ScrollIntoViewAlignment.Default);
+                    if (!isMiniPage)
+                    {
+                        LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData, ScrollIntoViewAlignment.Default);
+                        c = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
+                        LrcBaseListView.ScrollIntoView(App.lyricManager.NowLyricsData, ScrollIntoViewAlignment.Default);
+                    }
+                    else
+                    {
+                        LrcSecondListView.ScrollIntoView(App.lyricManager.NowLyricsData, ScrollIntoViewAlignment.Default);
+                        c = LrcSecondListView.ContainerFromIndex(LrcSecondListView.SelectedIndex) as UIElement;
+                        LrcSecondListView.ScrollIntoView(App.lyricManager.NowLyricsData, ScrollIntoViewAlignment.Default);
+                    }
                 }
                 if (c != null)
-                    scrollViewer.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48, null);
+                {
+                    if (!isMiniPage)
+                        sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48, null);
+                    else
+                        await LrcSecondListView.SmoothScrollIntoViewWithItemAsync(App.lyricManager.NowLyricsData, ScrollItemPlacement.Top);
+                }
             }
 #if DEBUG
-            Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData?.Lyric}.");
+            Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData?.Lyric[0]}");
 #endif
         }
 
@@ -303,7 +265,11 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         {
             if (ShowLrcPage && ViewState == MusicPageViewState.View)
             {
-                SelectedChangedDo();
+                try
+                {
+                    SelectedChangedDo();
+                }
+                catch { }
             }
         }
 
@@ -319,7 +285,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             CloseMusicPageButton.Width = MainWindow.SNavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 86 : 44;
         }
 
-        DataEditor.MusicData MusicData;
+        MusicData MusicData;
         private void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
         {
             if (ViewState == MusicPageViewState.Hidden || audioPlayer.MusicData == null) return;
@@ -362,11 +328,13 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void AudioPlayer_PlayEnd(Media.AudioPlayer audioPlayer)
         {
-
+            PlaySlider.Maximum = 0;
+            PlaySlider.Value = 0;
         }
 
         private void AudioPlayer_CacheLoadingChanged(Media.AudioPlayer audioPlayer, object data)
         {
+            isCodeChangedSliderValue = true;
             if (ViewState == MusicPageViewState.Hidden) return;
             PlayButton.IsEnabled = true;
             AudioLoadingProressRing.IsIndeterminate = true;
@@ -374,6 +342,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void AudioPlayer_CacheLoadedChanged(Media.AudioPlayer audioPlayer)
         {
+            isCodeChangedSliderValue = false;
             PlayButton.IsEnabled = true;
             AudioLoadingProressRing.IsIndeterminate = false;
         }
@@ -407,33 +376,32 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void PlayListButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.OpenOrClosePlayingList(TeachingTipPlacementMode.BottomLeft, new(0, 0, 0, 0));
+            MainWindow.OpenOrClosePlayingList(
+                HorizontalAlignment.Left,
+                flyoutPlacementMode: Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.LeftEdgeAlignedBottom,
+                placementMargin: new(30, 0, 0, ControlBar.ActualHeight - PlaySlider.ActualHeight + 8));
         }
 
         private void VloumeButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.OpenOrCloseVolume(TeachingTipPlacementMode.BottomLeft, new(0, 0, 0, 0));
+            MainWindow.OpenOrCloseVolume(
+                HorizontalAlignment.Left,
+                flyoutPlacementMode: Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.LeftEdgeAlignedBottom,
+                placementMargin: new(30, 0, 0, ControlBar.ActualHeight - PlaySlider.ActualHeight + 8));
         }
 
         static ScrollViewer scrollViewer = null;
+        static ScrollViewer scrollViewer1 = null;
         private void LrcBaseListView_Loaded(object sender, RoutedEventArgs e)
         {
             var a = VisualTreeHelper.GetChild(LrcBaseListView, 0) as Border;
+            var b = VisualTreeHelper.GetChild(LrcSecondListView, 0) as Border;
             if (a != null)
                 scrollViewer = a.Child as ScrollViewer;
+            if (b != null)
+                scrollViewer1 = b.Child as ScrollViewer;
             scrollViewer.CanContentRenderOutsideBounds = false;
-            LrcBaseListView.AddHandler(PointerWheelChangedEvent, new PointerEventHandler(LrcBaseListView_PointerWheelChanged), true);
-            _recognizer = new GestureRecognizer()
-            {
-                GestureSettings = GestureSettings.ManipulationTranslateY
-                // 此处为手势识别器需要识别的手势, 这里只需识别纵向滑动
-            };
-
-            LrcBaseListView.AddHandler(PointerMovedEvent, new PointerEventHandler(LrcBaseListView_PointerMoved), true);
-
-            _recognizer.ManipulationUpdated += Recognizer_ManipulationUpdated;
-            _recognizer.ManipulationCompleted += Recognizer_ManipulationCompleted;
-
+            scrollViewer1.CanContentRenderOutsideBounds = false;
             UpdataInterfaceDesign();
         }
 
@@ -487,7 +455,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         bool isCodeScrollLrcViewer = false;
         private void LrcBaseListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var lrcItem = LrcBaseListView.SelectedItem as DataEditor.LyricData;
+            var lrcItem = (sender as ListView).SelectedItem as LyricData;
             if (lrcItem != null && !isCodeChangedLrcItem)
             {
                 // 加1ms，否则会短时间判定到上一句歌词
@@ -501,6 +469,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private void LrcBaseListView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             LrcBaseListView.Padding = new Thickness(0, LrcBaseListView.ActualHeight / 2 + 68, 0, LrcBaseListView.ActualHeight / 2);
+            LrcSecondListView.Padding = new Thickness(0, LrcSecondListView.ActualHeight / 2, 0, LrcSecondListView.ActualHeight / 2);
         }
 
         private void pageRoot_Loaded(object sender, RoutedEventArgs e)
@@ -521,7 +490,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         bool isCodeChangedSliderValue = false;
         private void PlaySlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
-            if (!isCodeChangedSliderValue)
+            if (!isCodeChangedSliderValue && App.audioPlayer.FileReader != null)
             {
                 App.audioPlayer.CurrentTime = TimeSpan.FromTicks((long)PlaySlider.Value);
             }

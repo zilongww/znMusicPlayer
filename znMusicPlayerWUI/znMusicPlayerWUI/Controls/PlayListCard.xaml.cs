@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media;
 using znMusicPlayerWUI.Media;
 using znMusicPlayerWUI.DataEditor;
+using Newtonsoft.Json.Linq;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -40,6 +41,10 @@ namespace znMusicPlayerWUI.Controls
         public void Init(MusicListData musicListData)
         {
             MusicListData = musicListData;
+            if (MusicListData.ListDataType != DataType.歌单)
+            {
+                RefreshPlayListButton.Visibility = Visibility.Collapsed;
+            }
             DataContext = musicListData;
         }
 
@@ -77,7 +82,7 @@ namespace znMusicPlayerWUI.Controls
                 }
                 else
                 {
-                    PlayListImage.Source = await FileHelper.GetImageSource("", (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
+                    PlayListImage.Source = await FileHelper.GetImageSource(null, (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
                 }
             }
         }
@@ -184,6 +189,33 @@ namespace znMusicPlayerWUI.Controls
                 await PlayListHelper.DeletePlayList(MusicListData);
                 await App.playListReader.Refresh();
                 MainWindow.HideDialog();
+            }
+        }
+
+        private async void MenuFlyoutItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            MainWindow.ShowLoadingDialog("正在更新歌单...");
+
+            try
+            {
+                var deletePath = await ImageManage.GetImageSource(MusicListData);
+                await Task.Run(() => File.Delete(deletePath));
+
+                var playlist = await App.metingServices.NeteaseServices.GetPlayList(MusicListData.ID);
+                MusicListData = playlist;
+
+                var data = JObject.Parse(await PlayListHelper.ReadData());
+                data[MusicListData.ListName] = JObject.FromObject(playlist);
+                await PlayListHelper.SaveData(data.ToString());
+
+                await App.playListReader.Refresh();
+
+                MainWindow.HideDialog();
+            }
+            catch (Exception ex)
+            {
+                MainWindow.HideDialog();
+                await MainWindow.ShowDialog("更新歌单失败", $"更新歌单时遇到错误，请重试。\n错误信息：{ex}");
             }
         }
     }

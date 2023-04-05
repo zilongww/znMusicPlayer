@@ -15,6 +15,52 @@
 
     <Page.Resources>
         <StaticResource x:Key="TextForeground" ResourceKey="ButtonForegroundThemeBrush"/>
+        <DataTemplate x:Key="LyricTemplate" x:DataType="data:LyricData">
+            <StackPanel Background="Transparent">
+                <TextBlock TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
+                                               TextWrapping="Wrap"
+                                               FontSize="27"
+                                               Text="{Binding LyricAllString}"/>
+            </StackPanel>
+        </DataTemplate>
+        <Style TargetType="ListViewItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <ListViewItemPresenter
+                                                    BorderBrush="Transparent"
+                                                    Background="{x:Null}"
+                                                    Foreground="{ThemeResource MusicPageLrcForeground}"
+                                                    SelectedForeground="{ThemeResource AccentAAFillColorTertiaryBrush}"
+                                                    ContentTransitions="{TemplateBinding ContentTransitions}"
+                                                    SelectionCheckMarkVisualEnabled="True"
+                                                    CheckBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+                                                    CheckBoxBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+                                                    DragBackground="{ThemeResource ListViewItemDragBackgroundThemeBrush}"
+                                                    DragForeground="{ThemeResource ListViewItemDragForegroundThemeBrush}"
+                                                    FocusBorderBrush="{ThemeResource SystemControlForegroundAltHighBrush}"
+                                                    FocusSecondaryBorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                                                    PlaceholderBackground="Transparent"
+                                                    PointerOverBackground="Transparent"
+                                                    PointerOverBorderBrush="Transparent"
+                                                    SelectedBackground="Transparent"
+                                                    SelectedPointerOverBackground="Transparent"
+                                                    SelectedPressedBackground="Transparent"
+                                                    PressedBackground="Transparent"
+                                                    DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
+                                                    DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
+                                                    ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}"
+                                                    HorizontalContentAlignment="Stretch"
+                                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                    ContentMargin="{TemplateBinding Padding}"
+                                                    CheckMode="Overlay"
+                                                    MinWidth="0"
+                                                    Margin="0,20">
+                        </ListViewItemPresenter>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
 
     <Grid>
@@ -42,12 +88,22 @@
                 <Grid x:Name="InfoBaseGrid" VerticalAlignment="Stretch" Margin="0,0,30,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="0.5*" MaxHeight="800" x:Name="LyricSccondRow"/>
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
                     <Border CornerRadius="8" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <controls:Imagezn x:Name="AlbumImageBase" IsMassImage="False"/>
                     </Border>
-                    <StackPanel x:Name="InfoBaseTitle" Margin="0,8,0,0" Grid.Row="1" Loaded="InfoBaseTitle_Loaded">
+                    <Grid x:Name="LyricSecondPlaceGrid" Margin="0,8,0,0" Grid.Row="1" PointerWheelChanged="LrcBaseListView_PointerWheelChanged">
+                        <ListView x:Name="LrcSecondListView"
+                                  ItemsSource="{Binding ElementName=LrcBaseListView,Path=ItemsSource}"
+                                  ItemTemplate="{ThemeResource LyricTemplate}"
+                                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                  SelectionChanged="LrcBaseListView_SelectionChanged"
+                                  SizeChanged="LrcBaseListView_SizeChanged"
+                                  IsFocusEngagementEnabled="True"/>
+                    </Grid>
+                    <StackPanel x:Name="InfoBaseTitle" Grid.Row="2" Loaded="InfoBaseTitle_Loaded">
                         <StackPanel.Resources>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
@@ -102,86 +158,24 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid x:Name="LrcBaseGrid" Grid.Column="1" PointerWheelChanged="LrcBaseListView_PointerWheelChanged" Grid.Row="0">
-                    <Grid.Transitions>
-                        <TransitionCollection>
-                            <RepositionThemeTransition/>
-                        </TransitionCollection>
-                    </Grid.Transitions>
-                    <ListView x:Name="LrcBaseListView"
-                          Loaded="LrcBaseListView_Loaded"
-                          Background="Transparent"
-                          SelectionChanged="LrcBaseListView_SelectionChanged"
-                          ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                          IsFocusEngagementEnabled="True"
-                          SizeChanged="LrcBaseListView_SizeChanged"
-                          HorizontalContentAlignment="Stretch">
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="data:LyricData">
-                                <StackPanel Background="Transparent">
-                                    <!--
-                                    <VisualStateManager.VisualStateGroups>
-                                        <VisualStateGroup x:Name="TextBoxStates">
-                                            <VisualState x:Name="TextBoxNotEmptyState"/>
-                                            <VisualState x:Name="TextBoxEmptyState">
-                                                <VisualState.StateTriggers>
-                                                    <triggers:IsNullOrEmptyStateTrigger Value="{Binding Text, ElementName=TranslateTextBlock, Mode=OneWay}"/>
-                                                </VisualState.StateTriggers>
-                                                <VisualState.Setters>
-                                                    <Setter Target="TranslateTextBlock.Visibility"  Value="Collapsed" />
-                                                </VisualState.Setters>
-                                            </VisualState>
-                                        </VisualStateGroup>
-                                    </VisualStateManager.VisualStateGroups>
-                                    -->
-                                    <TextBlock TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
-                                               TextWrapping="Wrap"
-                                               FontSize="27"
-                                               Text="{Binding LyricAllString}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="ListViewItem">
-                                            <ListViewItemPresenter
-                                            BorderBrush="Transparent"
-                                            Background="{x:Null}"
-                                            Foreground="{ThemeResource MusicPageLrcForeground}"
-                                            SelectedForeground="{ThemeResource AccentAAFillColorTertiaryBrush}"
-                                            ContentTransitions="{TemplateBinding ContentTransitions}"
-                                            SelectionCheckMarkVisualEnabled="True"
-                                            CheckBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
-                                            CheckBoxBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
-                                            DragBackground="{ThemeResource ListViewItemDragBackgroundThemeBrush}"
-                                            DragForeground="{ThemeResource ListViewItemDragForegroundThemeBrush}"
-                                            FocusBorderBrush="{ThemeResource SystemControlForegroundAltHighBrush}"
-                                            FocusSecondaryBorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
-                                            PlaceholderBackground="Transparent"
-                                            PointerOverBackground="Transparent"
-                                            PointerOverBorderBrush="Transparent"
-                                            SelectedBackground="Transparent"
-                                            SelectedPointerOverBackground="Transparent"
-                                            SelectedPressedBackground="Transparent"
-                                            PressedBackground="Transparent"
-                                            DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
-                                            DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
-                                            ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}"
-                                            HorizontalContentAlignment="Stretch"
-                                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                            ContentMargin="{TemplateBinding Padding}"
-                                            CheckMode="Overlay"
-                                            MinWidth="0"
-                                            Margin="0,20">
-                                            </ListViewItemPresenter>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                    </ListView>
+                <Grid x:Name="LyricBaseGrid" Grid.Column="1" Grid.Row="0">
+                    <Grid x:Name="LrcBaseGrid" PointerWheelChanged="LrcBaseListView_PointerWheelChanged">
+                        <Grid.Transitions>
+                            <TransitionCollection>
+                                <RepositionThemeTransition/>
+                            </TransitionCollection>
+                        </Grid.Transitions>
+                        <ListView x:Name="LrcBaseListView"
+                                  Loaded="LrcBaseListView_Loaded"
+                                  Background="Transparent"
+                                  SelectionChanged="LrcBaseListView_SelectionChanged"
+                                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                  IsFocusEngagementEnabled="True"
+                                  SizeChanged="LrcBaseListView_SizeChanged"
+                                  HorizontalContentAlignment="Stretch"
+                                  ItemTemplate="{ThemeResource LyricTemplate}">
+                        </ListView>
+                    </Grid>
                 </Grid>
             </Grid>
 

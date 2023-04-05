@@ -25,11 +25,15 @@ namespace znMusicPlayerWUI.Media
             {
                 if (System.IO.File.Exists(b))
                 {
-                    if (System.IO.File.ReadAllBytes(b).Length == 0)
+                    try
                     {
-                        System.IO.File.Delete(b);
-                        return true;
+                        if (System.IO.File.ReadAllBytes(b).Length == 0)
+                        {
+                            System.IO.File.Delete(b);
+                            return true;
+                        }
                     }
+                    catch { }
                 }
                 return false;
             });
