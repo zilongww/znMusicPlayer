@@ -367,9 +367,12 @@ namespace znMusicPlayerWUI.Helpers
                         if (times.Length == 1) continue;
                         if (!timesa) continue;
 
+                        var timesc = int.TryParse(times[1], out int timesd);
+                        if (!timesc) continue;
+
                         var timesResult =
                             timesb +
-                            TimeSpan.FromMilliseconds(int.Parse(times[1]));
+                            TimeSpan.FromMilliseconds(timesd);
                         var text = timesAndLyric[1];
                         if (text == "") text = NoneLyricString;
 

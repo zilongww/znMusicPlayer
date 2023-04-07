@@ -75,7 +75,10 @@
             </Rectangle.Fill>
         </Rectangle>
         <Rectangle Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" Opacity="0.0001"/>
-        <Grid Padding="0">
+        <Grid Padding="0" Opacity="0" x:Name="InterfaceBaseGrid">
+            <Grid.OpacityTransition>
+                <ScalarTransition Duration="0:0:0.25"/>
+            </Grid.OpacityTransition>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="auto"/>
@@ -213,7 +216,7 @@
                                 ValueChanged="PlaySlider_ValueChanged">
                             <Slider.Background>
                                 <brush:BackdropGammaTransferBrush RedDisable="True" GreenDisable="True" BlueDisable="True"
-                                                                AlphaAmplitude="1" AlphaExponent="1" AlphaOffset="1"/>
+                                                                AlphaAmplitude="1.2" AlphaExponent="1.2" AlphaOffset="1.2"/>
                             </Slider.Background>
                         </Slider>
                         <TextBlock x:Name="NowAtherTimeTb"

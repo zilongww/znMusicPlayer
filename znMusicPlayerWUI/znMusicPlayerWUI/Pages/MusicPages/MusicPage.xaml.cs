@@ -101,6 +101,12 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             UpdataInterfaceDesign();
         }
 
+        async void UpdataInterfaceOpacity()
+        {
+            await Task.Delay(150);
+            InterfaceBaseGrid.Opacity = 1;
+        }
+
         private void PlayingList_NowPlayingImageLoading(ImageSource imageSource, string _)
         {
             /*if (App.audioPlayer.MusicData?.AlbumID != MusicData?.AlbumID)
@@ -130,6 +136,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             }
         }
 
+        bool isFirstOpenMusicPage = true;
         public MusicPageViewState ViewState = MusicPageViewState.Hidden;
         private void ViewChange(MusicPageViewState musicPageViewState)
         {
@@ -145,6 +152,11 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 {
                     //LrcBaseListView.SelectedItem = LrcBaseListView.Items.Last();
                     SelectedChangedDo();
+                }
+                if (isFirstOpenMusicPage)
+                {
+                    isFirstOpenMusicPage = false;
+                    UpdataInterfaceOpacity();
                 }
             }
 #if DEBUG
@@ -164,7 +176,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         };
         private void CreatBlurVisualToImage()
         {
-            return;/*
+            return;
             var imageVisual = ElementCompositionPreview.GetElementVisual(BackgroundBaseImage);
             var compositor = imageVisual.Compositor;
             var blurFactory = compositor.CreateEffectFactory(blur);
@@ -174,16 +186,6 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             blurVisual.Brush = blurBrush;
             blurVisual.RelativeSizeAdjustment = new System.Numerics.Vector2(1f, 1f);
             ElementCompositionPreview.SetElementChildVisual(BackgroundBaseImage, blurVisual);
-
-            var imageVisual1 = ElementCompositionPreview.GetElementVisual(BackgroundBaseImageAnimate);
-            var compositor1 = imageVisual1.Compositor;
-            var blurFactory1 = compositor1.CreateEffectFactory(blur);
-            var blurBrush1 = blurFactory1.CreateBrush();
-            blurBrush1.SetSourceParameter("Source", compositor1.CreateBackdropBrush());
-            var blurVisual1 = compositor1.CreateSpriteVisual();
-            blurVisual1.Brush = blurBrush1;
-            blurVisual1.RelativeSizeAdjustment = new System.Numerics.Vector2(1f, 1f);
-            ElementCompositionPreview.SetElementChildVisual(BackgroundBaseImageAnimate, blurVisual1);*/
         }
 
         int updataCount = 0;
@@ -243,6 +245,8 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             LrcBaseListView.SelectedItem = App.lyricManager.NowLyricsData;
             LrcSecondListView.SelectedItem = App.lyricManager.NowLyricsData;
             isCodeChangedLrcItem = false;
+
+            if (App.lyricManager.NowLyricsData == null) return;
 
             var sv = isMiniPage ? scrollViewer1 : scrollViewer;
             if (sv != null && !inScroll && App.lyricManager.NowLyricsData.Lyric != null)
