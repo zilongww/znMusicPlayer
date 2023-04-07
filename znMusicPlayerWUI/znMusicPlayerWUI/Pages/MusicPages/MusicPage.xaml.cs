@@ -186,8 +186,24 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             ElementCompositionPreview.SetElementChildVisual(BackgroundBaseImageAnimate, blurVisual1);*/
         }
 
+        int updataCount = 0;
+        async void UpdatingInterfaceDesign()
+        {
+            updataCount++;
+            await Task.Delay(150);
+            if (updataCount <= 1)
+            {
+                try
+                {
+                    UpdataInterfaceDesign();
+                }
+                catch { }
+            }
+            updataCount--;
+        }
+
         bool isMiniPage = false;
-        public void UpdataInterfaceDesign()
+        public async void UpdataInterfaceDesign()
         {
             if (!ShowLrcPage)
             {
@@ -205,7 +221,6 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     isMiniPage = false;
                     LyricSccondRow.Height = new(0);
                     LrcPageColumn.Width = new(1.4, GridUnitType.Star);
-                    LrcBaseGrid.Visibility = Visibility.Visible;
                     BridgeTb.TextAlignment = TextAlignment.Left;
                     InfoBaseGrid.Margin = new(0, 0, 30, 0);
                 }
@@ -214,14 +229,15 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     isMiniPage = true;
                     LyricSccondRow.Height = new(0.65, GridUnitType.Star);
                     LrcPageColumn.Width = new(0);
-                    LrcBaseGrid.Visibility = Visibility.Collapsed;
                     BridgeTb.TextAlignment = TextAlignment.Center;
                     InfoBaseGrid.Margin = new(0);
                 }
+                await Task.Delay(1);
+                SelectedChangedDo(true);
             }
         }
 
-        public async void SelectedChangedDo()
+        public async void SelectedChangedDo(bool disableAnimation = false)
         {
             isCodeChangedLrcItem = true;
             LrcBaseListView.SelectedItem = App.lyricManager.NowLyricsData;
@@ -231,7 +247,9 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             var sv = isMiniPage ? scrollViewer1 : scrollViewer;
             if (sv != null && !inScroll && App.lyricManager.NowLyricsData.Lyric != null)
             {
-                var c = LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
+                var c = isMiniPage ? 
+                    LrcSecondListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement :
+                    LrcBaseListView.ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
                 if (c == null)
                 {
                     if (!isMiniPage)
@@ -250,26 +268,22 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 if (c != null)
                 {
                     if (!isMiniPage)
-                        sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48, null);
+                        sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48, null, disableAnimation);
                     else
-                        await LrcSecondListView.SmoothScrollIntoViewWithItemAsync(App.lyricManager.NowLyricsData, ScrollItemPlacement.Top);
+                        await LrcSecondListView.SmoothScrollIntoViewWithItemAsync(App.lyricManager.NowLyricsData, ScrollItemPlacement.Top, disableAnimation);
                 }
             }
 #if DEBUG
-            Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData?.Lyric[0]}");
+            //Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData?.Lyric[0]}");
 #endif
         }
 
         //todo：优化性能
-        private void LyricManager_PlayingLyricSelectedChange1(DataEditor.LyricData nowLyricsData)
+        private void LyricManager_PlayingLyricSelectedChange1(LyricData nowLyricsData)
         {
             if (ShowLrcPage && ViewState == MusicPageViewState.View)
             {
-                try
-                {
-                    SelectedChangedDo();
-                }
-                catch { }
+                SelectedChangedDo();
             }
         }
 
@@ -280,7 +294,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void MusicPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdataInterfaceDesign();
+            UpdatingInterfaceDesign();
 
             CloseMusicPageButton.Width = MainWindow.SNavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 86 : 44;
         }
@@ -394,15 +408,6 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         static ScrollViewer scrollViewer1 = null;
         private void LrcBaseListView_Loaded(object sender, RoutedEventArgs e)
         {
-            var a = VisualTreeHelper.GetChild(LrcBaseListView, 0) as Border;
-            var b = VisualTreeHelper.GetChild(LrcSecondListView, 0) as Border;
-            if (a != null)
-                scrollViewer = a.Child as ScrollViewer;
-            if (b != null)
-                scrollViewer1 = b.Child as ScrollViewer;
-            scrollViewer.CanContentRenderOutsideBounds = false;
-            scrollViewer1.CanContentRenderOutsideBounds = false;
-            UpdataInterfaceDesign();
         }
 
         private void LrcBaseListView_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
@@ -453,8 +458,15 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         int scrollCount = 0;
         bool isCodeChangedLrcItem = false;
         bool isCodeScrollLrcViewer = false;
+        int changeCount = 0;
         private void LrcBaseListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (changeCount <= 1)
+            {
+                changeCount++;
+                return;
+            }
+
             var lrcItem = (sender as ListView).SelectedItem as LyricData;
             if (lrcItem != null && !isCodeChangedLrcItem)
             {
@@ -475,6 +487,15 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private void pageRoot_Loaded(object sender, RoutedEventArgs e)
         {
             //ShowLrcPage = ShowLrcPage;
+            var a = VisualTreeHelper.GetChild(LrcBaseListView, 0) as Border;
+            var b = VisualTreeHelper.GetChild(LrcSecondListView, 0) as Border;
+            if (a != null)
+                scrollViewer = a.Child as ScrollViewer;
+            if (b != null)
+                scrollViewer1 = b.Child as ScrollViewer;
+            scrollViewer.CanContentRenderOutsideBounds = false;
+            scrollViewer1.CanContentRenderOutsideBounds = false;
+            UpdatingInterfaceDesign();
         }
 
         private void LrcButton_Checked(object sender, RoutedEventArgs e)
@@ -488,9 +509,15 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         }
 
         bool isCodeChangedSliderValue = false;
+        bool isFirstChangeValue = true;
         private void PlaySlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
-            if (!isCodeChangedSliderValue && App.audioPlayer.FileReader != null)
+            if (isFirstChangeValue)
+            {
+                isFirstChangeValue = false;
+                return;
+            }
+            if (!isCodeChangedSliderValue && !isCodeChangedLrcItem && App.audioPlayer.FileReader != null)
             {
                 App.audioPlayer.CurrentTime = TimeSpan.FromTicks((long)PlaySlider.Value);
             }

@@ -118,19 +118,23 @@ namespace znMusicPlayerWUI
             App.SMTC.ButtonPressed += SMTC_ButtonPressed;
             App.lyricManager.PlayingLyricSelectedChange += (_) =>
             {
-                if (SWindowGridBase.Visibility == Visibility.Visible && !isMinSize && !InOpenMusicPage)
+                try
                 {
-                    try
+                    if (SWindowGridBase.Visibility == Visibility.Visible && !isMinSize && !InOpenMusicPage)
                     {
-                        AppTitleTextBlock.Text = $"{App.AppName} -";
-                        LyricTextBlock.Text = $" {_?.Lyric.FirstOrDefault()}";
-                    }
-                    catch
-                    {
-                        AppTitleTextBlock.Text = $"{App.AppName}";
-                        LyricTextBlock.Text = null;
+                        try
+                        {
+                            AppTitleTextBlock.Text = $"{App.AppName} -";
+                            LyricTextBlock.Text = $" {_?.Lyric.FirstOrDefault()}";
+                        }
+                        catch
+                        {
+                            AppTitleTextBlock.Text = $"{App.AppName}";
+                            LyricTextBlock.Text = null;
+                        }
                     }
                 }
+                catch { }
                 //System.Diagnostics.Debug.WriteLine("233");
             };
             App.playListReader.Updataed += () => UpdataPlayListButtonUI();
