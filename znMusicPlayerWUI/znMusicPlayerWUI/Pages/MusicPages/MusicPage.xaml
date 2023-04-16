@@ -28,34 +28,34 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ListViewItem">
                         <ListViewItemPresenter
-                                                    BorderBrush="Transparent"
-                                                    Background="{x:Null}"
-                                                    Foreground="{ThemeResource MusicPageLrcForeground}"
-                                                    SelectedForeground="{ThemeResource AccentAAFillColorTertiaryBrush}"
-                                                    ContentTransitions="{TemplateBinding ContentTransitions}"
-                                                    SelectionCheckMarkVisualEnabled="True"
-                                                    CheckBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
-                                                    CheckBoxBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
-                                                    DragBackground="{ThemeResource ListViewItemDragBackgroundThemeBrush}"
-                                                    DragForeground="{ThemeResource ListViewItemDragForegroundThemeBrush}"
-                                                    FocusBorderBrush="{ThemeResource SystemControlForegroundAltHighBrush}"
-                                                    FocusSecondaryBorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
-                                                    PlaceholderBackground="Transparent"
-                                                    PointerOverBackground="Transparent"
-                                                    PointerOverBorderBrush="Transparent"
-                                                    SelectedBackground="Transparent"
-                                                    SelectedPointerOverBackground="Transparent"
-                                                    SelectedPressedBackground="Transparent"
-                                                    PressedBackground="Transparent"
-                                                    DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
-                                                    DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
-                                                    ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}"
-                                                    HorizontalContentAlignment="Stretch"
-                                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                    ContentMargin="{TemplateBinding Padding}"
-                                                    CheckMode="Overlay"
-                                                    MinWidth="0"
-                                                    Margin="0,0,0,40">
+                             BorderBrush="Transparent"
+                             Background="{x:Null}"
+                             Foreground="{ThemeResource MusicPageLrcForeground}"
+                             SelectedForeground="{ThemeResource AccentAAFillColorTertiaryBrush}"
+                             ContentTransitions="{TemplateBinding ContentTransitions}"
+                             SelectionCheckMarkVisualEnabled="True"
+                             CheckBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+                             CheckBoxBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+                             DragBackground="{ThemeResource ListViewItemDragBackgroundThemeBrush}"
+                             DragForeground="{ThemeResource ListViewItemDragForegroundThemeBrush}"
+                             FocusBorderBrush="{ThemeResource SystemControlForegroundAltHighBrush}"
+                             FocusSecondaryBorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                             PlaceholderBackground="Transparent"
+                             PointerOverBackground="Transparent"
+                             PointerOverBorderBrush="Transparent"
+                             SelectedBackground="Transparent"
+                             SelectedPointerOverBackground="Transparent"
+                             SelectedPressedBackground="Transparent"
+                             PressedBackground="Transparent"
+                             DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
+                             DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
+                             ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}"
+                             HorizontalContentAlignment="Stretch"
+                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                             ContentMargin="{TemplateBinding Padding}"
+                             CheckMode="Overlay"
+                             MinWidth="0"
+                             Margin="0,0,0,40">
                         </ListViewItemPresenter>
                     </ControlTemplate>
                 </Setter.Value>
@@ -90,11 +90,16 @@
                 </Grid.ColumnDefinitions>
                 <Grid x:Name="InfoBaseGrid" VerticalAlignment="Stretch" Margin="0,0,30,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="0.5*" MaxHeight="800" x:Name="LyricSccondRow"/>
+                        <RowDefinition Height="*" x:Name="ImageVer"/>
+                        <RowDefinition Height="*" x:Name="LyricSccondRow"/>
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
-                    <Border CornerRadius="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Border CornerRadius="8" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="AlbumImageBorder">
+                        <Border.Transitions>
+                            <TransitionCollection>
+                                <RepositionThemeTransition/>
+                            </TransitionCollection>
+                        </Border.Transitions>
                         <controls:Imagezn x:Name="AlbumImageBase" IsMassImage="False"/>
                     </Border>
                     <Grid x:Name="LyricSecondPlaceGrid" Margin="0,8,0,0" Grid.Row="1" PointerWheelChanged="LrcBaseListView_PointerWheelChanged">
@@ -224,11 +229,6 @@
                                    FontSize="12"
                                    VerticalAlignment="Center"
                                    Grid.Column="2">
-                            <TextBlock.Transitions>
-                                <TransitionCollection>
-                                    <RepositionThemeTransition/>
-                                </TransitionCollection>
-                            </TextBlock.Transitions>
                         </TextBlock>
                     </Grid>
 

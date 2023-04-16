@@ -149,7 +149,11 @@ namespace znMusicPlayerWUI.Controls
                 visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
                 compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
                 {
-                    ImageSourceBefore.Source = null;
+                    try
+                    {
+                        ImageSourceBefore.Source = null;
+                    }
+                    catch{ }
                 };
                 ImageSource.Source = Source;
             }

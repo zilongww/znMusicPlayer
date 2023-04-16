@@ -235,64 +235,64 @@
                     </Grid>
                 </Grid>
             </NavigationView>
+        </Grid>
 
-            <Grid x:Name="TopControlsBaseGrid" IsHitTestVisible="False">
-
-                <Grid.Resources>
-                    <Flyout x:Name="PlayingListBasePopup">
-                        <Flyout.FlyoutPresenterStyle>
-                            <Style TargetType="FlyoutPresenter">
-                                <Setter Property="ScrollViewer.VerticalScrollMode" Value="Disabled" />
-                                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
-                                <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
-                                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
-                                <Setter Property="CornerRadius" Value="8" />
-                            </Style>
-                        </Flyout.FlyoutPresenterStyle>
-                        <Grid x:Name="PlayingListBaseGrid"
+        <Grid x:Name="TopControlsBaseGrid" IsHitTestVisible="False">
+            <Grid.Resources>
+                <Flyout x:Name="PlayingListBasePopup">
+                    <Flyout.FlyoutPresenterStyle>
+                        <Style TargetType="FlyoutPresenter">
+                            <Setter Property="ScrollViewer.VerticalScrollMode" Value="Disabled" />
+                            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+                            <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
+                            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+                            <Setter Property="CornerRadius" Value="8" />
+                        </Style>
+                    </Flyout.FlyoutPresenterStyle>
+                    <Grid x:Name="PlayingListBaseGrid"
                               Margin="-12,-14"
                               MaxWidth="400"
                               MaxHeight="800"
                               HorizontalAlignment="Stretch">
-                            <Grid Margin="0,0,0,0">
-                                <ListView x:Name="PlayingListBaseView"
+                        <Grid Margin="0,0,0,0">
+                            <ListView x:Name="PlayingListBaseView"
                                           SelectionChanged="PlayingListBaseView_SelectionChanged"
                                           Background="Transparent"
                                           AllowDrop="True"
                                           CanReorderItems="True">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate x:DataType="data:MusicData">
-                                            <StackPanel Padding="0,8,0,8" Tag="{Binding MD5}">
-                                                <TextBlock Text="{Binding Title}"/>
-                                                <TextBlock Text="{Binding ButtonName}" Foreground="{ThemeResource SystemChromeDisabledLowColor}" FontSize="12"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                                <Button Width="46"
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="data:MusicData">
+                                        <StackPanel Padding="0,8,0,8" Tag="{Binding MD5}">
+                                            <TextBlock Text="{Binding Title}"/>
+                                            <TextBlock Text="{Binding ButtonName}" Foreground="{ThemeResource SystemChromeDisabledLowColor}" FontSize="12"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <Button Width="46"
                                         Height="28"
                                         Padding="0"
                                         Margin="0,4,16,0"
                                         VerticalAlignment="Top" HorizontalAlignment="Right"
                                         Click="Button_Click_5"
                                         ToolTipService.ToolTip="清除所有">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding ElementName=PlayingListBaseView,Path=ItemsSource.Count}"
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding ElementName=PlayingListBaseView,Path=ItemsSource.Count}"
                                                    FontSize="12" Margin="0,0,2,0"
                                                    VerticalAlignment="Center"/>
-                                        <Viewbox Width="13">
-                                            <SymbolIcon Symbol="Clear"/>
-                                        </Viewbox>
-                                    </StackPanel>
-                                </Button>
-                            </Grid>
+                                    <Viewbox Width="13">
+                                        <SymbolIcon Symbol="Clear"/>
+                                    </Viewbox>
+                                </StackPanel>
+                            </Button>
                         </Grid>
-                    </Flyout>
+                    </Grid>
+                </Flyout>
 
-                    <Flyout x:Name="VolumeBasePopup">
-                        <Grid x:Name="VolumeBaseGrid" Margin="-6">
-                            <StackPanel Orientation="Horizontal">
-                                <Button Padding="12"
+                <Flyout x:Name="VolumeBasePopup">
+                    <Grid x:Name="VolumeBaseGrid" Margin="-6">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Padding="12"
                                 BorderThickness="0"
                                 Background="Transparent"
                                 VerticalContentAlignment="Center"
@@ -300,9 +300,9 @@
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
                                 Click="Button_Click_2">
-                                    <Path Width="14" Height="14" Stretch="Uniform" Fill="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 均衡器}"/>
-                                </Button>
-                                <Button Padding="12"
+                                <Path Width="14" Height="14" Stretch="Uniform" Fill="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 均衡器}"/>
+                            </Button>
+                            <Button Padding="12"
                                     BorderThickness="0"
                                     Margin="2,0,0,0"
                                     Background="Transparent"
@@ -311,16 +311,16 @@
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Center"
                                     Click="Button_Click_3">
-                                    <Viewbox Width="16">
-                                        <SymbolIcon x:Name="VolumeIconBase" Symbol="Volume"/>
-                                    </Viewbox>
-                                </Button>
-                                <AppBarSeparator/>
-                                <StackPanel Orientation="Horizontal"
+                                <Viewbox Width="16">
+                                    <SymbolIcon x:Name="VolumeIconBase" Symbol="Volume"/>
+                                </Viewbox>
+                            </Button>
+                            <AppBarSeparator/>
+                            <StackPanel Orientation="Horizontal"
                                         Margin="8,0,10,0">
-                                    <TextBlock Text="{Binding ElementName=VolumeSlider,Path=Value}"
+                                <TextBlock Text="{Binding ElementName=VolumeSlider,Path=Value}"
                                            VerticalAlignment="Center"/>
-                                    <Slider x:Name="VolumeSlider"
+                                <Slider x:Name="VolumeSlider"
                                         Orientation="Horizontal"
                                         Width="150"
                                         Margin="10,0,0,0"
@@ -333,14 +333,13 @@
                                         PointerEntered="VolumeSlider_PointerEntered"
                                         PointerExited="VolumeSlider_PointerExited"
                                         ValueChanged="VolumeSlider_ValueChanged"/>
-                                </StackPanel>
                             </StackPanel>
-                        </Grid>
-                    </Flyout>
-                </Grid.Resources>
-            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </Flyout>
+            </Grid.Resources>
         </Grid>
-
+        
         <Grid x:Name="MusicPageBaseGrid">
             <Frame x:Name="MusicPageBaseFrame"/>
         </Grid>

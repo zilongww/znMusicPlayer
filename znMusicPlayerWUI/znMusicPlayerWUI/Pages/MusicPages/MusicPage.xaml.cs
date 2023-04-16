@@ -22,6 +22,7 @@ using Windows.System;
 using Microsoft.UI.Input;
 using System.Xml.Linq;
 using CommunityToolkit.WinUI.UI;
+using System.Runtime.Intrinsics.Arm;
 
 namespace znMusicPlayerWUI.Pages.MusicPages
 {
@@ -188,23 +189,9 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             ElementCompositionPreview.SetElementChildVisual(BackgroundBaseImage, blurVisual);
         }
 
-        int updataCount = 0;
-        async void UpdatingInterfaceDesign()
-        {
-            updataCount++;
-            await Task.Delay(150);
-            if (updataCount <= 1)
-            {
-                try
-                {
-                    UpdataInterfaceDesign();
-                }
-                catch { }
-            }
-            updataCount--;
-        }
-
         bool isMiniPage = false;
+        bool isMiniPageOnlyLyric = false;
+        bool isMiniPageLyricCenter = false;
         public async void UpdataInterfaceDesign()
         {
             if (!ShowLrcPage)
@@ -218,21 +205,45 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             }
             else
             {
-                if (ActualWidth >= 1000)
+                if (ActualWidth >= 900)
                 {
                     isMiniPage = false;
                     LyricSccondRow.Height = new(0);
                     LrcPageColumn.Width = new(1.4, GridUnitType.Star);
                     BridgeTb.TextAlignment = TextAlignment.Left;
                     InfoBaseGrid.Margin = new(0, 0, 30, 0);
+
+                    ImageVer.Height = new(1, GridUnitType.Star);
+                    AlbumImageBorder.VerticalAlignment = VerticalAlignment.Center;
+                    AlbumImageBorder.MaxWidth = double.MaxValue;
+                    AlbumImageBorder.MaxHeight = double.MaxValue;
                 }
                 else
                 {
                     isMiniPage = true;
-                    LyricSccondRow.Height = new(0.65, GridUnitType.Star);
+                    LyricSccondRow.Height = new(1, GridUnitType.Star);
                     LrcPageColumn.Width = new(0);
                     BridgeTb.TextAlignment = TextAlignment.Center;
                     InfoBaseGrid.Margin = new(0);
+                    AlbumImageBorder.VerticalAlignment = VerticalAlignment.Top;
+                    AlbumImageBorder.MaxWidth = InfoBaseGrid.ActualHeight;
+                    AlbumImageBorder.MaxHeight = InfoBaseGrid.ActualHeight / 1.5;
+
+                    if (InfoBaseGrid.ActualHeight <= 616 || InfoBaseGrid.ActualWidth <= 160)
+                    {
+                        isMiniPageOnlyLyric = true;
+                        ImageVer.Height = new(0, GridUnitType.Pixel);
+                    }
+                    else
+                    {
+                        isMiniPageOnlyLyric = false;
+                        ImageVer.Height = new(1, GridUnitType.Auto);
+                    }
+
+                    if (LyricSecondPlaceGrid.ActualHeight >= 300 || isMiniPageOnlyLyric)
+                        isMiniPageLyricCenter = true;
+                    else
+                        isMiniPageLyricCenter = false;
                 }
                 await Task.Delay(1);
                 SelectedChangedDo(true);
@@ -274,7 +285,12 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     if (!isMiniPage)
                         sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48, null, disableAnimation);
                     else
-                        await LrcSecondListView.SmoothScrollIntoViewWithItemAsync(App.lyricManager.NowLyricsData, ScrollItemPlacement.Top, disableAnimation);
+                    {
+                        if (isMiniPageLyricCenter)
+                            await LrcSecondListView.SmoothScrollIntoViewWithItemAsync(App.lyricManager.NowLyricsData, ScrollItemPlacement.Center, disableAnimation);
+                        else
+                            await LrcSecondListView.SmoothScrollIntoViewWithItemAsync(App.lyricManager.NowLyricsData, ScrollItemPlacement.Top, disableAnimation);
+                    }
                 }
             }
 #if DEBUG
@@ -298,7 +314,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void MusicPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdatingInterfaceDesign();
+            UpdataInterfaceDesign();
 
             CloseMusicPageButton.Width = MainWindow.SNavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 86 : 44;
         }
@@ -499,7 +515,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 scrollViewer1 = b.Child as ScrollViewer;
             scrollViewer.CanContentRenderOutsideBounds = false;
             scrollViewer1.CanContentRenderOutsideBounds = false;
-            UpdatingInterfaceDesign();
+            UpdataInterfaceDesign();
         }
 
         private void LrcButton_Checked(object sender, RoutedEventArgs e)

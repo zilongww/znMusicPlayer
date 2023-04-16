@@ -160,9 +160,9 @@ namespace znMusicPlayerWUI
 
             CodeHelper.MoveWindow(
                 AppWindowLocalHandle,
-                (int)((displayArea.WorkArea.Width / 2 - 1140 / a) * dpi),
-                (int)((displayArea.WorkArea.Height / 2 - 630 / a) * dpi),
-                1140 * (int)dpi, 630 * (int)dpi,
+                (int)((displayArea.WorkArea.Width / a - 1140 / a) * dpi),
+                (int)((displayArea.WorkArea.Height / a - 630 / a) * dpi),
+                1140 * (int)dpi, 640 * (int)dpi,
                 false
                 );
 

@@ -1098,7 +1098,7 @@ namespace znMusicPlayerWUI
                     0.2f, 1f, 0.22f, 1f,
                     out Visual contentGridVisual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
                 contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
-                /*compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
+                compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
                 {
                     if (InOpenMusicPage)
                     {
@@ -1107,17 +1107,17 @@ namespace znMusicPlayerWUI
                         System.Diagnostics.Debug.WriteLine("主界面被隐藏。");
 #endif
                     }
-                };*/
+                };
 
                 SMusicPage.MusicPageViewStateChange(MusicPageViewState.View);
             }
             else
             {
                 InOpenMusicPage = false;
-                /*SWindowGridBase.Visibility = Visibility.Visible;
+                SWindowGridBase.Visibility = Visibility.Visible;
 #if DEBUG
                 System.Diagnostics.Debug.WriteLine("主界面被显示。");
-#endif*/
+#endif
                 SMusicPageBaseFrame.Content = SMusicPage;
                 AnimateHelper.AnimateOffset(
                     SMusicPageBaseFrame,
