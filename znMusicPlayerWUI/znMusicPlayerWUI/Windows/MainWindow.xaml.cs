@@ -105,7 +105,7 @@ namespace znMusicPlayerWUI
             //Windows.UI.Core.SystemNavigationManager.GetForCurrentView().BackRequested += (_, __) => { TryGoBack(); };
 
             Activated += MainWindow_Activated;
-            WindowGridBase.ActualThemeChanged += WindowGridBase_ActualThemeChanged;
+            SWindowGridBaseTop.ActualThemeChanged += WindowGridBase_ActualThemeChanged;
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
             App.audioPlayer.PlayEnd += AudioPlayer_PlayEnd;
             App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
@@ -693,7 +693,6 @@ namespace znMusicPlayerWUI
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             SetDragRegionForCustomTitleBar(App.AppWindowLocal);
-            UpdataPlayListFlyoutHeight();
         }
 
         private void ContentFrame_Loaded(object sender, RoutedEventArgs e)
@@ -706,9 +705,9 @@ namespace znMusicPlayerWUI
             try
             {
                 if (InOpenMusicPage)
-                    SPlayingListBaseGrid.Height = SWindowGridBase.ActualHeight - 130;
+                    SPlayingListBaseGrid.Height = SWindowGridBaseTop.ActualHeight - 130;
                 else
-                    SPlayingListBaseGrid.Height = SWindowGridBase.ActualHeight - 146;
+                    SPlayingListBaseGrid.Height = SWindowGridBaseTop.ActualHeight - 146;
             }
             catch { }
         }
@@ -808,7 +807,7 @@ namespace znMusicPlayerWUI
 
                 RectInt32 dragRectR;
                 // TOWAIT: when microsoft fix this winui3 bug
-                dragRectR.X = (int)((lpc + 2 + (NavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 84 * scaleAdjustment : 42 * scaleAdjustment)));
+                dragRectR.X = (int)((lpc + 2 + (NavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 88 * scaleAdjustment : 46 * scaleAdjustment)));
                 dragRectR.Y = 0;
                 dragRectR.Height = (int)(AppTitleBar.ActualHeight * scaleAdjustment);
                 dragRectR.Width = (int)(rpc * scaleAdjustment * App.AppWindowLocal.Size.Width);
@@ -1083,38 +1082,15 @@ namespace znMusicPlayerWUI
         }
 
         public static bool InOpenMusicPage { get; set; } = false;
+        static bool isFirstInMusicPage = true;
         public static void OpenOrCloseMusicPage()
         {
             if (App.audioPlayer.MusicData == null) return;
 
-            if (!InOpenMusicPage)
-            {
-                InOpenMusicPage = true;
-                SMusicPageBaseFrame.Content = SMusicPage;
-                SMusicPageBaseFrame.Visibility = Visibility.Visible;
-                AnimateHelper.AnimateOffset(
-                    SMusicPageBaseFrame,
-                    0, 0, 0, 0.76,
-                    0.2f, 1f, 0.22f, 1f,
-                    out Visual contentGridVisual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
-                contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
-                compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
-                {
-                    if (InOpenMusicPage)
-                    {
-                        SWindowGridBase.Visibility = Visibility.Collapsed;
-#if DEBUG
-                        System.Diagnostics.Debug.WriteLine("主界面被隐藏。");
-#endif
-                    }
-                };
-
-                SMusicPage.MusicPageViewStateChange(MusicPageViewState.View);
-            }
-            else
+            if (InOpenMusicPage)
             {
                 InOpenMusicPage = false;
-                SWindowGridBase.Visibility = Visibility.Visible;
+                SContentFrame.Visibility = Visibility.Visible;
 #if DEBUG
                 System.Diagnostics.Debug.WriteLine("主界面被显示。");
 #endif
@@ -1135,6 +1111,32 @@ namespace znMusicPlayerWUI
 
                 SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
                 PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
+            }
+            else
+            {
+                InOpenMusicPage = true;
+                SMusicPageBaseFrame.Content = SMusicPage;
+                SMusicPageBaseFrame.Visibility = Visibility.Visible;
+                AnimateHelper.AnimateOffset(
+                    SMusicPageBaseFrame,
+                    0, 0, 0, 0.76,
+                    0.2f, 1f, 0.22f, 1f,
+                    out Visual contentGridVisual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
+                contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
+                compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
+                {
+                    if (InOpenMusicPage)
+                    {
+                        SContentFrame.Visibility = Visibility.Collapsed;
+#if DEBUG
+                        System.Diagnostics.Debug.WriteLine("主界面被隐藏。");
+#endif
+                    }
+                };
+
+                SMusicPage.MusicPageViewStateChange(MusicPageViewState.View);
+                if (isFirstInMusicPage)
+                    SContentFrame.Visibility = Visibility.Collapsed;
             }
         }
         #endregion

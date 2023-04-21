@@ -426,14 +426,8 @@ namespace znMusicPlayerWUI.Pages
                 {
                     var jdata = JObject.Parse(await PlayListHelper.ReadData());
                     MainWindow.HideDialog();
-                    MainWindow.ShowLoadingDialog("正在添加");
-                    int num = 0;
                     foreach (var i in files)
                     {
-                        num++;
-                        MainWindow.SetLoadingProgressRingValue(files.Count, num);
-                        MainWindow.SetLoadingText($"正在添加：{i.Name}");
-
                         FileInfo fi = null;
                         await Task.Run(() => fi = new FileInfo(i.Path));
                         jdata = await PlayListHelper.AddLocalMusicDataToPlayList(NavToObj.ListName, fi, jdata);
@@ -448,8 +442,8 @@ namespace znMusicPlayerWUI.Pages
                             break;
                         }
                     }
-                    MainWindow.HideDialog();
                     InitData();
+                    await MainWindow.ShowDialog("添加本地歌曲", "添加完成。");
                 }
             };
             bb.Click += async (_, __) =>
@@ -458,18 +452,12 @@ namespace znMusicPlayerWUI.Pages
                 if (folder != null)
                 {
                     var jdata = JObject.Parse(await PlayListHelper.ReadData());
-                    MainWindow.HideDialog();
-                    MainWindow.ShowLoadingDialog("正在添加");
                     DirectoryInfo directory = null;
                     await Task.Run(() => directory = Directory.CreateDirectory(folder.Path));
-                    int num = 0;
                     foreach (var i in directory.GetFiles())
                     {
                         if (App.SupportedMediaFormats.Contains(i.Extension))
                         {
-                            num++;
-                            MainWindow.SetLoadingProgressRingValue(directory.GetFiles().Length, num);
-                            MainWindow.SetLoadingText($"正在添加：{i.Name}");
                             jdata = await PlayListHelper.AddLocalMusicDataToPlayList(NavToObj.ListName, i, jdata);
                         }
                     }
@@ -483,8 +471,8 @@ namespace znMusicPlayerWUI.Pages
                             break;
                         }
                     }
-                    MainWindow.HideDialog();
                     InitData();
+                    await MainWindow.ShowDialog("添加本地歌曲", "添加完成。");
                 }
             };
 

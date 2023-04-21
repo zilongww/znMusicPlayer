@@ -102,12 +102,6 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             UpdataInterfaceDesign();
         }
 
-        async void UpdataInterfaceOpacity()
-        {
-            await Task.Delay(150);
-            InterfaceBaseGrid.Opacity = 1;
-        }
-
         private void PlayingList_NowPlayingImageLoading(ImageSource imageSource, string _)
         {
             /*if (App.audioPlayer.MusicData?.AlbumID != MusicData?.AlbumID)
@@ -157,7 +151,6 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 if (isFirstOpenMusicPage)
                 {
                     isFirstOpenMusicPage = false;
-                    UpdataInterfaceOpacity();
                 }
             }
 #if DEBUG
@@ -245,7 +238,6 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     else
                         isMiniPageLyricCenter = false;
                 }
-                await Task.Delay(1);
                 SelectedChangedDo(true);
             }
         }

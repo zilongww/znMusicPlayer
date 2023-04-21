@@ -40,7 +40,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 MainWindow.ShowLoadingDialog();
                 MusicListData musicListData = null;
 
-                if ((PivotList.SelectedItem as NavigationViewItem).Content as string == "添加播放列表")
+                if ((PivotList.SelectedItem as PivotItem).Header as string == "添加播放列表")
                 {
                     musicListData = new MusicListData(null, AddLocalPage_ListNameTB.Text, AddLocalPage_ListImageTB.Text, MusicFrom.localMusic);
                     musicListData.ListName = musicListData.MD5;
@@ -102,6 +102,15 @@ namespace znMusicPlayerWUI.Pages.DialogPages
 
         private void PivotList_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
+        }
+
+        private void PivotList_Loaded(object sender, RoutedEventArgs e)
+        {
+            PivotList.SelectedItem = PivotList.Items[0];
+        }
+
+        private void PivotList_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {/*
             if ((PivotList.SelectedItem as NavigationViewItem).Content as string == "添加播放列表")
             {
                 AddLocalPage.Visibility = Visibility.Visible;
@@ -111,12 +120,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
             {
                 AddLocalPage.Visibility = Visibility.Collapsed;
                 AddOutSidePage.Visibility = Visibility.Visible;
-            }
-        }
-
-        private void PivotList_Loaded(object sender, RoutedEventArgs e)
-        {
-            PivotList.SelectedItem = PivotList.MenuItems[0];
+            }*/
         }
     }
 }

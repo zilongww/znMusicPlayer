@@ -10,8 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid x:Name="WindowGridBase"
-          SizeChanged="Grid_SizeChanged"
+    <Grid x:Name="WindowGridBase" SizeChanged="Grid_SizeChanged"
           KeyDown="Grid_KeyDown" KeyUp="Grid_KeyUp"
           PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
           Tapped="Grid_Tapped" Loaded="WindowGridBase_Loaded"  RequestedTheme="Default">
@@ -237,7 +236,9 @@
             </NavigationView>
         </Grid>
 
-        <Grid x:Name="TopControlsBaseGrid" IsHitTestVisible="False">
+        <Grid x:Name="TopControlsBaseGrid"
+              IsHitTestVisible="False"
+              SizeChanged="Grid_SizeChanged">
             <Grid.Resources>
                 <Flyout x:Name="PlayingListBasePopup">
                     <Flyout.FlyoutPresenterStyle>
