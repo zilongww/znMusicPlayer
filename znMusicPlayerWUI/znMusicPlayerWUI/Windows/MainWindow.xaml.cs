@@ -1136,7 +1136,10 @@ namespace znMusicPlayerWUI
 
                 SMusicPage.MusicPageViewStateChange(MusicPageViewState.View);
                 if (isFirstInMusicPage)
+                {
+                    isFirstInMusicPage = false;
                     SContentFrame.Visibility = Visibility.Collapsed;
+                }
             }
         }
         #endregion
