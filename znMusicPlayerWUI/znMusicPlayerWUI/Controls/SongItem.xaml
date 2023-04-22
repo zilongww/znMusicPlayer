@@ -12,8 +12,8 @@
     DoubleTapped="Grid_DoubleTapped" Holding="Grid_Holding" x:Name="root">
     
     <Grid.Resources>
-        <MenuFlyout x:Name="rmf" Opened="rmf_Opened" Closed="rmf_Closed">
-            <MenuFlyoutItem Text="{Binding Title}" IsEnabled="False"/>
+        <MenuFlyout x:Name="rmf" Opening="rmf_Opening" Opened="rmf_Opened" Closed="rmf_Closed">
+            <MenuFlyoutItem Text="{Binding MusicData.Title}" IsEnabled="False"/>
             <MenuFlyoutItem Text="播放" Click="Play_Click">
                 <MenuFlyoutItem.Icon>
                     <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 播放ol}"/>
@@ -35,11 +35,11 @@
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutSeparator/>
-            <MenuFlyoutSubItem x:Name="AddToPlayListSubItems" Text="添加到播放列表">
+            <MenuFlyoutSubItem x:Name="AddToPlayListSubItems" Text="添加到播放列表" Loaded="AddToPlayListSubItems_Loaded">
                 <MenuFlyoutSubItem.Icon>
                     <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 添加}"/>
                 </MenuFlyoutSubItem.Icon>
-            </MenuFlyoutSubItem>
+                </MenuFlyoutSubItem>
             <MenuFlyoutItem Text="下载" Click="Download_Click">
                 <MenuFlyoutItem.Icon>
                     <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 下载}"/>
@@ -60,7 +60,7 @@
             <MenuFlyoutItem Text="详细信息" Click="Info_Click"/>
         </MenuFlyout>
 
-        <MenuFlyout x:Name="mf">
+        <MenuFlyout x:Name="mf" Opening="mf_Opening">
             <MenuFlyoutSubItem x:Name="mfs" Text="艺术家">
                 <MenuFlyoutSubItem.Icon>
                     <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 用户}"/>
@@ -109,7 +109,7 @@
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="{Binding Title}" IsHitTestVisible="False" Grid.Row="0"/>
+                        <TextBlock Text="{Binding MusicData.Title}" IsHitTestVisible="False" Grid.Row="0"/>
                         <Grid Grid.Row="1" HorizontalAlignment="Left">
                             <Button BorderThickness="0"
                                     Background="Transparent"
@@ -119,7 +119,7 @@
                                     Flyout="{ThemeResource mf}"
                                     Content=" "
                                     HorizontalAlignment="Stretch"/>
-                            <TextBlock x:Name="ButtonNameTextBlock" IsHitTestVisible="False" FontSize="12" Text="{Binding ButtonName}" Foreground="{ThemeResource SystemChromeDisabledLowColor}" TextTrimming="CharacterEllipsis"/>
+                            <TextBlock x:Name="ButtonNameTextBlock" IsHitTestVisible="False" FontSize="12" Text="{Binding MusicData.ButtonName}" Foreground="{ThemeResource SystemChromeDisabledLowColor}" TextTrimming="CharacterEllipsis"/>
                         </Grid>
 
                     </Grid>

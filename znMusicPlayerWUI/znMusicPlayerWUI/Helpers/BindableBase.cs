@@ -27,14 +27,51 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Data;
+using znMusicPlayerWUI.DataEditor;
 
 namespace znMusicPlayerWUI.Helpers
 {
-    public class SongItemBindBase
+    public class SongItemBindBase : BindableBase
     {
-        public DataEditor.MusicData MusicData { get; set; }
-        public DataEditor.MusicListData ListData { get; set; }
-        public double ImageScaleDPI { get; set; } = 1.0;
+        MusicData _musicData;
+        public DataEditor.MusicData MusicData
+        {
+            get => _musicData;
+            set
+            {
+                if (_musicData != value)
+                {
+                    _musicData = value;
+                    OnPropertyChanged(nameof(MusicData));
+                }
+            }
+        }
+        MusicListData _musicListData;
+        public DataEditor.MusicListData MusicListData
+        {
+            get => _musicListData;
+            set
+            {
+                if (_musicListData != value)
+                {
+                    _musicListData = value;
+                    OnPropertyChanged(nameof(MusicListData));
+                }
+            }
+        }
+        double _imageScaleDPI = 1.0;
+        public double ImageScaleDPI
+        {
+            get => _imageScaleDPI;
+            set
+            {
+                if (_imageScaleDPI != value)
+                {
+                    _imageScaleDPI = value;
+                    OnPropertyChanged(nameof(ImageScaleDPI));
+                }
+            }
+        }
     }
 
     /// <summary>

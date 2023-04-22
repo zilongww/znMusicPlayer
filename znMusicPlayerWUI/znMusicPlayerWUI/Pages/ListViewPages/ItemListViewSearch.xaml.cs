@@ -138,7 +138,8 @@ namespace znMusicPlayerWUI.Pages
                         MusicData[] array = (searchDatas as MusicListData).Songs.ToArray();
                         foreach (var i in array)
                         {
-                            var a = new Controls.SongItem(i, null) { ImageScaleDPI = dpi };
+                            var a = new Controls.SongItem() { MusicData = i, MusicListData = null, ImageScaleDPI = dpi };
+                            a.Init(i);
                             Children.Items.Add(a);
                         }
                         ItemPresenterControlBridge.Margin = new(14, 0, 16, 0);

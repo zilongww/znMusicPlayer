@@ -5,7 +5,7 @@
     xmlns:local="using:znMusicPlayerWUI.Pages.DialogPages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Margin="0,-36,0,0">
+    mc:Ignorable="d" Margin="0,-30,0,0">
     <Grid>
         <Pivot x:Name="PivotList"
                SelectionChanged="PivotList_SelectionChanged_1"

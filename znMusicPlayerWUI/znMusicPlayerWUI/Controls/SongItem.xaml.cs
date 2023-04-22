@@ -13,6 +13,7 @@ using znMusicPlayerWUI.Helpers;
 using Microsoft.UI.Xaml.Media;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Pages;
+using System.Security.Cryptography;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -22,8 +23,31 @@ namespace znMusicPlayerWUI.Controls
 
         public bool AutoLoadImage = false;
         public bool CanClickPlay { get; set; } = true;
-        public MusicData MusicData { get; set; }
-        public MusicListData MusicListData { get; set; }
+
+        public static readonly DependencyProperty MusicDataProperty = DependencyProperty.Register(
+            "MusicData",
+            typeof(MusicData),
+            typeof(SongItem),
+            new PropertyMetadata(null, new(OnMusicDataChanged))
+        );
+
+        public MusicData MusicData
+        {
+            get => (MusicData)GetValue(MusicDataProperty);
+            set
+            {
+                SetValue(MusicDataProperty, value);
+            }
+        }
+        MusicListData musicListData;
+        public MusicListData MusicListData
+        {
+            get => musicListData;
+            set
+            {
+                musicListData = value;
+            }
+        }
         public double ImageScaleDPI { get; set; } = 1.0;
         public bool ShowImage
         {
@@ -35,41 +59,65 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
-        public SongItem(MusicData musicData, MusicListData musicListData = null)
+        public SongItem()
         {
             InitializeComponent();
-            MusicData = musicData;
-            MusicListData = musicListData;
-            DataContext = MusicData;
-
-            if (musicData.PicturePath == null) ShowImage = false;
-
-            foreach (var i in musicData.Artists)
-            {
-                var a1 = new MenuFlyoutItem() { Text = i.Name, Tag = i };
-                var a2 = new MenuFlyoutItem() { Text = i.Name, Tag = i };
-                a1.Click += A_Click;
-                a2.Click += A_Click;
-                mfs.Items.Add(a1);
-                rmfs.Items.Add(a2);
-            }
-            mfi.Text = $"专辑：{musicData.Album}";
-            rmfi.Text = $"专辑：{musicData.Album}";
-
-            //MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
-            //MainWindow.DriveInTypeEvent += MainWindow_DriveInTypeEvent;
-/*
-            if (musicListData != null)
-            {
-                if (musicListData.ListDataType != DataType.本地歌单)
-                {
-                    DeleteFlyoutBtn.Visibility = Visibility.Collapsed;
-                }
-            }*/
             MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
+            ShowImage = false;
         }
 
-        private async void A_Click(object sender, RoutedEventArgs e)
+        public void Init(MusicData musicData)
+        {
+            if (musicData == null) return;
+            if (musicData.PicturePath == null) ShowImage = false;
+
+            DataContext = new SongItemBindBase() { MusicData = musicData, MusicListData = musicListData };
+
+            UpdataFlyoutMenuContext(musicData);
+            UpdataImageInterface(musicData);
+        }
+
+        public void UpdataFlyoutMenuContext(MusicData musicData)
+        {
+        }
+
+        public async void UpdataImageInterface(MusicData musicData)
+        {
+            if (InfoButton == null) return;
+
+            if (ShowImage)
+            {
+                if (AlbumImage.Source == null)
+                {
+                    if (musicData.InLocal != null)
+                    {
+                        //a = await CodeHelper.GetCover(musicData.InLocal);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            AlbumImage.Source = await FileHelper.GetImageSource(await Media.ImageManage.GetImageSource(musicData), (int)(50 * ImageScaleDPI), (int)(50 * ImageScaleDPI), true);
+                        }
+                        catch { }
+                    }
+                    //AlbumImage.Source = a;
+                }
+            }
+        }
+
+        public static void OnMusicDataChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var element = d as SongItem;
+            var md = e.NewValue as MusicData;
+            if (element == null || md == null) return;
+            
+            element.mfi.Text = $"专辑：{md.Album}";
+            element.rmfi.Text = $"专辑：{md.Album}";
+        }
+
+        #region Events
+        private void A_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.SetNavViewContent(
             typeof(ItemListViewArtist),
@@ -287,17 +335,6 @@ namespace znMusicPlayerWUI.Controls
 
         private async void rmf_Opened(object sender, object e)
         {
-            var mls = await PlayListHelper.ReadAllPlayList();
-            foreach (var item in mls)
-            {
-                var menuItem = new MenuFlyoutItem()
-                {
-                    Text = item.ListShowName,
-                    Tag = item
-                };
-                menuItem.Click += Add_Click;
-                AddToPlayListSubItems.Items.Add(menuItem);
-            }
         }
 
         private void rmf_Closed(object sender, object e)
@@ -319,42 +356,12 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
-        bool isLoaded = false;
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            isLoaded = true;
-            if (InfoButton == null) return;
-            //MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
-
-            if (ShowImage)
-            {
-                if (AlbumImage.Source == null)
-                {
-                    if (MusicData.InLocal != null)
-                    {
-                        //a = await CodeHelper.GetCover(MusicData.InLocal);
-                    }
-                    else
-                    {
-                        try
-                        {
-                            AlbumImage.Source = await FileHelper.GetImageSource(await Media.ImageManage.GetImageSource(MusicData), (int)(50 * ImageScaleDPI), (int)(50 * ImageScaleDPI), true);
-                        }
-                        catch { }
-                    }
-                    //AlbumImage.Source = a;
-                }
-                else
-                {
-                    AlbumImage.UpdataSource();
-                }
-            }
         }
 
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
-            isLoaded = false;
-            AlbumImage?.Dispose();
         }
 
         private void ViewportBehavior_EnteringViewport(object sender, EventArgs e)
@@ -366,5 +373,46 @@ namespace znMusicPlayerWUI.Controls
         {
             //Grid_Unloaded(null, null);
         }
+
+        private void AddToPlayListSubItems_Loaded(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void rmfs_Loaded(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void mf_Opening(object sender, object e)
+        {
+            foreach (var i in MusicData.Artists)
+            {
+                var a1 = new MenuFlyoutItem() { Text = i.Name, Tag = i };
+                a1.Click += A_Click;
+                mfs.Items.Add(a1);
+            }
+        }
+
+        private async void rmf_Opening(object sender, object e)
+        {
+            foreach (var i in MusicData.Artists)
+            {
+                var a1 = new MenuFlyoutItem() { Text = i.Name, Tag = i };
+                a1.Click += A_Click;
+                rmfs.Items.Add(a1);
+            }
+
+            var mls = await PlayListHelper.ReadAllPlayList();
+            foreach (var item in mls)
+            {
+                var menuItem = new MenuFlyoutItem()
+                {
+                    Text = item.ListShowName,
+                    Tag = item
+                };
+                menuItem.Click += Add_Click;
+                AddToPlayListSubItems.Items.Add(menuItem);
+            }
+        }
+        #endregion
     }
 }

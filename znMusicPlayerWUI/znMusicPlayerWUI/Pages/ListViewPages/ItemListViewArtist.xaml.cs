@@ -149,7 +149,8 @@ namespace znMusicPlayerWUI.Pages
                 Children.Items.Clear();
                 foreach (var i in array)
                 {
-                    var a = new Controls.SongItem(i, musicListData) { ImageScaleDPI = dpi };
+                    var a = new Controls.SongItem() { MusicData = i, MusicListData = musicListData, ImageScaleDPI = dpi };
+                    a.Init(i);
                     Children.Items.Add(a);
                 }
                 System.Diagnostics.Debug.WriteLine(array.Count());

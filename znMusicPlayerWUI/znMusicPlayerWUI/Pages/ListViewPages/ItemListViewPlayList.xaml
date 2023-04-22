@@ -10,6 +10,7 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:brushes="using:CommunityToolkit.WinUI.UI.Media"
+    xmlns:helper="using:znMusicPlayerWUI.Helpers"
     xmlns:ui="using:CommunityToolkit.WinUI.UI"
     xmlns:behaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
@@ -26,7 +27,13 @@
                   ScrollViewer.CanContentRenderOutsideBounds="True"
                   Padding="0,0,0,12"
                   SelectionMode="None"
+                  ItemsSource="{x:Bind MusicDataList}"
                   ui:ScrollViewerExtensions.EnableMiddleClickScrolling="True">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="helper:SongItemBindBase">
+                    <controlszn:SongItem MusicData="{Binding MusicData}" MusicListData="{x:Bind MusicListData, Mode=OneTime}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
             <ListView.Header>
                 <Border VerticalAlignment="Top"
                         x:Name="menu_border"

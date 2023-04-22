@@ -253,13 +253,12 @@
                                 </TransitionCollection>
                             </Grid.Transitions>
                             <Grid.Resources>
-                                <Style TargetType="Button">
+                                <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
                                     <Setter Property="CornerRadius" Value="100"/>
                                     <Setter Property="Height" Value="44"/>
                                     <Setter Property="Width" Value="44"/>
-                                    <Setter Property="Margin" Value="0,0,8,0"/>
+                                    <Setter Property="Margin" Value="0,0,4,0"/>
                                     <Setter Property="BorderThickness" Value="2"/>
-                                    <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorForAAFillOnImage}"/>
                                 </Style>
                             </Grid.Resources>
                             <ScrollViewer  VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled"
