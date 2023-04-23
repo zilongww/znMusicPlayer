@@ -37,180 +37,184 @@
             <ListView.Header>
                 <Border VerticalAlignment="Top"
                         x:Name="menu_border"
+                        Margin="0,0,0,12"
                         BorderBrush="{ThemeResource BorderNormal}">
                     <Grid SizeChanged="Result_BaseGrid_SizeChanged">
                         <Rectangle x:Name="BackColorBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
-                        <StackPanel>
-                            <Grid x:Name="HeaderBaseGrid">
-                                <Grid x:Name="PlayList_BaseGrid" Loaded="menu_border_Loaded">
-                                    <Grid x:Name="PlayList_Image_BaseGrid" animations:Connected.AnchorElement="{x:Bind PlayList_Image}" Margin="0,0,0,24">
-                                        <Rectangle x:Name="PlayList_Image_DropShadowBase"/>
-                                        <Border Width="210"
-                                                Height="210"
-                                                CornerRadius="8"
-                                                BorderThickness="0"
-                                                HorizontalAlignment="Left"
-                                                x:Name="PlayList_ImageBaseBorder">
-                                            <controlszn:Imagezn x:Name="PlayList_Image" animations:Connected.Key="listItem"/>
-                                        </Border>
-                                    </Grid>
-                                    <StackPanel x:Name="InfosBaseStackPanel">
-                                        <TextBlock x:Name="PlayList_TitleTextBlock"
+                        <Grid x:Name="HeaderBaseGrid">
+                            <Grid x:Name="PlayList_BaseGrid" Loaded="menu_border_Loaded">
+                                <Grid x:Name="PlayList_Image_BaseGrid" animations:Connected.AnchorElement="{x:Bind PlayList_Image}" Margin="0,0,0,24">
+                                    <Rectangle x:Name="PlayList_Image_DropShadowBase"/>
+                                    <Border Width="210"
+                                            Height="210"
+                                            CornerRadius="8"
+                                            BorderThickness="0"
+                                            HorizontalAlignment="Left"
+                                            x:Name="PlayList_ImageBaseBorder">
+                                        <controlszn:Imagezn x:Name="PlayList_Image" animations:Connected.Key="listItem"/>
+                                    </Border>
+                                </Grid>
+                                <Grid x:Name="InfosBaseStackPanel"
+                                      VerticalAlignment="Top">
+                                    <Grid x:Name="WidthChanger" HorizontalAlignment="Left">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+                                        <StackPanel>
+                                            <TextBlock x:Name="PlayList_TitleTextBlock"
                                                    Style="{ThemeResource SubTBHeader}"
                                                    TextTrimming="WordEllipsis"
                                                    TextWrapping="NoWrap"
                                                    animations:Connected.Key="itemt"/>
-                                        <TextBlock x:Name="PlayList_OtherTextBlock" Text="共0首歌曲"/>
-                                    </StackPanel>
-                                </Grid>
-                            </Grid>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <CommandBar Grid.Column="1" x:Name="ToolsCommandBar"
-                                            DefaultLabelPosition="Right"
-                                            Margin="0,0,12,0"
-                                            Background="Transparent">
-                                    <CommandBar.SecondaryCommands>
-                                        <AppBarElementContainer AllowFocusOnInteraction="True">
-                                            <ComboBox x:Name="SortComboBox"
-                                                      SelectionChanged="SortComboBox_SelectionChanged"
-                                                      Header="排序方式" SelectedIndex="0"
-                                                      Margin="12, 4">
-                                                <x:String>默认排序</x:String>
-                                                <x:String>名称升序</x:String>
-                                                <x:String>名称降序</x:String>
-                                                <x:String>艺术家升序</x:String>
-                                                <x:String>艺术家降序</x:String>
-                                                <x:String>专辑升序</x:String>
-                                                <x:String>专辑降序</x:String>
-                                                <x:String>时间升序</x:String>
-                                                <x:String>时间降序</x:String>
-                                            </ComboBox>
-                                        </AppBarElementContainer>
-                                        <AppBarElementContainer AllowFocusOnInteraction="True">
-                                            <AutoSuggestBox Header="搜索歌曲"
+                                            <TextBlock x:Name="PlayList_OtherTextBlock" Text="共0首歌曲"/>
+                                        </StackPanel>
+                                        <Grid x:Name="CommandBarWidthChanger"
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="Top"
+                                              Grid.Row="1">
+                                            <CommandBar x:Name="ToolsCommandBar"
+                                                DefaultLabelPosition="Right"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Top">
+                                                <CommandBar.SecondaryCommands>
+                                                    <AppBarElementContainer AllowFocusOnInteraction="True">
+                                                        <ComboBox x:Name="SortComboBox"
+                                                          SelectionChanged="SortComboBox_SelectionChanged"
+                                                          Header="排序方式" SelectedIndex="0"
+                                                          Margin="12, 4">
+                                                            <x:String>默认排序</x:String>
+                                                            <x:String>名称升序</x:String>
+                                                            <x:String>名称降序</x:String>
+                                                            <x:String>艺术家升序</x:String>
+                                                            <x:String>艺术家降序</x:String>
+                                                            <x:String>专辑升序</x:String>
+                                                            <x:String>专辑降序</x:String>
+                                                            <x:String>时间升序</x:String>
+                                                            <x:String>时间降序</x:String>
+                                                        </ComboBox>
+                                                    </AppBarElementContainer>
+                                                    <AppBarElementContainer AllowFocusOnInteraction="True">
+                                                        <AutoSuggestBox Header="搜索歌曲"
                                                             PlaceholderText="搜索列表歌曲"
                                                             TextChanged="AutoSuggestBox_TextChanged"
                                                             QuerySubmitted="AutoSuggestBox_QuerySubmitted"
                                                             Margin="12, 4"
                                                             x:Name="SearchBox">
-                                                <AutoSuggestBox.QueryIcon>
-                                                    <AnimatedIcon x:Name='SearchAnimatedIcon'>
-                                                        <AnimatedIcon.Source>
-                                                            <m:AnimatedFindVisualSource/>
-                                                        </AnimatedIcon.Source>
-                                                        <AnimatedIcon.FallbackIconSource>
-                                                            <SymbolIconSource Symbol='Find'/>
-                                                        </AnimatedIcon.FallbackIconSource>
-                                                    </AnimatedIcon>
-                                                </AutoSuggestBox.QueryIcon>
-                                            </AutoSuggestBox>
-                                        </AppBarElementContainer>
-                                    </CommandBar.SecondaryCommands>
-                                    <AppBarButton x:Name="SelectAllButton"
+                                                            <AutoSuggestBox.QueryIcon>
+                                                                <AnimatedIcon x:Name='SearchAnimatedIcon'>
+                                                                    <AnimatedIcon.Source>
+                                                                        <m:AnimatedFindVisualSource/>
+                                                                    </AnimatedIcon.Source>
+                                                                    <AnimatedIcon.FallbackIconSource>
+                                                                        <SymbolIconSource Symbol='Find'/>
+                                                                    </AnimatedIcon.FallbackIconSource>
+                                                                </AnimatedIcon>
+                                                            </AutoSuggestBox.QueryIcon>
+                                                        </AutoSuggestBox>
+                                                    </AppBarElementContainer>
+                                                </CommandBar.SecondaryCommands>
+                                                <AppBarButton x:Name="SelectAllButton"
                                                   Click="SelectAllButton_Click"
                                                   Label="选中全部"
                                                   ToolTipService.ToolTip="选中全部">
-                                        <AppBarButton.Icon>
-                                            <PathIcon Data="{StaticResource 全选}"/>
-                                        </AppBarButton.Icon>
-                                    </AppBarButton>
-                                    <AppBarButton x:Name="SelectReverseButton"
+                                                    <AppBarButton.Icon>
+                                                        <PathIcon Data="{StaticResource 全选}"/>
+                                                    </AppBarButton.Icon>
+                                                </AppBarButton>
+                                                <AppBarButton x:Name="SelectReverseButton"
                                                   Click="SelectReverseButton_Click"
                                                   Label="反选"
                                                   ToolTipService.ToolTip="反选">
-                                        <AppBarButton.Icon>
-                                            <PathIcon Data="{StaticResource 反选}"/>
-                                        </AppBarButton.Icon>
-                                    </AppBarButton>
-                                    <AppBarButton x:Name="DeleteSelectedButton"
+                                                    <AppBarButton.Icon>
+                                                        <PathIcon Data="{StaticResource 反选}"/>
+                                                    </AppBarButton.Icon>
+                                                </AppBarButton>
+                                                <AppBarButton x:Name="DeleteSelectedButton"
                                                   Click="DeleteSelectedButton_Click"
                                                   Label="删除选中歌曲"
                                                   ToolTipService.ToolTip="删除选中歌曲">
-                                        <AppBarButton.Icon>
-                                            <PathIcon Data="{StaticResource 删除}"/>
-                                        </AppBarButton.Icon>
-                                    </AppBarButton>
-                                    <AppBarButton x:Name="DownloadSelectedButton"
+                                                    <AppBarButton.Icon>
+                                                        <PathIcon Data="{StaticResource 删除}"/>
+                                                    </AppBarButton.Icon>
+                                                </AppBarButton>
+                                                <AppBarButton x:Name="DownloadSelectedButton"
                                                   Click="DownloadSelectedButton_Click"
                                                   Label="下载选中歌曲"
                                                   ToolTipService.ToolTip="下载选中歌曲">
-                                        <AppBarButton.Icon>
-                                            <PathIcon Data="{StaticResource 下载}"/>
-                                        </AppBarButton.Icon>
-                                    </AppBarButton>
-                                    <AppBarButton x:Name="AddSelectedToPlayListButton"
+                                                    <AppBarButton.Icon>
+                                                        <PathIcon Data="{StaticResource 下载}"/>
+                                                    </AppBarButton.Icon>
+                                                </AppBarButton>
+                                                <AppBarButton x:Name="AddSelectedToPlayListButton"
                                                   Label="添加选中歌曲到播放列表中"
                                                   ToolTipService.ToolTip="添加选中歌曲到播放列表中">
-                                        <AppBarButton.Flyout>
-                                            <MenuFlyout x:Name="AddToPlayListFlyout" Opened="AddToPlayListFlyout_Opened" Closed="AddToPlayListFlyout_Closed"/>
-                                        </AppBarButton.Flyout>
-                                        <Viewbox Width="16" Margin="2,0,0,0">
-                                            <Grid>
-                                                <SymbolIcon Symbol="Add" Scale="0.47,0.47,1" Margin="-10,-2,0,0"
+                                                    <AppBarButton.Flyout>
+                                                        <MenuFlyout x:Name="AddToPlayListFlyout" Opened="AddToPlayListFlyout_Opened" Closed="AddToPlayListFlyout_Closed"/>
+                                                    </AppBarButton.Flyout>
+                                                    <Viewbox Width="16" Margin="2,0,0,0">
+                                                        <Grid>
+                                                            <SymbolIcon Symbol="Add" Scale="0.47,0.47,1" Margin="-10,-2,0,0"
                                                             VerticalAlignment="Top"/>
-                                                <SymbolIcon Symbol="MusicInfo"
+                                                            <SymbolIcon Symbol="MusicInfo"
                                                             VerticalAlignment="Bottom"/>
-                                            </Grid>
-                                        </Viewbox>
-                                    </AppBarButton>
-                                    <AppBarButton x:Name="AddSelectedToPlayingListButton"
+                                                        </Grid>
+                                                    </Viewbox>
+                                                </AppBarButton>
+                                                <AppBarButton x:Name="AddSelectedToPlayingListButton"
                                                   Label="添加选中歌曲到正在播放的列表中"
                                                   ToolTipService.ToolTip="添加选中歌曲到正在播放的列表中"
                                                   Click="AddSelectedToPlayingListButton_Click">
-                                        <Viewbox Width="16" Margin="2,0,0,0" VerticalAlignment="Center">
-                                            <Grid>
-                                                <SymbolIcon Symbol="Add" Scale="0.47,0.47,1" Margin="-10,-2,0,0"
+                                                    <Viewbox Width="16" Margin="2,0,0,0" VerticalAlignment="Center">
+                                                        <Grid>
+                                                            <SymbolIcon Symbol="Add" Scale="0.47,0.47,1" Margin="-10,-2,0,0"
                                                             VerticalAlignment="Top"/>
-                                                <SymbolIcon Symbol="Play"
+                                                            <SymbolIcon Symbol="Play"
                                                             VerticalAlignment="Bottom"/>
-                                            </Grid>
-                                        </Viewbox>
-                                    </AppBarButton>
+                                                        </Grid>
+                                                    </Viewbox>
+                                                </AppBarButton>
 
-                                    <AppBarSeparator x:Name="SelectorSeparator"/>
+                                                <AppBarSeparator x:Name="SelectorSeparator"/>
 
-                                    <AppBarButton Click="Button_Click"
+                                                <AppBarButton Click="Button_Click"
                                                   Label="播放全部"
                                                   Background="{ThemeResource SystemAccentColorLight1}"
                                                   ToolTipService.ToolTip="播放全部"
                                                   x:Name="PlayAllButton">
-                                        <AppBarButton.Icon>
-                                            <PathIcon Data="{StaticResource 播放ol}"/>
-                                        </AppBarButton.Icon>
-                                    </AppBarButton>
-                                    <AppBarButton x:Name="AddLocalFilesButton"
+                                                    <AppBarButton.Icon>
+                                                        <PathIcon Data="{StaticResource 播放ol}"/>
+                                                    </AppBarButton.Icon>
+                                                </AppBarButton>
+                                                <AppBarButton x:Name="AddLocalFilesButton"
                                                   Click="AddLocalFilesButton_Click"
                                                   Label="添加本地文件"
                                                   ToolTipService.ToolTip="添加本地文件">
-                                        <AppBarButton.Icon>
-                                            <PathIcon Data="{StaticResource 添加文件}"/>
-                                        </AppBarButton.Icon>
-                                    </AppBarButton>
-                                    <AppBarButton Click="Button_Click_1"
+                                                    <AppBarButton.Icon>
+                                                        <PathIcon Data="{StaticResource 添加文件}"/>
+                                                    </AppBarButton.Icon>
+                                                </AppBarButton>
+                                                <AppBarButton Click="Button_Click_1"
                                                   Label="刷新"
                                                   ToolTipService.ToolTip="刷新">
-                                        <AppBarButton.Icon>
-                                            <PathIcon Data="{StaticResource 刷新}"/>
-                                        </AppBarButton.Icon>
-                                    </AppBarButton>
-                                    <AppBarButton Click="Button_Click_2"
+                                                    <AppBarButton.Icon>
+                                                        <PathIcon Data="{StaticResource 刷新}"/>
+                                                    </AppBarButton.Icon>
+                                                </AppBarButton>
+                                                <AppBarButton Click="Button_Click_2"
                                                   Label="多选"
                                                   ToolTipService.ToolTip="多选"
                                                   x:Name="SelectItemButton">
-                                        <AppBarButton.Icon>
-                                            <PathIcon Data="{StaticResource 全选}"/>
-                                        </AppBarButton.Icon>
-                                    </AppBarButton>
-                                </CommandBar>
+                                                    <AppBarButton.Icon>
+                                                        <PathIcon Data="{StaticResource 全选}"/>
+                                                    </AppBarButton.Icon>
+                                                </AppBarButton>
+                                            </CommandBar>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
                             </Grid>
-
-                        </StackPanel>
+                        </Grid>
                     </Grid>
                 </Border>
             </ListView.Header>

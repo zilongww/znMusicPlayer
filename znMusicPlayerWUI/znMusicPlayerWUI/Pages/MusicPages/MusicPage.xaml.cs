@@ -604,11 +604,6 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             }
         }
 
-        private async void ArtistFlyout_Opened(object sender, object e)
-        {
-            await Task.Delay(1);
-        }
-
         private void ArtistRunButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -668,6 +663,11 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private async void AudioInfoButton_Click(object sender, RoutedEventArgs e)
         {
             await MainWindow.ShowDialog("播放信息", new DialogPages.AudioInfoPage());
+        }
+
+        private void TitleFlyout_Opening(object sender, object e)
+        {
+            TitleMenuFlyoutText.Text = MusicData.Title;
         }
     }
 }

@@ -6,6 +6,7 @@
     xmlns:controlszn="using:znMusicPlayerWUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:helper="using:znMusicPlayerWUI.Helpers"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:brushes="using:CommunityToolkit.WinUI.UI.Media"
@@ -23,7 +24,13 @@
                   Background="Transparent"
                   ScrollViewer.CanContentRenderOutsideBounds="True"
                   Padding="0,0,0,12"
+                  ItemsSource="{x:Bind MusicDataList}"
                   SelectionMode="None">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="helper:SongItemBindBase">
+                    <controlszn:SongItem MusicData="{Binding MusicData}" MusicListData="{x:Bind MusicListData, Mode=OneTime}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
             <ListView.Header>
                 <Border VerticalAlignment="Top"
                         x:Name="menu_border"

@@ -88,6 +88,7 @@ namespace znMusicPlayerWUI.Pages
         public ObservableCollection<SongItemBindBase> MusicDataList = new();
         public async void InitData()
         {
+            #region Collecter
             SelectorSeparator.Visibility = Visibility.Collapsed;
             AddSelectedToPlayingListButton.Visibility = Visibility.Collapsed;
             AddSelectedToPlayListButton.Visibility = Visibility.Collapsed;
@@ -99,14 +100,16 @@ namespace znMusicPlayerWUI.Pages
 
             PlayList_BaseGrid.Visibility = Visibility.Visible;
             AddLocalFilesButton.Visibility = Visibility.Visible;
+            #endregion
             PlayList_TitleTextBlock.Text = NavToObj.ListShowName;
             PlayList_OtherTextBlock.Text = $"共{NavToObj.Songs.Count}首歌曲";
-            
+
+            LoadingRing.Visibility = Visibility.Visible;
+            LoadingRing.IsIndeterminate = true;
+
             if (NavToObj != null)
             {
                 LoadImage();
-                LoadingRing.Visibility = Visibility.Visible;
-                LoadingRing.IsIndeterminate = true;
 
                 MusicDataList.Clear();
 
@@ -151,9 +154,9 @@ namespace znMusicPlayerWUI.Pages
                     MusicDataList.Add(new() { MusicData = i, MusicListData = NavToObj, ImageScaleDPI = dpi });
                 }
                 System.Diagnostics.Debug.WriteLine("加载完成。");
-                LoadingRing.IsIndeterminate = false;
-                LoadingRing.Visibility = Visibility.Collapsed;
             }
+            LoadingRing.IsIndeterminate = false;
+            LoadingRing.Visibility = Visibility.Collapsed; UpdataShyHeader();
         }
 
         private void PlayListReader_Updataed()
@@ -192,11 +195,19 @@ namespace znMusicPlayerWUI.Pages
         Visual backgroundVisual;
         Visual logoVisual;
         Visual stackVisual;
-        public void UpdataShyHeader()
+        Visual commandBarVisual;
+        ExpressionAnimation offsetExpression;
+        ExpressionAnimation backgroundVisualOpacityAnimation;
+        ExpressionAnimation logoHeaderScaleAnimation;
+        ExpressionAnimation logoVisualOffsetXAnimation;
+        ExpressionAnimation logoVisualOffsetYAnimation;
+        ExpressionAnimation stackVisualOffsetAnimation;
+        ExpressionAnimation commandBarVisualOffsetAnimation;
+        public void UpdataShyHeader(bool xOnly = false)
         {
             if (scrollViewer == null) return;
 
-            double anotherHeight = 158;
+            double anotherHeight = 112;
             String progress = $"Clamp(-scroller.Translation.Y / {anotherHeight}, 0, 1.0)";
 
             if (scrollerPropertySet == null)
@@ -207,32 +218,53 @@ namespace znMusicPlayerWUI.Pages
                 backgroundVisual = ElementCompositionPreview.GetElementVisual(BackColorBaseRectangle);
                 logoVisual = ElementCompositionPreview.GetElementVisual(PlayList_Image_BaseGrid);
                 stackVisual = ElementCompositionPreview.GetElementVisual(InfosBaseStackPanel);
+                commandBarVisual = ElementCompositionPreview.GetElementVisual(CommandBarWidthChanger);
+            }
+            else
+            {
+                if (!xOnly)
+                {
+                    offsetExpression.Dispose();
+                    backgroundVisualOpacityAnimation.Dispose();
+                    logoVisualOffsetXAnimation.Dispose();
+                    logoVisualOffsetYAnimation.Dispose();
+                    stackVisualOffsetAnimation.Dispose();
+                    commandBarVisualOffsetAnimation.Dispose();
+                }
+                logoHeaderScaleAnimation.Dispose();
             }
 
-            var offsetExpression = compositor.CreateExpressionAnimation($"-scroller.Translation.Y - {progress} * {anotherHeight}");
-            offsetExpression.SetReferenceParameter("scroller", scrollerPropertySet);
-            headerVisual.StartAnimation("Offset.Y", offsetExpression);
+            if (!xOnly)
+            {
+                offsetExpression = compositor.CreateExpressionAnimation($"-scroller.Translation.Y - {progress} * {anotherHeight}");
+                offsetExpression.SetReferenceParameter("scroller", scrollerPropertySet);
+                headerVisual.StartAnimation("Offset.Y", offsetExpression);
 
-            var backgroundVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 1, {progress})");
-            backgroundVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
-            backgroundVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
+                backgroundVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 1, {progress})");
+                backgroundVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+                backgroundVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
 
+                logoVisualOffsetYAnimation = compositor.CreateExpressionAnimation($"Lerp(24, {anotherHeight} + 8, {progress})");
+                logoVisualOffsetYAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+                logoVisual.StartAnimation("Offset.Y", logoVisualOffsetYAnimation);
+
+                logoVisualOffsetXAnimation = compositor.CreateExpressionAnimation($"Lerp(24, 24, {progress})");
+                logoVisualOffsetXAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+                logoVisual.StartAnimation("Offset.X", logoVisualOffsetXAnimation);
+
+                stackVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(246,24,0), Vector3(140,{anotherHeight} + 4,0), {progress})");
+                stackVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+                stackVisual.StartAnimation(nameof(stackVisual.Offset), stackVisualOffsetAnimation);
+
+                commandBarVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(-6,168,0), Vector3(-6,67,0), {progress})");
+                commandBarVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+                commandBarVisual.StartAnimation(nameof(commandBarVisual.Offset), commandBarVisualOffsetAnimation);
+            }
             // Logo scale and transform                                          from               to
-            var logoHeaderScaleAnimation = compositor.CreateExpressionAnimation("Lerp(Vector2(1,1), Vector2(0.5, 0.5), " + progress + ")");
+            logoHeaderScaleAnimation = compositor.CreateExpressionAnimation("Lerp(Vector2(1,1), Vector2(0.5, 0.5), " + progress + ")");
             logoHeaderScaleAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             logoVisual.StartAnimation("Scale.xy", logoHeaderScaleAnimation);
 
-            var logoVisualOffsetXAnimation = compositor.CreateExpressionAnimation($"Lerp(24, 24, {progress})");
-            logoVisualOffsetXAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
-            logoVisual.StartAnimation("Offset.X", logoVisualOffsetXAnimation);
-
-            var logoVisualOffsetYAnimation = compositor.CreateExpressionAnimation($"Lerp(24, {anotherHeight} + 8, {progress})");
-            logoVisualOffsetYAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
-            logoVisual.StartAnimation("Offset.Y", logoVisualOffsetYAnimation);
-
-            var stackVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(246,24,0), Vector3(140,{anotherHeight} + 8,0), {progress})");
-            stackVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
-            stackVisual.StartAnimation(nameof(stackVisual.Offset), stackVisualOffsetAnimation);
             /*
             Visual textVisual = ElementCompositionPreview.GetElementVisual(Result_Search_Header);
             Vector3 finalOffset = new Vector3(0, (float)Result_Search_Header.ActualHeight, 0);
@@ -249,12 +281,27 @@ namespace znMusicPlayerWUI.Pages
             ToolsCommandBar.Width = double.NaN;
         }
 
+        private void UpdataInfoWidth()
+        {
+            try
+            {
+                var width = HeaderBaseGrid.ActualWidth - 50 - (PlayList_ImageBaseBorder.ActualWidth * logoVisual.Scale.X);
+                //System.Diagnostics.Debug.WriteLine(width);
+                if (width > 0)
+                {
+                    WidthChanger.Width = width;
+                }
+            }
+            catch { }
+        }
+
         private void menu_border_Loaded(object sender, RoutedEventArgs e)
         {
             if (scrollViewer == null)
             {
                 scrollViewer = (VisualTreeHelper.GetChild(Children, 0) as Border).Child as ScrollViewer;
                 scrollViewer.CanContentRenderOutsideBounds = true;
+                scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
 
                 // 设置header为顶层
                 var headerPresenter = (UIElement)VisualTreeHelper.GetParent((UIElement)Children.Header);
@@ -262,14 +309,21 @@ namespace znMusicPlayerWUI.Pages
                 Canvas.SetZIndex(headerContainer, 1);
             }
 
-            UpdataShyHeader();
             CreatShadow();
             UpdataCommandToolBarWidth();
+            UpdataShyHeader();
+        }
+
+        private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        {
+            UpdataShyHeader(true);
+            UpdataInfoWidth();
         }
 
         private void Result_BaseGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdataShyHeader();
+            UpdataInfoWidth();
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -288,7 +342,7 @@ namespace znMusicPlayerWUI.Pages
         }
 
         DropShadow dropShadow;
-        private async void Button_Click_2(object sender, RoutedEventArgs e)
+        private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             if (Children.SelectionMode == ListViewSelectionMode.None)
             {
@@ -483,7 +537,7 @@ namespace znMusicPlayerWUI.Pages
         {
             if (Children.SelectedItems.Any())
             {
-                foreach (SongItemBindBase songItem in Children.Items)
+                foreach (SongItemBindBase songItem in Children.SelectedItems)
                 {
                     App.downloadManager.Add(songItem.MusicData);
                 }
@@ -567,8 +621,8 @@ namespace znMusicPlayerWUI.Pages
                 searchNum++;
                 if (searchNum > searchMusicDatas.Count - 1) searchNum = 0;
                 var item = searchMusicDatas[searchNum];
-                //item.AnimateMouseLeavingBackground(true);
                 await Children.SmoothScrollIntoViewWithItemAsync(item, ScrollItemPlacement.Center);
+                System.Diagnostics.Debug.WriteLine(((VisualTreeHelper.GetChild(Children.ContainerFromItem(item) as UIElement, 0) as ListViewItemPresenter).Content as SongItem));
             }
         }
 

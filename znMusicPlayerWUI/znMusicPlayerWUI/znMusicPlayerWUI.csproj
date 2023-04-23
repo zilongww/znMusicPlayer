@@ -184,6 +184,5 @@
 
   <ItemGroup>
     <Folder Include="Helpers\CoreWindowInterop\" />
-    <Folder Include="Pages\ListViewPages\" />
   </ItemGroup>
 </Project>

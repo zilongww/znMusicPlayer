@@ -13,7 +13,7 @@
     
     <Grid.Resources>
         <MenuFlyout x:Name="rmf" Opening="rmf_Opening" Opened="rmf_Opened" Closed="rmf_Closed">
-            <MenuFlyoutItem Text="{Binding MusicData.Title}" IsEnabled="False"/>
+            <MenuFlyoutItem Text="{Binding MusicData.Title, Mode=OneTime}" IsEnabled="False"/>
             <MenuFlyoutItem Text="播放" Click="Play_Click">
                 <MenuFlyoutItem.Icon>
                     <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 播放ol}"/>
@@ -83,7 +83,7 @@
             x:Name="rootBorder">
         <Grid>
             <Rectangle x:Name="BackgroundBaseGrid" Tapped="Grid_Tapped" Opacity="0" Fill="{ThemeResource ItemBorderBackground}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-            <Grid x:Name="BaseGrid" Padding="10,4">
+            <Grid x:Name="BaseGrid" Padding="10,6">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>

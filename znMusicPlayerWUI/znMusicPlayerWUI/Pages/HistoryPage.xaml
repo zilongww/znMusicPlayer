@@ -5,6 +5,15 @@
     xmlns:local="using:znMusicPlayerWUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-    <TextBlock Text="HistoryPage"/>
+    mc:Ignorable="d" SizeChanged="Page_SizeChanged">
+    <ListView x:Name="ListViewBase" HorizontalContentAlignment="Center" SelectionMode="None">
+
+        <ListView.Header>
+            <Grid x:Name="HeaderBaseGrid">
+                <Rectangle x:Name="HeaderBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
+                <TextBlock x:Name="HeaderBaseTextBlock" Text="历史" Style="{ThemeResource TBHeader}"/>
+            </Grid>
+        </ListView.Header>
+
+    </ListView>
 </Page>

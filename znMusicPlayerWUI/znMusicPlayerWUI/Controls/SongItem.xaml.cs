@@ -74,7 +74,7 @@ namespace znMusicPlayerWUI.Controls
             DataContext = new SongItemBindBase() { MusicData = musicData, MusicListData = musicListData };
 
             UpdataFlyoutMenuContext(musicData);
-            UpdataImageInterface(musicData);
+            //UpdataImageInterface(musicData);
         }
 
         public void UpdataFlyoutMenuContext(MusicData musicData)
@@ -136,7 +136,6 @@ namespace znMusicPlayerWUI.Controls
                 AlbumImage?.Dispose();
                 MusicData = null;
                 UnloadObject(this);
-                //MainWindow.DriveInTypeEvent -= MainWindow_DriveInTypeEvent;
             }
             catch (Exception err)
             {
@@ -155,23 +154,14 @@ namespace znMusicPlayerWUI.Controls
                 RightToolBar.Opacity = 1;
                 RightToolBar.Visibility = Visibility.Visible;
                 RightToolBar.Children[0].Visibility = Visibility.Collapsed;
-                if (!ShowImage) BaseGrid.Padding = new(10, 12, 10, 12);
+                //if (!ShowImage)
+                BaseGrid.Padding = new(10, 16, 10, 16);
             }
             else
             {
                 InfoButton.Visibility = Visibility.Visible;
                 RightToolBar.Visibility = Visibility.Collapsed;
                 RightToolBar.Children[0].Visibility = Visibility.Visible;
-            }
-
-            if (deviceType == Microsoft.UI.Input.PointerDeviceType.Touch)
-            {
-                if (!ShowImage)
-                    BaseGrid.Margin = new Thickness(0, 8, 0, 8);
-            }
-            else
-            {
-                BaseGrid.Margin = new Thickness(0, 2, 0, 2);
             }
         }
 
@@ -362,6 +352,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
+            Dispose();
         }
 
         private void ViewportBehavior_EnteringViewport(object sender, EventArgs e)

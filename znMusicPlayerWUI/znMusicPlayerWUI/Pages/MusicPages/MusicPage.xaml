@@ -135,14 +135,14 @@
                         </StackPanel.Resources>
                         <Button x:Name="ArtistRunButton" Click="ArtistRunButton_Click">
                             <Button.Flyout>
-                                <MenuFlyout x:Name="ArtistFlyout" Opening="ArtistFlyout_Opening" Opened="ArtistFlyout_Opened"/>
+                                <MenuFlyout x:Name="ArtistFlyout" Opening="ArtistFlyout_Opening"/>
                             </Button.Flyout>
                             <TextBlock x:Name="ArtistRunText"/>
                         </Button>
                         <Button x:Name="TitleRunButton" Click="TitleRunButton_Click">
                             <Button.Flyout>
-                                <MenuFlyout x:Name="TitleFlyout">
-                                    <MenuFlyoutItem IsEnabled="False" Text="{Binding Title, Mode=TwoWay}"/>
+                                <MenuFlyout x:Name="TitleFlyout" Opening="TitleFlyout_Opening">
+                                    <MenuFlyoutItem IsEnabled="False" x:Name="TitleMenuFlyoutText"/>
                                     <MenuFlyoutItem x:Name="TitleSearchMenuItem" Click="TitleSearchMenuItem_Click" Text="去搜索" Icon="find"/>
                                     <MenuFlyoutItem x:Name="CopyMenuItem" Click="CopyMenuItem_Click" Text="复制" Icon="copy"/>
                                 </MenuFlyout>

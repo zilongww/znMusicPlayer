@@ -20,6 +20,7 @@ using Windows.Storage.Pickers;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Media;
 using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -32,6 +33,7 @@ namespace znMusicPlayerWUI.Pages
         public ItemListViewArtist()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -45,17 +47,10 @@ namespace znMusicPlayerWUI.Pages
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            if (Children.SelectionMode != ListViewSelectionMode.None)
-            {
-                Button_Click_2(null, null);
-            }
             await Task.Delay(500);
             scrollViewer?.ScrollToVerticalOffset(0);
-            foreach (Controls.SongItem item in Children.Items)
-            {
-                item.Dispose();
-            }
-            Children.Items.Clear();
+
+            MusicDataList.Clear();
             dropShadow.Dispose();
             Artist_Image.Dispose();
             UnloadObject(this);
@@ -80,6 +75,7 @@ namespace znMusicPlayerWUI.Pages
             ElementCompositionPreview.SetElementChildVisual(Artist_Image_DropShadowBase, basicRectVisual);
         }
 
+        public ObservableCollection<SongItemBindBase> MusicDataList = new();
         MusicListData musicListData = null;
         static bool firstInit = false;
         int pageNumber = 1;
@@ -96,6 +92,9 @@ namespace znMusicPlayerWUI.Pages
 
             Artist_TitleTextBlock.Text = NavToObj.Name;
             Artist_OtherTextBlock.Text = "";
+
+            LoadingRing.Visibility = Visibility.Visible;
+            LoadingRing.IsIndeterminate = true;
             var obj = await App.metingServices.NeteaseServices.GetArtist(NavToObj.ID);
             if (obj == null)
             {
@@ -146,24 +145,14 @@ namespace znMusicPlayerWUI.Pages
                         break;
                 }
 
-                Children.Items.Clear();
+                MusicDataList.Clear();
                 foreach (var i in array)
                 {
-                    var a = new Controls.SongItem() { MusicData = i, MusicListData = musicListData, ImageScaleDPI = dpi };
-                    a.Init(i);
-                    Children.Items.Add(a);
+                    MusicDataList.Add(new() { MusicData = i, ImageScaleDPI = dpi });
                 }
-                System.Diagnostics.Debug.WriteLine(array.Count());
-                LoadingRing.IsIndeterminate = false;
-                LoadingRing.Visibility = Visibility.Collapsed;
             }
-
-            if (firstInit)
-            {
-                firstInit = false;
-                await Task.Delay(1000);
-                Button_Click_2(null, null);
-            }
+            LoadingRing.IsIndeterminate = false;
+            LoadingRing.Visibility = Visibility.Collapsed;
         }
 
         private async void LoadImage()
@@ -292,11 +281,11 @@ namespace znMusicPlayerWUI.Pages
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             if (!Children.Items.Any()) return;
-            foreach (Controls.SongItem songItem in Children.Items)
+            foreach (SongItemBindBase songItem in Children.Items)
             {
                 App.playingList.Add(songItem.MusicData, false);
             }
-            await App.playingList.Play((Children.Items.First() as Controls.SongItem).MusicData);
+            await App.playingList.Play(MusicDataList.First().MusicData);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -305,7 +294,7 @@ namespace znMusicPlayerWUI.Pages
         }
 
         DropShadow dropShadow;
-        private async void Button_Click_2(object sender, RoutedEventArgs e)
+        private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             if (Children.SelectionMode == ListViewSelectionMode.None)
             {
@@ -322,11 +311,6 @@ namespace znMusicPlayerWUI.Pages
 
                 Children.AllowDrop = true;
                 Children.CanReorderItems = true;
-
-                foreach (Controls.SongItem songItem in Children.Items)
-                {
-                    songItem.CanClickPlay = false;
-                }
             }
             else
             {
@@ -343,11 +327,6 @@ namespace znMusicPlayerWUI.Pages
 
                 Children.AllowDrop = false;
                 Children.CanReorderItems = false;
-
-                foreach (Controls.SongItem songItem in Children.Items)
-                {
-                    songItem.CanClickPlay = true;
-                }
             }
             UpdataCommandToolBarWidth();
         }
@@ -377,22 +356,20 @@ namespace znMusicPlayerWUI.Pages
         {
             if (Children.SelectedItems.Any())
             {
-                foreach (Controls.SongItem item in Children.SelectedItems)
+                foreach (SongItemBindBase item in Children.SelectedItems)
                 {
                     App.playingList.Add(item.MusicData);
                 }
             }
         }
 
-        private async void DeleteSelectedButton_Click(object sender, RoutedEventArgs e)
+        private void DeleteSelectedButton_Click(object sender, RoutedEventArgs e)
         {
             if (Children.SelectedItems.Any())
             {
-                List<Controls.SongItem> a = new List<Controls.SongItem>();
-                foreach (Controls.SongItem item in Children.SelectedItems) a.Add(item);
-                foreach (var b in a)
+                foreach (SongItemBindBase item in Children.SelectedItems) 
                 {
-                    Children.Items.Remove(b);
+                    MusicDataList.Remove(item);
                 }
 
             }
@@ -400,17 +377,12 @@ namespace znMusicPlayerWUI.Pages
 
         private void SelectAllButton_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            foreach (SongItem item in Children.Items)
-            {
-                (Children.ContainerFromIndex(Children.Items.IndexOf(item)) as ListViewItem).IsSelected = true;
-            }*/
             Children.SelectAll();
         }
 
         private void SelectReverseButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Controls.SongItem item in Children.Items)
+            foreach (SongItemBindBase item in MusicDataList)
             {
                 try
                 {
@@ -431,7 +403,7 @@ namespace znMusicPlayerWUI.Pages
         {
             if (Children.SelectedItems.Any())
             {
-                foreach (Controls.SongItem songItem in Children.Items)
+                foreach (SongItemBindBase songItem in Children.SelectedItems)
                 {
                     App.downloadManager.Add(songItem.MusicData);
                 }
@@ -458,7 +430,7 @@ namespace znMusicPlayerWUI.Pages
         {
             MainWindow.ShowLoadingDialog();
             var text = JObject.Parse(await PlayListHelper.ReadData());
-            foreach (Controls.SongItem item in Children.SelectedItems)
+            foreach (SongItemBindBase item in Children.SelectedItems)
             {
                 MainWindow.SetLoadingText($"正在添加：{item.MusicData.Title} - {item.MusicData.ButtonName}");
                 
@@ -476,16 +448,14 @@ namespace znMusicPlayerWUI.Pages
         }
 
         bool isfirst = true;
-        private async void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (isfirst)
             {
                 isfirst = false;
                 return;
             }
-
             InitData();
-
         }
     }
 }
