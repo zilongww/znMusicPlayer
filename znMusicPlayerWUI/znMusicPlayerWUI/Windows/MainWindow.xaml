@@ -263,9 +263,9 @@
                                           CanReorderItems="True">
                                 <ListView.ItemTemplate>
                                     <DataTemplate x:DataType="data:MusicData">
-                                        <StackPanel Padding="0,8,0,8" Tag="{Binding MD5}">
-                                            <TextBlock Text="{Binding Title}"/>
-                                            <TextBlock Text="{Binding ButtonName}" Foreground="{ThemeResource SystemChromeDisabledLowColor}" FontSize="12"/>
+                                        <StackPanel Padding="0,8,0,8" Tag="{x:Bind MD5}">
+                                            <TextBlock Text="{x:Bind Title}"/>
+                                            <TextBlock Text="{x:Bind ButtonName}" Foreground="{ThemeResource SystemChromeDisabledLowColor}" FontSize="12"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>

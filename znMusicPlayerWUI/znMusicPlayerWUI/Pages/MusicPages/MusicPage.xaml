@@ -20,7 +20,7 @@
                 <TextBlock TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
                                                TextWrapping="Wrap"
                                                FontSize="27"
-                                               Text="{Binding LyricAllString}"/>
+                                               Text="{x:Bind LyricAllString}"/>
             </StackPanel>
         </DataTemplate>
         <Style TargetType="ListViewItem">

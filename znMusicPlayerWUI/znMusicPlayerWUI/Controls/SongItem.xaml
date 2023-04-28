@@ -13,7 +13,7 @@
     
     <Grid.Resources>
         <MenuFlyout x:Name="rmf" Opening="rmf_Opening" Opened="rmf_Opened" Closed="rmf_Closed">
-            <MenuFlyoutItem Text="{Binding MusicData.Title, Mode=OneTime}" IsEnabled="False"/>
+            <MenuFlyoutItem Text="{x:Bind MusicData.Title, Mode=OneWay}" IsEnabled="False"/>
             <MenuFlyoutItem Text="播放" Click="Play_Click">
                 <MenuFlyoutItem.Icon>
                     <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 播放ol}"/>
@@ -109,7 +109,7 @@
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="{Binding MusicData.Title}" IsHitTestVisible="False" Grid.Row="0"/>
+                        <TextBlock Text="{x:Bind MusicData.Title,Mode=OneWay}" IsHitTestVisible="False" Grid.Row="0"/>
                         <Grid Grid.Row="1" HorizontalAlignment="Left">
                             <Button BorderThickness="0"
                                     Background="Transparent"
@@ -119,7 +119,7 @@
                                     Flyout="{ThemeResource mf}"
                                     Content=" "
                                     HorizontalAlignment="Stretch"/>
-                            <TextBlock x:Name="ButtonNameTextBlock" IsHitTestVisible="False" FontSize="12" Text="{Binding MusicData.ButtonName}" Foreground="{ThemeResource SystemChromeDisabledLowColor}" TextTrimming="CharacterEllipsis"/>
+                            <TextBlock x:Name="ButtonNameTextBlock" IsHitTestVisible="False" FontSize="12" Text="{x:Bind MusicData.ButtonName,Mode=OneWay}" Foreground="{ThemeResource SystemChromeDisabledLowColor}" TextTrimming="CharacterEllipsis"/>
                         </Grid>
 
                     </Grid>

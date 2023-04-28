@@ -86,7 +86,7 @@ namespace znMusicPlayerWUI.Windowed
                 appWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
                 appWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
             }
-            this.SystemBackdrop = new MicaBackdrop() { Kind = MicaKind.BaseAlt };
+            //this.SystemBackdrop = new MicaBackdrop() { Kind = MicaKind.BaseAlt };
 
             MediaUri = videoUri;
             Activate();
