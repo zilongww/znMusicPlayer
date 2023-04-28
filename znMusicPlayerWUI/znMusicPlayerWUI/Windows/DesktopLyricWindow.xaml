@@ -5,29 +5,41 @@
     xmlns:local="using:znMusicPlayerWUI.Windowed"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" SizeChanged="Window_SizeChanged">
-    <Grid Padding="8,4" RequestedTheme="Dark">
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Viewbox x:Name="V1" HorizontalAlignment="Stretch">
-            <TextBlock x:Name="T1" Text="znMusicPlayer">
-                <TextBlock.Transitions>
-                    <TransitionCollection>
-                        <ContentThemeTransition/>
-                    </TransitionCollection>
-                </TextBlock.Transitions>
-            </TextBlock>
-        </Viewbox>
-        <Viewbox x:Name="V2" Grid.Row="1" HorizontalAlignment="Stretch">
-            <TextBlock x:Name="T2" Text="No Lyrics">
-                <TextBlock.Transitions>
-                    <TransitionCollection>
-                        <ContentThemeTransition/>
-                    </TransitionCollection>
-                </TextBlock.Transitions>
-            </TextBlock>
-        </Viewbox>
+    mc:Ignorable="d" SizeChanged="Window_SizeChanged"
+    xmlns:ui="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:media="using:CommunityToolkit.WinUI.UI.Media">
+    <Grid RequestedTheme="Dark">
+        <Grid Padding="8,4" Loaded="Grid_Loaded">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Viewbox x:Name="V1" HorizontalAlignment="Stretch">
+                <ui:DropShadowPanel x:Name="ShadowTarget"
+                                    OffsetX="0.8" OffsetY="1"
+                                    BlurRadius="5" Color="#AA555555">
+                    <ui:DropShadowPanel.Transitions>
+                        <TransitionCollection>
+                            <ContentThemeTransition/>
+                        </TransitionCollection>
+                    </ui:DropShadowPanel.Transitions>
+                    <TextBlock x:Name="T1" Text="znMusicPlayer" Foreground="{ThemeResource LrcWindowForeground}"/>
+                </ui:DropShadowPanel>
+            </Viewbox>
+            <Viewbox x:Name="V2" Grid.Row="1" HorizontalAlignment="Stretch">
+                <ui:DropShadowPanel x:Name="ShadowTarget1"
+                                    OffsetX="0.8" OffsetY="1"
+                                    BlurRadius="5" Color="#AA555555">
+                    <ui:DropShadowPanel.Transitions>
+                        <TransitionCollection>
+                            <ContentThemeTransition/>
+                        </TransitionCollection>
+                    </ui:DropShadowPanel.Transitions>
+                    <TextBlock x:Name="T2" Text="无歌词" Foreground="{ThemeResource LrcWindowForeground}"/>
+                </ui:DropShadowPanel>
+            </Viewbox>
+        </Grid>
+        <Button Margin="-1,0,0,0" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" CornerRadius="0,0,4,0"
+                Content="Lock" x:Name="LockButton" Click="LockButton_Click"/>
     </Grid>
 </Window>

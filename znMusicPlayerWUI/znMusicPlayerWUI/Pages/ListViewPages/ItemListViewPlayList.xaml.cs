@@ -85,9 +85,13 @@ namespace znMusicPlayerWUI.Pages
             ElementCompositionPreview.SetElementChildVisual(PlayList_Image_DropShadowBase, basicRectVisual);
         }
 
+        bool isLoading = false;
         public ObservableCollection<SongItemBindBase> MusicDataList = new();
         public async void InitData()
         {
+            if (isLoading) return;
+            isLoading = true;
+
             #region Collecter
             SelectorSeparator.Visibility = Visibility.Collapsed;
             AddSelectedToPlayingListButton.Visibility = Visibility.Collapsed;
@@ -155,7 +159,7 @@ namespace znMusicPlayerWUI.Pages
                 }
                 System.Diagnostics.Debug.WriteLine("加载完成。");
             }
-            LoadingRing.IsIndeterminate = false;
+            LoadingRing.IsIndeterminate = false; isLoading = false;
             LoadingRing.Visibility = Visibility.Collapsed; UpdataShyHeader();
         }
 

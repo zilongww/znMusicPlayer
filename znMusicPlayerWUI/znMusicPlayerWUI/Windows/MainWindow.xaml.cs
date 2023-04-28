@@ -35,6 +35,7 @@ using System.Diagnostics;
 using System.Reflection.Metadata;
 using znMusicPlayerWUI.DataEditor;
 using CommunityToolkit.WinUI.UI;
+using Vanara.PInvoke;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -686,6 +687,8 @@ namespace znMusicPlayerWUI
                 m_acrylicController.Dispose();
                 m_acrylicController = null;
             }*/
+            if (DesktopLyricWindow != null)
+                DesktopLyricWindow.Close();
             SWindow.Activated -= Window_Activated;
             m_configurationSource = null;
         }
@@ -1325,11 +1328,11 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region Desktop Lyric Window Events
-        bool IsDesktopLyricWindowOpen = false;
-        DesktopLyricWindow DesktopLyricWindow = null;
-        bool isInChangingLyricWindow = false;
+        static bool IsDesktopLyricWindowOpen = false;
+        static DesktopLyricWindow DesktopLyricWindow = null;
+        static bool isInChangingLyricWindow = false;
 
-        public async void OpenDesktopLyricWindow()
+        public static async void OpenDesktopLyricWindow(bool timeDelay = true)
         {
             if (!isInChangingLyricWindow)
             {
@@ -1338,6 +1341,14 @@ namespace znMusicPlayerWUI
                 {
                     DesktopLyricWindow = new();
                     DesktopLyricWindow.Closed += DesktopLyricWindow_Closed;
+
+                    if (false)
+                    {
+                        var windowHandle = new IntPtr((long)DesktopLyricWindow.AppWindow.Id.Value);
+                        Vanara.PInvoke.User32.SetWindowLong(windowHandle,
+                            Vanara.PInvoke.User32.WindowLongFlags.GWL_STYLE, (IntPtr)Vanara.PInvoke.User32.WindowStyles.WS_DISABLED);
+                    }
+
                     DesktopLyricWindow.Activate();
                 }
                 else
@@ -1346,7 +1357,8 @@ namespace znMusicPlayerWUI
                     DesktopLyricWindow.Close();
                     DesktopLyricWindow = null;
                 }
-                await Task.Delay(400);
+                if (timeDelay)
+                    await Task.Delay(400);
                 isInChangingLyricWindow = false;
             }
         }
@@ -1356,7 +1368,7 @@ namespace znMusicPlayerWUI
             OpenDesktopLyricWindow();
         }
 
-        private void DesktopLyricWindow_Closed(object sender, WindowEventArgs args)
+        private static void DesktopLyricWindow_Closed(object sender, WindowEventArgs args)
         {
             DesktopLyricWindow = null;
         }

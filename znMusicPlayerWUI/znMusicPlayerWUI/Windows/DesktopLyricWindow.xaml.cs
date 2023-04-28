@@ -28,28 +28,33 @@ using Microsoft.UI.Xaml.Hosting;
 using System.Collections.ObjectModel;
 using Windows.Devices.Input;
 using znMusicPlayerWUI.DataEditor;
+using PInvoke;
 
 namespace znMusicPlayerWUI.Windowed
 {
     public sealed partial class DesktopLyricWindow : Window
     {
         public AppWindow AppWindow { get; private set; }
+        public OverlappedPresenter overlappedPresenter { get; private set; }
+        private SUBCLASSPROC subClassProc;
+        bool transparent = true;
 
         public DesktopLyricWindow()
         {
             InitializeComponent();
-            AppWindow = WindowHelperzn.WindowHelper.GetAppWindowForCurrentWindow(this);/*
+            AppWindow = WindowHelperzn.WindowHelper.GetAppWindowForCurrentWindow(this);
+            /*
             WindowHelper.Window.hWnd = WindowHelper.Window.GetHWnd(this);
             WindowHelper.Window.MakeTransparent();*/
 
-            var a = OverlappedPresenter.Create();
-            a.IsMaximizable = false;
-            a.IsMinimizable = false;
-            a.IsAlwaysOnTop = true;
             if (AppWindowTitleBar.IsCustomizationSupported())
             {
-                AppWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay);
-                AppWindow.SetPresenter(a);
+                overlappedPresenter = OverlappedPresenter.Create();
+                overlappedPresenter.IsMaximizable = false;
+                overlappedPresenter.IsMinimizable = false;
+                overlappedPresenter.IsAlwaysOnTop = true;
+                //AppWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay);
+                AppWindow.SetPresenter(overlappedPresenter);
                 AppWindow.IsShownInSwitchers = false;
                 AppWindow.Title = "Desktop Lyric Window";
                 AppWindow.SetIcon(null);
@@ -60,13 +65,22 @@ namespace znMusicPlayerWUI.Windowed
                 AppWindow.TitleBar.ButtonForegroundColor = Colors.Transparent;
                 AppWindow.TitleBar.InactiveForegroundColor = Colors.Transparent;
                 AppWindow.TitleBar.ButtonInactiveForegroundColor = Colors.Transparent;
-                AppWindow.Resize(new SizeInt32() { Width = 450, Height = 100 });
-                if (!MainWindow.isMinSize)
+
+                if (IsMoved)
                 {
-                    PointInt32 pointInt32 = new(
-                        App.AppWindowLocal.Position.X + App.AppWindowLocal.Size.Width - AppWindow.Size.Width,
-                        App.AppWindowLocal.Position.Y + App.AppWindowLocal.Size.Height - AppWindow.Size.Height);
-                    AppWindow.Move(pointInt32);
+                    AppWindow.Move(lastWindowPosition);
+                    AppWindow.Resize(lastWindowSize);
+                }
+                else
+                {
+                    AppWindow.Resize(new SizeInt32() { Width = 450, Height = 100 });
+                    if (!MainWindow.isMinSize)
+                    {
+                        PointInt32 pointInt32 = new(
+                            App.AppWindowLocal.Position.X + App.AppWindowLocal.Size.Width - AppWindow.Size.Width,
+                            App.AppWindowLocal.Position.Y + App.AppWindowLocal.Size.Height - AppWindow.Size.Height);
+                        AppWindow.Move(pointInt32);
+                    }
                 }
             }
             TrySetAcrylicBackdrop();
@@ -78,7 +92,8 @@ namespace znMusicPlayerWUI.Windowed
 
         private void LyricManager_PlayingLyricSourceChange(ObservableCollection<LyricData> nowPlayingLyrics)
         {
-            LyricManager_PlayingLyricSelectedChange(nowPlayingLyrics[0]);
+            if (nowPlayingLyrics.Any())
+                LyricManager_PlayingLyricSelectedChange(nowPlayingLyrics[0]);
         }
 
         bool IsT1Focus = true;
@@ -90,14 +105,21 @@ namespace znMusicPlayerWUI.Windowed
                 T2.Text = "无歌词";
                 return;
             }
-            if (nowLyricsData.Lyric.FirstOrDefault() == LyricHelper.NoneLyricString) return;
-            if (nowLyricsData.Lyric.Count > 1)
+            if (nowLyricsData.Lyric == null)
+            {
+                T1.Text = App.AppName;
+                T2.Text = "无歌词";
+                return;
+            }
+
+            if (nowLyricsData?.Lyric.FirstOrDefault() == LyricHelper.NoneLyricString) return;
+            if (nowLyricsData?.Lyric.Count > 1)
             {
                 IsT1Focus = true;
                 V1.HorizontalAlignment = HorizontalAlignment.Center;
                 V2.HorizontalAlignment = HorizontalAlignment.Center;
-                T1.Text = nowLyricsData.Lyric.FirstOrDefault();
-                T2.Text = nowLyricsData.Lyric[1];
+                T1.Text = nowLyricsData?.Lyric.FirstOrDefault();
+                T2.Text = nowLyricsData?.Lyric[1];
                 T1.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
                 T2.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
             }
@@ -121,16 +143,16 @@ namespace znMusicPlayerWUI.Windowed
                 {
                     IsT1Focus = false;
                     T1.Text = nowLyricsData.Lyric.FirstOrDefault();
-                    T2.Text = nextData.Lyric.FirstOrDefault();
+                    if (nextData.Lyric != null) T2.Text = nextData.Lyric.FirstOrDefault();
                     T1.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
-                    T2.Foreground = App.Current.Resources["MusicPageLrcForeground"] as SolidColorBrush;
+                    T2.Foreground = App.Current.Resources["LrcWindowForeground"] as SolidColorBrush;
                 }
                 else
                 {
                     IsT1Focus = true;
-                    T1.Text = nextData.Lyric.FirstOrDefault();
+                    if (nextData.Lyric != null) T1.Text = nextData.Lyric.FirstOrDefault();
                     T2.Text = nowLyricsData.Lyric.FirstOrDefault();
-                    T1.Foreground = App.Current.Resources["MusicPageLrcForeground"] as SolidColorBrush;
+                    T1.Foreground = App.Current.Resources["LrcWindowForeground"] as SolidColorBrush;
                     T2.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
                 }
             }
@@ -138,28 +160,88 @@ namespace znMusicPlayerWUI.Windowed
 
         private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs args)
         {
+            UpdataDragSize();
+        }
+
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            UpdataDragSize();
+        }
+
+        static bool IsMoved = false;
+        static PointInt32 lastWindowPosition = default;
+        static SizeInt32 lastWindowSize = default;
+
+        public bool IsLock = false;
+        private void LockButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsLock)
+            {
+                IsLock = !IsLock;
+                MainWindow.OpenDesktopLyricWindow(false);
+                MainWindow.OpenDesktopLyricWindow();
+            }
+            else
+            {
+                IsLock = !IsLock;
+                overlappedPresenter.IsResizable = false;
+                overlappedPresenter.SetBorderAndTitleBar(false, false);
+                DisposeAcrylicBackdrop();
+                TryTransparentWindow();
+                LockButton.Visibility = Visibility.Collapsed;
+
+                UpdataDragSize();
+                SizeInt32 sizeInt32 = new(AppWindow.Size.Width - 1, AppWindow.Size.Height);
+                SizeInt32 sizeInt32_1 = new(AppWindow.Size.Width + 1, AppWindow.Size.Height);
+                AppWindow.Resize(sizeInt32);
+                AppWindow.Resize(sizeInt32_1);
+            }
+        }
+
+        public void UpdataDragSize()
+        {
             double dpi = CodeHelper.GetScaleAdjustment(this);
-            RectInt32[] rectInt32s = { new(0, 0, (int)(AppWindow.Size.Width * dpi), (int)(AppWindow.Size.Height * dpi)) };
+            int windowWidth = (int)(AppWindow.Size.Width * dpi);
+            int windowHeight = (int)(AppWindow.Size.Height * dpi);
+            int lockButtonWidth = (int)(LockButton.ActualWidth * dpi);
+            int lockButtonHeight = (int)(LockButton.ActualHeight * dpi);
+
+            RectInt32[] rectInt32s = default;
+            if (IsLock)
+            {
+                rectInt32s = new RectInt32[] {
+                    new(0, 0, windowWidth, windowHeight)
+                };
+            }
+            else
+            {
+                rectInt32s = new RectInt32[] {
+                    new(lockButtonWidth, 0, windowWidth - lockButtonWidth, windowHeight),
+                    new(0, lockButtonHeight, lockButtonWidth, windowHeight - lockButtonHeight)
+                };
+            }
+            
             AppWindow.TitleBar.SetDragRectangles(rectInt32s);
         }
 
         #region Enable Window Backdrop
         SystemBackdropConfiguration m_configurationSource = new SystemBackdropConfiguration();
-        DesktopAcrylicController m_acrylicController = new DesktopAcrylicController()
-        {
-            TintColor = Color.FromArgb(255, 35, 35, 35),
-            LuminosityOpacity = 0.5f,
-            TintOpacity = 0f,
-            FallbackColor = Color.FromArgb(255, 40, 40, 40)
-        };
+        DesktopAcrylicController m_acrylicController = null;
 
         bool TrySetAcrylicBackdrop()
         {
             if (DesktopAcrylicController.IsSupported())
             {
-                
                 this.Activated += DesktopLyricWindow_Activated; ;
                 this.Closed += DesktopLyricWindow_Closed;
+                
+                m_acrylicController = new DesktopAcrylicController()
+                {
+                    TintColor = Color.FromArgb(255, 35, 35, 35),
+                    LuminosityOpacity = 0.5f,
+                    TintOpacity = 0f,
+                    FallbackColor = Color.FromArgb(255, 40, 40, 40)
+                };
 
                 m_configurationSource.IsInputActive = true;
                 m_acrylicController.AddSystemBackdropTarget(this.As<ICompositionSupportsSystemBackdrop>());
@@ -172,15 +254,69 @@ namespace znMusicPlayerWUI.Windowed
 
         private void DesktopLyricWindow_Closed(object sender, WindowEventArgs args)
         {
-            m_acrylicController.Dispose();
+            IsMoved = true;
+            lastWindowPosition = AppWindow.Position;
+            lastWindowSize = AppWindow.Size;
+            DisposeAcrylicBackdrop();
             App.lyricManager.PlayingLyricSourceChange -= LyricManager_PlayingLyricSourceChange;
             App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange;
+        }
+
+        private void DisposeAcrylicBackdrop()
+        {
+            m_acrylicController?.Dispose();
+            m_acrylicController = null;
         }
 
         private void DesktopLyricWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
 
         }
+        #endregion
+
+        #region Enable Transparent Window
+        public void TryTransparentWindow()
+        {
+            subClassProc = new SUBCLASSPROC(SubClassWndProc);
+            var windowHandle = new IntPtr((long)this.AppWindow.Id.Value);
+            SetWindowSubclass(windowHandle, subClassProc, 0, 0);
+
+            var exStyle = Vanara.PInvoke.User32.GetWindowLongAuto(windowHandle, Vanara.PInvoke.User32.WindowLongFlags.GWL_EXSTYLE).ToInt32();
+            if ((exStyle & (int)Vanara.PInvoke.User32.WindowStylesEx.WS_EX_LAYERED) == 0)
+            {
+                exStyle |= (int)Vanara.PInvoke.User32.WindowStylesEx.WS_EX_LAYERED;
+                exStyle |= (int)Vanara.PInvoke.User32.WindowStylesEx.WS_EX_TRANSPARENT;
+                Vanara.PInvoke.User32.SetWindowLong(windowHandle, Vanara.PInvoke.User32.WindowLongFlags.GWL_EXSTYLE, exStyle);
+                Vanara.PInvoke.User32.SetLayeredWindowAttributes(
+                    windowHandle,
+                    (uint)System.Drawing.ColorTranslator.ToWin32(System.Drawing.Color.FromArgb(255, 99, 99, 99)), 255,
+                    Vanara.PInvoke.User32.LayeredWindowAttributes.LWA_COLORKEY);
+            }
+            Helpers.TransparentWindowHelper.TransparentHelper.SetTransparent(this, true);
+        }
+
+        private IntPtr SubClassWndProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, uint dwRefData)
+        {
+            if (uMsg == (uint)Vanara.PInvoke.User32.WindowMessage.WM_ERASEBKGND)
+            {
+                if (Vanara.PInvoke.User32.GetClientRect(hWnd, out var rect))
+                {
+                    using var brush = Vanara.PInvoke.Gdi32.CreateSolidBrush((uint)System.Drawing.ColorTranslator.ToWin32(System.Drawing.Color.FromArgb(255, 99, 99, 99)));
+                    Vanara.PInvoke.User32.FillRect(wParam, rect, brush);
+                    return new IntPtr(1);
+                }
+            }
+
+            return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+        }
+
+        private delegate IntPtr SUBCLASSPROC(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, uint dwRefData);
+
+        [DllImport("Comctl32.dll", SetLastError = true)]
+        private static extern IntPtr DefSubclassProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("Comctl32.dll", SetLastError = true)]
+        private static extern bool SetWindowSubclass(IntPtr hWnd, SUBCLASSPROC pfnSubclass, uint uIdSubclass, uint dwRefData);
         #endregion
     }
 }
