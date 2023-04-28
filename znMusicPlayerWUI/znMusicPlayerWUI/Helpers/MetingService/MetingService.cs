@@ -28,7 +28,7 @@ namespace znMusicPlayerWUI.Helpers
     public class MetingServices
     {
         public int RetryCount = 15;
-        public string NeteaseCookie = "MUSIC_U=1fa8ee41e5cb7a93558f6fe5781266a1e3b2ef321c9f86a565b7b1481c099f44993166e004087dd385108bfbf51b30c6a5f87fb5a2de6a6a45ada784b502bc8c0b0c7730e42f4911d4dbf082a8813684";
+        public string NeteaseCookie = "MUSIC_U=1fa8ee41e5cb7a93558f6fe5781266a17b1d8d2bfff627685d72bcbd0d22b4fa993166e004087dd37d7d48f926c686ffe5f294821e5316e245ada784b502bc8c0b0c7730e42f4911d4dbf082a8813684";
         private Meting4Net.Core.Meting NeteaseMeting = new(Meting4Net.Core.ServerProvider.Netease);
         public IMetingService NeteaseServices { get; set; }
 
