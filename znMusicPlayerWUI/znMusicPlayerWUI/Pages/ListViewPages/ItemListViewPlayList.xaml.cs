@@ -117,7 +117,6 @@ namespace znMusicPlayerWUI.Pages
 
                 MusicDataList.Clear();
 
-                await Task.Delay(500);
                 var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
                 MusicData[] array = null;
 
@@ -160,7 +159,7 @@ namespace znMusicPlayerWUI.Pages
                 System.Diagnostics.Debug.WriteLine("加载完成。");
             }
             LoadingRing.IsIndeterminate = false; isLoading = false;
-            LoadingRing.Visibility = Visibility.Collapsed; UpdataShyHeader();
+            LoadingRing.Visibility = Visibility.Collapsed;
         }
 
         private void PlayListReader_Updataed()
@@ -259,16 +258,15 @@ namespace znMusicPlayerWUI.Pages
                 stackVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(246,24,0), Vector3(140,{anotherHeight} + 4,0), {progress})");
                 stackVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
                 stackVisual.StartAnimation(nameof(stackVisual.Offset), stackVisualOffsetAnimation);
-
-                commandBarVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(-6,168,0), Vector3(-6,67,0), {progress})");
-                commandBarVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
-                commandBarVisual.StartAnimation(nameof(commandBarVisual.Offset), commandBarVisualOffsetAnimation);
             }
             // Logo scale and transform                                          from               to
             logoHeaderScaleAnimation = compositor.CreateExpressionAnimation("Lerp(Vector2(1,1), Vector2(0.5, 0.5), " + progress + ")");
             logoHeaderScaleAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             logoVisual.StartAnimation("Scale.xy", logoHeaderScaleAnimation);
 
+            commandBarVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(-6,168,0), Vector3(-6,67,0), {progress})");
+            commandBarVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+            commandBarVisual.StartAnimation(nameof(commandBarVisual.Offset), commandBarVisualOffsetAnimation);
             /*
             Visual textVisual = ElementCompositionPreview.GetElementVisual(Result_Search_Header);
             Vector3 finalOffset = new Vector3(0, (float)Result_Search_Header.ActualHeight, 0);
@@ -299,7 +297,7 @@ namespace znMusicPlayerWUI.Pages
             catch { }
         }
 
-        private void menu_border_Loaded(object sender, RoutedEventArgs e)
+        private async void menu_border_Loaded(object sender, RoutedEventArgs e)
         {
             if (scrollViewer == null)
             {
@@ -315,6 +313,9 @@ namespace znMusicPlayerWUI.Pages
 
             CreatShadow();
             UpdataCommandToolBarWidth();
+
+            UpdataShyHeader();
+            await Task.Delay(1);
             UpdataShyHeader();
         }
 

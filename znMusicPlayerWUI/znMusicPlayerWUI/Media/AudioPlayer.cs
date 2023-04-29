@@ -429,8 +429,23 @@ namespace znMusicPlayerWUI.Media
 
             if (resultPath != null)
             {
+                bool notExists = await Task.Run(() =>
+                {
+                    if (!File.Exists(resultPath)) return true;
+                    else return false;
+                });
+
+                // 当文件不存在
+                if (notExists)
+                {
+                    LoadingMusicDatas.Remove(musicData);
+                    CacheLoadedChanged?.Invoke(this);
+                    throw new FileLoadException($"找不到音频文件：\"{resultPath}\"，\n可能是文件已被删除或移动。");
+                }
+
+
                 // 检查文件是否没有下载完成
-                bool downloaded = await Task.Run(() =>
+                bool notDownloaded = await Task.Run(() =>
                 {
                     if (File.ReadAllBytes(resultPath).Length <= 10)
                     {
@@ -440,7 +455,7 @@ namespace znMusicPlayerWUI.Media
                 });
 
                 // 当文件没有下载完成
-                if (downloaded)
+                if (notDownloaded)
                 {
                     LoadingMusicDatas.Remove(musicData);
                     CacheLoadedChanged?.Invoke(this);
@@ -470,6 +485,7 @@ namespace znMusicPlayerWUI.Media
                     finally
                     {
                         CacheLoadedChanged?.Invoke(this);
+                        LoadingMusicDatas.Remove(musicData);
                     }
 
                     if (exception != null)

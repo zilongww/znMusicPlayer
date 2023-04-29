@@ -70,6 +70,7 @@ namespace znMusicPlayerWUI
         {
             SWindow = this;
             this.InitializeComponent();
+
             WindowGridBase.DataContext = this;
             SContent = this.Content;
             SNavView = NavView;
@@ -802,18 +803,18 @@ namespace znMusicPlayerWUI
                 List<RectInt32> dragRectsList = new();
 
                 RectInt32 dragRectL;
-                dragRectL.X = (int)(lpc * scaleAdjustment);
+                dragRectL.X = 0;
                 dragRectL.Y = 0;
                 dragRectL.Height = (int)(AppTitleBar.ActualHeight * scaleAdjustment);
-                dragRectL.Width = (int)((2 + lpc) * scaleAdjustment);
+                dragRectL.Width = (int)(0 * scaleAdjustment);
                 dragRectsList.Add(dragRectL);
 
                 RectInt32 dragRectR;
                 // TOWAIT: when microsoft fix this winui3 bug
-                dragRectR.X = (int)((lpc + 2 + (NavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 88 * scaleAdjustment : 46 * scaleAdjustment)));
+                dragRectR.X = (int)((NavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 84 * scaleAdjustment : 44 * scaleAdjustment));
                 dragRectR.Y = 0;
                 dragRectR.Height = (int)(AppTitleBar.ActualHeight * scaleAdjustment);
-                dragRectR.Width = (int)(rpc * scaleAdjustment * App.AppWindowLocal.Size.Width);
+                dragRectR.Width = (int)(scaleAdjustment * App.AppWindowLocal.Size.Width);
                 dragRectsList.Add(dragRectR);
 
                 RectInt32[] dragRects = dragRectsList.ToArray();

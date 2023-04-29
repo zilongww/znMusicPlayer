@@ -16,8 +16,8 @@
             </Grid.RowDefinitions>
             <Viewbox x:Name="V1" HorizontalAlignment="Stretch">
                 <ui:DropShadowPanel x:Name="ShadowTarget"
-                                    OffsetX="0.8" OffsetY="1"
-                                    BlurRadius="5" Color="#AA555555">
+                                    OffsetX="0" OffsetY="0"
+                                    BlurRadius="3" Color="#DD555555">
                     <ui:DropShadowPanel.Transitions>
                         <TransitionCollection>
                             <ContentThemeTransition/>
@@ -28,8 +28,8 @@
             </Viewbox>
             <Viewbox x:Name="V2" Grid.Row="1" HorizontalAlignment="Stretch">
                 <ui:DropShadowPanel x:Name="ShadowTarget1"
-                                    OffsetX="0.8" OffsetY="1"
-                                    BlurRadius="5" Color="#AA555555">
+                                    OffsetX="0" OffsetY="0"
+                                    BlurRadius="3" Color="#DD555555">
                     <ui:DropShadowPanel.Transitions>
                         <TransitionCollection>
                             <ContentThemeTransition/>
@@ -40,6 +40,10 @@
             </Viewbox>
         </Grid>
         <Button Margin="-1,0,0,0" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" CornerRadius="0,0,4,0"
-                Content="Lock" x:Name="LockButton" Click="LockButton_Click"/>
+                x:Name="LockButton" Click="LockButton_Click" Width="50" Height="34" ToolTipService.ToolTip="锁定">
+            <Viewbox Margin="3">
+                <SymbolIcon Symbol="Pin"/>
+            </Viewbox>
+        </Button>
     </Grid>
 </Window>

@@ -21,7 +21,7 @@
         <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
     </Page.Resources>
 
-    <Grid>
+    <Grid Loaded="menu_border_Loaded">
         <ListView x:Name="Children"
                   Background="Transparent"
                   ScrollViewer.CanContentRenderOutsideBounds="True"
@@ -42,7 +42,7 @@
                     <Grid SizeChanged="Result_BaseGrid_SizeChanged">
                         <Rectangle x:Name="BackColorBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
                         <Grid x:Name="HeaderBaseGrid">
-                            <Grid x:Name="PlayList_BaseGrid" Loaded="menu_border_Loaded">
+                            <Grid x:Name="PlayList_BaseGrid">
                                 <Grid x:Name="PlayList_Image_BaseGrid" animations:Connected.AnchorElement="{x:Bind PlayList_Image}" Margin="0,0,0,24">
                                     <Rectangle x:Name="PlayList_Image_DropShadowBase"/>
                                     <Border Width="210"
