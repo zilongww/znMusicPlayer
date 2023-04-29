@@ -16,8 +16,8 @@
             </Grid.RowDefinitions>
             <Viewbox x:Name="V1" HorizontalAlignment="Stretch">
                 <ui:DropShadowPanel x:Name="ShadowTarget"
-                                    OffsetX="0" OffsetY="0"
-                                    BlurRadius="3" Color="#DD555555">
+                                    OffsetX="0" OffsetY="0.5"
+                                    BlurRadius="3" Color="#90000000">
                     <ui:DropShadowPanel.Transitions>
                         <TransitionCollection>
                             <ContentThemeTransition/>
@@ -28,8 +28,8 @@
             </Viewbox>
             <Viewbox x:Name="V2" Grid.Row="1" HorizontalAlignment="Stretch">
                 <ui:DropShadowPanel x:Name="ShadowTarget1"
-                                    OffsetX="0" OffsetY="0"
-                                    BlurRadius="3" Color="#DD555555">
+                                    OffsetX="0" OffsetY="0.5"
+                                    BlurRadius="3" Color="#90000000">
                     <ui:DropShadowPanel.Transitions>
                         <TransitionCollection>
                             <ContentThemeTransition/>
