@@ -38,7 +38,7 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 
-            <SolidColorBrush x:Key="LrcWindowForeground" Color="#DDEEEEEE"/>
+            <SolidColorBrush x:Key="LrcWindowForeground" Color="#CCEEEEEE"/>
             
             <x:Double x:Key="TeachingTipMinHeight">2</x:Double>
             <x:Double x:Key="TeachingTipMaxHeight">1000</x:Double>

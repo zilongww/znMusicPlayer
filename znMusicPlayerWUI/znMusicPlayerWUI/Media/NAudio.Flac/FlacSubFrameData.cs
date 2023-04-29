@@ -1,9 +1,20 @@
 ﻿namespace NAudio.Flac
 {
-    internal unsafe class FlacSubFrameData
+    public unsafe class FlacSubFrameData
     {
-        public int* DestinationBuffer;
+        public int* DestBuffer;
         public int* ResidualBuffer;
-        public FlacPartitionedRiceContent Content = new FlacPartitionedRiceContent();
+
+        private FlacPartitionedRiceContent _content;
+
+        public FlacPartitionedRiceContent Content
+        {
+            get { return _content ?? (_content = new FlacPartitionedRiceContent()); }
+            set { _content = value; }
+        }
+
+        public FlacSubFrameData()
+        {
+        }
     }
 }

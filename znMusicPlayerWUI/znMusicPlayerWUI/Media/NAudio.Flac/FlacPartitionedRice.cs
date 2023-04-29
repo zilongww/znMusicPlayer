@@ -1,57 +1,66 @@
-﻿namespace NAudio.Flac
+﻿using System;
+
+namespace NAudio.Flac
 {
-    internal static class FlacPartitionedRice
+    public class FlacPartitionedRice
     {
-        public static unsafe void ProcessResidual(FlacBitReader reader, FlacFrameHeader header, FlacSubFrameData data,
-            int order, int partitionOrder, FlacResidualCodingMethod codingMethod)
+        public int PartitionOrder { get; private set; }
+
+        public FlacPartitionedRiceContent Content { get; private set; }
+
+        public FlacEntropyCoding CodingMethod { get; private set; }
+
+        public FlacPartitionedRice(int partitionOrder, FlacEntropyCoding codingMethod, FlacPartitionedRiceContent content)
         {
-            data.Content.UpdateSize(partitionOrder);
-            bool isRice2 = codingMethod == FlacResidualCodingMethod.PartitionedRice2;
-            int riceParameterLength = isRice2 ? 5 : 4;
-            int escapeCode = isRice2 ? 31 : 15; //11111 : 1111
+            PartitionOrder = partitionOrder;
+            CodingMethod = codingMethod;
+            Content = content;
+        }
 
-            int samplesPerPartition;
+        public unsafe bool ProcessResidual(FlacBitReader reader, FlacFrameHeader header, FlacSubFrameData data, int order)
+        {
+            data.Content.UpdateSize(PartitionOrder);
 
-            int partitionCount = 1 << partitionOrder;  //2^partitionOrder -> There will be 2^order partitions. -> "order" = partitionOrder in this case
+            int porder = PartitionOrder;
+            FlacEntropyCoding codingMethod = CodingMethod;
 
-            int* residualBuffer = data.ResidualBuffer + order;
+            int psize = header.BlockSize >> porder;
+            int resCnt = psize - order;
 
-            for (int p = 0; p < partitionCount; p++)
+            int ricelength = 4 + (int)codingMethod; //4bit = RICE I | 5bit = RICE II
+
+            //residual
+            int j = order;
+            int* r = data.ResidualBuffer + j;
+
+            int partitioncount = 1 << porder;
+
+            for (int p = 0; p < partitioncount; p++)
             {
-                if (partitionOrder == 0)
-                    samplesPerPartition = header.BlockSize - order;
-                else if (p > 0)
-                    samplesPerPartition = header.BlockSize >> partitionOrder;
-                else
-                    samplesPerPartition = (header.BlockSize >> partitionOrder) - order;
+                if (p == 1) resCnt = psize;
+                int n = Math.Min(resCnt, header.BlockSize - j);
 
-                var riceParameter = reader.ReadBits(riceParameterLength);
-                data.Content.Parameters[p] = (int)riceParameter;
-
-                if (riceParameter >= escapeCode)
+                int k = Content.Parameters[p] = (int)reader.ReadBits(ricelength);
+                if (k == (1 << ricelength) - 1)
                 {
-                    var raw = reader.ReadBits(5); //raw is always 5 bits (see ...(+5))
-                    data.Content.RawBits[p] = (int)raw;
-                    for (int i = 0; i < samplesPerPartition; i++)
+                    k = (int)reader.ReadBits(5);
+                    for (int i = n; i > 0; i--)
                     {
-                        int sample = reader.ReadBitsSigned((int)raw);
-                        *residualBuffer = sample;
-                        residualBuffer++;
+                        *(r) = reader.ReadBitsSigned((int)k);
                     }
                 }
                 else
                 {
-                    ReadFlacRiceBlock(reader, samplesPerPartition, (int)riceParameter, residualBuffer);
-                    residualBuffer += samplesPerPartition;
+                    ReadFlacRiceBlock(reader, n, (int)k, r);
+                    r += n;
                 }
+                j += n;
             }
+
+            return true;
         }
 
-        /// <summary>
-        /// This method is based on the CUETools.NET BitReader (see http://sourceforge.net/p/cuetoolsnet/code/ci/default/tree/CUETools.Codecs/BitReader.cs)
-        /// The author "Grigory Chudov" explicitly gave the permission to use the source as part of the cscore source code which got licensed under the ms-pl.
-        /// </summary>
-        private static unsafe void ReadFlacRiceBlock(FlacBitReader reader, int nvals, int riceParameter, int* ptrDest)
+        private unsafe void ReadFlacRiceBlock(FlacBitReader reader, int nvals, int riceParameter, int* ptrDest)
         {
             fixed (byte* putable = FlacBitReader.UnaryTable)
             {
@@ -60,7 +69,7 @@
                 {
                     for (int i = 0; i < nvals; i++)
                     {
-                        *ptrDest++ = reader.ReadUnarySigned();
+                        *(ptrDest++) = reader.ReadUnarySigned();
                     }
                 }
                 else
@@ -77,20 +86,20 @@
                             msbs += bits;
                         }
 
-                        uint uval;
+                        uint uval = 0;
                         if (riceParameter <= 16)
                         {
                             int btsk = riceParameter + (int)bits + 1;
-                            uval = msbs << riceParameter | reader.Cache >> 32 - btsk & mask;
+                            uval = (msbs << riceParameter) | ((reader.Cache >> (32 - btsk)) & mask);
                             reader.SeekBits(btsk);
                         }
                         else
                         {
                             reader.SeekBits((int)(msbs & 7) + 1);
-                            uval = msbs << riceParameter | reader.Cache >> 32 - riceParameter;
+                            uval = (msbs << riceParameter) | ((reader.Cache >> (32 - riceParameter)));
                             reader.SeekBits(riceParameter);
                         }
-                        *ptrDest++ = (int)(uval >> 1 ^ -(int)(uval & 1));
+                        *(ptrDest++) = (int)(uval >> 1 ^ -(int)(uval & 1));
                     }
                 }
             }

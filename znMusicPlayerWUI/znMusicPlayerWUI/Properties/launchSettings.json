@@ -2,7 +2,8 @@
   "profiles": {
     "znMusicPlayerWUI": {
       "commandName": "Project",
-      "hotReloadEnabled": true
+      "hotReloadEnabled": true,
+      "nativeDebugging": false
     },
     "WSL": {
       "commandName": "WSL2",

@@ -2,20 +2,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-
 using NAudio.Wave;
-using NAudio.Flac.Metadata;
 
 namespace NAudio.Flac
 {
     /// <summary>
     ///     Provides a decoder for decoding flac (Free Lostless Audio Codec) data.
     /// </summary>
-    public class FlacReader : WaveStream, IDisposable
+    public class FlacReader : WaveStream, IDisposable, ISampleProvider, IWaveProvider
+    
     {
         private readonly Stream _stream;
         private readonly WaveFormat _waveFormat;
@@ -23,8 +21,6 @@ namespace NAudio.Flac
         private readonly FlacPreScan _scan;
 
         private readonly object _bufferLock = new object();
-
-        private readonly bool _closeStream;
 
         //overflow:
         private byte[] _overflowBuffer;
@@ -37,7 +33,7 @@ namespace NAudio.Flac
         /// <summary>
         ///     Gets a list with all found metadata fields.
         /// </summary>
-        public ReadOnlyCollection<FlacMetadata> Metadata { get; protected set; }
+        public List<FlacMetadata> Metadata { get; protected set; }
 
         /// <summary>
         ///     Gets the output <see cref="CSCore.WaveFormat" /> of the decoder.
@@ -70,7 +66,6 @@ namespace NAudio.Flac
         public FlacReader(string fileName)
             : this(File.OpenRead(fileName))
         {
-            _closeStream = true;
         }
 
         /// <summary>
@@ -78,7 +73,7 @@ namespace NAudio.Flac
         /// </summary>
         /// <param name="stream">Stream which contains flac data which should be decoded.</param>
         public FlacReader(Stream stream)
-            : this(stream, FlacPreScanMode.Default)
+            : this(stream, FlacPreScanMethodMode.Default)
         {
         }
 
@@ -87,7 +82,7 @@ namespace NAudio.Flac
         /// </summary>
         /// <param name="stream">Stream which contains flac data which should be decoded.</param>
         /// <param name="scanFlag">Scan mode which defines how to scan the flac data for frames.</param>
-        public FlacReader(Stream stream, FlacPreScanMode scanFlag)
+        public FlacReader(Stream stream, FlacPreScanMethodMode scanFlag)
             : this(stream, scanFlag, null)
         {
         }
@@ -99,9 +94,9 @@ namespace NAudio.Flac
         /// <param name="scanFlag">Scan mode which defines how to scan the flac data for frames.</param>
         /// <param name="onscanFinished">
         ///     Callback which gets called when the pre scan processes finished. Should be used if the
-        ///     <paramref name="scanFlag" /> argument is set the <see cref="FlacPreScanMode.Async" />.
+        ///     <paramref name="scanFlag" /> argument is set the <see cref="FlacPreScanMethodMode.Async" />.
         /// </param>
-        public FlacReader(Stream stream, FlacPreScanMode scanFlag,
+        public FlacReader(Stream stream, FlacPreScanMethodMode scanFlag,
             Action<FlacPreScanFinishedEventArgs> onscanFinished)
         {
             if (stream == null)
@@ -110,12 +105,9 @@ namespace NAudio.Flac
                 throw new ArgumentException("Stream is not readable.", "stream");
 
             _stream = stream;
-            _closeStream = true;
 
-            ////skip ID3v2
-            //while (ID3v2.SkipTag(stream))
-            //{
-            //}
+            //skip ID3v2
+            NAudio.Flac.ID3v2.SkipTag(stream);
 
             //read fLaC sync
             var beginSync = new byte[4];
@@ -126,10 +118,10 @@ namespace NAudio.Flac
                 beginSync[2] == 0x61 && beginSync[3] == 0x43)
             {
                 //read metadata
-                List<FlacMetadata> metadata = FlacMetadata.ReadAllMetadataFromStream(stream).ToList();
+                List<FlacMetadata> metadata = FlacMetadata.ReadAllMetadataFromStream(stream);
 
-                Metadata = metadata.AsReadOnly();
-                if (metadata.Count <= 0)
+                Metadata = metadata;
+                if (metadata == null || metadata.Count <= 0)
                     throw new FlacException("No Metadata found.", FlacLayer.Metadata);
 
                 var streamInfo =
@@ -138,29 +130,26 @@ namespace NAudio.Flac
                     throw new FlacException("No StreamInfo-Metadata found.", FlacLayer.Metadata);
 
                 _streamInfo = streamInfo;
-                _waveFormat = CreateWaveFormat(streamInfo);
-                Debug.WriteLine("Flac StreamInfo found -> WaveFormat: " + _waveFormat);
-                Debug.WriteLine("Flac-File-Metadata read.");
+                _waveFormat = new WaveFormat(streamInfo.SampleRate, (short) streamInfo.BitsPerSample,
+                    (short) streamInfo.Channels);
+                //Debug.WriteLine("Flac StreamInfo found -> WaveFormat: " + _waveFormat);
+                //Debug.WriteLine("Flac-File-Metadata read.");
             }
             else
-                throw new FlacException("Invalid Flac-File. \"fLaC\" Sync not found.", FlacLayer.OutSideOfFrame);
+                throw new FlacException("Invalid Flac-File. \"fLaC\" Sync not found.", FlacLayer.Top);
 
             //prescan stream
-            if (scanFlag != FlacPreScanMode.None)
+            if (scanFlag != FlacPreScanMethodMode.None)
             {
                 var scan = new FlacPreScan(stream);
                 scan.ScanFinished += (s, e) =>
                 {
-                    onscanFinished?.Invoke(e);
+                    if (onscanFinished != null)
+                        onscanFinished(e);
                 };
                 scan.ScanStream(_streamInfo, scanFlag);
                 _scan = scan;
             }
-        }
-
-        private WaveFormat CreateWaveFormat(FlacMetadataStreamInfo streamInfo)
-        {
-            return new WaveFormat(streamInfo.SampleRate, streamInfo.BitsPerSample, streamInfo.Channels);
         }
 
         /// <summary>
@@ -180,10 +169,8 @@ namespace NAudio.Flac
         /// <returns>The total number of bytes read into the buffer.</returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            CheckForDisposed();
-
             int read = 0;
-            count -= count % WaveFormat.BlockAlign;
+            count -= (count % WaveFormat.BlockAlign);
 
             lock (_bufferLock)
             {
@@ -193,27 +180,27 @@ namespace NAudio.Flac
                 {
                     FlacFrame frame = Frame;
                     if (frame == null)
-                        return read;
+                        return 0;
 
                     while (!frame.NextFrame())
                     {
                         if (CanSeek) //go to next frame
                         {
                             if (++_frameIndex >= _scan.Frames.Count)
-                                return read;
+                                return 0;
                             _stream.Position = _scan.Frames[_frameIndex].StreamOffset;
                         }
                     }
                     _frameIndex++;
 
-                    int bufferlength = frame.GetBuffer(ref _overflowBuffer);
+                    int bufferlength = frame.GetBuffer(ref _overflowBuffer, 0);
                     int bytesToCopy = Math.Min(count - read, bufferlength);
                     Array.Copy(_overflowBuffer, 0, buffer, offset, bytesToCopy);
                     read += bytesToCopy;
                     offset += bytesToCopy;
 
-                    _overflowCount = bufferlength > bytesToCopy ? bufferlength - bytesToCopy : 0;
-                    _overflowOffset = bufferlength > bytesToCopy ? bytesToCopy : 0;
+                    _overflowCount = ((bufferlength > bytesToCopy) ? (bufferlength - bytesToCopy) : 0);
+                    _overflowOffset = ((bufferlength > bytesToCopy) ? (bytesToCopy) : 0);
                 }
             }
 #if DIAGNOSTICS
@@ -240,7 +227,6 @@ namespace NAudio.Flac
 
 #if DIAGNOSTICS
         private long _position;
-        private bool _disposed;
 #endif
 
         /// <summary>
@@ -250,7 +236,7 @@ namespace NAudio.Flac
         {
             get
             {
-                if (!CanSeek || _disposed)
+                if (!CanSeek)
                     return 0;
 
                 lock (_bufferLock)
@@ -266,22 +252,17 @@ namespace NAudio.Flac
             }
             set
             {
-                CheckForDisposed();
-
                 if (!CanSeek)
                     return;
                 lock (_bufferLock)
                 {
-                    value = Math.Max(Math.Min(value, Length), 0);
-                    value -= value % WaveFormat.BlockAlign;
+                    value = Math.Min(value, Length);
+                    value = value > 0 ? value : 0;
 
                     for (int i = 0; i < _scan.Frames.Count; i++)
                     {
-                        if (value / WaveFormat.BlockAlign <= _scan.Frames[i].SampleOffset)
+                        if ((value / WaveFormat.BlockAlign) <= _scan.Frames[i].SampleOffset)
                         {
-                            if (i != 0)
-                                i--;
-
                             _stream.Position = _scan.Frames[i].StreamOffset;
                             _frameIndex = i;
                             if (_stream.Position >= _stream.Length)
@@ -291,14 +272,6 @@ namespace NAudio.Flac
 #endif
                             _overflowCount = 0;
                             _overflowOffset = 0;
-
-                            int diff = (int)(value - Position);
-                            diff -= diff % WaveFormat.BlockAlign;
-                            if (diff > 0)
-                            {
-                                this.ReadBytes(diff);
-                            }
-
                             break;
                         }
                     }
@@ -311,14 +284,7 @@ namespace NAudio.Flac
         /// </summary>
         public override long Length
         {
-            get
-            {
-                if (_disposed)
-                    return 0;
-                if (CanSeek)
-                    return _scan.TotalSamples * WaveFormat.BlockAlign;
-                return -1;
-            }
+            get {return (long) _scan.TotalSamples * WaveFormat.BlockAlign;}
         }
 
         /// <summary>
@@ -337,43 +303,19 @@ namespace NAudio.Flac
         ///     True to release both managed and unmanaged resources; false to release only unmanaged
         ///     resources.
         /// </param>
-        protected new virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             lock (_bufferLock)
             {
-                if (!_disposed)
+                if (_frame != null)
                 {
-                    if (_frame != null)
-                    {
-                        _frame.Dispose();
-                        _frame = null;
-                    }
-
-                    if (_stream != null && _closeStream)
-                        _stream.Dispose();
-
-                    _disposed = true;
+                    _frame.FreeBuffers();
+                    _frame = null;
                 }
+
+                if (_stream != null)
+                    _stream.Dispose();
             }
-        }
-
-        internal byte[] ReadBytes(int count)
-        {
-            count -= (count % WaveFormat.BlockAlign);
-            if (count <= 0)
-                throw new ArgumentOutOfRangeException("count");
-
-            byte[] buffer = new byte[count];
-            int read = Read(buffer, 0, buffer.Length);
-            if (read < count)
-                Array.Resize(ref buffer, read);
-            return buffer;
-        }
-
-        private void CheckForDisposed()
-        {
-            if (_disposed)
-                throw new ObjectDisposedException(GetType().FullName);
         }
 
         /// <summary>
@@ -383,5 +325,11 @@ namespace NAudio.Flac
         {
             Dispose(false);
         }
+
+        public int Read(float[] buffer, int offset, int count)
+        {
+            return -1;
+        }
+
     }
 }

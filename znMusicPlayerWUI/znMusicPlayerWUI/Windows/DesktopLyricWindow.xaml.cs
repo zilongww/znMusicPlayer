@@ -87,7 +87,36 @@ namespace znMusicPlayerWUI.Windowed
 
             App.lyricManager.PlayingLyricSourceChange += LyricManager_PlayingLyricSourceChange;
             App.lyricManager.PlayingLyricSelectedChange += LyricManager_PlayingLyricSelectedChange;
+            App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
+            App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
             LyricManager_PlayingLyricSelectedChange(App.lyricManager.NowLyricsData);
+        }
+
+        int showBorderCount = 0;
+        private async void AudioPlayer_PlayStateChanged(Media.AudioPlayer audioPlayer)
+        {
+            PlayStateElement.PlaybackState = audioPlayer.PlaybackState;
+            if (audioPlayer.PlaybackState == PlaybackState.Playing)
+            {
+                InfoBorder.Opacity = 0;
+            }
+            else
+            {
+                InfoBorder.Opacity = 1;
+            }
+        }
+
+        int showCount = 0;
+        private async void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
+        {
+            InfoTB.Opacity = 0.8;
+            InfoTB.Text = $"{audioPlayer.MusicData.Title}";
+
+            showCount++;
+            await Task.Delay(5000);
+            showCount--;
+
+            if (showCount <= 0) InfoTB.Opacity = 0;
         }
 
         private void LyricManager_PlayingLyricSourceChange(ObservableCollection<LyricData> nowPlayingLyrics)
@@ -212,7 +241,7 @@ namespace znMusicPlayerWUI.Windowed
             double dpi = CodeHelper.GetScaleAdjustment(this);
             int windowWidth = (int)(AppWindow.Size.Width * dpi);
             int windowHeight = (int)(AppWindow.Size.Height * dpi);
-            int lockButtonWidth = (int)(LockButton.ActualWidth * dpi);
+            int lockButtonWidth = (int)((LockButton.ActualWidth - 1) * dpi);
             int lockButtonHeight = (int)(LockButton.ActualHeight * dpi);
 
             RectInt32[] rectInt32s = default;

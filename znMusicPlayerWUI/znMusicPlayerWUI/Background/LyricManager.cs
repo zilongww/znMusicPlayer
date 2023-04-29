@@ -134,7 +134,7 @@ namespace znMusicPlayerWUI.Background
             }
 
             var lyricDatas = await LyricHelper.LyricToLrcData(f);
-            if (lyricDatas.Any())
+            if (lyricDatas.Length > 1)
             {
                 foreach (var i in lyricDatas)
                 {
@@ -147,6 +147,7 @@ namespace znMusicPlayerWUI.Background
             {
                 NowLyricsData = null;
             }
+            System.Diagnostics.Debug.WriteLine(":" + lyricDatas.Length);
         }
 
         LyricData lastLyricData = null;
@@ -157,7 +158,7 @@ namespace znMusicPlayerWUI.Background
             {
                 if (!timer.IsEnabled) timer.Start();
                 //System.Diagnostics.Debug.WriteLine(App.audioPlayer.CurrentTime);
-                /*
+                
                 foreach (var data in NowPlayingLyrics)
                 {
                     if (data.LyricTimeSpan < App.audioPlayer.CurrentTime)
@@ -169,7 +170,7 @@ namespace znMusicPlayerWUI.Background
                         NowLyricsData = lastLyricData;
                         break;
                     }
-                }*/
+                }/*
                 for (int i = 0; i < NowPlayingLyrics.Count; i++)
                 {
                     var npl = NowPlayingLyrics[i];
@@ -182,7 +183,7 @@ namespace znMusicPlayerWUI.Background
                         NowLyricsData = lastLyricData;
                         break;
                     }
-                }
+                }*/
             }
             else
             {

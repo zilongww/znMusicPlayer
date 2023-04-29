@@ -1,24 +1,14 @@
-﻿#define GET_BUFFER_INTERNAL
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
-using NAudio.Flac.Metadata;
-using NAudio.Flac.SubFrames;
-
 namespace NAudio.Flac
 {
-    /// <summary>
-    /// Represents a frame inside of an Flac-Stream.
-    /// </summary>
-    public sealed partial class FlacFrame : IDisposable
+    public sealed class FlacFrame
     {
-        private List<FlacSubFrameData> _subFrameData;
-#if FLAC_DEBUG
-        private System.Collections.ObjectModel.ReadOnlyCollection<FlacSubFrameBase> _subFrames;  
-#endif
+        private List<FlacSubFrameData> _data;
         private Stream _stream;
         private FlacMetadataStreamInfo _streamInfo;
 
@@ -26,29 +16,12 @@ namespace NAudio.Flac
         private int[] _destBuffer;
         private int[] _residualBuffer;
 
-        /// <summary>
-        /// Gets the header of the flac frame.
-        /// </summary>
         public FlacFrameHeader Header { get; private set; }
 
-        /// <summary>
-        /// Gets the CRC16-checksum.
-        /// </summary>
-        public short Crc16 { get; private set; }
+        public ushort Crc16 { get; private set; }
 
-        /// <summary>
-        /// Gets a value indicating whether the decoder has encountered an error with this frame.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this frame contains an error; otherwise, <c>false</c>.
-        /// </value>
         public bool HasError { get; private set; }
 
-        /// <summary>
-        /// Creates a new instance of the <see cref="FlacFrame"/> class based on the specified <paramref name="stream"/>.
-        /// </summary>
-        /// <param name="stream">The stream which contains the flac frame.</param>
-        /// <returns>A new instance of the <see cref="FlacFrame"/> class.</returns>
         public static FlacFrame FromStream(Stream stream)
         {
             FlacFrame frame = new FlacFrame(stream);
@@ -56,12 +29,6 @@ namespace NAudio.Flac
             //return frame.HasError ? null : frame;
         }
 
-        /// <summary>
-        /// Creates a new instance of the <see cref="FlacFrame"/> class based on the specified <paramref name="stream"/> and some basic stream information.
-        /// </summary>
-        /// <param name="stream">The stream which contains the flac frame.</param>
-        /// <param name="streamInfo">Some basic information about the flac stream.</param>
-        /// <returns>A new instance of the <see cref="FlacFrame"/> class.</returns>
         public static FlacFrame FromStream(Stream stream, FlacMetadataStreamInfo streamInfo)
         {
             FlacFrame frame = new FlacFrame(stream, streamInfo);
@@ -69,21 +36,20 @@ namespace NAudio.Flac
             //return frame.HasError ? null : frame;
         }
 
-        private FlacFrame(Stream stream, FlacMetadataStreamInfo streamInfo = null)
+        private FlacFrame(Stream stream)
+            : this(stream, null)
         {
-            if (stream == null)
-                throw new ArgumentNullException("stream");
-            if (stream.CanRead == false)
-                throw new ArgumentException("Stream is not readable");
+        }
+
+        private FlacFrame(Stream stream, FlacMetadataStreamInfo streamInfo)
+        {
+            if (stream == null) throw new ArgumentNullException("stream");
+            if (stream.CanRead == false) throw new ArgumentException("Stream is not readable");
 
             _stream = stream;
             _streamInfo = streamInfo;
         }
 
-        /// <summary>
-        /// Tries to read the next flac frame inside of the specified stream and returns a value which indicates whether the next flac frame could be successfully read.
-        /// </summary>
-        /// <returns>True if the next flac frame could be successfully read; false if not.</returns>
         public bool NextFrame()
         {
             Decode(_stream, _streamInfo);
@@ -109,10 +75,10 @@ namespace NAudio.Flac
 
             //alocateOutput
             var data = AllocOuputMemory();
-            _subFrameData = data;
+            _data = data;
 
             byte[] buffer = new byte[0x20000];
-            if (_streamInfo.MaxFrameSize * Header.Channels * Header.BitsPerSample * 2 >> 3 > buffer.Length)
+            if ((_streamInfo.MaxFrameSize * Header.Channels * Header.BitsPerSample * 2 >> 3) > buffer.Length)
             {
                 buffer = new byte[(_streamInfo.MaxFrameSize * Header.Channels * Header.BitsPerSample * 2 >> 3) - FlacConstant.FrameHeaderSize];
             }
@@ -124,75 +90,62 @@ namespace NAudio.Flac
                 FlacBitReader reader = new FlacBitReader(ptrBuffer, 0);
                 for (int c = 0; c < Header.Channels; c++)
                 {
-                    int bitsPerSample = Header.BitsPerSample;
+                    int bps = Header.BitsPerSample;
                     if (Header.ChannelAssignment == ChannelAssignment.MidSide || Header.ChannelAssignment == ChannelAssignment.LeftSide)
-                        bitsPerSample += c;
+                        bps += c;
                     else if (Header.ChannelAssignment == ChannelAssignment.RightSide)
-                        bitsPerSample += 1 - c;
+                        bps += 1 - c;
 
-                    var subframe = FlacSubFrameBase.GetSubFrame(reader, data[c], Header, bitsPerSample);
+                    var subframe = FlacSubFrameBase.GetSubFrame(reader, data[c], Header, bps);
+
                     subFrames.Add(subframe);
                 }
 
-                reader.Flush(); //Zero-padding to byte alignment.
-
-                //footer
-                Crc16 = (short)reader.ReadBits(16);
+                reader.Flush();
+                Crc16 = (ushort)reader.ReadBits(16);
 
                 _stream.Position -= read - reader.Position;
-                MapToChannels(_subFrameData);
-            }
 
-#if FLAC_DEBUG
-            _subFrames = subFrames.AsReadOnly();
-#endif
+                SamplesToBytes(_data);
+
+                //return reader.Position;
+            }
         }
 
-        private unsafe void MapToChannels(List<FlacSubFrameData> subFrames)
+        private unsafe void SamplesToBytes(List<FlacSubFrameData> data)
         {
             if (Header.ChannelAssignment == ChannelAssignment.LeftSide)
             {
                 for (int i = 0; i < Header.BlockSize; i++)
                 {
-                    subFrames[1].DestinationBuffer[i] = subFrames[0].DestinationBuffer[i] - subFrames[1].DestinationBuffer[i];
+                    data[1].DestBuffer[i] = data[0].DestBuffer[i] - data[1].DestBuffer[i];
                 }
             }
             else if (Header.ChannelAssignment == ChannelAssignment.RightSide)
             {
                 for (int i = 0; i < Header.BlockSize; i++)
                 {
-                    subFrames[0].DestinationBuffer[i] += subFrames[1].DestinationBuffer[i];
+                    data[0].DestBuffer[i] += data[1].DestBuffer[i];
                 }
             }
             else if (Header.ChannelAssignment == ChannelAssignment.MidSide)
             {
                 for (int i = 0; i < Header.BlockSize; i++)
                 {
-                    int mid = subFrames[0].DestinationBuffer[i] << 1;
-                    int side = subFrames[1].DestinationBuffer[i];
+                    int mid = data[0].DestBuffer[i] << 1;
+                    int side = data[1].DestBuffer[i];
 
-                    mid |= side & 1;
+                    mid |= (side & 1);
 
-                    subFrames[0].DestinationBuffer[i] = mid + side >> 1;
-                    subFrames[1].DestinationBuffer[i] = mid - side >> 1;
+                    data[0].DestBuffer[i] = (mid + side) >> 1;
+                    data[1].DestBuffer[i] = (mid - side) >> 1;
                 }
             }
         }
 
-        /// <summary>
-        /// Gets the raw pcm data of the flac frame.
-        /// </summary>
-        /// <param name="buffer">The buffer which should be used to store the data in. This value can be null.</param>
-        /// <returns>The number of read bytes.</returns>
-        public
-#if FLAC_DEBUG && !GET_BUFFER_INTERNAL
-            unsafe 
-#endif
- int GetBuffer(ref byte[] buffer)
+        public unsafe int GetBuffer(ref byte[] buffer, int offset)
         {
-#if !FLAC_DEBUG || GET_BUFFER_INTERNAL
-            return GetBufferInternal(ref buffer);
-#else 
+            //int desiredsize = Header.BlockSize * Header.Channels * Header.BitsPerSample;
             int desiredsize = Header.BlockSize * Header.Channels * ((Header.BitsPerSample + 7) / 2);
             if (buffer == null || buffer.Length < desiredsize)
                 buffer = new byte[desiredsize];
@@ -206,7 +159,7 @@ namespace NAudio.Flac
                     {
                         for (int c = 0; c < Header.Channels; c++)
                         {
-                            *(ptr++) = (byte)(_subFrames[c].DestinationBuffer[i] + 0x80);
+                            *(ptr++) = (byte)(_data[c].DestBuffer[i] + 0x80);
                         }
                     }
                 }
@@ -216,7 +169,7 @@ namespace NAudio.Flac
                     {
                         for (int c = 0; c < Header.Channels; c++)
                         {
-                            short val = (short)(_subFrames[c].DestinationBuffer[i]);
+                            short val = (short)(_data[c].DestBuffer[i]); //remove
                             *(ptr++) = (byte)(val & 0xFF);
                             *(ptr++) = (byte)((val >> 8) & 0xFF);
                         }
@@ -228,7 +181,7 @@ namespace NAudio.Flac
                     {
                         for (int c = 0; c < Header.Channels; c++)
                         {
-                            int val = (_subFrames[c].DestinationBuffer[i]);
+                            int val = (_data[c].DestBuffer[i]);
                             *(ptr++) = (byte)(val & 0xFF);
                             *(ptr++) = (byte)((val >> 8) & 0xFF);
                             *(ptr++) = (byte)((val >> 16) & 0xFF);
@@ -237,19 +190,20 @@ namespace NAudio.Flac
                 }
                 else
                 {
-                    throw new FlacException(String.Format("FlacFrame::GetBuffer: Invalid BitsPerSample value: {0}", Header.BitsPerSample), FlacLayer.Frame);
+                    string error = "FlacFrame::GetBuffer: Invalid Flac-BitsPerSample: " + Header.BitsPerSample + ".";
+                    Debug.WriteLine(error);
+                    throw new FlacException(error, FlacLayer.Frame);
                 }
 
                 return (int)(ptr - ptrBuffer);
             }
-#endif
         }
 
         private unsafe List<FlacSubFrameData> AllocOuputMemory()
         {
-            if (_destBuffer == null || _destBuffer.Length < Header.Channels * Header.BlockSize)
+            if (_destBuffer == null || _destBuffer.Length < (Header.Channels * Header.BlockSize))
                 _destBuffer = new int[Header.Channels * Header.BlockSize];
-            if (_residualBuffer == null || _residualBuffer.Length < Header.Channels * Header.BlockSize)
+            if (_residualBuffer == null || _residualBuffer.Length < (Header.Channels * Header.BlockSize))
                 _residualBuffer = new int[Header.Channels * Header.BlockSize];
 
             List<FlacSubFrameData> output = new List<FlacSubFrameData>();
@@ -263,8 +217,8 @@ namespace NAudio.Flac
 
                     FlacSubFrameData data = new FlacSubFrameData
                     {
-                        DestinationBuffer = ptrDestBuffer + c * Header.BlockSize,
-                        ResidualBuffer = ptrResidualBuffer + c * Header.BlockSize
+                        DestBuffer = (ptrDestBuffer + c * Header.BlockSize),
+                        ResidualBuffer = (ptrResidualBuffer + c * Header.BlockSize)
                     };
                     output.Add(data);
                 }
@@ -273,7 +227,7 @@ namespace NAudio.Flac
             return output;
         }
 
-        private void FreeBuffers()
+        public void FreeBuffers()
         {
             if (_handle1.IsAllocated)
                 _handle1.Free();
@@ -281,27 +235,9 @@ namespace NAudio.Flac
                 _handle2.Free();
         }
 
-        private bool _disposed;
-
-        /// <summary>
-        /// Disposes the <see cref="FlacFrame"/> and releases all associated resources.
-        /// </summary>
-        public void Dispose()
-        {
-            if (!_disposed)
-            {
-                GC.SuppressFinalize(this);
-                FreeBuffers();
-                _disposed = true;
-            }
-        }
-
-        /// <summary>
-        /// Finalizes an instance of the <see cref="FlacFrame"/> class.
-        /// </summary>
         ~FlacFrame()
         {
-            Dispose();
+            FreeBuffers();
         }
     }
 }

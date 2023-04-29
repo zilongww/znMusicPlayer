@@ -1,24 +1,22 @@
-﻿using System;
+﻿using NAudio.Utils;
 
 namespace NAudio.Flac
 {
-    /// <summary>
-    /// This method is based on the CUETools.NET BitReader (see http://sourceforge.net/p/cuetoolsnet/code/ci/default/tree/CUETools.Codecs/BitReader.cs)
-    /// The author "Grigory Chudov" explicitly gave the permission to use the source as part of the cscore source code which got licensed under the ms-pl.
-    /// </summary>
-    internal class FlacBitReader : BitReader
+    public class FlacBitReader : BitReader
     {
-        internal static readonly byte[] UnaryTable =
-        {
-            8, 7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-        };
+        /*unary table from codeproject*/
+
+        internal static readonly byte[] UnaryTable = new byte[]
+		{
+			8, 7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+			2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+			1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		};
 
         public FlacBitReader(byte[] buffer, int offset)
             : base(buffer, offset)
@@ -50,18 +48,10 @@ namespace NAudio.Flac
         public int ReadUnarySigned()
         {
             var value = ReadUnary();
-            return (int)(value >> 1 ^ -(int)(value & 1));
+            return (int)(value >> 1 ^ -((int)(value & 1)));
         }
 
         #region utf8
-
-        public bool ReadUTF8_64Signed(out long result)
-        {
-            ulong r;
-            var returnValue = ReadUTF8_64(out r);
-            result = (long)r;
-            return returnValue;
-        }
 
         public bool ReadUTF8_64(out ulong result)
         {
@@ -120,19 +110,11 @@ namespace NAudio.Flac
                 }
 
                 v <<= 6;
-                v |= x & 0x3F;
+                v |= (x & 0x3F);
             }
 
             result = v;
             return true;
-        }
-
-        public bool ReadUTF8_32Signed(out int result)
-        {
-            uint r;
-            var returnValue = ReadUTF8_32(out r);
-            result = (int)r;
-            return returnValue;
         }
 
         public bool ReadUTF8_32(out uint result)
@@ -187,7 +169,7 @@ namespace NAudio.Flac
                 }
 
                 v <<= 6;
-                v |= x & 0x3F;
+                v |= (x & 0x3F);
             }
 
             result = v;

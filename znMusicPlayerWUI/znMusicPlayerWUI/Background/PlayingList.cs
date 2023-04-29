@@ -51,10 +51,10 @@ namespace znMusicPlayerWUI.Background
             switch (PlayBehaviour)
             {
                 case PlayBehaviour.顺序播放:
-                    await App.playingList.PlayNext();
+                    await App.playingList.PlayNext(true);
                     break;
                 case PlayBehaviour.随机播放:
-                    await Play(NowPlayingList[new Random().Next(NowPlayingList.Count - 1)]);
+                    await Play(NowPlayingList[new Random().Next(NowPlayingList.Count - 1)], true);
                     break;
                 case PlayBehaviour.单曲循环:
                     await Play(NowPlayingMusicData);
@@ -113,14 +113,35 @@ namespace znMusicPlayerWUI.Background
                 PlayingListItemChange?.Invoke(NowPlayingList);
         }
 
-        public async Task<bool> Play(MusicData musicData)
+        bool isLoadingPlay = false;
+        public async Task<bool> Play(MusicData musicData, bool isAutoNext = false)
         {
+            if (isLoadingPlay) return false;
+            isLoadingPlay = true;
+
             Add(musicData);
             bool a = true;
+
+            NAudio.Wave.PlaybackState playState;
+            if (App.audioPlayer.NowOutObj != null)
+            {
+                playState = App.audioPlayer.NowOutObj.PlaybackState;
+            }
+            else
+            {
+                playState = NAudio.Wave.PlaybackState.Playing;
+            }
+
+            if (isAutoNext)
+            {
+                playState = NAudio.Wave.PlaybackState.Playing;
+            }
+
             try
             {
                 await App.audioPlayer.SetSource(musicData);
-                App.audioPlayer.SetPlay();
+                if (playState == NAudio.Wave.PlaybackState.Playing)
+                    App.audioPlayer.SetPlay();
             }
             catch (Exception e)
             {
@@ -132,12 +153,17 @@ namespace znMusicPlayerWUI.Background
 #endif
             }
 
-            //UWPInterop.SystemMediaTransportControlsInterop.GetForWindow(App.AppWindowLocalHandle);
-
+            FreezePlayTime();
             return a;
         }
 
-        public async Task<bool> PlayNext()
+        private async void FreezePlayTime()
+        {
+            await Task.Delay(100);
+            isLoadingPlay = false;
+        }
+
+        public async Task<bool> PlayNext(bool isAutoNext = false)
         {
             if (NowPlayingList.Any())
             {
@@ -147,7 +173,7 @@ namespace znMusicPlayerWUI.Background
                     a = 0;
                 }
 
-                return await Play(NowPlayingList[a]);
+                return await Play(NowPlayingList[a], isAutoNext);
             }
 
             return true;

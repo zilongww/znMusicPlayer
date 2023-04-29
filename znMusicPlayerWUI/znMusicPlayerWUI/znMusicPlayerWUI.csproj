@@ -83,7 +83,6 @@
 
   <ItemGroup>
     <None Include="Helpers\SDKs\NeteaseCloudMusicApi\NeteaseCloudMusicApi.csproj" />
-    <None Include="Media\NAudio.Flac\NAudio.Flac.csproj" />
     <None Include="Media\TaglibSharp\TaglibSharp.csproj" />
   </ItemGroup>
 

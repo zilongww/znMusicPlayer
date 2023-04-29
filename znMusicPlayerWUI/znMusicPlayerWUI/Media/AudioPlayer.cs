@@ -475,6 +475,7 @@ namespace znMusicPlayerWUI.Media
                     Exception exception = null;
                     try
                     {
+                        _filePath = resultPath;
                         await SetSource(resultPath);
                     }
                     catch (Exception err)
@@ -485,6 +486,7 @@ namespace znMusicPlayerWUI.Media
                     finally
                     {
                         CacheLoadedChanged?.Invoke(this);
+                        TimingChanged?.Invoke(this);
                         LoadingMusicDatas.Remove(musicData);
                     }
 
@@ -501,11 +503,22 @@ namespace znMusicPlayerWUI.Media
                 throw new Exception("缓存文件获取失败，可能是源服务器没有相关资源。");
             }
         }
+
+        string _filePath = null;
+        bool isLoadingLocal = false;
         public string FileType = null;
         public int FileSize = 0;
         public string AudioBitrate = null;
         public async Task SetSource(string filePath)
         {
+            while (isLoadingLocal)
+            {
+                System.Diagnostics.Debug.WriteLine("ropo");
+                await Task.Delay(1000);
+            }
+            if (filePath != _filePath) return;
+            isLoadingLocal = true;
+
             if (NowOutDevice.DeviceType == OutApi.None)
             {
                 NowOutDevice = (await OutDevice.GetOutDevices()).First();
@@ -631,6 +644,9 @@ namespace znMusicPlayerWUI.Media
                 MidiPlayback.Finished += (_, __) => MainWindow.Invoke(() => AudioPlayer_PlaybackStopped(null, null));
                 MidiPlayback.Speed = Tempo;
             }
+
+            PlayStateChanged?.Invoke(this);
+            isLoadingLocal = false;
         }
 
         public async Task Reload()
@@ -727,9 +743,8 @@ namespace znMusicPlayerWUI.Media
         }
 
         bool isDisposing = false;
-        public void DisposeAll()
+        public async void DisposeAll()
         {
-            if (isDisposing) return;
             isDisposing = true;
 
             (NowOutObj as IDisposable)?.Dispose();
