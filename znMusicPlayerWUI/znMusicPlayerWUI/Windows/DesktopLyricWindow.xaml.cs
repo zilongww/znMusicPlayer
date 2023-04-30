@@ -153,8 +153,8 @@ namespace znMusicPlayerWUI.Windowed
                 V2.HorizontalAlignment = HorizontalAlignment.Center;
                 T1.Text = nowLyricsData?.Lyric.FirstOrDefault();
                 T2.Text = nowLyricsData?.Lyric[1];
-                T1.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
-                T2.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
+                T1.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
+                T2.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
             }
             else
             {
@@ -176,22 +176,22 @@ namespace znMusicPlayerWUI.Windowed
                 {
                     IsT1Focus = false;
                     T1.Text = nowLyricsData.Lyric.FirstOrDefault();
-                    T1.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
-                    T2.Foreground = App.Current.Resources["LrcWindowForeground"] as SolidColorBrush;
+                    T1.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
+                    T2.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
 
                     if (nextData.Lyric != null) T2.Text = nextData.Lyric.FirstOrDefault();
-                    else T2.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
+                    else T2.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
                 }
                 else
                 {
                     IsT1Focus = true;
                     T2.Text = nowLyricsData.Lyric.FirstOrDefault();
 
-                    T1.Foreground = App.Current.Resources["LrcWindowForeground"] as SolidColorBrush;
-                    T2.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
+                    T1.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
+                    T2.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
 
                     if (nextData.Lyric != null) T1.Text = nextData.Lyric.FirstOrDefault();
-                    else T1.Foreground = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as SolidColorBrush;
+                    else T1.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
                 }
             }
         }
@@ -277,7 +277,7 @@ namespace znMusicPlayerWUI.Windowed
                 m_acrylicController = new DesktopAcrylicController()
                 {
                     TintColor = Color.FromArgb(255, 35, 35, 35),
-                    LuminosityOpacity = 0.5f,
+                    LuminosityOpacity = 0.8f,
                     TintOpacity = 0f,
                     FallbackColor = Color.FromArgb(255, 40, 40, 40)
                 };

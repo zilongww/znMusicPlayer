@@ -210,7 +210,9 @@ namespace znMusicPlayerWUI.Media
             {
                 if (FileReader != null)
                 {
-                    return FileReader.isMidi ? TimeSpan.FromMilliseconds((MidiPlayback.GetCurrentTime(TimeSpanType.Metric) as MetricTimeSpan).TotalMilliseconds) : FileReader.CurrentTime;// - TimeSpan.FromMilliseconds(Latency);
+                    return FileReader.isMidi
+                        ? TimeSpan.FromMilliseconds((MidiPlayback.GetCurrentTime(TimeSpanType.Metric) as MetricTimeSpan).TotalMilliseconds)
+                        : FileReader.CurrentTime - TimeSpan.FromMilliseconds(Latency);
                 }
                 else return TimeSpan.Zero;
             }
@@ -747,15 +749,42 @@ namespace znMusicPlayerWUI.Media
         {
             isDisposing = true;
 
-            (NowOutObj as IDisposable)?.Dispose();
-            NowOutObj = null;
-            MidiFile = null;
-            MidiPlayback?.Dispose();
-            MidiPlayback = null;
-            FileReader?.Dispose();
-            FileReader = null;
-            FileProvider?.Clear();
-            FileProvider = null;
+            try
+            {
+                (NowOutObj as IDisposable)?.Dispose();
+            }
+            finally
+            {
+                NowOutObj = null;
+            }
+
+            try
+            {
+                MidiFile = null;
+                MidiPlayback?.Dispose();
+            }
+            finally
+            {
+                MidiPlayback = null;
+            }
+
+            try
+            {
+                FileReader?.Dispose();
+            }
+            finally
+            {
+                FileReader = null;
+            }
+
+            try
+            {
+                FileProvider?.Clear();
+            }
+            finally
+            {
+                FileProvider = null;
+            }
 
             isDisposing = false;
         }

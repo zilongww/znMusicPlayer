@@ -352,9 +352,16 @@ namespace znMusicPlayerWUI.Helpers
                             if (times.Length == 1) continue;
                             if (!timesa) continue;
 
-                            var timesResult =
-                                timesb +
-                                TimeSpan.FromMilliseconds(int.Parse(times[1]));
+                            var timeMillsStr = times[1];
+                            switch (timeMillsStr.Length)
+                            {
+                                case 1: timeMillsStr += "00"; break;
+                                case 2: timeMillsStr += "0"; break;
+                                case 3: break;
+                                default: System.Diagnostics.Debug.WriteLine("Warning：歌词精度可能会降低。"); break;
+                            }
+                            var timeMills = TimeSpan.FromMilliseconds(int.Parse(timeMillsStr));
+                            var timesResult = timesb + timeMills;
 
                             if (!lyricDictionary.ContainsKey(timesResult))
                             {
@@ -371,12 +378,17 @@ namespace znMusicPlayerWUI.Helpers
                         if (times.Length == 1) continue;
                         if (!timesa) continue;
 
-                        var timesc = int.TryParse(times[1], out int timesd);
-                        if (!timesc) continue;
+                        var timeMillsStr = times[1];
+                        switch (timeMillsStr.Length)
+                        {
+                            case 1: timeMillsStr += "00"; break;
+                            case 2: timeMillsStr += "0"; break;
+                            case 3: break;
+                            default: System.Diagnostics.Debug.WriteLine("Warning：歌词精度可能会降低。"); break;
+                        }
+                        var timeMills = TimeSpan.FromMilliseconds(int.Parse(timeMillsStr));
+                        var timesResult = timesb + timeMills;
 
-                        var timesResult =
-                            timesb +
-                            TimeSpan.FromMilliseconds(timesd);
                         var text = timesAndLyric[1];
                         if (text == "") text = NoneLyricString;
 

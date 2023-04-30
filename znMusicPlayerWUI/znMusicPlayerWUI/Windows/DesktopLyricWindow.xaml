@@ -9,8 +9,14 @@
     mc:Ignorable="d" SizeChanged="Window_SizeChanged"
     xmlns:ui="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:media="using:CommunityToolkit.WinUI.UI.Media">
-    <Grid RequestedTheme="Dark">
-        <Grid Padding="8,16,8,4" Loaded="Grid_Loaded">
+    <Grid x:Name="root" RequestedTheme="Dark">
+        <Grid.Resources>
+            <ResourceDictionary>
+                <SolidColorBrush x:Key="LrcForeground" Color="#DDFFFFFF"/>
+                <StaticResource x:Key="AccentLrcForeground" ResourceKey="AccentAAFillColorTertiaryBrush"/>
+            </ResourceDictionary>
+        </Grid.Resources>
+        <Grid Padding="16" Loaded="Grid_Loaded">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -18,35 +24,35 @@
             <Viewbox x:Name="V1" HorizontalAlignment="Stretch">
                 <ui:DropShadowPanel x:Name="ShadowTarget"
                                     OffsetX="0" OffsetY="0.5"
-                                    BlurRadius="6" Color="#80000000">
+                                    BlurRadius="6" Color="#AA000000">
                     <ui:DropShadowPanel.Transitions>
                         <TransitionCollection>
                             <ContentThemeTransition/>
                         </TransitionCollection>
                     </ui:DropShadowPanel.Transitions>
-                    <TextBlock x:Name="T1" Text="znMusicPlayer" Foreground="{ThemeResource LrcWindowForeground}"/>
+                    <TextBlock x:Name="T1" Text="znMusicPlayer" Foreground="{ThemeResource LrcForeground}"/>
                 </ui:DropShadowPanel>
             </Viewbox>
             <Viewbox x:Name="V2" Grid.Row="1" HorizontalAlignment="Stretch">
                 <ui:DropShadowPanel x:Name="ShadowTarget1"
                                     OffsetX="0" OffsetY="0.5"
-                                    BlurRadius="6" Color="#80000000">
+                                    BlurRadius="6" Color="#AA000000">
                     <ui:DropShadowPanel.Transitions>
                         <TransitionCollection>
                             <ContentThemeTransition/>
                         </TransitionCollection>
                     </ui:DropShadowPanel.Transitions>
-                    <TextBlock x:Name="T2" Text="无歌词" Foreground="{ThemeResource LrcWindowForeground}"/>
+                    <TextBlock x:Name="T2" Text="无歌词" Foreground="{ThemeResource LrcForeground}"/>
                 </ui:DropShadowPanel>
             </Viewbox>
         </Grid>
         <Button Margin="-1,0,0,0" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" CornerRadius="0,0,4,0"
                 x:Name="LockButton" Click="LockButton_Click" Width="50" Height="34" ToolTipService.ToolTip="锁定">
             <Viewbox Margin="3">
-                <SymbolIcon Symbol="Pin" Opacity="0.5"/>
+                <SymbolIcon Symbol="Pin" Opacity="0.2"/>
             </Viewbox>
         </Button>
-        <TextBlock Text="正在播放：" x:Name="InfoTB" Foreground="Silver"
+        <TextBlock Text="正在播放：" x:Name="InfoTB" Foreground="Black"
                    HorizontalAlignment="Stretch" VerticalAlignment="Top"
                    TextAlignment="Center" TextTrimming="CharacterEllipsis"
                    Opacity="0" FontWeight="Light">
@@ -56,7 +62,7 @@
         </TextBlock>
         <Border Padding="20" CornerRadius="8" BorderThickness="1"
                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                Background="#90000000" BorderBrush="#55999999"
+                Background="#90000000" BorderBrush="#88666666"
                 x:Name="InfoBorder" Opacity="0">
             <Border.OpacityTransition>
                 <ScalarTransition/>

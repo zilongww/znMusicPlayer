@@ -57,7 +57,8 @@
 
                                 <CommandBar Grid.Column="1" x:Name="ToolsCommandBar"
                                             DefaultLabelPosition="Right"
-                                            Margin="0,0,12,0"
+                                            HorizontalAlignment="Left"
+                                            Margin="30,0,16,0"
                                             Background="Transparent">
                                     <AppBarButton x:Name="SelectAllButton"
                                                   Click="SelectAllButton_Click"

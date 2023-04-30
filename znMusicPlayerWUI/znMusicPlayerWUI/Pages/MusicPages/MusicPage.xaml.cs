@@ -185,7 +185,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         bool isMiniPage = false;
         bool isMiniPageOnlyLyric = false;
         bool isMiniPageLyricCenter = false;
-        public async void UpdataInterfaceDesign()
+        public void UpdataInterfaceDesign()
         {
             if (!ShowLrcPage)
             {

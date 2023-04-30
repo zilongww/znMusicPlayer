@@ -163,7 +163,8 @@ namespace znMusicPlayerWUI.Background
         public void ReCallUpdata()
         {
             //timer.Interval = TimeSpan.FromMilliseconds(5);
-            if (App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing && NowPlayingLyrics.Any())
+            if (App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing && NowPlayingLyrics.Any()
+                && (MainWindow.IsDesktopLyricWindowOpen || !MainWindow.isMinSize))
             {
                 if (!timer.IsEnabled) timer.Start();
                 //System.Diagnostics.Debug.WriteLine(App.audioPlayer.CurrentTime);

@@ -1331,7 +1331,7 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region Desktop Lyric Window Events
-        static bool IsDesktopLyricWindowOpen = false;
+        public static bool IsDesktopLyricWindowOpen = false;
         static DesktopLyricWindow DesktopLyricWindow = null;
         static bool isInChangingLyricWindow = false;
 
@@ -1340,6 +1340,7 @@ namespace znMusicPlayerWUI
             if (!isInChangingLyricWindow)
             {
                 isInChangingLyricWindow = true;
+                IsDesktopLyricWindowOpen = true;
                 if (DesktopLyricWindow == null)
                 {
                     DesktopLyricWindow = new();
@@ -1352,6 +1353,7 @@ namespace znMusicPlayerWUI
                             Vanara.PInvoke.User32.WindowLongFlags.GWL_STYLE, (IntPtr)Vanara.PInvoke.User32.WindowStyles.WS_DISABLED);
                     }
 
+                    App.lyricManager.ReCallUpdata();
                     DesktopLyricWindow.Activate();
                 }
                 else
@@ -1374,6 +1376,7 @@ namespace znMusicPlayerWUI
         private static void DesktopLyricWindow_Closed(object sender, WindowEventArgs args)
         {
             DesktopLyricWindow = null;
+            IsDesktopLyricWindowOpen = false;
         }
         #endregion
 

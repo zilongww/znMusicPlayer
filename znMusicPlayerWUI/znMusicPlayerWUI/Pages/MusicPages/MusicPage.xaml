@@ -88,7 +88,7 @@
                     <ColumnDefinition Width="*" x:Name="InfoPageColumn"/>
                     <ColumnDefinition Width="1.4*" x:Name="LrcPageColumn"/>
                 </Grid.ColumnDefinitions>
-                <Grid x:Name="InfoBaseGrid" VerticalAlignment="Stretch" Margin="0,0,30,0">
+                <Grid x:Name="InfoBaseGrid" VerticalAlignment="Stretch" Margin="0,0,30,0" SizeChanged="MusicPage_SizeChanged">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" x:Name="ImageVer"/>
                         <RowDefinition Height="*" x:Name="LyricSccondRow"/>
@@ -104,7 +104,7 @@
                             <controls:Imagezn x:Name="AlbumImageBase" IsMassImage="False"/>
                         </Border>
                     </ui:DropShadowPanel>
-                    <Grid x:Name="LyricSecondPlaceGrid" Margin="0,8,0,0" Grid.Row="1" PointerWheelChanged="LrcBaseListView_PointerWheelChanged">
+                    <Grid x:Name="LyricSecondPlaceGrid" Margin="0,8,0,0" Grid.Row="1" SizeChanged="MusicPage_SizeChanged" PointerWheelChanged="LrcBaseListView_PointerWheelChanged">
                         <ListView x:Name="LrcSecondListView"
                                   ItemsSource="{Binding ElementName=LrcBaseListView,Path=ItemsSource}"
                                   ItemTemplate="{ThemeResource LyricTemplate}"

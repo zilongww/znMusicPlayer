@@ -71,6 +71,7 @@ namespace znMusicPlayerWUI.Pages
             AddSelectedToPlayingListButton.Visibility = Visibility.Collapsed;
             AddSelectedToPlayListButton.Visibility = Visibility.Collapsed;
             DownloadSelectedButton.Visibility = Visibility.Collapsed;
+            DeleteSelectedButton.Visibility = Visibility.Collapsed;
             SelectReverseButton.Visibility = Visibility.Collapsed;
             SelectAllButton.Visibility = Visibility.Collapsed;
             SearchHomeButton.Visibility = Visibility.Collapsed;
