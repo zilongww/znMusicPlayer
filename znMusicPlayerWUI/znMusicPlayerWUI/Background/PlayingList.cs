@@ -87,7 +87,14 @@ namespace znMusicPlayerWUI.Background
 
                 if (audioPlayer.MusicData?.InLocal != null)
                 {
-                    a = await CodeHelper.GetCover(audioPlayer.MusicData.InLocal);
+                    try
+                    {
+                        a = await CodeHelper.GetCover(audioPlayer.MusicData.InLocal);
+                    }
+                    catch (Exception err)
+                    {
+                        System.Diagnostics.Debug.WriteLine("2------" + err.Message);
+                    }
                     path = audioPlayer.MusicData.InLocal;
                 }
                 else

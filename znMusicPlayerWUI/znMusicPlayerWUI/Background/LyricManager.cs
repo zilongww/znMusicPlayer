@@ -33,7 +33,7 @@ namespace znMusicPlayerWUI.Background
                     _nowLyricsData = value;
                     PlayingLyricSelectedChange?.Invoke(value);
                 }
-                else if (_nowLyricsData?.MD5 != value.MD5)
+                else if (_nowLyricsData != value)
                 {
                     _nowLyricsData = value;
                     PlayingLyricSelectedChange?.Invoke(value);
@@ -82,7 +82,16 @@ namespace znMusicPlayerWUI.Background
             }
             else
             {
-                var lyricTuple = await WebHelper.GetLyricStringAsync(musicData);
+                Tuple<string, string> lyricTuple;
+                if (musicData.From == MusicFrom.neteaseMusic)
+                {
+                    lyricTuple = await WebHelper.GetLyricStringAsync(musicData);
+                }
+                else
+                {
+                    lyricTuple = null;
+                }
+
                 if (lyricTuple == null)
                 {
                     resultPath = null;
@@ -110,6 +119,7 @@ namespace znMusicPlayerWUI.Background
             if (lyricPath == null)
             {
                 NowPlayingLyrics.Clear();
+                NowLyricsData = null;
                 return;
             }
 
@@ -147,7 +157,6 @@ namespace znMusicPlayerWUI.Background
             {
                 NowLyricsData = null;
             }
-            System.Diagnostics.Debug.WriteLine(":" + lyricDatas.Length);
         }
 
         LyricData lastLyricData = null;

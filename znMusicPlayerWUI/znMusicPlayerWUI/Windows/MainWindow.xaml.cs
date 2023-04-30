@@ -124,20 +124,22 @@ namespace znMusicPlayerWUI
                 {
                     if (SWindowGridBase.Visibility == Visibility.Visible && !isMinSize && !InOpenMusicPage)
                     {
-                        try
+                        if (_ != null)
                         {
                             AppTitleTextBlock.Text = $"{App.AppName} -";
-                            LyricTextBlock.Text = $" {_?.Lyric.FirstOrDefault()}";
+                            LyricTextBlock.Text = $" {_.Lyric.FirstOrDefault()}";
                         }
-                        catch
+                        else
                         {
                             AppTitleTextBlock.Text = $"{App.AppName}";
                             LyricTextBlock.Text = null;
                         }
                     }
                 }
-                catch { }
-                //System.Diagnostics.Debug.WriteLine("233");
+                catch (Exception err)
+                {
+                    System.Diagnostics.Debug.WriteLine("1-----" + err.Message);
+                }
             };
             App.playListReader.Updataed += () => UpdataPlayListButtonUI();
 

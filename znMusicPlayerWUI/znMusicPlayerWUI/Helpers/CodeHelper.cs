@@ -296,16 +296,20 @@ namespace znMusicPlayerWUI.Helpers
         public static async Task<ImageSource> SaveToImageSource(this byte[] imageBuffer)
         {
             ImageSource imageSource = null;
-            using (MemoryStream stream = new MemoryStream(imageBuffer))
+            try
             {
-                var ras = stream.AsRandomAccessStream();
-                BitmapDecoder decoder = await BitmapDecoder.CreateAsync(BitmapDecoder.JpegDecoderId, ras);
-                var provider = await decoder.GetPixelDataAsync();
-                byte[] buffer = provider.DetachPixelData();
-                WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
-                await bitmap.PixelBuffer.AsStream().WriteAsync(buffer, 0, buffer.Length);
-                imageSource = bitmap;
+                using (MemoryStream stream = new MemoryStream(imageBuffer))
+                {
+                    var ras = stream.AsRandomAccessStream();
+                    BitmapDecoder decoder = await BitmapDecoder.CreateAsync(BitmapDecoder.JpegDecoderId, ras);
+                    var provider = await decoder.GetPixelDataAsync();
+                    byte[] buffer = provider.DetachPixelData();
+                    WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+                    await bitmap.PixelBuffer.AsStream().WriteAsync(buffer, 0, buffer.Length);
+                    imageSource = bitmap;
+                }
             }
+            catch { }
             return imageSource;
         }
 
