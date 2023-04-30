@@ -46,12 +46,6 @@
                 </ui:DropShadowPanel>
             </Viewbox>
         </Grid>
-        <Button Margin="-1,0,0,0" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" CornerRadius="0,0,4,0"
-                x:Name="LockButton" Click="LockButton_Click" Width="50" Height="34" ToolTipService.ToolTip="锁定">
-            <Viewbox Margin="3">
-                <SymbolIcon Symbol="Pin" Opacity="0.2"/>
-            </Viewbox>
-        </Button>
         <TextBlock Text="正在播放：" x:Name="InfoTB" Foreground="Black"
                    HorizontalAlignment="Stretch" VerticalAlignment="Top"
                    TextAlignment="Center" TextTrimming="CharacterEllipsis"
@@ -71,5 +65,11 @@
                 <controls:MediaPlayStateViewer x:Name="PlayStateElement" PlaybackState="Playing" Width="20" Height="20"/>
             </Grid>
         </Border>
+        <Button Margin="-1,0,0,0" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" CornerRadius="0,0,4,0"
+                x:Name="LockButton" Click="LockButton_Click" Width="50" Height="34" ToolTipService.ToolTip="锁定">
+            <Viewbox Margin="3">
+                <SymbolIcon Symbol="Pin" Opacity="0.2"/>
+            </Viewbox>
+        </Button>
     </Grid>
 </Window>

@@ -741,7 +741,7 @@ namespace znMusicPlayerWUI.Media
         }
 
         bool isDisposing = false;
-        public async void DisposeAll()
+        public void DisposeAll()
         {
             isDisposing = true;
 
