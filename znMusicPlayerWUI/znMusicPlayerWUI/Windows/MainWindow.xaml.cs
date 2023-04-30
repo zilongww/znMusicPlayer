@@ -433,6 +433,7 @@ namespace znMusicPlayerWUI
         private void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
         {
             bool b = false;
+            if (audioPlayer.MusicData == null) return;
             if (audioPlayer.MusicData != App.playingList.NowPlayingMusicData)
             {
                 b = true;

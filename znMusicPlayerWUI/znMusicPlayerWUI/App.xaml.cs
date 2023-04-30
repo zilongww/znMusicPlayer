@@ -208,7 +208,7 @@ namespace znMusicPlayerWUI
             a[SettingParams.EqualizerEnable.ToString()] = audioPlayer.EqEnabled;
             a[SettingParams.EqualizerString.ToString()] = AudioEqualizerBands.GetNameFromBands(audioPlayer.EqualizerBand);
             a[SettingParams.WasapiOnly.ToString()] = audioPlayer.WasapiOnly;
-            a[SettingParams.AudioLatency.ToString()] = audioPlayer.Latency;
+            a[SettingParams.AudioLatency.ToString()] = audioPlayer.Latency < 50 ? 50 : audioPlayer.Latency;
             a[SettingParams.MusicPageShowLyricPage.ToString()] = MainWindow.SMusicPage.ShowLrcPage;
 
             List<float> c = new();

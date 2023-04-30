@@ -484,9 +484,12 @@ namespace znMusicPlayerWUI.Media
                     {
                         MusicData = m;
                         exception = err;
+                        Debug.WriteLine(err);
                     }
                     finally
                     {
+                        isLoadingLocal = false;
+                        PlayStateChanged?.Invoke(this);
                         CacheLoadedChanged?.Invoke(this);
                         TimingChanged?.Invoke(this);
                         LoadingMusicDatas.Remove(musicData);
@@ -513,11 +516,6 @@ namespace znMusicPlayerWUI.Media
         public string AudioBitrate = null;
         public async Task SetSource(string filePath)
         {
-            while (isLoadingLocal)
-            {
-                System.Diagnostics.Debug.WriteLine("ropo");
-                await Task.Delay(1000);
-            }
             if (filePath != _filePath) return;
             isLoadingLocal = true;
 
@@ -562,7 +560,6 @@ namespace znMusicPlayerWUI.Media
                     FileType = tagfile.MimeType.Replace("taglib/", "");
                     AudioBitrate = tagfile.Properties.AudioBitrate.ToString();
                 }
-
                 else
                 {
                     FileType = new FileInfo(filePath).Extension;
@@ -647,7 +644,6 @@ namespace znMusicPlayerWUI.Media
                 MidiPlayback.Speed = Tempo;
             }
 
-            PlayStateChanged?.Invoke(this);
             isLoadingLocal = false;
         }
 

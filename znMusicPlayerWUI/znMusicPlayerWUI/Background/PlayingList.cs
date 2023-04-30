@@ -150,6 +150,22 @@ namespace znMusicPlayerWUI.Background
                 if (playState == NAudio.Wave.PlaybackState.Playing)
                     App.audioPlayer.SetPlay();
             }
+            catch (DivideByZeroException)
+            {
+                a = false;
+                var data = DataFolderBase.JSettingData;
+                data[DataFolderBase.SettingParams.AudioLatency.ToString()] = 
+                    DataFolderBase.SettingDefault[DataFolderBase.SettingParams.AudioLatency.ToString()];
+                App.audioPlayer.Latency = (int)data[DataFolderBase.SettingParams.AudioLatency.ToString()];
+                DataFolderBase.JSettingData = data;
+
+                var retryPlay = await MainWindow.ShowDialog("播放失败", $"播放音频时出现错误，可能是播放延迟设置不正确导致的。\n" +
+                    $"已将播放延迟设置到默认值，请尝试重新播放.");
+                if (retryPlay == Microsoft.UI.Xaml.Controls.ContentDialogResult.Secondary)
+                {
+                    await Play(musicData, isAutoNext);
+                }
+            }
             catch (Exception e)
             {
                 a = false;
