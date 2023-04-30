@@ -285,7 +285,7 @@ namespace znMusicPlayerWUI.Pages
             {
                 App.playingList.Add(songItem.MusicData, false);
             }
-            await App.playingList.Play(MusicDataList.First().MusicData);
+            await App.playingList.Play(MusicDataList.First().MusicData, true);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)

@@ -109,8 +109,8 @@ namespace znMusicPlayerWUI.Windowed
         int showCount = 0;
         private async void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
         {
-            InfoTB.Opacity = 0.8;
-            InfoTB.Text = $"{audioPlayer.MusicData.Title}";
+            InfoTB.Opacity = 1;
+            InfoTB.Text = $"正在播放：{audioPlayer.MusicData.Title}";
 
             showCount++;
             await Task.Delay(5000);
@@ -247,6 +247,7 @@ namespace znMusicPlayerWUI.Windowed
             RectInt32[] rectInt32s = default;
             if (IsLock)
             {
+                return;
                 rectInt32s = new RectInt32[] {
                     new(0, 0, windowWidth, windowHeight)
                 };

@@ -46,7 +46,7 @@
                 <SymbolIcon Symbol="Pin" Opacity="0.5"/>
             </Viewbox>
         </Button>
-        <TextBlock Text="正在播放：" x:Name="InfoTB" Foreground="White"
+        <TextBlock Text="正在播放：" x:Name="InfoTB" Foreground="Silver"
                    HorizontalAlignment="Stretch" VerticalAlignment="Top"
                    TextAlignment="Center" TextTrimming="CharacterEllipsis"
                    Opacity="0" FontWeight="Light">
