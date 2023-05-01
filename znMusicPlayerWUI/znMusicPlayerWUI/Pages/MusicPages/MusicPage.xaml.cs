@@ -483,7 +483,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             if (lrcItem != null && !isCodeChangedLrcItem)
             {
                 // 加1ms，否则会短时间判定到上一句歌词
-                App.audioPlayer.CurrentTime = lrcItem.LyricTimeSpan + TimeSpan.FromMilliseconds(1);
+                App.audioPlayer.CurrentTime = lrcItem.LyricTimeSpan + TimeSpan.FromMilliseconds(App.audioPlayer.Latency + 1);
 #if DEBUG
                 Debug.WriteLine("audio player time setted.");
 #endif

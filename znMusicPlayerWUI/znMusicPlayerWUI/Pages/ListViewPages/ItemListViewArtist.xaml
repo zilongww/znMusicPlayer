@@ -12,7 +12,7 @@
     xmlns:brushes="using:CommunityToolkit.WinUI.UI.Media"
     xmlns:behaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
-    mc:Ignorable="d">
+    mc:Ignorable="d" SizeChanged="Result_BaseGrid_SizeChanged">
     
     <Page.Resources>
         <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="Transparent"/>
@@ -23,7 +23,7 @@
         <ListView x:Name="Children"
                   Background="Transparent"
                   ScrollViewer.CanContentRenderOutsideBounds="True"
-                  Padding="0,0,0,12"
+                  Padding="0,0,0,0"
                   ItemsSource="{x:Bind MusicDataList}"
                   SelectionMode="None">
             <ListView.ItemTemplate>
@@ -32,40 +32,49 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Header>
-                <Border VerticalAlignment="Top"
+                <Border VerticalAlignment="Stretch"
                         x:Name="menu_border"
-                        BorderBrush="{ThemeResource BorderNormal}">
-                    <Grid SizeChanged="Result_BaseGrid_SizeChanged">
+                        BorderBrush="{ThemeResource BorderNormal}" Margin="0,0,0,4">
+                    <Grid SizeChanged="Result_BaseGrid_SizeChanged" Name="Artist_ImageBaseGrid">
+                        <Grid.Clip>
+                            <RectangleGeometry x:Name="ImageClip" Rect="0,0,0,0"/>
+                        </Grid.Clip>
+                        <Border CornerRadius="0"
+                                BorderThickness="0"
+                                x:Name="Artist_ImageBaseBorder">
+                            <controlszn:Imagezn x:Name="Artist_Image" IsHitTestVisible="False" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
                         <Rectangle x:Name="BackColorBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
-                        <StackPanel>
+                        <Grid VerticalAlignment="Bottom" x:Name="HLGrid">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
                             <Grid x:Name="HeaderBaseGrid">
-                                <StackPanel x:Name="Artist_BaseGrid" Loaded="menu_border_Loaded" Orientation="Vertical">
-                                    <Grid x:Name="Artist_Image_BaseGrid" Margin="0,24,0,0" HorizontalAlignment="Center">
-                                        <Rectangle x:Name="Artist_Image_DropShadowBase"/>
-                                        <Border Width="220"
-                                                Height="220"
-                                                CornerRadius="8"
-                                                BorderThickness="0"
-                                                HorizontalAlignment="Left"
-                                                x:Name="Artist_ImageBaseBorder">
-                                            <controlszn:Imagezn x:Name="Artist_Image"/>
-                                        </Border>
+                                <Grid x:Name="Artist_BaseGrid" Loaded="menu_border_Loaded">
+                                    <Grid x:Name="Artist_Image_BaseGrid" Margin="0,0,0,0">
+                                        <Rectangle x:Name="Artist_Image_DropShadowBase" Opacity="0"/>
                                     </Grid>
-                                    <StackPanel x:Name="InfosBaseStackPanel" Margin="24,18,24,24">
-                                        <TextBlock x:Name="Artist_TitleTextBlock"
-                                                   Style="{ThemeResource SubTBHeader}"
-                                                   TextWrapping="Wrap" IsTextSelectionEnabled="True"
-                                                   HorizontalAlignment="Center"/>
-                                        <TextBlock x:Name="Artist_OtherTextBlock"
-                                                   TextWrapping="Wrap"
-                                                   HorizontalAlignment="Center" IsTextSelectionEnabled="True"
-                                                   TextAlignment="Center"
-                                                   Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                                    </StackPanel>
-                                </StackPanel>
+                                    <Grid x:Name="InfosBaseStackPanel"
+                                            Margin="14,238,14,0"
+                                            VerticalAlignment="Bottom" HorizontalAlignment="Left" >
+                                        <Border CornerRadius="8" Background="{ThemeResource ArtistInfoBackground}"/>
+                                        <StackPanel Padding="14,8">
+                                                <TextBlock x:Name="Artist_TitleTextBlock"
+                                                           Style="{ThemeResource SubTBHeader}"
+                                                           TextWrapping="Wrap" IsTextSelectionEnabled="True"
+                                                           HorizontalAlignment="Left"/>
+                                                <TextBlock x:Name="Artist_OtherTextBlock"
+                                                           TextWrapping="Wrap" Grid.Row="1"
+                                                           HorizontalAlignment="Left" IsTextSelectionEnabled="True"
+                                                           TextAlignment="Left"
+                                                           Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                                            </StackPanel>
+                                    </Grid>
+                                </Grid>
                             </Grid>
 
-                            <Grid>
+                            <Grid Grid.Row="1" x:Name="LittleBarGrid">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="*"/>
@@ -83,7 +92,7 @@
 
                                 <CommandBar Grid.Column="1" x:Name="ToolsCommandBar"
                                             DefaultLabelPosition="Right"
-                                            Margin="0,0,12,0"
+                                            Margin="0,0,14,0"
                                             Background="Transparent">
                                     <CommandBar.SecondaryCommands>
                                         <AppBarElementContainer AllowFocusOnInteraction="True">
@@ -195,7 +204,7 @@
                                 </CommandBar>
                             </Grid>
 
-                        </StackPanel>
+                        </Grid>
                     </Grid>
                 </Border>
             </ListView.Header>

@@ -13,6 +13,7 @@
 
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="ArtistInfoBackground" Color="#66000000"/>
                     <SolidColorBrush x:Key="ItemBorderBackground" Color="#11FFFFFF"/>
                     <SolidColorBrush x:Key="BottomBackground" Color="Black"/>
                     <SolidColorBrush x:Key="HeaderLowForeground" Color="#FF878787"/>
@@ -25,6 +26,7 @@
                     <x:Double x:Key="MusicPageAcrylicTLO">0.7</x:Double>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="ArtistInfoBackground" Color="#AAFFFFFF"/>
                     <SolidColorBrush x:Key="ItemBorderBackground" Color="#11000000"/>
                     <SolidColorBrush x:Key="BottomBackground" Color="White"/>
                     <SolidColorBrush x:Key="HeaderLowForeground" Color="#FF424242"/>
