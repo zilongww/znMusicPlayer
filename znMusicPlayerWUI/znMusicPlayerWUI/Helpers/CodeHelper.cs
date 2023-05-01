@@ -353,6 +353,9 @@ namespace znMusicPlayerWUI.Helpers
                             if (!timesa) continue;
 
                             var timeMillsStr = times[1];
+                            var parse = int.TryParse(timeMillsStr, out int iparse);
+                            if (!parse) continue;
+
                             switch (timeMillsStr.Length)
                             {
                                 case 1: timeMillsStr += "00"; break;
@@ -379,6 +382,9 @@ namespace znMusicPlayerWUI.Helpers
                         if (!timesa) continue;
 
                         var timeMillsStr = times[1];
+                        var parse = int.TryParse(timeMillsStr, out int iparse);
+                        if (!parse) continue;
+
                         switch (timeMillsStr.Length)
                         {
                             case 1: timeMillsStr += "00"; break;

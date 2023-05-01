@@ -126,8 +126,19 @@ namespace znMusicPlayerWUI
                     {
                         if (_ != null)
                         {
+                            int tcount = 1;
+                            int num = App.lyricManager.NowPlayingLyrics.IndexOf(_);
+                            while (_?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num + tcount]?.Lyric?.FirstOrDefault())
+                            {
+                                tcount++;
+                            }
+
+                            string t1text = tcount == 1
+                                ? _?.Lyric?.FirstOrDefault()
+                                : $"{_?.Lyric?.FirstOrDefault()} (x{tcount})";
+
                             AppTitleTextBlock.Text = $"{App.AppName} -";
-                            LyricTextBlock.Text = $" {_.Lyric.FirstOrDefault()}";
+                            LyricTextBlock.Text = $" {t1text}";
                         }
                         else
                         {

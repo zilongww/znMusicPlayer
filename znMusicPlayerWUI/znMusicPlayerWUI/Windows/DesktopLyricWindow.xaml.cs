@@ -149,9 +149,21 @@ namespace znMusicPlayerWUI.Windowed
             if (nowLyricsData?.Lyric.Count > 1)
             {
                 IsT1Focus = true;
+
+                int tcount = 1;
+                int num = App.lyricManager.NowPlayingLyrics.IndexOf(nowLyricsData);
+                while (nowLyricsData?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num + tcount]?.Lyric?.FirstOrDefault())
+                {
+                    tcount++;
+                }
+
+                string t1text = tcount == 1
+                    ? nowLyricsData?.Lyric?.FirstOrDefault()
+                    : $"{nowLyricsData?.Lyric?.FirstOrDefault()} (x{tcount})";
+
                 V1.HorizontalAlignment = HorizontalAlignment.Center;
                 V2.HorizontalAlignment = HorizontalAlignment.Center;
-                T1.Text = nowLyricsData?.Lyric.FirstOrDefault();
+                T1.Text = t1text;
                 T2.Text = nowLyricsData?.Lyric[1];
                 T1.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
                 T2.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
@@ -172,25 +184,39 @@ namespace znMusicPlayerWUI.Windowed
                     while (nextData.Lyric.FirstOrDefault() == LyricHelper.NoneLyricString);
                 }
                 catch { }
+
+                int tcount = 1;
+                int num1 = App.lyricManager.NowPlayingLyrics.IndexOf(nowLyricsData);
+                while (nowLyricsData?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num1 + tcount]?.Lyric?.FirstOrDefault())
+                {
+                    tcount++;
+                }
+                string t1text = tcount == 1
+                    ? nowLyricsData?.Lyric?.FirstOrDefault()
+                    : $"{nowLyricsData?.Lyric?.FirstOrDefault()} (x{tcount})";
+                string t2text = tcount == 1
+                    ? nextData?.Lyric?.FirstOrDefault()
+                    : $"{nextData?.Lyric?.FirstOrDefault()}{(tcount - 1 == 1 ? "" : $" (x{tcount - 1})")}";
+
                 if (IsT1Focus)
                 {
                     IsT1Focus = false;
-                    T1.Text = nowLyricsData.Lyric.FirstOrDefault();
+                    T1.Text = t1text;
                     T1.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
                     T2.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
 
-                    if (nextData.Lyric != null) T2.Text = nextData.Lyric.FirstOrDefault();
+                    if (nextData.Lyric != null) T2.Text = t2text;
                     else T2.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
                 }
                 else
                 {
                     IsT1Focus = true;
-                    T2.Text = nowLyricsData.Lyric.FirstOrDefault();
+                    T2.Text = t1text;
 
                     T1.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
                     T2.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
 
-                    if (nextData.Lyric != null) T1.Text = nextData.Lyric.FirstOrDefault();
+                    if (nextData.Lyric != null) T1.Text = t2text;
                     else T1.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
                 }
             }

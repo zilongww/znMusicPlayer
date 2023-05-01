@@ -43,7 +43,7 @@ namespace znMusicPlayerWUI.Background
 
         public LyricManager()
         {
-            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(5) };
+            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(1) };
             timer.Tick += (_, __) => ReCallUpdata();
 
             //MainWindow.WindowViewStateChanged += MainWindow_WindowViewStateChanged;
@@ -162,7 +162,7 @@ namespace znMusicPlayerWUI.Background
         LyricData lastLyricData = null;
         public void ReCallUpdata()
         {
-            //timer.Interval = TimeSpan.FromMilliseconds(5);
+            //timer.Interval = TimeSpan.FromMilliseconds(1);
             if (App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing && NowPlayingLyrics.Any()
                 && (MainWindow.IsDesktopLyricWindowOpen || !MainWindow.isMinSize))
             {

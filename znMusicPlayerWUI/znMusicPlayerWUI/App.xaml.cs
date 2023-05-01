@@ -111,6 +111,7 @@ namespace znMusicPlayerWUI
             };
             playingList.NowPlayingImageLoaded += async (_, __) =>
             {
+                if (__ == null) return;
                 Debug.WriteLine(__);
                 SMTC.DisplayUpdater.Thumbnail = RandomAccessStreamReference.CreateFromFile(await StorageFile.GetFileFromPathAsync(__));
                 SMTC.DisplayUpdater.Update();
