@@ -47,14 +47,14 @@
             </Viewbox>
         </Grid>
         <Border x:Name="InfoTBBorder"
-                HorizontalAlignment="Center" VerticalAlignment="Top"
-                CornerRadius="8" BorderThickness="1" Background="#90000000" BorderBrush="#88666666">
+                HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0"
+                CornerRadius="4" BorderThickness="1" Background="#90000000" BorderBrush="#88666666">
             <Border.OpacityTransition>
                 <ScalarTransition/>
             </Border.OpacityTransition>
-            <TextBlock Text="正在播放：" x:Name="InfoTB" Foreground="Black"
+            <TextBlock Text="正在播放：" x:Name="InfoTB" Foreground="White"
                    TextAlignment="Center" TextTrimming="CharacterEllipsis"
-                   Opacity="0" FontWeight="Light">
+                   FontWeight="Light" Margin="4,0">
             </TextBlock>
         </Border>
         <Border Padding="20" CornerRadius="8" BorderThickness="1"

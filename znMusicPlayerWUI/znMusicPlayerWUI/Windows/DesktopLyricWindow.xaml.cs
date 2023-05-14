@@ -98,11 +98,11 @@ namespace znMusicPlayerWUI.Windowed
             PlayStateElement.PlaybackState = audioPlayer.PlaybackState;
             if (audioPlayer.PlaybackState == PlaybackState.Playing)
             {
-                InfoTBBorder.Opacity = 0;
+                InfoBorder.Opacity = 0;
             }
             else
             {
-                InfoTBBorder.Opacity = 1;
+                InfoBorder.Opacity = 1;
             }
         }
 
