@@ -54,7 +54,7 @@
             </Border.OpacityTransition>
             <TextBlock Text="正在播放：" x:Name="InfoTB" Foreground="White"
                    TextAlignment="Center" TextTrimming="CharacterEllipsis"
-                   FontWeight="Light" Margin="4,0">
+                   FontWeight="Light" Margin="4,1">
             </TextBlock>
         </Border>
         <Border Padding="20" CornerRadius="8" BorderThickness="1"
