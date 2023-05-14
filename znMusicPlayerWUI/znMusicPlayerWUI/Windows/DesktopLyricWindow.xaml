@@ -46,14 +46,17 @@
                 </ui:DropShadowPanel>
             </Viewbox>
         </Grid>
-        <TextBlock Text="正在播放：" x:Name="InfoTB" Foreground="Black"
-                   HorizontalAlignment="Stretch" VerticalAlignment="Top"
+        <Border x:Name="InfoTBBorder"
+                HorizontalAlignment="Center" VerticalAlignment="Top"
+                CornerRadius="8" BorderThickness="1" Background="#90000000" BorderBrush="#88666666">
+            <Border.OpacityTransition>
+                <ScalarTransition/>
+            </Border.OpacityTransition>
+            <TextBlock Text="正在播放：" x:Name="InfoTB" Foreground="Black"
                    TextAlignment="Center" TextTrimming="CharacterEllipsis"
                    Opacity="0" FontWeight="Light">
-            <TextBlock.OpacityTransition>
-                <ScalarTransition/>
-            </TextBlock.OpacityTransition>
-        </TextBlock>
+            </TextBlock>
+        </Border>
         <Border Padding="20" CornerRadius="8" BorderThickness="1"
                 HorizontalAlignment="Center" VerticalAlignment="Center"
                 Background="#90000000" BorderBrush="#88666666"

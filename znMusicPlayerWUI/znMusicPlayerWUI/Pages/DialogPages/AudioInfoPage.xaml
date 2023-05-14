@@ -68,15 +68,15 @@
                     <Path Data="{ThemeResource 播放ol}"/>
                     <Rectangle Grid.Row="1"/>
                 </Grid>
-                <StackPanel Grid.Column="1" Margin="8,-2,0,0">
+                <StackPanel x:Name="AudioInfoSp" Grid.Column="1" Margin="8,-2,0,0">
                     <TextBlock Text="音频" Style="{ThemeResource TitleTextStyle}"/>
-                    <TextBlock x:Name="AudioInfoTB" Text="加载中..."/>
-                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="每秒平均字节"/>
-                    <TextBlock x:Name="AudioInfoABPSTB" Text="加载中..."/>
-                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="每帧的多通道总字节数"/>
-                    <TextBlock x:Name="AudioInfoBATB" Text="加载中..."/>
-                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="额外大小"/>
-                    <TextBlock x:Name="AudioInfoESTB" Text="加载中..."/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="位深度"/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="编码"/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="额外内容"/>
+                    <TextBlock Text="加载中..."/>
                 </StackPanel>
             </Grid>
         </StackPanel>

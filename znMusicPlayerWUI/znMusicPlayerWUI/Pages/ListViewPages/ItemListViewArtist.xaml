@@ -39,12 +39,12 @@
                         <Grid.Clip>
                             <RectangleGeometry x:Name="ImageClip" Rect="0,0,0,0"/>
                         </Grid.Clip>
+                        <Rectangle x:Name="BackColorBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
                         <Border CornerRadius="0"
                                 BorderThickness="0"
                                 x:Name="Artist_ImageBaseBorder">
-                            <controlszn:Imagezn x:Name="Artist_Image" IsHitTestVisible="False" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <controlszn:Imagezn x:Name="Artist_Image" Loaded="menu_border_Loaded" SizeChanged="Result_BaseGrid_SizeChanged" IsHitTestVisible="False" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         </Border>
-                        <Rectangle x:Name="BackColorBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
                         <Grid VerticalAlignment="Bottom" x:Name="HLGrid">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>

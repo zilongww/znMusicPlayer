@@ -49,6 +49,7 @@ namespace znMusicPlayerWUI
         public static readonly Windows.Media.SystemMediaTransportControls SMTC = BackgroundMediaPlayer.Current?.SystemMediaTransportControls;
         public static readonly MetingServices metingServices = new();
         public static readonly AudioPlayer audioPlayer = new();
+        public static readonly AudioPlayerBass audioPlayerBass = new();
         public static readonly PlayingList playingList = new();
         public static readonly LyricManager lyricManager = new();
         public static readonly DownloadManager downloadManager = new();

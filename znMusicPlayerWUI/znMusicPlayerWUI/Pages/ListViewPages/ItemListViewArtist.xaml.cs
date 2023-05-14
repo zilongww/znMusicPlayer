@@ -153,8 +153,8 @@ namespace znMusicPlayerWUI.Pages
             LoadingRing.IsIndeterminate = false;
             LoadingRing.Visibility = Visibility.Collapsed;
 
-            Result_BaseGrid_SizeChanged(null, null);
-            UpdataShyHeader();
+            //Result_BaseGrid_SizeChanged(null, null);
+            //UpdataShyHeader();
         }
 
         private async void LoadImage()
@@ -202,7 +202,7 @@ namespace znMusicPlayerWUI.Pages
                 stackVisual = ElementCompositionPreview.GetElementVisual(InfosBaseStackPanel);
                 tbVisual = ElementCompositionPreview.GetElementVisual(ArtistTb);
                 headerBaseGridVisual = ElementCompositionPreview.GetElementVisual(HeaderBaseGrid);
-                ImageScrollVisual = ElementCompositionPreview.GetElementVisual(Artist_Image);
+                ImageScrollVisual = ElementCompositionPreview.GetElementVisual(Artist_ImageBaseBorder);
             }
 
             var offsetExpression = compositor.CreateExpressionAnimation($"-scroller.Translation.Y - {progress} * {anotherHeight}");
@@ -214,9 +214,9 @@ namespace znMusicPlayerWUI.Pages
             headerBaseGridVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             headerBaseGridVisual.StartAnimation("Opacity", headerBaseGridVisualOpacityAnimation);
             */
-            var backgroundVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 1, {progress})");
+            var backgroundVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(1, 0, {progress})");
             backgroundVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
-            backgroundVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
+            ImageScrollVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
             
             var tbVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 1, {progress})");
             tbVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
@@ -277,8 +277,6 @@ namespace znMusicPlayerWUI.Pages
             ATBOffset = Artist_TitleTextBlock.ActualOffset;
 
             UpdataCommandToolBarWidth();
-            UpdataShyHeader();
-            await Task.Delay(1);
             Result_BaseGrid_SizeChanged(null, null);
         }
 

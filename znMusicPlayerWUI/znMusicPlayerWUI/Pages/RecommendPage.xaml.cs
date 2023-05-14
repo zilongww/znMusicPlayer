@@ -43,6 +43,8 @@ namespace znMusicPlayerWUI.Pages
                 abcd.Source = App.playingList.NowPlayingList[new Random().Next(0, App.playingList.NowPlayingList.Count - 1)].PicturePath;
             }
             catch { }
+            return;
+            App.audioPlayerBass.LoadAudio();
             //System.Diagnostics.Debug.WriteLine(a[0].ListName);
             //MainWindow.SetBackdrop(MainWindow.BackdropType.DesktopAcrylic);
             //await App.audioPlayer.Reload();

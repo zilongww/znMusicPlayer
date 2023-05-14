@@ -87,6 +87,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Bass.Net">
+      <HintPath>D:\UserData\Download\Bass.Net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="Controls\LyricItem.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>

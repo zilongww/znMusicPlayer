@@ -98,25 +98,25 @@ namespace znMusicPlayerWUI.Windowed
             PlayStateElement.PlaybackState = audioPlayer.PlaybackState;
             if (audioPlayer.PlaybackState == PlaybackState.Playing)
             {
-                InfoBorder.Opacity = 0;
+                InfoTBBorder.Opacity = 0;
             }
             else
             {
-                InfoBorder.Opacity = 1;
+                InfoTBBorder.Opacity = 1;
             }
         }
 
         int showCount = 0;
         private async void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
         {
-            InfoTB.Opacity = 1;
+            InfoTBBorder.Opacity = 1;
             InfoTB.Text = $"正在播放：{audioPlayer.MusicData.Title}";
 
             showCount++;
             await Task.Delay(5000);
             showCount--;
 
-            if (showCount <= 0) InfoTB.Opacity = 0;
+            if (showCount <= 0) InfoTBBorder.Opacity = 0;
         }
 
         private void LyricManager_PlayingLyricSourceChange(ObservableCollection<LyricData> nowPlayingLyrics)
