@@ -50,6 +50,7 @@ namespace znMusicPlayerWUI.Pages
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
             App.playListReader.Updataed -= PlayListReader_Updataed;
 
             if (Children.SelectionMode != ListViewSelectionMode.None)
@@ -62,9 +63,11 @@ namespace znMusicPlayerWUI.Pages
             MusicDataList.Clear();
             dropShadow?.Dispose();
             PlayList_Image.Dispose();
+            PlayList_Image.Dispose();
             searchMusicDatas.Clear();
-            searchMusicDatas = null;
+            NavToObj = null;
             UnloadObject(this);
+            //GC.SuppressFinalize(this);
             //System.Diagnostics.Debug.WriteLine("Clear");
         }
 
@@ -634,6 +637,11 @@ namespace znMusicPlayerWUI.Pages
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             isQuery = false;
+        }
+
+        private void Children_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

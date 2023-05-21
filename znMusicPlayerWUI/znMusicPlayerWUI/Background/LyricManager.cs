@@ -1,5 +1,6 @@
 ﻿using Meting4Net.Core.Models.Tencent;
 using Microsoft.UI.Xaml;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -162,44 +163,40 @@ namespace znMusicPlayerWUI.Background
         LyricData lastLyricData = null;
         public void ReCallUpdata()
         {
-            //timer.Interval = TimeSpan.FromMilliseconds(1);
-            if (App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing && NowPlayingLyrics.Any()
-                && (MainWindow.IsDesktopLyricWindowOpen || !MainWindow.isMinSize))
+            //System.Diagnostics.Debug.WriteLine($"Lyric Lasted Count {PlayingLyricSelectedChange?.GetInvocationList().Length}");
+            if (!timer.IsEnabled) timer.Start();
+            if (PlayingLyricSelectedChange == null) timer.Stop();
+
+            //System.Diagnostics.Debug.WriteLine($"Lyric Timing Changed: {App.audioPlayer.CurrentTime}.");
+
+            foreach (var data in NowPlayingLyrics)
             {
-                if (!timer.IsEnabled) timer.Start();
-                //System.Diagnostics.Debug.WriteLine(App.audioPlayer.CurrentTime);
-                
-                foreach (var data in NowPlayingLyrics)
+                if (data.LyricTimeSpan < App.audioPlayer.CurrentTime)
                 {
-                    if (data.LyricTimeSpan < App.audioPlayer.CurrentTime)
-                    {
-                        lastLyricData = data;
-                    }
-                    else
-                    {
-                        NowLyricsData = lastLyricData;
-                        break;
-                    }
-                }/*
-                for (int i = 0; i < NowPlayingLyrics.Count; i++)
+                    lastLyricData = data;
+                }
+                else
                 {
-                    var npl = NowPlayingLyrics[i];
-                    if (npl.LyricTimeSpan < App.audioPlayer.CurrentTime)
-                    {
-                        lastLyricData = npl;
-                    }
-                    else
-                    {
-                        NowLyricsData = lastLyricData;
-                        break;
-                    }
-                }*/
+                    NowLyricsData = lastLyricData;
+                    break;
+                }
             }
-            else
+            /*
+            for (int i = 0; i < NowPlayingLyrics.Count; i++)
             {
-                timer.Stop();
-            }
+                var npl = NowPlayingLyrics[i];
+                if (npl.LyricTimeSpan < App.audioPlayer.CurrentTime)
+                {
+                    lastLyricData = npl;
+                }
+                else
+                {
+                    NowLyricsData = lastLyricData;
+                    break;
+                }
+            }*/
         }
+        
 
         private async void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
         {

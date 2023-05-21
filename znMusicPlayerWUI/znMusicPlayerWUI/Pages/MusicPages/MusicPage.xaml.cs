@@ -86,20 +86,72 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             InitializeComponent();
             MusicPageViewStateChange = new MusicPageViewStateChangeDelegate(ViewChange);
             DataContext = this;
+            SizeChanged += MusicPage_SizeChanged;
+
+            LrcBaseListView.ItemsSource = App.lyricManager.NowPlayingLyrics;
+            UpdataInterfaceDesign();
+        }
+
+        private void UpdataWhenDataLated()
+        {
+            AudioPlayer_SourceChanged(App.audioPlayer);
+            AudioPlayer_PlayStateChanged(App.audioPlayer);
+            AudioPlayer_CacheLoadedChanged(App.audioPlayer);
+            AudioPlayer_TimingChanged(App.audioPlayer);
+            PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
+            LyricManager_PlayingLyricSelectedChange1(App.lyricManager.NowLyricsData);
+            App.audioPlayer.ReCallTiming();
+            //Debug.WriteLine("MusicPage Updataed Events.");
+        }
+
+        bool isAddEvents = false;
+        private void AddEvents()
+        {
+            if (isAddEvents) return;
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
             App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
             App.audioPlayer.TimingChanged += AudioPlayer_TimingChanged;
             App.audioPlayer.PlayEnd += AudioPlayer_PlayEnd;
             App.audioPlayer.CacheLoadingChanged += AudioPlayer_CacheLoadingChanged;
             App.audioPlayer.CacheLoadedChanged += AudioPlayer_CacheLoadedChanged;
-            App.lyricManager.PlayingLyricSourceChange += LyricManager_PlayingLyricSourceChange;
-            App.lyricManager.PlayingLyricSelectedChange += LyricManager_PlayingLyricSelectedChange1;
             App.playingList.NowPlayingImageLoading += PlayingList_NowPlayingImageLoading;
             App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
-            SizeChanged += MusicPage_SizeChanged;
+            isAddEvents = true;
+            UpdataWhenDataLated();
+            //Debug.WriteLine("MusicPage Added Events.");
+        }
+        
+        private void RemoveEvents()
+        {
+            App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
+            App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
+            App.audioPlayer.TimingChanged -= AudioPlayer_TimingChanged;
+            App.audioPlayer.PlayEnd -= AudioPlayer_PlayEnd;
+            App.audioPlayer.CacheLoadingChanged -= AudioPlayer_CacheLoadingChanged;
+            App.audioPlayer.CacheLoadedChanged -= AudioPlayer_CacheLoadedChanged;
+            App.playingList.NowPlayingImageLoading -= PlayingList_NowPlayingImageLoading;
+            App.playingList.NowPlayingImageLoaded -= PlayingList_NowPlayingImageLoaded;
+            App.lyricManager.PlayingLyricSourceChange -= LyricManager_PlayingLyricSourceChange;
+            App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange1;
+            isAddEvents = false;
+            //Debug.WriteLine("MusicPage Removed Events.");
+        }
 
-            LrcBaseListView.ItemsSource = App.lyricManager.NowPlayingLyrics;
-            UpdataInterfaceDesign();
+        public MusicPageViewState ViewState = MusicPageViewState.Hidden;
+        private void ViewChange(MusicPageViewState musicPageViewState)
+        {
+            ViewState = musicPageViewState;
+            if (ViewState == MusicPageViewState.View)
+            {
+                AddEvents();
+            }
+            else
+            {
+                RemoveEvents();
+            }
+#if DEBUG
+            Debug.WriteLine($"MusicPage: ViewState 已被设置为 {musicPageViewState}.");
+#endif
         }
 
         private void PlayingList_NowPlayingImageLoading(ImageSource imageSource, string _)
@@ -116,46 +168,16 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void PlayingList_NowPlayingImageLoaded(ImageSource imageSource, string _)
         {
-            if (ViewState == MusicPageViewState.View)
+            if (BackgroundBaseImage.Source != imageSource)
             {
-                if (BackgroundBaseImage.Source != imageSource)
-                {
-                    ImageSources = imageSource;
-                    if (App.audioPlayer?.MusicData?.AlbumID != MusicData?.AlbumID) return;
-                    BackgroundBaseImage.Source = ImageSources;
-                    AlbumImageBase.Source = imageSource;
+                ImageSources = imageSource;
+                if (App.audioPlayer?.MusicData?.AlbumID != MusicData?.AlbumID) return;
+                BackgroundBaseImage.Source = ImageSources;
+                AlbumImageBase.Source = imageSource;
 #if DEBUG
-                    Debug.WriteLine($"MusicPage: 图片已被更改.");
+                Debug.WriteLine($"MusicPage: 图片已被更改.");
 #endif
-                }
             }
-        }
-
-        bool isFirstOpenMusicPage = true;
-        public MusicPageViewState ViewState = MusicPageViewState.Hidden;
-        private void ViewChange(MusicPageViewState musicPageViewState)
-        {
-            ViewState = musicPageViewState;
-            //System.Diagnostics.Debug.WriteLine(viewState);
-            if (ViewState == MusicPageViewState.View)
-            {
-                AudioPlayer_SourceChanged(App.audioPlayer);
-                AudioPlayer_PlayStateChanged(App.audioPlayer);
-                PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
-
-                if (ShowLrcPage)
-                {
-                    //LrcBaseListView.SelectedItem = LrcBaseListView.Items.Last();
-                    SelectedChangedDo();
-                }
-                if (isFirstOpenMusicPage)
-                {
-                    isFirstOpenMusicPage = false;
-                }
-            }
-#if DEBUG
-            Debug.WriteLine($"MusicPage: ViewState 已被设置为 {musicPageViewState}.");
-#endif
         }
 
         private void BackgroundBaseImage_Loaded(object sender, RoutedEventArgs e)
@@ -293,8 +315,9 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         //todo：优化性能
         private void LyricManager_PlayingLyricSelectedChange1(LyricData nowLyricsData)
         {
-            if (ShowLrcPage && ViewState == MusicPageViewState.View)
+            if (ShowLrcPage)
             {
+                App.lyricManager.ReCallUpdata();
                 SelectedChangedDo();
             }
         }
@@ -314,7 +337,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         MusicData MusicData;
         private void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
         {
-            if (ViewState == MusicPageViewState.Hidden || audioPlayer.MusicData == null) return;
+            if (audioPlayer.MusicData == null) return;
             TitleRunText.Text = audioPlayer.MusicData.Title;
             ArtistRunText.Text = audioPlayer.MusicData.ArtistName;
             AlbumRunText.Text = audioPlayer.MusicData.Album;
@@ -329,26 +352,33 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void AudioPlayer_PlayStateChanged(Media.AudioPlayer audioPlayer)
         {
-            if (ViewState == MusicPageViewState.Hidden) return;
             MediaPlayStateViewer1.PlaybackState = audioPlayer.PlaybackState;
+
+            if (audioPlayer.PlaybackState == PlaybackState.Playing)
+            {
+                App.lyricManager.PlayingLyricSourceChange += LyricManager_PlayingLyricSourceChange;
+                App.lyricManager.PlayingLyricSelectedChange += LyricManager_PlayingLyricSelectedChange1;
+            }
+            else
+            {
+                App.lyricManager.PlayingLyricSourceChange -= LyricManager_PlayingLyricSourceChange;
+                App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange1;
+            }
         }
 
         private void AudioPlayer_TimingChanged(Media.AudioPlayer audioPlayer)
         {
-            if (ViewState == MusicPageViewState.View)
+            if (audioPlayer.FileReader != null)
             {
-                if (audioPlayer.FileReader != null)
-                {
-                    isCodeChangedSliderValue = true;
-                    PlaySlider.Minimum = 0;
-                    PlaySlider.Maximum = audioPlayer.TotalTime.Ticks;
-                    PlaySlider.Value = audioPlayer.CurrentTime.Ticks;
-                    isCodeChangedSliderValue = false;
-                    NowPlayTimeTb.Text =
-                        $"{audioPlayer.CurrentTime:mm\\:ss}/{audioPlayer.TotalTime.ToString(@"mm\:ss")}";
-                    NowAtherTimeTb.Text =
-                        (audioPlayer.TotalTime - audioPlayer.CurrentTime).ToString(@"mm\:ss");
-                }
+                isCodeChangedSliderValue = true;
+                PlaySlider.Minimum = 0;
+                PlaySlider.Maximum = audioPlayer.TotalTime.Ticks;
+                PlaySlider.Value = audioPlayer.CurrentTime.Ticks;
+                isCodeChangedSliderValue = false;
+                NowPlayTimeTb.Text =
+                    $"{audioPlayer.CurrentTime:mm\\:ss}/{audioPlayer.TotalTime.ToString(@"mm\:ss")}";
+                NowAtherTimeTb.Text =
+                    (audioPlayer.TotalTime - audioPlayer.CurrentTime).ToString(@"mm\:ss");
             }
         }
 
@@ -361,7 +391,6 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private void AudioPlayer_CacheLoadingChanged(Media.AudioPlayer audioPlayer, object data)
         {
             isCodeChangedSliderValue = true;
-            if (ViewState == MusicPageViewState.Hidden) return;
             PlayButton.IsEnabled = true;
             AudioLoadingProressRing.IsIndeterminate = true;
         }

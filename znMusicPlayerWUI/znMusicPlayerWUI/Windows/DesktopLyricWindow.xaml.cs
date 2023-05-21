@@ -85,24 +85,35 @@ namespace znMusicPlayerWUI.Windowed
             }
             TrySetAcrylicBackdrop();
 
-            App.lyricManager.PlayingLyricSourceChange += LyricManager_PlayingLyricSourceChange;
-            App.lyricManager.PlayingLyricSelectedChange += LyricManager_PlayingLyricSelectedChange;
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
             App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
-            LyricManager_PlayingLyricSelectedChange(App.lyricManager.NowLyricsData);
+            AudioPlayer_PlayStateChanged(App.audioPlayer);
         }
 
         int showBorderCount = 0;
+        bool isAddedEvent = false;
         private async void AudioPlayer_PlayStateChanged(Media.AudioPlayer audioPlayer)
         {
             PlayStateElement.PlaybackState = audioPlayer.PlaybackState;
             if (audioPlayer.PlaybackState == PlaybackState.Playing)
             {
                 InfoBorder.Opacity = 0;
+
+                if (!isAddedEvent)
+                {
+                    isAddedEvent = true;
+                    App.lyricManager.PlayingLyricSourceChange += LyricManager_PlayingLyricSourceChange;
+                    App.lyricManager.PlayingLyricSelectedChange += LyricManager_PlayingLyricSelectedChange;
+                    App.lyricManager.ReCallUpdata();
+                    LyricManager_PlayingLyricSelectedChange(App.lyricManager.NowLyricsData);
+                }
             }
             else
             {
                 InfoBorder.Opacity = 1;
+                isAddedEvent = false;
+                App.lyricManager.PlayingLyricSourceChange -= LyricManager_PlayingLyricSourceChange;
+                App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange;
             }
         }
 
@@ -297,7 +308,7 @@ namespace znMusicPlayerWUI.Windowed
         {
             if (DesktopAcrylicController.IsSupported())
             {
-                this.Activated += DesktopLyricWindow_Activated; ;
+                this.Activated += DesktopLyricWindow_Activated;
                 this.Closed += DesktopLyricWindow_Closed;
                 
                 m_acrylicController = new DesktopAcrylicController()

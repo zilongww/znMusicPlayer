@@ -359,7 +359,13 @@ namespace znMusicPlayerWUI.Helpers.MetingService
 
                 for (int i = 0; i <= App.metingServices.RetryCount; i++)
                 {
-                    var a = getArtistAction();
+                    Artist a = null;
+                    try
+                    {
+                        a = getArtistAction();
+                    }
+                    catch { a = null; }
+
                     if (a != null)
                     {
                         if (!string.IsNullOrEmpty(a.ID))

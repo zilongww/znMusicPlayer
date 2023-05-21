@@ -26,6 +26,7 @@ using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
 using static znMusicPlayerWUI.Media.AudioPlayer;
 using static znMusicPlayerWUI.DataEditor.DataFolderBase;
+using Vanara.Extensions.Reflection;
 
 namespace znMusicPlayerWUI.Media
 {
@@ -351,7 +352,7 @@ namespace znMusicPlayerWUI.Media
         public AudioPlayer()
         {
             timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(200) };
-            timer.Tick += (_, __) => ReCallTiming();
+            timer.Tick += (_, __) => { ReCallTiming(); };
         }
 
         MusicData PointMusicData = null;
@@ -705,7 +706,7 @@ namespace znMusicPlayerWUI.Media
             NowOutObj?.Play();
             MidiPlayback?.Start();
             PlayStateChanged?.Invoke(this);
-            timer.Start();
+            ReCallTiming();
             App.SMTC.PlaybackStatus = MediaPlaybackStatus.Playing;
             return true;
         }
@@ -730,14 +731,12 @@ namespace znMusicPlayerWUI.Media
 
         public void ReCallTiming()
         {
-            if (PlaybackState == PlaybackState.Playing)
-            {
-                TimingChanged?.Invoke(this);
-            }
-            else
-            {
-                timer.Stop();
-            }
+            //Debug.WriteLine($"ReCall Audio Player Timing Count {TimingChanged?.GetInvocationList()?.Length}.");
+            timer.Start();
+            if (PlaybackState != PlaybackState.Playing) timer.Stop();
+            if (TimingChanged == null) timer.Stop();
+
+            TimingChanged?.Invoke(this);
         }
 
         bool isDisposing = false;

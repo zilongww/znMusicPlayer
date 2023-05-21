@@ -65,11 +65,14 @@ namespace znMusicPlayerWUI
 
         public delegate void WindowViewStateChangedDelegate(bool isView);
         public static event WindowViewStateChangedDelegate WindowViewStateChanged;
+        
+        public delegate void MusicPageViewStateChangedDelegate(MusicPageViewState musicPageViewState);
+        public static event MusicPageViewStateChangedDelegate MusicPageViewStateChanged;
 
         public MainWindow()
         {
             SWindow = this;
-            this.InitializeComponent();
+            InitializeComponent();
 
             WindowGridBase.DataContext = this;
             SContent = this.Content;
@@ -96,7 +99,6 @@ namespace znMusicPlayerWUI
 
             InitializeTitleBar(SWindowGridBaseTop.RequestedTheme);
 
-            //RequestedTheme = App.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : ElementTheme.Light;
             m_wsdqHelper = new WindowHelperzn.WindowsSystemDispatcherQueueHelper();
             m_wsdqHelper.EnsureWindowsSystemDispatcherQueueController();
             SetBackdrop(BackdropType.Mica);
@@ -108,51 +110,9 @@ namespace znMusicPlayerWUI
 
             Activated += MainWindow_Activated;
             SWindowGridBaseTop.ActualThemeChanged += WindowGridBase_ActualThemeChanged;
-            App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
-            App.audioPlayer.PlayEnd += AudioPlayer_PlayEnd;
-            App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
-            App.audioPlayer.TimingChanged += AudioPlayer_TimingChanged;
-            App.audioPlayer.CacheLoadedChanged += AudioPlayer_CacheLoadedChanged;
-            App.audioPlayer.CacheLoadingChanged += AudioPlayer_CacheLoadingChanged;
-            App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
-            App.playingList.NowPlayingImageLoading += PlayingList_NowPlayingImageLoading;
-            App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
             App.SMTC.ButtonPressed += SMTC_ButtonPressed;
-            App.lyricManager.PlayingLyricSelectedChange += (_) =>
-            {
-                try
-                {
-                    if (SWindowGridBase.Visibility == Visibility.Visible && !isMinSize && !InOpenMusicPage)
-                    {
-                        if (_ != null)
-                        {
-                            int tcount = 1;
-                            int num = App.lyricManager.NowPlayingLyrics.IndexOf(_);
-                            while (_?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num + tcount]?.Lyric?.FirstOrDefault())
-                            {
-                                tcount++;
-                            }
-
-                            string t1text = tcount == 1
-                                ? _?.Lyric?.FirstOrDefault()
-                                : $"{_?.Lyric?.FirstOrDefault()} (x{tcount})";
-
-                            AppTitleTextBlock.Text = $"{App.AppName} -";
-                            LyricTextBlock.Text = $" {t1text}";
-                        }
-                        else
-                        {
-                            AppTitleTextBlock.Text = $"{App.AppName}";
-                            LyricTextBlock.Text = null;
-                        }
-                    }
-                }
-                catch (Exception err)
-                {
-                    System.Diagnostics.Debug.WriteLine("1-----" + err.Message);
-                }
-            };
             App.playListReader.Updataed += () => UpdataPlayListButtonUI();
+            MusicPageViewStateChanged += MainWindow_MusicPageViewStateChanged;
 
             loadingst.Children.Add(loadingprogress);
             loadingst.Children.Add(loadingtextBlock);
@@ -193,6 +153,177 @@ namespace znMusicPlayerWUI
                 MusicPlayListButton.MenuItems.Add(nvi);
             }
         }
+
+        #region Window Events
+        private void WindowGridBase_Loaded(object sender, RoutedEventArgs e)
+        {
+            PlayingListBaseView.ItemsSource = App.playingList.NowPlayingList;
+        }
+
+        private void WindowGridBase_ActualThemeChanged(FrameworkElement sender, object args)
+        {
+            if (isAcrylicBackdrop)
+            {
+                SetBackdrop(BackdropType.DesktopAcrylic);
+            }
+            InitializeTitleBar(SWindowGridBaseTop.RequestedTheme);
+        }
+
+        private void UpdataWhenDataLated()
+        {
+            AudioPlayer_SourceChanged(App.audioPlayer);
+            AudioPlayer_PlayStateChanged(App.audioPlayer);
+            AudioPlayer_CacheLoadedChanged(App.audioPlayer);
+            AudioPlayer_TimingChanged(App.audioPlayer);
+            AudioPlayer_VolumeChanged(App.audioPlayer, App.audioPlayer.Volume);
+            PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
+            LyricManager_PlayingLyricSelectedChange(App.lyricManager.NowLyricsData);
+            App.audioPlayer.ReCallTiming();
+            //System.Diagnostics.Debug.WriteLine("Updataed Events.");
+        }
+
+        bool isAddEvents = false;
+        private void AddEvents()
+        {
+            if (isAddEvents) return;
+            App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
+            App.audioPlayer.PlayEnd += AudioPlayer_PlayEnd;
+            App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
+            App.audioPlayer.TimingChanged += AudioPlayer_TimingChanged;
+            App.audioPlayer.CacheLoadedChanged += AudioPlayer_CacheLoadedChanged;
+            App.audioPlayer.CacheLoadingChanged += AudioPlayer_CacheLoadingChanged;
+            App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
+            App.playingList.NowPlayingImageLoading += PlayingList_NowPlayingImageLoading;
+            App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
+            isAddEvents = true;
+            UpdataWhenDataLated();
+            //System.Diagnostics.Debug.WriteLine("Added Events.");
+        }
+
+        private void RemoveEvents()
+        {
+            App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
+            App.audioPlayer.PlayEnd -= AudioPlayer_PlayEnd;
+            App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
+            App.audioPlayer.TimingChanged -= AudioPlayer_TimingChanged;
+            App.audioPlayer.CacheLoadedChanged -= AudioPlayer_CacheLoadedChanged;
+            App.audioPlayer.CacheLoadingChanged -= AudioPlayer_CacheLoadingChanged;
+            App.audioPlayer.VolumeChanged -= AudioPlayer_VolumeChanged;
+            App.playingList.NowPlayingImageLoading -= PlayingList_NowPlayingImageLoading;
+            App.playingList.NowPlayingImageLoaded -= PlayingList_NowPlayingImageLoaded;
+            App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange;
+            isAddEvents = false;
+            //System.Diagnostics.Debug.WriteLine("Removed Events.");
+        }
+
+        static ApplicationTheme applicationTheme = App.Current.RequestedTheme;
+        public static bool isMinSize = false;
+        private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
+        {
+            if (args.WindowActivationState == WindowActivationState.PointerActivated ||
+                args.WindowActivationState == WindowActivationState.CodeActivated)
+            {
+                if (!CodeHelper.IsIconic(App.AppWindowLocalHandle))
+                {
+                    isMinSize = false;
+                    //WindowViewStateChanged?.Invoke(true);
+                    if (InOpenMusicPage) SMusicPage.MusicPageViewStateChange(MusicPageViewState.View);
+                    else
+                    {
+                        AddEvents();
+                    }
+                }
+            }
+            else
+            {
+                if (CodeHelper.IsIconic(App.AppWindowLocalHandle))
+                {
+                    isMinSize = true;
+                    //WindowViewStateChanged?.Invoke(false);
+                    if (InOpenMusicPage) SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
+                    else RemoveEvents();
+                }
+            }
+        }
+
+        private void MainWindow_MusicPageViewStateChanged(MusicPageViewState musicPageViewState)
+        {
+            if (musicPageViewState == MusicPageViewState.View)
+            {
+                RemoveEvents();
+            }
+            else
+            {
+                AddEvents();
+            }
+        }
+
+        private static void Window_Activated(object sender, WindowActivatedEventArgs args)
+        {
+            //SetBackdrop(BackdropType.DesktopAcrylic);
+            if (!isAcrylicBackdrop) UpdataWindowBackdropTheme();
+            if (m_currentBackdrop != BackdropType.DefaultColor)
+            {
+                m_configurationSource.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
+            }
+        }
+
+        public static void UpdataWindowBackdropTheme()
+        {
+            switch (SWindowGridBaseTop.RequestedTheme)
+            {
+                case ElementTheme.Light:
+                    m_configurationSource.Theme = SystemBackdropTheme.Light; break;
+                case ElementTheme.Dark:
+                    m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
+                default:
+                    m_configurationSource.Theme = SystemBackdropTheme.Default; break;
+            }
+            m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
+            //m_micaController.Kind = MicaKind.BaseAlt;
+        }
+
+        private static void Window_Closed(object sender, WindowEventArgs args)
+        {
+            /*
+            if (m_micaController != null)
+            {
+                m_micaController.Dispose();
+                m_micaController = null;
+            }
+            if (m_acrylicController != null)
+            {
+                m_acrylicController.Dispose();
+                m_acrylicController = null;
+            }*/
+            if (DesktopLyricWindow != null)
+                DesktopLyricWindow.Close();
+            SWindow.Activated -= Window_Activated;
+            m_configurationSource = null;
+        }
+
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            SetDragRegionForCustomTitleBar(App.AppWindowLocal);
+        }
+
+        private void ContentFrame_Loaded(object sender, RoutedEventArgs e)
+        {
+            SContentFrame = ContentFrame;
+        }
+
+        public static void UpdataPlayListFlyoutHeight()
+        {
+            try
+            {
+                if (InOpenMusicPage)
+                    SPlayingListBaseGrid.Height = SWindowGridBaseTop.ActualHeight - 130;
+                else
+                    SPlayingListBaseGrid.Height = SWindowGridBaseTop.ActualHeight - 146;
+            }
+            catch { }
+        }
+        #endregion
 
         #region init TitleBar
         public void InitializeTitleBar(ElementTheme theme)
@@ -346,6 +477,41 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region AudioPlayer Events
+        private void LyricManager_PlayingLyricSelectedChange(LyricData _)
+        {
+            try
+            {
+                if (SWindowGridBase.Visibility == Visibility.Visible && !isMinSize && !InOpenMusicPage)
+                {
+                    if (_ != null)
+                    {
+                        int tcount = 1;
+                        int num = App.lyricManager.NowPlayingLyrics.IndexOf(_);
+                        while (_?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num + tcount]?.Lyric?.FirstOrDefault())
+                        {
+                            tcount++;
+                        }
+
+                        string t1text = tcount == 1
+                            ? _?.Lyric?.FirstOrDefault()
+                            : $"{_?.Lyric?.FirstOrDefault()} (x{tcount})";
+
+                        AppTitleTextBlock.Text = $"{App.AppName} -";
+                        LyricTextBlock.Text = $" {t1text}";
+                    }
+                    else
+                    {
+                        AppTitleTextBlock.Text = $"{App.AppName}";
+                        LyricTextBlock.Text = null;
+                    }
+                }
+            }
+            catch (Exception err)
+            {
+                System.Diagnostics.Debug.WriteLine("1-----" + err.Message);
+            }
+        }
+
         public static void Invoke(Action action)
         {
             SWindowGridBase.DispatcherQueue.TryEnqueue(() => action());
@@ -414,11 +580,9 @@ namespace znMusicPlayerWUI
         private void AudioPlayer_CacheLoadingChanged(Media.AudioPlayer audioPlayer, object data)
         {
             isCodeChangedSilderValue = true;
-            if (!isMinSize)
-            {
-                PlayRing.IsIndeterminate = true;
-                PlayRing.Foreground = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
-            }
+
+            PlayRing.IsIndeterminate = true;
+            PlayRing.Foreground = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
         }
 
         static bool isDeleteImage = true;
@@ -432,13 +596,11 @@ namespace znMusicPlayerWUI
 
         public static void PlayingList_NowPlayingImageLoaded(ImageSource imageSource, string _)
         {
-            if (!isMinSize && !InOpenMusicPage)
+            if (imageSource != (SPlayContent.Content as Imagezn)?.Source)
             {
-                if (imageSource != (SPlayContent.Content as Imagezn)?.Source)
-                {
-                    (SPlayContent.Content as Imagezn).Source = imageSource;
-                }
+                (SPlayContent.Content as Imagezn).Source = imageSource;
             }
+
         }
 
         private void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
@@ -465,10 +627,13 @@ namespace znMusicPlayerWUI
             if (audioPlayer.PlaybackState == PlaybackState.Playing)
             {
                 PlayRing.Foreground = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
+                App.lyricManager.PlayingLyricSelectedChange += LyricManager_PlayingLyricSelectedChange;
+                App.lyricManager.ReCallUpdata();
             }
             else
             {
                 PlayRing.Foreground = new SolidColorBrush(Color.FromArgb(255, 225, 225, 0));
+                App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange;
             }
 
             MediaPlayStateViewer.PlaybackState = audioPlayer.PlaybackState;
@@ -476,14 +641,11 @@ namespace znMusicPlayerWUI
 
         private void AudioPlayer_TimingChanged(Media.AudioPlayer audioPlayer)
         {
-            if (!isMinSize && !InOpenMusicPage)
+            if (audioPlayer.FileReader != null)
             {
-                if (audioPlayer.FileReader != null)
-                {
-                    PlayRing.Minimum = 0;
-                    PlayRing.Maximum = audioPlayer.TotalTime.Ticks;
-                    PlayRing.Value = audioPlayer.CurrentTime.Ticks;
-                }
+                PlayRing.Minimum = 0;
+                PlayRing.Maximum = audioPlayer.TotalTime.Ticks;
+                PlayRing.Value = audioPlayer.CurrentTime.Ticks;
             }
         }
         #endregion
@@ -613,121 +775,6 @@ namespace znMusicPlayerWUI
             }
 
             return false;
-        }
-        #endregion
-
-        #region Window Events
-        private void WindowGridBase_Loaded(object sender, RoutedEventArgs e)
-        {
-            PlayingListBaseView.ItemsSource = App.playingList.NowPlayingList;
-        }
-
-        private void WindowGridBase_ActualThemeChanged(FrameworkElement sender, object args)
-        {
-            if (isAcrylicBackdrop)
-            {
-                SetBackdrop(BackdropType.DesktopAcrylic);
-            }
-            InitializeTitleBar(SWindowGridBaseTop.RequestedTheme);
-        }
-
-        static ApplicationTheme applicationTheme = App.Current.RequestedTheme;
-        public static bool isMinSize = false;
-        private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
-        {
-            if (args.WindowActivationState == WindowActivationState.PointerActivated ||
-                args.WindowActivationState == WindowActivationState.CodeActivated)
-            {
-                if (!CodeHelper.IsIconic(App.AppWindowLocalHandle))
-                {
-                    isMinSize = false;
-                    //WindowViewStateChanged?.Invoke(true);
-                    App.lyricManager.ReCallUpdata();
-                    if (!InOpenMusicPage)
-                    {
-                        PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
-                    }
-                    else
-                    {
-                        SMusicPage.MusicPageViewStateChange(MusicPageViewState.View);
-                    }
-                }
-            }
-            else
-            {
-                if (CodeHelper.IsIconic(App.AppWindowLocalHandle))
-                {
-                    isMinSize = true;
-                    //WindowViewStateChanged?.Invoke(false);
-                    SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
-                }
-            }
-        }
-
-        private static void Window_Activated(object sender, WindowActivatedEventArgs args)
-        {
-            //SetBackdrop(BackdropType.DesktopAcrylic);
-            if (!isAcrylicBackdrop) UpdataWindowBackdropTheme();
-            if (m_currentBackdrop != BackdropType.DefaultColor)
-            {
-                m_configurationSource.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
-            }
-        }
-
-        public static void UpdataWindowBackdropTheme()
-        {
-            switch (SWindowGridBaseTop.RequestedTheme)
-            {
-                case ElementTheme.Light:
-                    m_configurationSource.Theme = SystemBackdropTheme.Light; break;
-                case ElementTheme.Dark:
-                    m_configurationSource.Theme = SystemBackdropTheme.Dark; break;
-                default:
-                    m_configurationSource.Theme = SystemBackdropTheme.Default; break;
-            }
-            m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
-            //m_micaController.Kind = MicaKind.BaseAlt;
-        }
-
-        private static void Window_Closed(object sender, WindowEventArgs args)
-        {
-            /*
-            if (m_micaController != null)
-            {
-                m_micaController.Dispose();
-                m_micaController = null;
-            }
-            if (m_acrylicController != null)
-            {
-                m_acrylicController.Dispose();
-                m_acrylicController = null;
-            }*/
-            if (DesktopLyricWindow != null)
-                DesktopLyricWindow.Close();
-            SWindow.Activated -= Window_Activated;
-            m_configurationSource = null;
-        }
-
-        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            SetDragRegionForCustomTitleBar(App.AppWindowLocal);
-        }
-
-        private void ContentFrame_Loaded(object sender, RoutedEventArgs e)
-        {
-            SContentFrame = ContentFrame;
-        }
-
-        public static void UpdataPlayListFlyoutHeight()
-        {
-            try
-            {
-                if (InOpenMusicPage)
-                    SPlayingListBaseGrid.Height = SWindowGridBaseTop.ActualHeight - 130;
-                else
-                    SPlayingListBaseGrid.Height = SWindowGridBaseTop.ActualHeight - 146;
-            }
-            catch { }
         }
         #endregion
 
@@ -1128,7 +1175,7 @@ namespace znMusicPlayerWUI
                 };
 
                 SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
-                PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
+                MusicPageViewStateChanged?.Invoke(MusicPageViewState.Hidden);
             }
             else
             {
@@ -1153,6 +1200,7 @@ namespace znMusicPlayerWUI
                 };
 
                 SMusicPage.MusicPageViewStateChange(MusicPageViewState.View);
+                MusicPageViewStateChanged?.Invoke(MusicPageViewState.View);
                 if (isFirstInMusicPage)
                 {
                     isFirstInMusicPage = false;
@@ -1365,7 +1413,6 @@ namespace znMusicPlayerWUI
                             Vanara.PInvoke.User32.WindowLongFlags.GWL_STYLE, (IntPtr)Vanara.PInvoke.User32.WindowStyles.WS_DISABLED);
                     }
 
-                    App.lyricManager.ReCallUpdata();
                     DesktopLyricWindow.Activate();
                 }
                 else

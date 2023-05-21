@@ -58,11 +58,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                     AudioInfoSp.Children[3].Visibility = Visibility.Collapsed;
                 }
                 else
-                    ((TextBlock)AudioInfoSp.Children[3]).Text = tfile.BitDepth.ToString();
-
-                //((TextBlock)AudioInfoSp.Children[5]).Text = App.audioPlayer.FileReader.WaveFormat.AverageBytesPerSecond.ToString();
-                //((TextBlock)AudioInfoSp.Children[7]).Text = App.audioPlayer.FileReader.WaveFormat.BlockAlign.ToString();
-                //((TextBlock)AudioInfoSp.Children[7]).Text = App.audioPlayer.FileReader.WaveFormat.ExtraSize.ToString();
+                    ((TextBlock)AudioInfoSp.Children[3]).Text = $"{tfile.BitDepth} bit";
 
                 if (tfile.AdditionalFields.ContainsKey("VORBIS-VENDOR"))
                 {

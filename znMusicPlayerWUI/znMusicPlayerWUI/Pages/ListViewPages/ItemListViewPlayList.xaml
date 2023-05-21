@@ -27,6 +27,7 @@
                   ScrollViewer.CanContentRenderOutsideBounds="True"
                   Padding="0,0,0,12"
                   SelectionMode="None"
+                  SelectionChanged="Children_SelectionChanged"
                   ItemsSource="{x:Bind MusicDataList}"
                   ui:ScrollViewerExtensions.EnableMiddleClickScrolling="True">
             <ListView.ItemTemplate>

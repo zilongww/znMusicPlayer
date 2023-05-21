@@ -52,7 +52,10 @@ namespace znMusicPlayerWUI.Pages
 
             MusicDataList.Clear();
             Artist_Image.Dispose();
+            musicListData = null;
+            NavToObj = null;
             UnloadObject(this);
+            //GC.SuppressFinalize(this);
             //System.Diagnostics.Debug.WriteLine("Clear");
         }
 /*
