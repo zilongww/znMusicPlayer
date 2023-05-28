@@ -163,10 +163,14 @@ namespace znMusicPlayerWUI.Windowed
 
                 int tcount = 1;
                 int num = App.lyricManager.NowPlayingLyrics.IndexOf(nowLyricsData);
-                while (nowLyricsData?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num + tcount]?.Lyric?.FirstOrDefault())
+                try
                 {
-                    tcount++;
+                    while (nowLyricsData?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num + tcount]?.Lyric?.FirstOrDefault())
+                    {
+                        tcount++;
+                    }
                 }
+                catch { }
 
                 string t1text = tcount == 1
                     ? nowLyricsData?.Lyric?.FirstOrDefault()
@@ -198,10 +202,14 @@ namespace znMusicPlayerWUI.Windowed
 
                 int tcount = 1;
                 int num1 = App.lyricManager.NowPlayingLyrics.IndexOf(nowLyricsData);
-                while (nowLyricsData?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num1 + tcount]?.Lyric?.FirstOrDefault())
+                try
                 {
-                    tcount++;
+                    while (nowLyricsData?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num1 + tcount]?.Lyric?.FirstOrDefault())
+                    {
+                        tcount++;
+                    }
                 }
+                catch { }
                 string t1text = tcount == 1
                     ? nowLyricsData?.Lyric?.FirstOrDefault()
                     : $"{nowLyricsData?.Lyric?.FirstOrDefault()} (x{tcount})";

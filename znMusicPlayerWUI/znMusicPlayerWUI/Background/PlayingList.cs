@@ -125,6 +125,7 @@ namespace znMusicPlayerWUI.Background
         {
             if (isLoadingPlay) return false;
             isLoadingPlay = true;
+            FreezePlayTime();
 
             Add(musicData);
             bool a = true;
@@ -159,7 +160,8 @@ namespace znMusicPlayerWUI.Background
                 App.audioPlayer.Latency = (int)data[DataFolderBase.SettingParams.AudioLatency.ToString()];
                 DataFolderBase.JSettingData = data;
 
-                var retryPlay = await MainWindow.ShowDialog("播放失败", $"播放音频时出现错误，可能是播放延迟设置不正确导致的。\n" +
+                var retryPlay = await MainWindow.ShowDialog("播放失败",
+                    $"播放音频时出现错误，可能是播放延迟设置不正确导致的。\n" +
                     $"已将播放延迟设置到默认值，请尝试重新播放.");
                 if (retryPlay == Microsoft.UI.Xaml.Controls.ContentDialogResult.Secondary)
                 {
@@ -176,7 +178,6 @@ namespace znMusicPlayerWUI.Background
 #endif
             }
 
-            FreezePlayTime();
             return a;
         }
 

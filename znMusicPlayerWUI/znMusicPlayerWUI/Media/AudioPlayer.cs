@@ -372,8 +372,7 @@ namespace znMusicPlayerWUI.Media
             if (LoadingMusicDatas.Contains(musicData))
             {
                 //TODO:用户视觉反馈
-                return;
-                throw new Exception("音频正在缓存，请稍后。");
+                throw new Exception("当前音频正在缓存，请稍后。");
             }
 
             PointMusicData = musicData;

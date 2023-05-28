@@ -179,7 +179,6 @@ namespace znMusicPlayerWUI
             PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
             LyricManager_PlayingLyricSelectedChange(App.lyricManager.NowLyricsData);
             App.audioPlayer.ReCallTiming();
-            //System.Diagnostics.Debug.WriteLine("Updataed Events.");
         }
 
         bool isAddEvents = false;
@@ -487,10 +486,14 @@ namespace znMusicPlayerWUI
                     {
                         int tcount = 1;
                         int num = App.lyricManager.NowPlayingLyrics.IndexOf(_);
-                        while (_?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num + tcount]?.Lyric?.FirstOrDefault())
+                        try
                         {
-                            tcount++;
+                            while (_?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num + tcount]?.Lyric?.FirstOrDefault())
+                            {
+                                tcount++;
+                            }
                         }
+                        catch { }
 
                         string t1text = tcount == 1
                             ? _?.Lyric?.FirstOrDefault()
@@ -508,7 +511,7 @@ namespace znMusicPlayerWUI
             }
             catch (Exception err)
             {
-                System.Diagnostics.Debug.WriteLine("1-----" + err.Message);
+                System.Diagnostics.Debug.WriteLine("zn1-----" + err.Message);
             }
         }
 

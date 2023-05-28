@@ -7,13 +7,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:m="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
-    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:brushes="using:CommunityToolkit.WinUI.UI.Media"
     xmlns:helper="using:znMusicPlayerWUI.Helpers"
     xmlns:ui="using:CommunityToolkit.WinUI.UI"
-    xmlns:behaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
-    xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -44,7 +39,7 @@
                         <Rectangle x:Name="BackColorBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
                         <Grid x:Name="HeaderBaseGrid">
                             <Grid x:Name="PlayList_BaseGrid">
-                                <Grid x:Name="PlayList_Image_BaseGrid" animations:Connected.AnchorElement="{x:Bind PlayList_Image}" Margin="0,0,0,24">
+                                <Grid x:Name="PlayList_Image_BaseGrid" Margin="0,0,0,24">
                                     <Rectangle x:Name="PlayList_Image_DropShadowBase"/>
                                     <Border Width="210"
                                             Height="210"
@@ -52,7 +47,7 @@
                                             BorderThickness="0"
                                             HorizontalAlignment="Left"
                                             x:Name="PlayList_ImageBaseBorder">
-                                        <controlszn:Imagezn x:Name="PlayList_Image" animations:Connected.Key="listItem"/>
+                                        <controlszn:Imagezn x:Name="PlayList_Image"/>
                                     </Border>
                                 </Grid>
                                 <Grid x:Name="InfosBaseStackPanel"
@@ -66,8 +61,7 @@
                                             <TextBlock x:Name="PlayList_TitleTextBlock"
                                                    Style="{ThemeResource SubTBHeader}"
                                                    TextTrimming="WordEllipsis"
-                                                   TextWrapping="NoWrap"
-                                                   animations:Connected.Key="itemt"/>
+                                                   TextWrapping="NoWrap"/>
                                             <TextBlock x:Name="PlayList_OtherTextBlock" Text="共0首歌曲"/>
                                         </StackPanel>
                                         <Grid x:Name="CommandBarWidthChanger"
