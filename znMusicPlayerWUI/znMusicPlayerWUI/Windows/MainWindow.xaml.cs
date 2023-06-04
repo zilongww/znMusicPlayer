@@ -923,6 +923,9 @@ namespace znMusicPlayerWUI
                 case "历史":
                     SetNavViewContent(typeof(HistoryPage));
                     break;
+                case "本地音频":
+                    SetNavViewContent(typeof(LocalAudioPage));
+                    break;
                 case "设置":
                     SetNavViewContent(typeof(SettingPage));
                     break;
@@ -973,6 +976,10 @@ namespace znMusicPlayerWUI
 
                 case "HistoryPage":
                     SNavView.SelectedItem = SNavView.MenuItems[7];
+                    break;
+                    
+                case "LocalAudioPage":
+                    SNavView.SelectedItem = SNavView.MenuItems[8];
                     break;
 
                 case "SettingPage":

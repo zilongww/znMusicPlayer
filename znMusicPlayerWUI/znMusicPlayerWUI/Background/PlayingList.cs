@@ -124,6 +124,7 @@ namespace znMusicPlayerWUI.Background
             if (isLoadingPlay) return false;
             isLoadingPlay = true;
             FreezePlayTime();
+            AddHistory(musicData);
 
             Add(musicData);
             bool a = true;
@@ -183,6 +184,11 @@ namespace znMusicPlayerWUI.Background
         {
             await Task.Delay(200);
             isLoadingPlay = false;
+        }
+
+        private async void AddHistory(MusicData musicData)
+        {
+            await SongHistoryHelper.AddHistory(new() { MusicData = musicData, Time = DateTime.Now });
         }
 
         public async Task<bool> PlayNext(bool isAutoPlay = false)

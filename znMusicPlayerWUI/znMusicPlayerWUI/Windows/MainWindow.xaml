@@ -89,6 +89,11 @@
                             <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 历史}"/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
+                    <NavigationViewItem Content="本地音频">
+                        <NavigationViewItem.Icon>
+                            <SymbolIcon Symbol="Audio"/>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
                 </NavigationView.MenuItems>
 
                 <Grid x:Name="NavViewContentBase" SizeChanged="NavViewContentBase_SizeChanged">

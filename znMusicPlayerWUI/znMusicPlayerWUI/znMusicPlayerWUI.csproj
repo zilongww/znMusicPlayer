@@ -34,6 +34,7 @@
     <None Remove="Pages\DownloadPage.xaml" />
     <None Remove="Pages\EmptyPage.xaml" />
     <None Remove="Pages\HistoryPage.xaml" />
+    <None Remove="Pages\LocalAudioPage.xaml" />
     <None Remove="Pages\MusicPage.xaml" />
     <None Remove="Pages\PlayListPage.xaml" />
     <None Remove="Pages\RecommendPage.xaml" />
@@ -155,6 +156,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Pages\EmptyPage.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Pages\LocalAudioPage.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

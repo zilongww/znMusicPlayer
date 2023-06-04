@@ -14,63 +14,31 @@ using Microsoft.UI.Xaml.Navigation;
 using znMusicPlayerWUI.Controls;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Collections.ObjectModel;
-using znMusicPlayerWUI.DataEditor;
-using Newtonsoft.Json.Linq;
+using System.Reflection.Emit;
 
 namespace znMusicPlayerWUI.Pages
 {
-    public partial class HistoryPage : Page
+    public partial class LocalAudioPage : Page
     {
-        protected override async void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-            await Task.Delay(500);
-            HistoryHelper.HistoryDataChanged -= HistoryHelper_HistoryDataChanged;
-            songHistories.Clear();
-            ListViewBase.ItemsSource = null;
-            ListViewBase.Items.Clear();
-        }
-
-        ObservableCollection<SongHistoryData> songHistories = new();
-        public HistoryPage()
+        public LocalAudioPage()
         {
             InitializeComponent();
-            ListViewBase.ItemsSource = songHistories;
-            HistoryHelper.HistoryDataChanged += HistoryHelper_HistoryDataChanged;
-        }
-
-        private void HistoryHelper_HistoryDataChanged()
-        {
-            Init();
-        }
-
-        private async void Init()
-        {
-            var scrollOffset = scrollViewer.VerticalOffset;
-            songHistories.Clear();
-            var datas = await SongHistoryHelper.GetHistories();
-            List<SongHistoryData> d = new();
-            foreach (var data in datas)
-            {
-                d.Add(data);
-            }
-            d = d.OrderByDescending(m => m.Time).ToList();
-            foreach (var data in d)
-            {
-                songHistories.Add(data);
-            }
-            await Task.Delay(1);
-            scrollViewer.ScrollToVerticalOffset(scrollOffset);
         }
 
         public void UpdataShyHeader()
         {
-            if (scrollViewer == null) return;
+            // 设置header为顶层
+            var headerPresenter = (UIElement)VisualTreeHelper.GetParent((UIElement)ListViewBase.Header);
+            var headerContainer = (UIElement)VisualTreeHelper.GetParent(headerPresenter);
+            Canvas.SetZIndex(headerContainer, 1);
+
+            var scrollViewer = (VisualTreeHelper.GetChild(ListViewBase, 0) as Border).Child as ScrollViewer;
+            scrollViewer.CanContentRenderOutsideBounds = true;
+
             CompositionPropertySet scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(scrollViewer);
             Compositor compositor = scrollerPropertySet.Compositor;
 
-            var padingSize = 50;
+            var padingSize = 40;
             // Get the visual that represents our HeaderTextBlock 
             // And define the progress animation string
             var headerVisual = ElementCompositionPreview.GetElementVisual(HeaderBaseGrid);
@@ -97,7 +65,7 @@ namespace znMusicPlayerWUI.Pages
             var logoVisual = ElementCompositionPreview.GetElementVisual(HeaderBaseTextBlock);
             logoVisual.StartAnimation("Scale.xy", logoHeaderScaleAnimation);
 
-            var logoVisualOffsetYAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 34, {progress})");
+            var logoVisualOffsetYAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 24, {progress})");
             logoVisualOffsetYAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             logoVisual.StartAnimation("Offset.Y", logoVisualOffsetYAnimation);
 
@@ -114,25 +82,6 @@ namespace znMusicPlayerWUI.Pages
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdataShyHeader();
-        }
-
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            await App.playingList.Play(((sender as Button).DataContext as SongHistoryData).MusicData);
-        }
-
-        ScrollViewer scrollViewer;
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            // 设置header为顶层
-            var headerPresenter = (UIElement)VisualTreeHelper.GetParent((UIElement)ListViewBase.Header);
-            var headerContainer = (UIElement)VisualTreeHelper.GetParent(headerPresenter);
-            Canvas.SetZIndex(headerContainer, 1);
-
-            scrollViewer = (VisualTreeHelper.GetChild(ListViewBase, 0) as Border).Child as ScrollViewer;
-            scrollViewer.CanContentRenderOutsideBounds = true;
-            UpdataShyHeader();
-            Init();
         }
     }
 }
