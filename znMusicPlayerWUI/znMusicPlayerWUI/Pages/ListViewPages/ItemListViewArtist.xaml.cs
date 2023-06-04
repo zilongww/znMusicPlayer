@@ -51,6 +51,8 @@ namespace znMusicPlayerWUI.Pages
             scrollViewer?.ScrollToVerticalOffset(0);
 
             MusicDataList.Clear();
+            Children.ItemsSource = null;
+            Children.Items.Clear();
             Artist_Image.Dispose();
             musicListData = null;
             NavToObj = null;

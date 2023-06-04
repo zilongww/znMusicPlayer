@@ -33,6 +33,7 @@
                     <Run Text="{Binding ListShowName}"/><LineBreak/><Run Text="{Binding Songs.Count}" FontSize="12"/>首歌曲
                 </TextBlock>
             </StackPanel>
+            <Rectangle x:Name="PlayListImageMass" Fill="{ThemeResource BottomBackground}" Opacity="0"/>
         </Grid>
     </Border>
 </Grid>

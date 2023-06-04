@@ -54,6 +54,8 @@ namespace znMusicPlayerWUI.Pages
             await Task.Delay(500);
             scrollViewer?.ScrollToVerticalOffset(0);
             MusicDataList.Clear();
+            Children.ItemsSource = null;
+            Children.Items.Clear();
             UnloadObject(this);
         }
 

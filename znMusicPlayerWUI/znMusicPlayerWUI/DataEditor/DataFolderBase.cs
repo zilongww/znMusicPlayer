@@ -81,7 +81,7 @@ namespace znMusicPlayerWUI.DataEditor
             { SettingParams.EqualizerString.ToString(), nameof(Media.AudioEqualizerBands.CustomBands) },
             { SettingParams.EqualizerCustomData.ToString(), "0,0,0,0,0,0,0,0,0,0" },
             { SettingParams.WasapiOnly.ToString(), false },
-            { SettingParams.AudioLatency.ToString(), 100 },
+            { SettingParams.AudioLatency.ToString(), 150 },
             { SettingParams.MusicPageShowLyricPage.ToString(), true }
         };
         

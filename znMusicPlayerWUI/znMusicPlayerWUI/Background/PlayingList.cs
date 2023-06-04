@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Helpers;
 using WinRT;
+using znMusicPlayerWUI.Media;
 
 namespace znMusicPlayerWUI.Background
 {
@@ -25,7 +26,6 @@ namespace znMusicPlayerWUI.Background
         public event NowPlayingImageChangeDelegate NowPlayingImageLoaded;
 
         public ObservableCollection<MusicData> NowPlayingList = new();
-        public MusicData NowPlayingMusicData { get; set; }
         public PlayBehaviour PlayBehaviour { get; set; } = PlayBehaviour.顺序播放;
         //public BitmapImage DefaultPlayingImage { get; set; } = new BitmapImage("")
 
@@ -57,7 +57,7 @@ namespace znMusicPlayerWUI.Background
                     await Play(NowPlayingList[new Random().Next(NowPlayingList.Count - 1)], true);
                     break;
                 case PlayBehaviour.单曲循环:
-                    await Play(NowPlayingMusicData);
+                    await Play(App.audioPlayer.MusicData, true);
                     break;
                 case PlayBehaviour.单曲播放完成后停止:
                     App.audioPlayer.CurrentTime = TimeSpan.Zero;
@@ -66,47 +66,45 @@ namespace znMusicPlayerWUI.Background
             }
         }
 
+        MusicData lastMusicData = null;
         private async void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
         {
-            bool sameAlbum = true;
-
-            if (audioPlayer.MusicData?.AlbumID != NowPlayingMusicData?.AlbumID) sameAlbum = false;
-            else if (audioPlayer.MusicData?.InLocal != null)
+            if (audioPlayer.MusicData == null) return;
+            if (audioPlayer.MusicData.AlbumID == lastMusicData?.AlbumID) return;
+            if (audioPlayer.MusicData.InLocal != null)
             {
-                if (audioPlayer.MusicData.Album != NowPlayingMusicData?.Album)
+                if (audioPlayer.MusicData.Album == lastMusicData?.Album)
                 {
-                    sameAlbum = false;
+                    return;
                 }
             }
+            lastMusicData = audioPlayer.MusicData;
 
-            if (!sameAlbum)
+            NowPlayingImageLoading?.Invoke(null, null);
+            string path;
+            ImageSource a = null;
+
+            if (audioPlayer.MusicData?.InLocal != null)
             {
-                NowPlayingImageLoading?.Invoke(null, null);
-                string path = null;
-                ImageSource a = null;
-
-                if (audioPlayer.MusicData?.InLocal != null)
+                try
                 {
-                    try
-                    {
-                        a = await CodeHelper.GetCover(audioPlayer.MusicData.InLocal);
-                    }
-                    catch (Exception err)
-                    {
-                        System.Diagnostics.Debug.WriteLine("2------" + err.Message);
-                    }
-                    path = audioPlayer.MusicData.InLocal;
+                    a = await CodeHelper.GetCover(audioPlayer.MusicData.InLocal);
                 }
-                else
+                catch (Exception err)
                 {
-                    var _ = await Media.ImageManage.GetImageSource(audioPlayer.MusicData);
-                    a = await FileHelper.GetImageSource(_);
-                    path = _;
+                    System.Diagnostics.Debug.WriteLine("2------" + err.Message);
                 }
-
-                NowPlayingImage = a;
-                NowPlayingImageLoaded?.Invoke(_nowPlayingImage, path);
+                path = audioPlayer.MusicData.InLocal;
             }
+            else
+            {
+                var _ = await Media.ImageManage.GetImageSource(audioPlayer.MusicData);
+                a = await FileHelper.GetImageSource(_);
+                path = _;
+            }
+
+            NowPlayingImage = a;
+            NowPlayingImageLoaded?.Invoke(NowPlayingImage, path);
         }
 
 
@@ -121,7 +119,7 @@ namespace znMusicPlayerWUI.Background
         }
 
         bool isLoadingPlay = false;
-        public async Task<bool> Play(MusicData musicData, bool isAutoNext = false)
+        public async Task<bool> Play(MusicData musicData, bool isAutoPlay = false)
         {
             if (isLoadingPlay) return false;
             isLoadingPlay = true;
@@ -140,7 +138,7 @@ namespace znMusicPlayerWUI.Background
                 playState = NAudio.Wave.PlaybackState.Playing;
             }
 
-            if (isAutoNext)
+            if (isAutoPlay)
             {
                 playState = NAudio.Wave.PlaybackState.Playing;
             }
@@ -165,7 +163,7 @@ namespace znMusicPlayerWUI.Background
                     $"已将播放延迟设置到默认值，请尝试重新播放.");
                 if (retryPlay == Microsoft.UI.Xaml.Controls.ContentDialogResult.Secondary)
                 {
-                    await Play(musicData, isAutoNext);
+                    await Play(musicData, isAutoPlay);
                 }
             }
             catch (Exception e)
@@ -183,21 +181,21 @@ namespace znMusicPlayerWUI.Background
 
         private async void FreezePlayTime()
         {
-            await Task.Delay(100);
+            await Task.Delay(200);
             isLoadingPlay = false;
         }
 
-        public async Task<bool> PlayNext(bool isAutoNext = false)
+        public async Task<bool> PlayNext(bool isAutoPlay = false)
         {
             if (NowPlayingList.Any())
             {
-                var a = NowPlayingList.IndexOf(NowPlayingMusicData) + 1;
+                var a = NowPlayingList.IndexOf(App.audioPlayer.MusicData) + 1;
                 if (a > NowPlayingList.Count - 1)
                 {
                     a = 0;
                 }
 
-                return await Play(NowPlayingList[a], isAutoNext);
+                return await Play(NowPlayingList[a], isAutoPlay);
             }
 
             return true;
@@ -207,7 +205,7 @@ namespace znMusicPlayerWUI.Background
         {
             if (NowPlayingList.Any())
             {
-                var a = NowPlayingList.IndexOf(NowPlayingMusicData) - 1;
+                var a = NowPlayingList.IndexOf(App.audioPlayer.MusicData) - 1;
                 if (a < 0)
                 {
                     a = NowPlayingList.Count - 1;

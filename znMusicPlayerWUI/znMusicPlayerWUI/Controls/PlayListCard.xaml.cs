@@ -69,6 +69,7 @@ namespace znMusicPlayerWUI.Controls
 
         private async void UILoaded(object sender, RoutedEventArgs e)
         {
+            ExitMass();
             CreatShadow();
             if (MusicListData != null)
             {
@@ -110,6 +111,12 @@ namespace znMusicPlayerWUI.Controls
                     out Visual visual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
                 visual.StartAnimation(nameof(visual.Offset), animation);
 
+                AnimateHelper.AnimateScalar(
+                    PlayListImageMass,
+                    0.3f, 0.5, 0.2f, 1, 0.22f, 1,
+                    out Visual visual1, out Compositor compositor1, out ScalarKeyFrameAnimation animation1);
+                visual1.StartAnimation(nameof(visual1.Opacity), animation1);
+
                 if (dropShadow != null)
                 {
                     ScalarKeyFrameAnimation blurAnimation = compositor.CreateScalarKeyFrameAnimation();
@@ -129,8 +136,9 @@ namespace znMusicPlayerWUI.Controls
                     0, 0, 0, 0.5,
                     0.2f, 1f, 0.22f, 1f,
                     out Visual visual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
-
                 visual.StartAnimation(nameof(visual.Offset), animation);
+
+                ExitMass();
 
                 if (dropShadow != null)
                 {
@@ -140,6 +148,15 @@ namespace znMusicPlayerWUI.Controls
                     dropShadow.StartAnimation("Opacity", blurAnimation);
                 }
             }
+        }
+
+        private void ExitMass()
+        {
+            AnimateHelper.AnimateScalar(
+                PlayListImageMass,
+                0f, 0.5f, 0.2f, 1, 0.22f, 1,
+                out Visual visual1, out Compositor compositor1, out ScalarKeyFrameAnimation animation1);
+            visual1.StartAnimation(nameof(visual1.Opacity), animation1);
         }
 
         bool isPressed = false;

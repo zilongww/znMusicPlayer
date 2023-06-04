@@ -333,7 +333,8 @@
                                         VerticalAlignment="Center"
                                         PointerEntered="VolumeSlider_PointerEntered"
                                         PointerExited="VolumeSlider_PointerExited"
-                                        ValueChanged="VolumeSlider_ValueChanged"/>
+                                        ValueChanged="VolumeSlider_ValueChanged"
+                                        PointerWheelChanged="VolumeSlider_PointerWheelChanged"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>

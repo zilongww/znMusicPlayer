@@ -289,7 +289,7 @@ namespace znMusicPlayerWUI.Controls
         // 单击下一首播放按钮
         private void NextPlay_Click(object sender, RoutedEventArgs e)
         {
-            App.playingList.SetNextPlay(App.playingList.NowPlayingMusicData, MusicData);
+            App.playingList.SetNextPlay(App.audioPlayer.MusicData, MusicData);
         }
         
         // 单击详细信息按钮

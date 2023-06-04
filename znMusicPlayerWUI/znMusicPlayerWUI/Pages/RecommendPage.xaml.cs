@@ -38,6 +38,8 @@ namespace znMusicPlayerWUI.Pages
         //int a = 0;
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
+            //await App.playingList.Play(App.playListReader.NowMusicListDatas[0].Songs[0]);
+            
             GC.Collect();
             try
             {

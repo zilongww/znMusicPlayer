@@ -33,7 +33,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         public string Title
         {
-            get => App.playingList.NowPlayingMusicData.Title;
+            get => App.audioPlayer.MusicData.Title;
         }
 
         private bool _showLrcPage = true;
@@ -592,7 +592,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void InfoBaseTitle_Loaded(object sender, RoutedEventArgs e)
         {
-            foreach (var data in App.playingList.NowPlayingMusicData.Artists)
+            foreach (var data in App.audioPlayer.MusicData.Artists)
             {
                 var item = new MenuFlyoutItem()
                 {
@@ -614,7 +614,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private void ArtistFlyout_Opening(object sender, object e)
         {
             ArtistFlyout.Items.Clear();
-            foreach (var data in App.playingList.NowPlayingMusicData.Artists)
+            foreach (var data in App.audioPlayer.MusicData.Artists)
             {
                 var item = new MenuFlyoutItem()
                 {

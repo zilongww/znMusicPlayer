@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using znMusicPlayerWUI.Helpers;
 using NAudio.Midi;
+using System.Threading.Tasks;
 
 namespace znMusicPlayerWUI.Media
 {
@@ -94,15 +95,15 @@ namespace znMusicPlayerWUI.Media
                     {
                         case "10276":
                             readerStream = new NAudio.Flac.FlacReader(fileName);
-#if DEBUG
                             System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Flac 解码器");
-#endif
+                            break;
+                        case "79103":
+                            readerStream = new NAudio.Vorbis.VorbisWaveReader(fileName);
+                            System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Vorbis.Ogg 解码器");
                             break;
                         case "7368":
                             readerStream = new Mp3FileReader(fileName);
-#if DEBUG
                             System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 MP3 解码器");
-#endif
                             break;
                         case "8273":
                             readerStream = new WaveFileReader(fileName);
@@ -110,16 +111,12 @@ namespace znMusicPlayerWUI.Media
                             {
                                 readerStream = WaveFormatConversionStream.CreatePcmStream(readerStream);
                                 readerStream = new BlockAlignReductionStream(readerStream);
-#if DEBUG
                                 System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Wave 解码器");
-#endif
                             }
                             break;
                         case "7079":
                             readerStream = new AiffFileReader(fileName);
-#if DEBUG
                             System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Aiff 解码器");
-#endif
                             break;
                         case "7784":
                             isMidi = true;
@@ -127,9 +124,7 @@ namespace znMusicPlayerWUI.Media
                         default:
                             if (File.Exists(fileName))
                             {
-#if DEBUG
                                 System.Diagnostics.Debug.WriteLine($"AudioFileReader: 正在使用 Microsoft MediaFoundationReader 解码器，文件标识符为：{addr}");
-#endif
                                 readerStream = new MediaFoundationReader(fileName);
                             }
                             break;

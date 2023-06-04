@@ -27,6 +27,7 @@ using Melanchall.DryWetMidi.Interaction;
 using static znMusicPlayerWUI.Media.AudioPlayer;
 using static znMusicPlayerWUI.DataEditor.DataFolderBase;
 using Vanara.Extensions.Reflection;
+using NAudio.CoreAudioApi.Interfaces;
 
 namespace znMusicPlayerWUI.Media
 {
@@ -35,17 +36,34 @@ namespace znMusicPlayerWUI.Media
         public OutApi DeviceType { get; set; }
         public object Device { get; set; }
         public string DeviceName { get; set; }
+        //
+        //public bool IsDefaultDevice { get; set; } = false;
         public OutDevice(OutApi deviceType, object device = null, string deviceName = "") : this()
         {
             DeviceType = deviceType;
             Device = device;
             DeviceName = deviceName;
         }
+
         public override string ToString()
         {
             return $"{DeviceType} - {DeviceName}";
         }
 
+        public static OutDevice GetWasapiDefaultDevice(MMDeviceEnumerator enumerator)
+        {
+            return new OutDevice(OutApi.Wasapi, enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia).ID, defaultName);
+        }
+
+        public static OutDevice GetWasapiDefaultDevice()
+        {
+            var enumerator = new MMDeviceEnumerator();
+            var result = GetWasapiDefaultDevice(enumerator);
+            enumerator.Dispose();
+            return result;
+        }
+
+        public static string defaultName = "默认输出设备";
         /// <summary>
         /// 获取可以播放的音频输出设备列表
         /// </summary>
@@ -53,10 +71,25 @@ namespace znMusicPlayerWUI.Media
         public static async Task<List<OutDevice>> GetOutDevices()
         {
             List<OutDevice> outDevices = new List<OutDevice>();
-            string defaultName = "默认输出设备";
 
             await Task.Run(() =>
             {
+                // Wasapi
+                var enumerator = new MMDeviceEnumerator();
+                try
+                {
+                    // 添加默认设备
+                    outDevices.Add(GetWasapiDefaultDevice(enumerator));
+                }
+                catch { }
+
+                foreach (var wasapi in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
+                {
+                    OutDevice outDevice = new OutDevice(OutApi.Wasapi, wasapi.ID, wasapi.FriendlyName);
+                    outDevices.Add(outDevice);
+                }
+                enumerator.Dispose();
+
                 // WaveOut
                 for (int n = -1; n < WaveOut.DeviceCount; n++)
                 {
@@ -75,24 +108,6 @@ namespace znMusicPlayerWUI.Media
                 }
                 if (outDevices.Count < 2) outDevices.Clear();
 
-                // Wasapi
-                var enumerator = new MMDeviceEnumerator();
-
-                try
-                {
-                    // 添加默认设备
-                    OutDevice outDevice1 = new OutDevice(OutApi.Wasapi, enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia).ID, defaultName);
-                    outDevices.Add(outDevice1);
-                }
-                catch { }
-
-                foreach (var wasapi in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
-                {
-                    OutDevice outDevice = new OutDevice(OutApi.Wasapi, wasapi.ID, wasapi.FriendlyName);
-                    outDevices.Add(outDevice);
-                }
-                enumerator.Dispose();
-
                 // Asio
                 foreach (var asio in AsioOut.GetDriverNames())
                 {
@@ -107,6 +122,66 @@ namespace znMusicPlayerWUI.Media
             });
 
             return outDevices;
+        }
+    }
+
+    public class NotificationClientImplementation : IMMNotificationClient
+    {
+        public delegate void OnDefaultDeviceChangedDelegate(DataFlow dataFlow, Role deviceRole, string defaultDeviceId);
+        public event OnDefaultDeviceChangedDelegate OnDefaultDeviceChangedEvent;
+
+        public delegate void OnPropertyValueChangedDelegate(string deviceId);
+        public event OnPropertyValueChangedDelegate OnDeviceAddedEvent;
+        public event OnPropertyValueChangedDelegate OnDeviceRemovedEvent;
+
+        public delegate void OnDeviceStateChangedDelegate(string deviceId, DeviceState newState);
+        public event OnDeviceStateChangedDelegate OnDeviceStateChangedEvent;
+        
+        public delegate void OnOnPropertyValueChangedDelegate(string deviceId, PropertyKey propertyKey);
+        public event OnOnPropertyValueChangedDelegate OnPropertyValueChangedEvent;
+
+        public void OnDefaultDeviceChanged(DataFlow dataFlow, Role deviceRole, string defaultDeviceId)
+        {
+            OnDefaultDeviceChangedEvent?.Invoke(dataFlow, deviceRole, defaultDeviceId);
+        }
+
+        public void OnDeviceAdded(string deviceId)
+        {
+            OnDeviceAddedEvent?.Invoke(deviceId);
+        }
+
+        public void OnDeviceRemoved(string deviceId)
+        {
+            OnDeviceAddedEvent?.Invoke(deviceId);
+        }
+
+        public void OnDeviceStateChanged(string deviceId, DeviceState newState)
+        {
+            OnDeviceStateChangedEvent?.Invoke(deviceId, newState);
+        }
+
+        public void OnPropertyValueChanged(string deviceId, PropertyKey propertyKey)
+        {
+            OnPropertyValueChangedEvent?.Invoke(deviceId, propertyKey);
+        }
+
+        public NotificationClientImplementation()
+        {
+
+        }
+    }
+
+    public class ClientDeviceEvents
+    {
+        private MMDeviceEnumerator deviceEnum = new MMDeviceEnumerator();
+        public NotificationClientImplementation notificationClient;
+        public IMMNotificationClient notifyClient;
+
+        public ClientDeviceEvents()
+        {
+            notificationClient = new NotificationClientImplementation();
+            notifyClient = notificationClient;
+            deviceEnum.RegisterEndpointNotificationCallback(notifyClient);
         }
     }
 
@@ -125,14 +200,15 @@ namespace znMusicPlayerWUI.Media
         public event AudioPlayerDelegate EqualizerBandChanged;
 
         DispatcherTimer timer;
-        public enum OutApi { WaveOut, DirectSound, Wasapi, Asio, None }
+        public ClientDeviceEvents ClientDeviceEvents { get; private set; } = new();
         public Media.AudioFileReader FileReader { get; set; } = null;
         public AudioEffects.SoundTouchWaveProvider FileProvider { get; set; } = null;
+        public enum OutApi { WaveOut, DirectSound, Wasapi, Asio, None }
         public IWavePlayer NowOutObj { get; set; } = null;
         public MidiFile MidiFile { get; set; } = null;
         public OutputDevice MidiOutputDevice { get; set; } = OutputDevice.GetByIndex(0);
         public Playback MidiPlayback { get; set; } = null;
-        public MusicData MusicData { get; set; }
+        public MusicData MusicData { get; private set; }
         public bool IsReloadErrorFile { get; set; }
 
         public string NameOfBand { get; set; }
@@ -269,7 +345,7 @@ namespace znMusicPlayerWUI.Media
             }
         }
 
-        private OutDevice _nowOutDevice = new() { DeviceType = OutApi.WaveOut, Device = null, DeviceName = "默认输出设备" };
+        private OutDevice _nowOutDevice = OutDevice.GetWasapiDefaultDevice();
         public OutDevice NowOutDevice
         {
             get => _nowOutDevice;
@@ -351,8 +427,29 @@ namespace znMusicPlayerWUI.Media
 
         public AudioPlayer()
         {
-            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(200) };
+            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(250) };
             timer.Tick += (_, __) => { ReCallTiming(); };
+
+            ClientDeviceEvents.notificationClient.OnDefaultDeviceChangedEvent += NotificationClient_OnDefaultDeviceChangedEvent;
+        }
+
+        bool isInReloadDefaultDeviceChanged = false;
+        private async void NotificationClient_OnDefaultDeviceChangedEvent(DataFlow dataFlow, Role deviceRole, string defaultDeviceId)
+        {
+            if (NowOutObj == null)
+            {
+                NowOutDevice = OutDevice.GetWasapiDefaultDevice();
+                return;
+            }
+            if (isInReloadDefaultDeviceChanged) return;
+            if (NowOutObj.GetType() != typeof(DirectSoundOut) && NowOutObj.GetType() != typeof(WasapiOut)) return;
+            if (NowOutDevice.DeviceName != OutDevice.defaultName) return;
+
+            isInReloadDefaultDeviceChanged = true;
+            if (NowOutObj.GetType() == typeof(WasapiOut)) NowOutDevice = OutDevice.GetWasapiDefaultDevice();
+            MainWindow.Invoke(()=> SetReloadAsync());
+            await Task.Delay(1);
+            isInReloadDefaultDeviceChanged = false;
         }
 
         MusicData PointMusicData = null;
@@ -488,7 +585,7 @@ namespace znMusicPlayerWUI.Media
                     }
                     finally
                     {
-                        isLoadingLocal = false;
+                        localFileIniting = false;
                         PlayStateChanged?.Invoke(this);
                         CacheLoadedChanged?.Invoke(this);
                         TimingChanged?.Invoke(this);
@@ -509,15 +606,15 @@ namespace znMusicPlayerWUI.Media
             }
         }
 
+        List<IWavePlayer> WavePlayers { get; set; } = new();
         string _filePath = null;
-        bool isLoadingLocal = false;
         public string FileType = null;
         public int FileSize = 0;
         public string AudioBitrate = null;
+        public bool localFileIniting = false;
         public async Task SetSource(string filePath)
         {
             if (filePath != _filePath) return;
-            isLoadingLocal = true;
 
             if (NowOutDevice.DeviceType == OutApi.None)
             {
@@ -530,6 +627,7 @@ namespace znMusicPlayerWUI.Media
 
             AudioFileReader fileReader = null;
             AudioEffects.SoundTouchWaveProvider fileProvider = null;
+            localFileIniting = true;
 
             await Task.Run(() =>
             {
@@ -590,7 +688,6 @@ namespace znMusicPlayerWUI.Media
                 {
                     notDefaultLatency = true;
                 }
-
                 switch (NowOutDevice.DeviceType)
                 {
                     case OutApi.WaveOut:
@@ -644,7 +741,7 @@ namespace znMusicPlayerWUI.Media
                 MidiPlayback.Speed = Tempo;
             }
 
-            isLoadingLocal = false;
+            localFileIniting = false;
         }
 
         public async Task Reload()
@@ -702,6 +799,7 @@ namespace znMusicPlayerWUI.Media
 
         public bool SetPlay()
         {
+            if (localFileIniting) return false;
             NowOutObj?.Play();
             MidiPlayback?.Start();
             PlayStateChanged?.Invoke(this);
@@ -712,6 +810,7 @@ namespace znMusicPlayerWUI.Media
         
         public bool SetPause()
         {
+            if (localFileIniting) return false;
             NowOutObj?.Pause();
             MidiPlayback?.Stop();
             PlayStateChanged?.Invoke(this);
@@ -721,6 +820,7 @@ namespace znMusicPlayerWUI.Media
         
         public bool SetStop()
         {
+            if (localFileIniting) return false;
             NowOutObj?.Stop();
             MidiPlayback?.Stop();
             PlayStateChanged?.Invoke(this);
@@ -730,7 +830,7 @@ namespace znMusicPlayerWUI.Media
 
         public void ReCallTiming()
         {
-            //Debug.WriteLine($"ReCall Audio Player Timing Count {TimingChanged?.GetInvocationList()?.Length}.");
+            //.WriteLine($"ReCall Audio Player Timing Count {TimingChanged?.GetInvocationList()?.Length}.");
             timer.Start();
             if (PlaybackState != PlaybackState.Playing) timer.Stop();
             if (TimingChanged == null) timer.Stop();

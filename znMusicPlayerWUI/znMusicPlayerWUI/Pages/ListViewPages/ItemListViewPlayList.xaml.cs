@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 using CommunityToolkit.WinUI.UI;
 using znMusicPlayerWUI.Controls;
 using System.Collections.ObjectModel;
+using System.Data;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -52,23 +53,37 @@ namespace znMusicPlayerWUI.Pages
             base.OnNavigatedFrom(e);
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
             App.playListReader.Updataed -= PlayListReader_Updataed;
+            root.Loaded -= menu_border_Loaded;
+            Children.SelectionChanged -= Children_SelectionChanged;
+            headerRootGrid.SizeChanged -= Result_BaseGrid_SizeChanged;
 
             if (Children.SelectionMode != ListViewSelectionMode.None)
             {
                 Button_Click_2(null, null);
             }
             await Task.Delay(500);
-            scrollViewer?.ScrollToVerticalOffset(0);
 
+            foreach (var i in MusicDataList)
+            {
+                i.Dispose();
+            }
+            foreach (var i in searchMusicDatas)
+            {
+                i.Dispose();
+            }
             MusicDataList.Clear();
+
+            Children.ItemsSource = null; //😡GC2代频繁回收的罪魁祸首😡😡
+            Children.Items.Clear();
+
+            searchMusicDatas.Clear();
             dropShadow?.Dispose();
             PlayList_Image.Dispose();
             PlayList_Image.Dispose();
-            searchMusicDatas.Clear();
             NavToObj = null;
             UnloadObject(this);
             //GC.SuppressFinalize(this);
-            //System.Diagnostics.Debug.WriteLine("Clear");
+            System.Diagnostics.Debug.WriteLine("Clear");
         }
 
         private void CreatShadow()
@@ -119,7 +134,6 @@ namespace znMusicPlayerWUI.Pages
                 LoadImage();
 
                 MusicDataList.Clear();
-
                 var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
                 MusicData[] array = null;
 
@@ -157,8 +171,10 @@ namespace znMusicPlayerWUI.Pages
 
                 foreach (var i in array)
                 {
+                    if (i == null) continue;
                     MusicDataList.Add(new() { MusicData = i, MusicListData = NavToObj, ImageScaleDPI = dpi });
                 }
+                array = null;
                 System.Diagnostics.Debug.WriteLine("加载完成。");
             }
             LoadingRing.IsIndeterminate = false; isLoading = false;
@@ -236,8 +252,16 @@ namespace znMusicPlayerWUI.Pages
                     logoVisualOffsetYAnimation.Dispose();
                     stackVisualOffsetAnimation.Dispose();
                     commandBarVisualOffsetAnimation.Dispose();
+                    offsetExpression = null;
+                    backgroundVisualOpacityAnimation = null;
+                    logoVisualOffsetXAnimation = null;
+                    logoVisualOffsetYAnimation = null;
+                    logoVisualOffsetYAnimation = null;
+                    stackVisualOffsetAnimation = null;
+                    commandBarVisualOffsetAnimation = null;
                 }
                 logoHeaderScaleAnimation.Dispose();
+                logoHeaderScaleAnimation = null;
             }
 
             if (!xOnly)
@@ -288,16 +312,13 @@ namespace znMusicPlayerWUI.Pages
 
         private void UpdataInfoWidth()
         {
-            try
+            if (logoVisual == null) return;
+            var width = HeaderBaseGrid.ActualWidth - 50 - (PlayList_ImageBaseBorder.ActualWidth * logoVisual.Scale.X);
+            //System.Diagnostics.Debug.WriteLine(width);
+            if (width > 0)
             {
-                var width = HeaderBaseGrid.ActualWidth - 50 - (PlayList_ImageBaseBorder.ActualWidth * logoVisual.Scale.X);
-                //System.Diagnostics.Debug.WriteLine(width);
-                if (width > 0)
-                {
-                    WidthChanger.Width = width;
-                }
+                WidthChanger.Width = width;
             }
-            catch { }
         }
 
         private async void menu_border_Loaded(object sender, RoutedEventArgs e)
@@ -322,8 +343,10 @@ namespace znMusicPlayerWUI.Pages
             UpdataShyHeader();
         }
 
+        bool isFirstScroll = true;
         private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
+            if (!isFirstScroll) { isFirstScroll = false; return; }
             UpdataShyHeader(true);
             UpdataInfoWidth();
         }

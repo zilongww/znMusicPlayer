@@ -7,7 +7,7 @@ using znMusicPlayerWUI.DataEditor;
 
 namespace znMusicPlayerWUI.Helpers
 {
-    public class SongItemBindBase : BindableBase
+    public class SongItemBindBase : BindableBase, IDisposable
     {
         MusicData _musicData;
         public MusicData MusicData
@@ -47,6 +47,12 @@ namespace znMusicPlayerWUI.Helpers
                     OnPropertyChanged(nameof(ImageScaleDPI));
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            _musicData = null;
+            _musicListData = null;
         }
     }
 

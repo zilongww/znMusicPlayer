@@ -112,6 +112,7 @@ namespace znMusicPlayerWUI
             SWindowGridBaseTop.ActualThemeChanged += WindowGridBase_ActualThemeChanged;
             App.SMTC.ButtonPressed += SMTC_ButtonPressed;
             App.playListReader.Updataed += () => UpdataPlayListButtonUI();
+            App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
             MusicPageViewStateChanged += MainWindow_MusicPageViewStateChanged;
 
             loadingst.Children.Add(loadingprogress);
@@ -191,7 +192,6 @@ namespace znMusicPlayerWUI
             App.audioPlayer.TimingChanged += AudioPlayer_TimingChanged;
             App.audioPlayer.CacheLoadedChanged += AudioPlayer_CacheLoadedChanged;
             App.audioPlayer.CacheLoadingChanged += AudioPlayer_CacheLoadingChanged;
-            App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
             App.playingList.NowPlayingImageLoading += PlayingList_NowPlayingImageLoading;
             App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
             isAddEvents = true;
@@ -207,7 +207,6 @@ namespace znMusicPlayerWUI
             App.audioPlayer.TimingChanged -= AudioPlayer_TimingChanged;
             App.audioPlayer.CacheLoadedChanged -= AudioPlayer_CacheLoadedChanged;
             App.audioPlayer.CacheLoadingChanged -= AudioPlayer_CacheLoadingChanged;
-            App.audioPlayer.VolumeChanged -= AudioPlayer_VolumeChanged;
             App.playingList.NowPlayingImageLoading -= PlayingList_NowPlayingImageLoading;
             App.playingList.NowPlayingImageLoaded -= PlayingList_NowPlayingImageLoaded;
             App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange;
@@ -547,11 +546,8 @@ namespace znMusicPlayerWUI
 
         private void AudioPlayer_VolumeChanged(Media.AudioPlayer audioPlayer, object data)
         {
-            if (!isPEntered)
-            {
-                VolumeSlider.Value = (int)((float)data * 100);
-            }
-
+            VolumeSlider.Value = (int)((float)data * 100);
+            
             if ((float)data == 0)
             {
                 VolumeIconBase.Symbol = Symbol.Mute;
@@ -608,20 +604,9 @@ namespace znMusicPlayerWUI
 
         private void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
         {
-            bool b = false;
             if (audioPlayer.MusicData == null) return;
-            if (audioPlayer.MusicData != App.playingList.NowPlayingMusicData)
-            {
-                b = true;
-                PlayTitle.Text = audioPlayer.MusicData.Title;
-                PlayArtist.Text = audioPlayer.MusicData.ButtonName;
-            }
-
-            if (b)
-            {
-                App.playingList.NowPlayingMusicData = audioPlayer.MusicData;
-            }
-
+            PlayTitle.Text = audioPlayer.MusicData.Title;
+            PlayArtist.Text = audioPlayer.MusicData.ButtonName;
             PlayingListBaseView.SelectedItem = audioPlayer.MusicData;
         }
 
@@ -1144,7 +1129,7 @@ namespace znMusicPlayerWUI
             teachingTipPlayingList.ShowAt(STopControlsBaseGrid);
             try
             {
-                await SPlayingListBaseView.SmoothScrollIntoViewWithItemAsync(App.playingList.NowPlayingMusicData);
+                await SPlayingListBaseView.SmoothScrollIntoViewWithItemAsync(App.audioPlayer.MusicData);
             }
             catch { }
         }
@@ -1264,20 +1249,28 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region Top Controls Events
-        bool isPEntered;
+        bool willChangeVolume = false;
         private void VolumeSlider_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            isPEntered = true;
+            willChangeVolume = true;
         }
 
         private void VolumeSlider_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            isPEntered = false;
+            willChangeVolume = false;
+        }
+
+        private void VolumeSlider_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        {
+            if (e.GetCurrentPoint(sender as UIElement).Properties.MouseWheelDelta > 0)
+                VolumeSlider.Value++;
+            else
+                VolumeSlider.Value--;
         }
 
         private void VolumeSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
-            if (isPEntered)
+            if (willChangeVolume)
             {
                 App.audioPlayer.Volume = (float)(sender as Slider).Value / (float)100.0;
             }
@@ -1317,7 +1310,7 @@ namespace znMusicPlayerWUI
             if (PlayingListBaseView.SelectedItem != null)
             {
                 DataEditor.MusicData data = (DataEditor.MusicData)PlayingListBaseView.SelectedItem;
-                if (App.playingList.NowPlayingMusicData != data)
+                if (App.audioPlayer.MusicData != data)
                     await App.playingList.Play(data);
             }
             inSelectionChange = false;
