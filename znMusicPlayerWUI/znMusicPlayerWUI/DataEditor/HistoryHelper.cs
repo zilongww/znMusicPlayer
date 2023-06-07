@@ -13,6 +13,7 @@ namespace znMusicPlayerWUI.DataEditor
     {
         public MusicData MusicData { get; set; }
         public DateTime Time { get; set; }
+        public int Count { get; set; } = 0;
 
         public override string GetMD5()
         {
@@ -79,9 +80,13 @@ namespace znMusicPlayerWUI.DataEditor
             var datas = await HistoryHelper.GetHistoriesJObject();
             await Task.Run(() =>
             {
+                int count = datas["Songs"].Count();
                 foreach (var data in datas["Songs"])
                 {
-                    historyDatas.Add(JsonNewtonsoft.FromJSON<SongHistoryData>(data.First.ToString()));
+                    var d = JsonNewtonsoft.FromJSON<SongHistoryData>(data.First.ToString());
+                    d.Count = count;
+                    historyDatas.Add(d);
+                    count--;
                 }
             });
             return historyDatas.ToArray();

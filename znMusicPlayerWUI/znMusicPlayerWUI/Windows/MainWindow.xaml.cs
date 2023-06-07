@@ -127,8 +127,6 @@ namespace znMusicPlayerWUI
 
         public async void ReadLAE()
         {
-            await App.playListReader.Refresh();
-            if (NavView.DisplayMode == NavigationViewDisplayMode.Expanded) MusicPlayListButton.IsExpanded = true;
             return;
             if (App.LAE == null) return;
 
@@ -152,6 +150,15 @@ namespace znMusicPlayerWUI
             {
                 var nvi = new NavigationViewItem() { Content = i.ListShowName, Tag = i };
                 MusicPlayListButton.MenuItems.Add(nvi);
+            }
+        }
+
+        public async void OpenPlayListNavView()
+        {
+            await App.playListReader.Refresh();
+            if (NavView.DisplayMode == NavigationViewDisplayMode.Expanded)
+            {
+                MusicPlayListButton.IsExpanded = true;
             }
         }
 
@@ -1064,6 +1071,11 @@ namespace znMusicPlayerWUI
         private void NavView_PaneOpened(NavigationView sender, object args)
         {
 
+        }
+
+        private void NavView_Loaded(object sender, RoutedEventArgs e)
+        {
+            OpenPlayListNavView();
         }
         #endregion
 

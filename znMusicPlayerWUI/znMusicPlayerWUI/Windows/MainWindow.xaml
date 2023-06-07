@@ -44,7 +44,8 @@
                             SelectionChanged="NavView_SelectionChanged"
                             BackRequested="NavView_BackRequested"
                             DisplayModeChanged="NavView_DisplayModeChanged"
-                            PaneOpened="NavView_PaneOpened">
+                            PaneOpened="NavView_PaneOpened"
+                            Loaded="NavView_Loaded">
 
                 <NavigationView.MenuItems>
                     <NavigationViewItemHeader Content="网络"/>

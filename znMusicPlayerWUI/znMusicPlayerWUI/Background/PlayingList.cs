@@ -67,16 +67,19 @@ namespace znMusicPlayerWUI.Background
         }
 
         MusicData lastMusicData = null;
-        private async void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
+        private async void AudioPlayer_SourceChanged(AudioPlayer audioPlayer)
         {
             if (audioPlayer.MusicData == null) return;
-            if (audioPlayer.MusicData.AlbumID == lastMusicData?.AlbumID) return;
             if (audioPlayer.MusicData.InLocal != null)
             {
                 if (audioPlayer.MusicData.Album == lastMusicData?.Album)
                 {
                     return;
                 }
+            }
+            else
+            {
+                if (audioPlayer.MusicData.AlbumID == lastMusicData?.AlbumID) return;
             }
             lastMusicData = audioPlayer.MusicData;
 

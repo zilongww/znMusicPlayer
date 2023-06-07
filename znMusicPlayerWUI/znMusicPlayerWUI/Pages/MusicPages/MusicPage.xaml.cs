@@ -255,7 +255,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                         ImageVer.Height = new(1, GridUnitType.Auto);
                     }
 
-                    if (LyricSecondPlaceGrid.ActualHeight >= 300 || isMiniPageOnlyLyric)
+                    if (LyricSecondPlaceGrid.ActualHeight >= 260 || isMiniPageOnlyLyric)
                         isMiniPageLyricCenter = true;
                     else
                         isMiniPageLyricCenter = false;

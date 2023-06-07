@@ -53,9 +53,6 @@ namespace znMusicPlayerWUI.Pages
             base.OnNavigatedFrom(e);
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
             App.playListReader.Updataed -= PlayListReader_Updataed;
-            root.Loaded -= menu_border_Loaded;
-            Children.SelectionChanged -= Children_SelectionChanged;
-            headerRootGrid.SizeChanged -= Result_BaseGrid_SizeChanged;
 
             if (Children.SelectionMode != ListViewSelectionMode.None)
             {
@@ -83,7 +80,7 @@ namespace znMusicPlayerWUI.Pages
             NavToObj = null;
             UnloadObject(this);
             //GC.SuppressFinalize(this);
-            System.Diagnostics.Debug.WriteLine("Clear");
+            //System.Diagnostics.Debug.WriteLine("Clear");
         }
 
         private void CreatShadow()

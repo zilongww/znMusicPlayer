@@ -25,6 +25,7 @@
     <None Remove="Controls\LyricItem.xaml" />
     <None Remove="Controls\MediaPlayStateViewer.xaml" />
     <None Remove="Controls\PlayListCard.xaml" />
+    <None Remove="Controls\SongHistoryCard.xaml" />
     <None Remove="Controls\SongItem.xaml" />
     <None Remove="DesktopLyricWindow.xaml" />
     <None Remove="Pages\BrowsePage.xaml" />
@@ -92,6 +93,12 @@
     <Reference Include="Bass.Net">
       <HintPath>D:\UserData\Download\Bass.Net.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Controls\SongHistoryCard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

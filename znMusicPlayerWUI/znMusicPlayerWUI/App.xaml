@@ -13,6 +13,7 @@
 
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="SongHistoryCardBackground" Color="#06FFFFFF"/>
                     <SolidColorBrush x:Key="ArtistInfoBackground" Color="#66000000"/>
                     <SolidColorBrush x:Key="ItemBorderBackground" Color="#11FFFFFF"/>
                     <SolidColorBrush x:Key="BottomBackground" Color="Black"/>
@@ -23,9 +24,10 @@
                     <Color x:Key="MusicPageImageBlurFallbackColor">#BA000000</Color>
                     <StaticResource x:Key="MusicPageSelectLyricForeground" ResourceKey="AccentAAFillColorTertiaryBrush"/>
                     <Color x:Key="BlurImageAcrylicBrush">#FF202020</Color>
-                    <x:Double x:Key="MusicPageAcrylicTLO">0.7</x:Double>
+                    <AcrylicBrush x:Key="MusicPageImageAcrylicBrush" TintLuminosityOpacity="0.85" TintOpacity="0.0" FallbackColor="#BA000000" TintColor="#FF202020" Opacity="1"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="SongHistoryCardBackground" Color="#06000000"/>
                     <SolidColorBrush x:Key="ArtistInfoBackground" Color="#AAFFFFFF"/>
                     <SolidColorBrush x:Key="ItemBorderBackground" Color="#11000000"/>
                     <SolidColorBrush x:Key="BottomBackground" Color="White"/>
@@ -33,10 +35,10 @@
                     <SolidColorBrush x:Key="BorderNormal" Color="#15000000"/>
                     <SolidColorBrush x:Key="MusicPageLrcForeground" Color="#4F000000"/>
                     <StaticResource x:Key="AcrylicNormal" ResourceKey="AcrylicInAppFillColorBaseBrush"/>
-                    <Color x:Key="MusicPageImageBlurFallbackColor">#DADDDDDD</Color>
+                    <Color x:Key="MusicPageImageBlurFallbackColor">#CADDDDDD</Color>
                     <StaticResource x:Key="MusicPageSelectLyricForeground" ResourceKey="AccentTextFillColorSecondaryBrush"/>
                     <Color x:Key="BlurImageAcrylicBrush">#EEEEEE</Color>
-                    <x:Double x:Key="MusicPageAcrylicTLO">0.9</x:Double>
+                    <AcrylicBrush x:Key="MusicPageImageAcrylicBrush" TintLuminosityOpacity="0.85" TintOpacity="0.0" FallbackColor="#CADDDDDD" TintColor="#EEEEEE" Opacity="1"/>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 

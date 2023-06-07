@@ -44,7 +44,7 @@ namespace znMusicPlayerWUI.Background
 
         public LyricManager()
         {
-            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(16) };
+            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(15) };
             timer.Tick += (_, __) => ReCallUpdata();
 
             //MainWindow.WindowViewStateChanged += MainWindow_WindowViewStateChanged;

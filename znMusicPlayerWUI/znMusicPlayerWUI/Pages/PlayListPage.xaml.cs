@@ -23,10 +23,12 @@ namespace znMusicPlayerWUI.Pages
         public PlayListPage()
         {
             InitializeComponent();
-            App.playListReader.Updataed += () =>
-            {
-                UpdataPlayList();
-            };
+            App.playListReader.Updataed += PlayListReader_Updataed;
+        }
+
+        private void PlayListReader_Updataed()
+        {
+            UpdataPlayList();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -37,6 +39,7 @@ namespace znMusicPlayerWUI.Pages
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             await Task.Delay(500);
+            App.playListReader.Updataed -= PlayListReader_Updataed;
             foreach (PlayListCard item in BaseGridView.Items)
             {
                 item.Dispose();

@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:helper="using:znMusicPlayerWUI.Helpers"
+    xmlns:m="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     mc:Ignorable="d" SizeChanged="Result_BaseGrid_SizeChanged">
     
     <Page.Resources>
@@ -23,7 +24,7 @@
                   SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="helper:SongItemBindBase">
-                    <controlszn:SongItem MusicData="{Binding MusicData}" MusicListData="{x:Bind MusicListData, Mode=OneTime}"/>
+                    <controlszn:SongItem/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Header>
@@ -34,7 +35,6 @@
                         <Grid.Clip>
                             <RectangleGeometry x:Name="ImageClip" Rect="0,0,0,0"/>
                         </Grid.Clip>
-                        <Rectangle x:Name="BackColorBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
                         <Border CornerRadius="0"
                                 BorderThickness="0"
                                 x:Name="Artist_ImageBaseBorder">
@@ -45,16 +45,17 @@
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
-                            <Grid x:Name="HeaderBaseGrid">
+                            <!--<Grid x:Name="HeaderBaseGrid" Visibility="Collapsed">
                                 <Grid x:Name="Artist_BaseGrid" Loaded="menu_border_Loaded">
                                     <Grid x:Name="Artist_Image_BaseGrid" Margin="0,0,0,0">
                                         <Rectangle x:Name="Artist_Image_DropShadowBase" Opacity="0"/>
                                     </Grid>
                                     <Grid x:Name="InfosBaseStackPanel"
-                                            Margin="14,238,14,0"
+                                            Margin="0,238,14,0"
                                             VerticalAlignment="Bottom" HorizontalAlignment="Left" >
-                                        <Border CornerRadius="8" Background="{ThemeResource ArtistInfoBackground}"/>
-                                        <StackPanel Padding="14,8">
+                                        <Border CornerRadius="0,8,0,0" Background="{ThemeResource AcrylicNormal}"/>
+                                        <ScrollView x:Name="Artist_ScrollView">
+                                            <StackPanel Padding="14,8">
                                                 <TextBlock x:Name="Artist_TitleTextBlock"
                                                            Style="{ThemeResource SubTBHeader}"
                                                            TextWrapping="Wrap" IsTextSelectionEnabled="True"
@@ -65,10 +66,30 @@
                                                            TextAlignment="Left"
                                                            Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                                             </StackPanel>
+                                        </ScrollView>
                                     </Grid>
                                 </Grid>
-                            </Grid>
+                            </Grid>-->
 
+                            <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="12">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border x:Name="Artist_Info" Background="{ThemeResource AcrylicNormal}" CornerRadius="8" Width="44" Height="44" BorderThickness="0">
+                                        <SymbolIcon Symbol="ContactInfo"/>
+                                    </Border>
+                                    <Border x:Name="Artist_DownToList" Background="{ThemeResource AcrylicNormal}" CornerRadius="8" Width="44" Height="44" BorderThickness="0" Margin="4,0,0,0">
+                                        <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="12"
+                                                ToolTipService.ToolTip="滑动到列表" Click="Button_Click_6">
+                                            <AnimatedIcon>
+                                                <AnimatedIcon.Source>
+                                                    <m:AnimatedChevronDownSmallVisualSource/>
+                                                </AnimatedIcon.Source>
+                                            </AnimatedIcon>
+                                        </Button>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+                            
+                            <Rectangle Grid.Row="1" x:Name="BackColorBaseRectangle" Fill="{ThemeResource AcrylicNormal}" Visibility="Visible"/>
                             <Grid Grid.Row="1" x:Name="LittleBarGrid">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto"/>
@@ -81,7 +102,7 @@
                                     <Border Width="38" Height="38" CornerRadius="19">
                                         <controlszn:Imagezn x:Name="Artist_Image1"/>
                                     </Border>
-                                    <TextBlock Text="{Binding ElementName=Artist_TitleTextBlock,Path=Text}"
+                                    <TextBlock x:Name="Artist_SmallName"
                                                VerticalAlignment="Center" FontSize="18" Margin="8,0,0,0"/>
                                 </StackPanel>
 

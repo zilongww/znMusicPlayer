@@ -27,7 +27,7 @@
                   ui:ScrollViewerExtensions.EnableMiddleClickScrolling="True">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="helper:SongItemBindBase">
-                    <controlszn:SongItem MusicData="{Binding MusicData}" MusicListData="{x:Bind MusicListData, Mode=OneTime}"/>
+                    <controlszn:SongItem/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Header>

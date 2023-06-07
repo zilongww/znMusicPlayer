@@ -48,6 +48,9 @@ namespace znMusicPlayerWUI.Controls
                 musicListData = value;
             }
         }
+
+        SongItemBindBase musicItemBindBase;
+
         public double ImageScaleDPI { get; set; } = 1.0;
         public bool ShowImage
         {
@@ -62,19 +65,26 @@ namespace znMusicPlayerWUI.Controls
         public SongItem()
         {
             InitializeComponent();
+            DataContextChanged += SongItem_DataContextChanged;
             MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
-            ShowImage = false;
+            //ShowImage = false;
         }
 
-        public void Init(MusicData musicData)
+        private void SongItem_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            if (musicData == null) return;
-            if (musicData.PicturePath == null) ShowImage = false;
+            if (DataContext == null) return;
+            musicItemBindBase = DataContext as SongItemBindBase;
+            Init(musicItemBindBase);
+        }
 
-            DataContext = new SongItemBindBase() { MusicData = musicData, MusicListData = musicListData };
+        public void Init(SongItemBindBase bindBase)
+        {
+            MusicData = bindBase.MusicData;
+            musicListData = bindBase.MusicListData;
+            ImageScaleDPI = bindBase.ImageScaleDPI;
 
-            UpdataFlyoutMenuContext(musicData);
-            //UpdataImageInterface(musicData);
+            UpdataFlyoutMenuContext(bindBase.MusicData);
+            UpdataImageInterface(bindBase.MusicData);
         }
 
         public void UpdataFlyoutMenuContext(MusicData musicData)
@@ -83,26 +93,42 @@ namespace znMusicPlayerWUI.Controls
 
         public async void UpdataImageInterface(MusicData musicData)
         {
-            if (InfoButton == null) return;
-
-            if (ShowImage)
+            if (AlbumImage.Source != null)
             {
-                if (AlbumImage.Source == null)
-                {
+                AlbumImage.Dispose();
+            }
+
+            ImageSource a = null;
+
+            switch (musicData.From)
+            {
+                case MusicFrom.neteaseMusic:
+                    try
+                    {
+                        a = await FileHelper.GetImageSource(await Media.ImageManage.GetImageSource(musicData), (int)(50 * ImageScaleDPI), (int)(50 * ImageScaleDPI), true);
+                    }
+                    catch { }
+                    break;
+
+                case MusicFrom.localMusic:
                     if (musicData.InLocal != null)
                     {
-                        //a = await CodeHelper.GetCover(musicData.InLocal);
+                        a = await CodeHelper.GetCover(musicData.InLocal);
                     }
-                    else
-                    {
-                        try
-                        {
-                            AlbumImage.Source = await FileHelper.GetImageSource(await Media.ImageManage.GetImageSource(musicData), (int)(50 * ImageScaleDPI), (int)(50 * ImageScaleDPI), true);
-                        }
-                        catch { }
-                    }
-                    //AlbumImage.Source = a;
-                }
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (a != null)
+            {
+                ShowImage = true;
+                AlbumImage.Source = a;
+            }
+            else
+            {
+                ShowImage = false;
             }
         }
 
@@ -375,6 +401,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void mf_Opening(object sender, object e)
         {
+            mfs.Items.Clear();
             foreach (var i in MusicData.Artists)
             {
                 var a1 = new MenuFlyoutItem() { Text = i.Name, Tag = i };
@@ -385,6 +412,7 @@ namespace znMusicPlayerWUI.Controls
 
         private async void rmf_Opening(object sender, object e)
         {
+            rmfs.Items.Clear();
             foreach (var i in MusicData.Artists)
             {
                 var a1 = new MenuFlyoutItem() { Text = i.Name, Tag = i };
@@ -392,6 +420,7 @@ namespace znMusicPlayerWUI.Controls
                 rmfs.Items.Add(a1);
             }
 
+            AddToPlayListSubItems.Items.Clear();
             var mls = await PlayListHelper.ReadAllPlayList();
             foreach (var item in mls)
             {

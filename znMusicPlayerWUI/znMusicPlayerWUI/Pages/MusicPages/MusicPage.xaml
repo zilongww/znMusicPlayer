@@ -19,7 +19,7 @@
             <StackPanel Background="Transparent">
                 <TextBlock TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
                                                TextWrapping="Wrap"
-                                               FontSize="27"
+                                               FontSize="24"
                                                Text="{x:Bind LyricAllString}"/>
             </StackPanel>
         </DataTemplate>
@@ -71,7 +71,7 @@
         <Rectangle>
             <Rectangle.Fill>
                 <!--<SolidColorBrush Color="#55000000"/>-->
-                <AcrylicBrush TintLuminosityOpacity="0.65" TintOpacity="0.0" FallbackColor="{ThemeResource MusicPageImageBlurFallbackColor}" TintColor="{ThemeResource BlurImageAcrylicBrush}" Opacity="1"/>
+                <AcrylicBrush TintLuminosityOpacity="0.85" TintOpacity="0.0" FallbackColor="{ThemeResource MusicPageImageBlurFallbackColor}" TintColor="{ThemeResource BlurImageAcrylicBrush}" Opacity="1"/>
             </Rectangle.Fill>
         </Rectangle>
         <Rectangle Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" Opacity="0.0001"/>
@@ -149,7 +149,7 @@
                                     <MenuFlyoutItem x:Name="CopyMenuItem" Click="CopyMenuItem_Click" Text="复制" Icon="copy"/>
                                 </MenuFlyout>
                             </Button.Flyout>
-                            <TextBlock x:Name="TitleRunText" FontWeight="Bold" FontSize="24" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                            <TextBlock x:Name="TitleRunText" FontWeight="Normal" FontSize="24" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/>
                         </Button>
                         <Button x:Name="AlbumRunButton" Click="AlbumRunButton_Click">
                             <Button.Flyout>

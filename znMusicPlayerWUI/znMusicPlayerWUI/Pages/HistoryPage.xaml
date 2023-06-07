@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:znMusicPlayerWUI"
+    xmlns:controls="using:znMusicPlayerWUI.Controls"
     xmlns:data="using:znMusicPlayerWUI.DataEditor"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -13,57 +14,33 @@
             <Grid x:Name="HeaderBaseGrid">
                 <Rectangle x:Name="HeaderBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
                 <TextBlock x:Name="HeaderBaseTextBlock" Text="历史" Style="{ThemeResource TBHeader}"/>
-                <Grid VerticalAlignment="Bottom" Margin="29,84,162,4">
+                <Grid VerticalAlignment="Bottom" Margin="29,84,157,4">
                     <Grid.Resources>
                         <Style TargetType="TextBlock">
                             <Setter Property="Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                         </Style>
                     </Grid.Resources>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="标题" Margin="0,0,12,0"/>
-                    <TextBlock Text="艺术家" Grid.Column="1" Margin="8,0,12,0"/>
-                    <TextBlock Text="专辑" Grid.Column="2" Margin="8,0,12,0"/>
-                    <TextBlock Text="时间" Grid.Column="3"/>
+                    <Border Width="38" Margin="0,0,12,0">
+                        <TextBlock Text="#" HorizontalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="标题" Grid.Column="1" Margin="0,0,12,0"/>
+                    <TextBlock Text="艺术家" Grid.Column="2" Margin="8,0,12,0"/>
+                    <TextBlock Text="专辑" Grid.Column="3" Margin="8,0,12,0"/>
+                    <TextBlock Text="时间" Grid.Column="4"/>
                 </Grid>
             </Grid>
         </ListView.Header>
 
         <ListView.ItemTemplate>
             <DataTemplate x:DataType="data:SongHistoryData">
-                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                        Background="Transparent" BorderBrush="Transparent" Padding="12,0" Margin="0,0,4,0"
-                        Click="Button_Click">
-                    <Grid>
-                        <Grid.Resources>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                                <Setter Property="HorizontalAlignment" Value="Left"/>
-                            </Style>
-                        </Grid.Resources>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding MusicData.Title}" Margin="0,0,12,0"/>
-                        <Button Grid.Column="1" Margin="0,0,12,0" Padding="8,12" Background="Transparent" BorderThickness="0"
-                                HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
-                            <TextBlock Text="{Binding MusicData.ArtistName}"/>
-                        </Button>
-                        <Button Grid.Column="2" Margin="0,0,12,0" Padding="8,12" Background="Transparent" BorderThickness="0"
-                                HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
-                            <TextBlock Text="{Binding MusicData.Album}"/>
-                        </Button>
-                        <TextBlock Text="{Binding Time}" Grid.Column="3" Width="160"/>
-                    </Grid>
-                </Button>
+                <controls:SongHistoryCard HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"/>
             </DataTemplate>
         </ListView.ItemTemplate>
         
