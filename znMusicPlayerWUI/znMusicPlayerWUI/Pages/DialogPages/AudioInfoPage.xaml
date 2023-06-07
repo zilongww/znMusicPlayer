@@ -71,11 +71,33 @@
                 <StackPanel x:Name="AudioInfoSp" Grid.Column="1" Margin="8,-2,0,0">
                     <TextBlock Text="音频" Style="{ThemeResource TitleTextStyle}"/>
                     <TextBlock Text="加载中..."/>
-                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="位深度"/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="位深"/>
                     <TextBlock Text="加载中..."/>
                     <TextBlock Style="{ThemeResource SubTextStyle}" Text="编码"/>
                     <TextBlock Text="加载中..."/>
                     <TextBlock Style="{ThemeResource SubTextStyle}" Text="额外内容"/>
+                    <TextBlock Text="加载中..."/>
+                </StackPanel>
+            </Grid>
+            <Grid Margin="0,8,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Path Data="{ThemeResource 播放ol}"/>
+                    <Rectangle Grid.Row="1"/>
+                </Grid>
+                <StackPanel x:Name="OutInfoSp" Grid.Column="1" Margin="8,-2,0,0">
+                    <TextBlock Text="输出" Style="{ThemeResource TitleTextStyle}"/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="采样率"/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="通道"/>
                     <TextBlock Text="加载中..."/>
                 </StackPanel>
             </Grid>

@@ -31,14 +31,15 @@ using NAudio.CoreAudioApi.Interfaces;
 
 namespace znMusicPlayerWUI.Media
 {
-    public struct OutDevice
+    public class OutDevice : OnlyClass
     {
         public OutApi DeviceType { get; set; }
         public object Device { get; set; }
         public string DeviceName { get; set; }
+        public int SampleRate { get; set; }
         //
         //public bool IsDefaultDevice { get; set; } = false;
-        public OutDevice(OutApi deviceType, object device = null, string deviceName = "") : this()
+        public OutDevice(OutApi deviceType, object device = null, string deviceName = "")
         {
             DeviceType = deviceType;
             Device = device;
@@ -50,9 +51,17 @@ namespace znMusicPlayerWUI.Media
             return $"{DeviceType} - {DeviceName}";
         }
 
+        public override string GetMD5()
+        {
+            return $"{DeviceType}{Device}{DeviceName}";
+        }
+
         public static OutDevice GetWasapiDefaultDevice(MMDeviceEnumerator enumerator)
         {
-            return new OutDevice(OutApi.Wasapi, enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia).ID, defaultName);
+            var dout = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+            var od = new OutDevice(OutApi.Wasapi, dout.ID, defaultName);
+            od.SampleRate = dout.AudioClient.MixFormat.SampleRate;
+            return od;
         }
 
         public static OutDevice GetWasapiDefaultDevice()
@@ -86,6 +95,7 @@ namespace znMusicPlayerWUI.Media
                 foreach (var wasapi in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
                 {
                     OutDevice outDevice = new OutDevice(OutApi.Wasapi, wasapi.ID, wasapi.FriendlyName);
+                    outDevice.SampleRate = wasapi.AudioClient.MixFormat.SampleRate;
                     outDevices.Add(outDevice);
                 }
                 enumerator.Dispose();
@@ -93,7 +103,8 @@ namespace znMusicPlayerWUI.Media
                 // WaveOut
                 for (int n = -1; n < WaveOut.DeviceCount; n++)
                 {
-                    string name = WaveOut.GetCapabilities(n).ProductName;
+                    var wocb = WaveOut.GetCapabilities(n);
+                    string name = wocb.ProductName;
                     OutDevice outDevice = new OutDevice(OutApi.WaveOut, n, name == "Microsoft 声音映射器" || name == "Microsoft Sound Mapper" ? defaultName : name);
                     outDevices.Add(outDevice);
                 }

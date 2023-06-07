@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using znMusicPlayerWUI.DataEditor;
 using NAudio.Wave;
 using ATL.AudioData;
+using znMusicPlayerWUI.Media;
 
 namespace znMusicPlayerWUI.Pages.DialogPages
 {
@@ -29,6 +30,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
         {
             SetFileSourceInfoText();
             SetAudioInfoText();
+            SetOutInfoText();
         }
 
         private void SetFileSourceInfoText()
@@ -85,6 +87,58 @@ namespace znMusicPlayerWUI.Pages.DialogPages
             {
 
             }
+        }
+
+        private async void SetOutInfoText()
+        {
+            string SampleRateText = "未知";
+            if (App.audioPlayer.WasapiOnly && App.audioPlayer.NowOutDevice.DeviceType == AudioPlayer.OutApi.Wasapi)
+            {
+                if (App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate != App.audioPlayer.FileReader.WaveFormat.SampleRate)
+                    SampleRateText = $"{App.audioPlayer.FileReader.WaveFormat.SampleRate} Hz -> {App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate} Hz（重采样）";
+                else
+                    SampleRateText = $"{App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate} Hz";
+            }
+            else
+            {
+                if (App.audioPlayer.NowOutDevice.DeviceType == AudioPlayer.OutApi.Wasapi)
+                {
+                    if (App.audioPlayer.FileReader.WaveFormat.SampleRate != App.audioPlayer.NowOutDevice.SampleRate)
+                        SampleRateText = $"{App.audioPlayer.FileReader.WaveFormat.SampleRate} Hz -> {App.audioPlayer.NowOutDevice.SampleRate} Hz（重采样）";
+                    else
+                        SampleRateText = $"{App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate} Hz（SRC）";
+                }
+                else
+                {
+                    var outDevices = await OutDevice.GetOutDevices();
+                    int audioOutDeviceCount = 0;
+                    foreach (var device in outDevices)
+                    {
+                        if (device.DeviceType == AudioPlayer.OutApi.Wasapi) audioOutDeviceCount++;
+                    }
+                    switch (App.audioPlayer.NowOutDevice.DeviceType)
+                    {
+                        case AudioPlayer.OutApi.WaveOut:
+                            var sr = outDevices[outDevices.IndexOf(App.audioPlayer.NowOutDevice) - audioOutDeviceCount].SampleRate;
+                            if (sr != App.audioPlayer.FileReader.WaveFormat.SampleRate)
+                                SampleRateText = $"{App.audioPlayer.FileReader.WaveFormat.SampleRate} Hz -> {sr} Hz（重采样）";
+                            else
+                                SampleRateText = $"{App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate} Hz（SRC）";
+                            break;
+                        case AudioPlayer.OutApi.DirectSound:
+                            var sr1 = outDevices[outDevices.IndexOf(App.audioPlayer.NowOutDevice) - audioOutDeviceCount*2].SampleRate;
+                            if (sr1 != App.audioPlayer.FileReader.WaveFormat.SampleRate)
+                                SampleRateText = $"{App.audioPlayer.FileReader.WaveFormat.SampleRate} Hz -> {sr1} Hz（重采样）";
+                            else
+                                SampleRateText = $"{App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate} Hz（SRC）";
+                            break;
+                    }
+                }
+            }
+
+            ((TextBlock)OutInfoSp.Children[1]).Text = $"{App.audioPlayer.NowOutDevice.DeviceType} -> {App.audioPlayer.NowOutDevice.DeviceName}";
+            ((TextBlock)OutInfoSp.Children[3]).Text = SampleRateText;
+            ((TextBlock)OutInfoSp.Children[5]).Text = $"{App.audioPlayer.NowOutObj.OutputWaveFormat.Channels}";
         }
 
         private string ConvertCodecFamilyIntToString(int codecFamily)
