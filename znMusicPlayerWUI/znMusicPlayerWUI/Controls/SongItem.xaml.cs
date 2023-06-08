@@ -180,8 +180,8 @@ namespace znMusicPlayerWUI.Controls
                 RightToolBar.Opacity = 1;
                 RightToolBar.Visibility = Visibility.Visible;
                 RightToolBar.Children[0].Visibility = Visibility.Collapsed;
-                //if (!ShowImage)
-                BaseGrid.Padding = new(10, 16, 10, 16);
+                if (!ShowImage)
+                    BaseGrid.Padding = new(10, 16, 10, 16);
             }
             else
             {

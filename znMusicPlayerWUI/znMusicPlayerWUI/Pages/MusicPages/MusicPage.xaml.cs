@@ -23,6 +23,7 @@ using Microsoft.UI.Input;
 using System.Xml.Linq;
 using CommunityToolkit.WinUI.UI;
 using System.Runtime.Intrinsics.Arm;
+using CommunityToolkit.WinUI.UI.Animations;
 
 namespace znMusicPlayerWUI.Pages.MusicPages
 {
@@ -297,7 +298,11 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 if (c != null)
                 {
                     if (!isMiniPage)
+                    {
+                        //ScrollViewerBehavior.(scrollViewer, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48);
+                        //sv.GetAnimationBaseValue(sv.ver);
                         sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48, null, disableAnimation);
+                    }
                     else
                     {
                         if (isMiniPageLyricCenter)
@@ -536,6 +541,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 scrollViewer1 = b.Child as ScrollViewer;
             scrollViewer.CanContentRenderOutsideBounds = false;
             scrollViewer1.CanContentRenderOutsideBounds = false;
+
             UpdataInterfaceDesign();
         }
 

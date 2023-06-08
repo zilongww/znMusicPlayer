@@ -173,11 +173,11 @@ namespace znMusicPlayerWUI.Controls
         private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
-            ScrollViewer scrollViewer = new()
+            ScrollView scrollViewer = new()
             {
-                ZoomMode = ZoomMode.Enabled,
-                HorizontalScrollMode = ScrollMode.Enabled,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
+                ZoomMode = ScrollingZoomMode.Enabled,
+                HorizontalScrollMode = ScrollingScrollMode.Enabled,
+                HorizontalScrollBarVisibility = ScrollingScrollBarVisibility.Visible
             };
             TextBlock textBlock = new() { Text = "Ctrl键滑动滚轮或双指滑动可进行缩放 100%", Margin = new(84, -32, 0, 0), IsHitTestVisible = false };
             scrollViewer.ViewChanged += (_, __) =>

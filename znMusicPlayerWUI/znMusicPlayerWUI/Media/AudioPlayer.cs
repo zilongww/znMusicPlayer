@@ -28,6 +28,7 @@ using static znMusicPlayerWUI.Media.AudioPlayer;
 using static znMusicPlayerWUI.DataEditor.DataFolderBase;
 using Vanara.Extensions.Reflection;
 using NAudio.CoreAudioApi.Interfaces;
+using static NeteaseCloudMusicApi.Utils.QuickHttp;
 
 namespace znMusicPlayerWUI.Media
 {
@@ -37,6 +38,8 @@ namespace znMusicPlayerWUI.Media
         public object Device { get; set; }
         public string DeviceName { get; set; }
         public int SampleRate { get; set; }
+        public int Channels { get; set; }
+        public long Latency { get; set; }
         //
         //public bool IsDefaultDevice { get; set; } = false;
         public OutDevice(OutApi deviceType, object device = null, string deviceName = "")
@@ -61,6 +64,7 @@ namespace znMusicPlayerWUI.Media
             var dout = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
             var od = new OutDevice(OutApi.Wasapi, dout.ID, defaultName);
             od.SampleRate = dout.AudioClient.MixFormat.SampleRate;
+            od.Channels = dout.AudioClient.MixFormat.Channels;
             return od;
         }
 
@@ -96,6 +100,7 @@ namespace znMusicPlayerWUI.Media
                 {
                     OutDevice outDevice = new OutDevice(OutApi.Wasapi, wasapi.ID, wasapi.FriendlyName);
                     outDevice.SampleRate = wasapi.AudioClient.MixFormat.SampleRate;
+                    outDevice.Channels = wasapi.AudioClient.MixFormat.Channels;
                     outDevices.Add(outDevice);
                 }
                 enumerator.Dispose();
@@ -133,6 +138,30 @@ namespace znMusicPlayerWUI.Media
             });
 
             return outDevices;
+        }
+
+        public static async Task<OutDevice> GetWasapiDeviceFromOtherAPI(OutDevice outDevice)
+        {
+            if (outDevice.DeviceType == OutApi.Wasapi) return outDevice;
+            if (outDevice.DeviceType == OutApi.Asio) return null;
+            var outDevices = await GetOutDevices();
+            int audioOutDeviceCount = 0;
+            foreach (var device in outDevices)
+            {
+                if (device.DeviceType == OutApi.Wasapi) audioOutDeviceCount++;
+            }
+
+            OutDevice result = null;
+            switch (outDevice.DeviceType)
+            {
+                case OutApi.WaveOut:
+                    result = outDevices[outDevices.IndexOf(App.audioPlayer.NowOutDevice) - audioOutDeviceCount];
+                    break;
+                case OutApi.DirectSound:
+                    result = outDevices[outDevices.IndexOf(App.audioPlayer.NowOutDevice) - audioOutDeviceCount * 2];
+                    break;
+            }
+            return result;
         }
     }
 

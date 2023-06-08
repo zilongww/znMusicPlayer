@@ -60,7 +60,7 @@ namespace znMusicPlayerWUI.Pages
             {
                 songHistories.Add(data);
             }
-            await Task.Delay(1);
+            await Task.Delay(10);
             scrollViewer.ScrollToVerticalOffset(scrollOffset);
         }
 

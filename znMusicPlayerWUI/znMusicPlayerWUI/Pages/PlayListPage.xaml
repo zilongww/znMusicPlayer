@@ -14,7 +14,8 @@
               SelectionMode="None"
               Loaded="BaseGridView_Loaded"
               animations:Connected.ListItemKey="listItem"
-              animations:Connected.ListItemElementName="ItemThumbnail">
+              animations:Connected.ListItemElementName="ItemThumbnail"
+              animations:ItemsReorderAnimation.Duration="00:00:00.2000000">
         <GridView.Header>
             <Grid x:Name="BaseGridView_HeaderGrid">
                 <Rectangle x:Name="BaseGridView_HeaderRectangle" Fill="{ThemeResource AcrylicNormal}"/>

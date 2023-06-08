@@ -37,7 +37,6 @@ namespace znMusicPlayerWUI.Controls
         {
             if (DataContext == null) return;
             songHistoryData = DataContext as SongHistoryData;
-            System.Diagnostics.Debug.WriteLine(songHistoryData.Count % 2);
             if (songHistoryData.Count % 2 == 0)
             {
                 BackgroundRectangle.Visibility = Visibility.Collapsed;

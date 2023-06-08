@@ -131,10 +131,13 @@
                 </Grid>
                 <StackPanel x:Name="OutInfoSp" Grid.Column="1" Margin="8,-2,0,0">
                     <TextBlock Text="输出" Style="{ThemeResource TitleTextStyle}"/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="输出设备"/>
                     <TextBlock Text="加载中..."/>
                     <TextBlock Style="{ThemeResource SubTextStyle}" Text="采样率"/>
                     <TextBlock Text="加载中..."/>
-                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="通道"/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="声道"/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="延迟"/>
                     <TextBlock Text="加载中..."/>
                 </StackPanel>
             </Grid>

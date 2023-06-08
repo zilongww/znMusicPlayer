@@ -8,7 +8,7 @@
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
 
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" ScrollViewer.ZoomMode="Enabled" ScrollViewer.CanContentRenderOutsideBounds="True">
+    <ScrollView HorizontalScrollBarVisibility="Auto" ScrollView.ZoomMode="Enabled" ScrollViewer.CanContentRenderOutsideBounds="True">
         <StackPanel HorizontalAlignment="Stretch"
                     Orientation="Vertical"
                     Margin="0,14,0,0">
@@ -39,6 +39,6 @@
                     Content="Github"
                     Click="Button_Click"/>
         </StackPanel>
-    </ScrollViewer>
+    </ScrollView>
 
 </Page>

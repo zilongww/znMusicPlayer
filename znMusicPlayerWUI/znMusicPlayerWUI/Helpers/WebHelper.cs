@@ -12,6 +12,7 @@ using System.Net;
 using System.IO;
 using znMusicPlayerWUI.DataEditor;
 using System.Net.Http.Json;
+using Downloader;
 
 namespace znMusicPlayerWUI.Helpers
 {
@@ -61,8 +62,14 @@ namespace znMusicPlayerWUI.Helpers
 
             try
             {
-                var downloader = new Downloader.DownloadService();
-                await downloader.DownloadFileTaskAsync(address, downloadPath);
+                var downloader = DownloadBuilder.New()
+                    .WithUrl(address)
+                    .WithFileName(downloadPath)
+                    .Build();
+                var stream = await downloader.StartAsync();
+                await Task.Delay(50);
+                downloader.Stop();
+                stream.Dispose();
                 downloader.Dispose();
             }
             catch { }
