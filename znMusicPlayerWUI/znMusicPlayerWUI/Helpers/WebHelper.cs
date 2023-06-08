@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Net;
 using System.IO;
 using znMusicPlayerWUI.DataEditor;
+using System.Net.Http.Json;
 
 namespace znMusicPlayerWUI.Helpers
 {
@@ -104,14 +105,17 @@ namespace znMusicPlayerWUI.Helpers
 
                         string result = null;
                         result = await GetStringAsync(address);
-                        if (!string.IsNullOrEmpty(result))
+                        await Task.Run(() =>
                         {
-                            if (!result.Contains("操作频繁"))
+                            if (!string.IsNullOrEmpty(result))
                             {
-                                result = JObject.Parse(result)["songs"][0]["album"]["picUrl"].ToString();
-                                addressResult = result;
+                                if (!result.Contains("操作频繁"))
+                                {
+                                    result = JObject.Parse(result)["songs"][0]["album"]["picUrl"].ToString();
+                                    addressResult = result;
+                                }
                             }
-                        }
+                        });
                         break;
                     default:
                         addressResult = musicData.PicturePath;

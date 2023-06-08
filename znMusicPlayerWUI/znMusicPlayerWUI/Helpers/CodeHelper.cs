@@ -277,12 +277,17 @@ namespace znMusicPlayerWUI.Helpers
         {
             try
             {
-                TagLib.File f = TagLib.File.Create(path);
+                TagLib.File f = null;
+                await Task.Run(() => f = TagLib.File.Create(path));
+                if (f == null) return null;
                 if (f.Tag.Pictures != null && f.Tag.Pictures.Length != 0)
                 {
-                    var bin = f.Tag.Pictures[0].Data.Data;
-                    f.Dispose();
-                    return await SaveToImageSource(bin);
+                    return await SaveToImageSource(await Task.Run(() =>
+                    {
+                        var bin = f.Tag.Pictures[0].Data.Data;
+                        f.Dispose();
+                        return bin;
+                    }));
                 }
                 else
                     return null;
