@@ -261,6 +261,7 @@ namespace znMusicPlayerWUI
             {
                 AddEvents();
             }
+            SetDragRegionForCustomTitleBar(App.AppWindowLocal);
         }
 
         private static void Window_Activated(object sender, WindowActivatedEventArgs args)
@@ -1162,9 +1163,9 @@ namespace znMusicPlayerWUI
             if (InOpenMusicPage)
             {
                 InOpenMusicPage = false;
-                SContentFrame.Visibility = Visibility.Visible;
+                SWindowGridBase.Visibility = Visibility.Visible;
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine("主界面被显示。");
+                Debug.WriteLine("主界面被显示。");
 #endif
                 SMusicPageBaseFrame.Content = SMusicPage;
                 AnimateHelper.AnimateOffset(
@@ -1199,7 +1200,7 @@ namespace znMusicPlayerWUI
                 {
                     if (InOpenMusicPage)
                     {
-                        SContentFrame.Visibility = Visibility.Collapsed;
+                        SWindowGridBase.Visibility = Visibility.Collapsed;
 #if DEBUG
                         System.Diagnostics.Debug.WriteLine("主界面被隐藏。");
 #endif
@@ -1211,7 +1212,7 @@ namespace znMusicPlayerWUI
                 if (isFirstInMusicPage)
                 {
                     isFirstInMusicPage = false;
-                    SContentFrame.Visibility = Visibility.Collapsed;
+                    SWindowGridBase.Visibility = Visibility.Collapsed;
                 }
             }
         }

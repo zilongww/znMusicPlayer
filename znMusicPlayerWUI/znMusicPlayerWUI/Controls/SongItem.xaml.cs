@@ -66,7 +66,6 @@ namespace znMusicPlayerWUI.Controls
         {
             InitializeComponent();
             DataContextChanged += SongItem_DataContextChanged;
-            MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
             //ShowImage = false;
         }
 
@@ -85,6 +84,7 @@ namespace znMusicPlayerWUI.Controls
 
             UpdataFlyoutMenuContext(bindBase.MusicData);
             UpdataImageInterface(bindBase.MusicData);
+            MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
         }
 
         public void UpdataFlyoutMenuContext(MusicData musicData)
