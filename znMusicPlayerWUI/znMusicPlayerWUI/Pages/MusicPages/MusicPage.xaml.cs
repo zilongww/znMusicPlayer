@@ -31,6 +31,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
     {
         private GestureRecognizer _recognizer;
         public MusicPageViewStateChangeDelegate MusicPageViewStateChange { get; set; }
+        private System.Collections.ObjectModel.ObservableCollection<LyricData> LyricDatas = new();
 
         public string Title
         {
@@ -88,8 +89,8 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             MusicPageViewStateChange = new MusicPageViewStateChangeDelegate(ViewChange);
             DataContext = this;
             SizeChanged += MusicPage_SizeChanged;
+            LrcBaseListView.ItemsSource = LyricDatas;
 
-            LrcBaseListView.ItemsSource = App.lyricManager.NowPlayingLyrics;
             UpdataInterfaceDesign();
         }
 
@@ -100,6 +101,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             AudioPlayer_CacheLoadedChanged(App.audioPlayer);
             AudioPlayer_TimingChanged(App.audioPlayer);
             PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
+            LyricManager_PlayingLyricSourceChange1(App.lyricManager.NowPlayingLyrics);
             LyricManager_PlayingLyricSelectedChange1(App.lyricManager.NowLyricsData);
             App.audioPlayer.ReCallTiming();
             //Debug.WriteLine("MusicPage Updataed Events.");
@@ -117,11 +119,12 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             App.audioPlayer.CacheLoadedChanged += AudioPlayer_CacheLoadedChanged;
             App.playingList.NowPlayingImageLoading += PlayingList_NowPlayingImageLoading;
             App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
+            App.lyricManager.PlayingLyricSourceChange += LyricManager_PlayingLyricSourceChange1;
             isAddEvents = true;
             UpdataWhenDataLated();
             //Debug.WriteLine("MusicPage Added Events.");
         }
-        
+
         private void RemoveEvents()
         {
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
@@ -132,8 +135,8 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             App.audioPlayer.CacheLoadedChanged -= AudioPlayer_CacheLoadedChanged;
             App.playingList.NowPlayingImageLoading -= PlayingList_NowPlayingImageLoading;
             App.playingList.NowPlayingImageLoaded -= PlayingList_NowPlayingImageLoaded;
-            App.lyricManager.PlayingLyricSourceChange -= LyricManager_PlayingLyricSourceChange;
             App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange1;
+            App.lyricManager.PlayingLyricSourceChange -= LyricManager_PlayingLyricSourceChange1;
             isAddEvents = false;
             //Debug.WriteLine("MusicPage Removed Events.");
         }
@@ -153,6 +156,16 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 #if DEBUG
             Debug.WriteLine($"MusicPage: ViewState 已被设置为 {musicPageViewState}.");
 #endif
+        }
+
+        private async void LyricManager_PlayingLyricSourceChange1(System.Collections.ObjectModel.ObservableCollection<LyricData> nowPlayingLyrics)
+        {
+            LyricDatas.Clear();
+            foreach (var lyric in App.lyricManager.NowPlayingLyrics)
+            {
+                LyricDatas.Add(lyric);
+                //await Task.Delay(1);
+            }
         }
 
         private void PlayingList_NowPlayingImageLoading(ImageSource imageSource, string _)
@@ -265,8 +278,10 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             }
         }
 
-        public async void SelectedChangedDo(bool disableAnimation = false)
+        bool isAddingLyric = false;
+        public void SelectedChangedDo(bool disableAnimation = false)
         {
+            if (isAddingLyric) return;
             isCodeChangedLrcItem = true;
             LrcBaseListView.SelectedItem = App.lyricManager.NowLyricsData;
             LrcSecondListView.SelectedItem = App.lyricManager.NowLyricsData;
@@ -301,20 +316,28 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     {
                         //ScrollViewerBehavior.(scrollViewer, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48);
                         //sv.GetAnimationBaseValue(sv.ver);
-                        sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48, null, disableAnimation);
+                        var offest = c.ActualOffset.Y + c.ActualSize.Y / 2 - sv.ViewportHeight / 2;
+                        if (offest < 0) offest = 0;
+                        if (offest > sv.ScrollableHeight) offest = sv.ScrollableHeight;
+                        sv.ScrollTo(0, offest, new(disableAnimation ? ScrollingAnimationMode.Disabled : ScrollingAnimationMode.Enabled));
                     }
                     else
                     {
                         if (isMiniPageLyricCenter)
-                            await LrcSecondListView.SmoothScrollIntoViewWithItemAsync(App.lyricManager.NowLyricsData, ScrollItemPlacement.Center, disableAnimation);
+                        {
+                            var offest = c.ActualOffset.Y + c.ActualSize.Y / 2 - sv.ViewportHeight / 2;
+                            if (offest < 0) offest = 0;
+                            if (offest > sv.ScrollableHeight) offest = sv.ScrollableHeight;
+                            sv.ScrollTo(0, offest, new(disableAnimation ? ScrollingAnimationMode.Disabled : ScrollingAnimationMode.Enabled));
+                        }
                         else
-                            await LrcSecondListView.SmoothScrollIntoViewWithItemAsync(App.lyricManager.NowLyricsData, ScrollItemPlacement.Top, disableAnimation);
+                        {
+                            // 18: items margin
+                            sv.ScrollTo(0, c.ActualOffset.Y + 18, new(disableAnimation ? ScrollingAnimationMode.Disabled : ScrollingAnimationMode.Enabled));
+                        }
                     }
                 }
             }
-#if DEBUG
-            //Debug.WriteLine($"MusicPage: 选中歌词已被更改为: {App.lyricManager.NowLyricsData?.Lyric[0]}");
-#endif
         }
 
         //todo：优化性能
@@ -325,11 +348,6 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 App.lyricManager.ReCallUpdata();
                 SelectedChangedDo();
             }
-        }
-
-        private void LyricManager_PlayingLyricSourceChange(System.Collections.ObjectModel.ObservableCollection<DataEditor.LyricData> nowPlayingLyrics)
-        {
-
         }
 
         private void MusicPage_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -361,12 +379,10 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
             if (audioPlayer.PlaybackState == PlaybackState.Playing)
             {
-                App.lyricManager.PlayingLyricSourceChange += LyricManager_PlayingLyricSourceChange;
                 App.lyricManager.PlayingLyricSelectedChange += LyricManager_PlayingLyricSelectedChange1;
             }
             else
             {
-                App.lyricManager.PlayingLyricSourceChange -= LyricManager_PlayingLyricSourceChange;
                 App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange1;
             }
         }
@@ -450,8 +466,8 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 placementMargin: new(30, 0, 0, ControlBar.ActualHeight - PlaySlider.ActualHeight + 8));
         }
 
-        static ScrollViewer scrollViewer = null;
-        static ScrollViewer scrollViewer1 = null;
+        static ScrollView scrollViewer = null;
+        static ScrollView scrollViewer1 = null;
         private void LrcBaseListView_Loaded(object sender, RoutedEventArgs e)
         {
         }
@@ -526,8 +542,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void LrcBaseListView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            LrcBaseListView.Padding = new Thickness(0, LrcBaseListView.ActualHeight / 2 + 68, 0, LrcBaseListView.ActualHeight / 2);
-            LrcSecondListView.Padding = new Thickness(0, LrcSecondListView.ActualHeight / 2, 0, LrcSecondListView.ActualHeight / 2);
+            (sender as ListView).Padding = new Thickness(0, 0, 0, 0);
         }
 
         private void pageRoot_Loaded(object sender, RoutedEventArgs e)
@@ -536,11 +551,11 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             var a = VisualTreeHelper.GetChild(LrcBaseListView, 0) as Border;
             var b = VisualTreeHelper.GetChild(LrcSecondListView, 0) as Border;
             if (a != null)
-                scrollViewer = a.Child as ScrollViewer;
+                scrollViewer = a.Child as ScrollView;
             if (b != null)
-                scrollViewer1 = b.Child as ScrollViewer;
-            scrollViewer.CanContentRenderOutsideBounds = false;
-            scrollViewer1.CanContentRenderOutsideBounds = false;
+                scrollViewer1 = b.Child as ScrollView;
+            //scrollViewer.CanContentRenderOutsideBounds = false;
+            //scrollViewer1.CanContentRenderOutsideBounds = false;
 
             UpdataInterfaceDesign();
         }
