@@ -232,7 +232,8 @@
                         </ComboBox>
                     </Grid>
                     <Grid x:Name="OpenMediaBaseGrid"
-                          Loaded="OpenMediaBaseGrid_Loaded">
+                          Loaded="OpenMediaBaseGrid_Loaded"
+                          Style="{StaticResource ItemGridStyle}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
@@ -245,6 +246,18 @@
                             <Button Content="打开文件" Margin="{ThemeResource ContentDialogButton1HostMargin}" Click="Button_Click_3"/>
                             <Button Content="输入地址" Click="Button_Click_3"/>
                         </StackPanel>
+                    </Grid>
+                    <Grid x:Name="HotKeyBaseGrid"
+                          Loaded="HotKeyBaseGrid_Loaded">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="热键"/>
+                            <TextBlock Text="热键帮助" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Content="打开帮助" Click="Button_Click_4"/>
                     </Grid>
                 </StackPanel>
             </Expander>

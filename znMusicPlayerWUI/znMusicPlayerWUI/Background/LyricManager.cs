@@ -151,13 +151,8 @@ namespace znMusicPlayerWUI.Background
                 {
                     NowPlayingLyrics.Add(i);
                 }
-
-                NowLyricsData = NowPlayingLyrics.First();
             }
-            else
-            {
-                NowLyricsData = null;
-            }
+            NowLyricsData = null;
         }
 
         LyricData lastLyricData = null;

@@ -487,33 +487,30 @@ namespace znMusicPlayerWUI
         {
             try
             {
-                if (SWindowGridBase.Visibility == Visibility.Visible && !isMinSize && !InOpenMusicPage)
+                if (_ != null)
                 {
-                    if (_ != null)
+                    int tcount = 1;
+                    int num = App.lyricManager.NowPlayingLyrics.IndexOf(_);
+                    try
                     {
-                        int tcount = 1;
-                        int num = App.lyricManager.NowPlayingLyrics.IndexOf(_);
-                        try
+                        while (_?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num + tcount]?.Lyric?.FirstOrDefault())
                         {
-                            while (_?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num + tcount]?.Lyric?.FirstOrDefault())
-                            {
-                                tcount++;
-                            }
+                            tcount++;
                         }
-                        catch { }
-
-                        string t1text = tcount == 1
-                            ? _?.Lyric?.FirstOrDefault()
-                            : $"{_?.Lyric?.FirstOrDefault()} (x{tcount})";
-
-                        AppTitleTextBlock.Text = $"{App.AppName} -";
-                        LyricTextBlock.Text = $" {t1text}";
                     }
-                    else
-                    {
-                        AppTitleTextBlock.Text = $"{App.AppName}";
-                        LyricTextBlock.Text = null;
-                    }
+                    catch { }
+
+                    string t1text = tcount == 1
+                        ? _?.Lyric?.FirstOrDefault()
+                        : $"{_?.Lyric?.FirstOrDefault()} (x{tcount})";
+
+                    AppTitleTextBlock.Text = $"{App.AppName} -";
+                    LyricTextBlock.Text = $" {t1text}";
+                }
+                else
+                {
+                    AppTitleTextBlock.Text = $"{App.AppName}";
+                    LyricTextBlock.Text = null;
                 }
             }
             catch (Exception err)
@@ -1515,19 +1512,23 @@ namespace znMusicPlayerWUI
             // 需要注册热键的列表
             var WillRegisterHotKeysList = new List<Tuple<Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS, uint>>()
             {
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x25),
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x27),
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x28),
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x26),
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0xBD),
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0xBB),
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB0),
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB1),
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB2),
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB3),
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x4F),
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x4C),
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x52)
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x25), // ctrl + left
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x27), // ctrl + right
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x28), // ctrl + down
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x26), // ctrl + up
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0xBD), // ctrl + -
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0xBB), // ctrl + +
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB0), // ctrl + media next button
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB1), // ctrl + media previous button
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB2), // ctrl + media stop button
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB3), // ctrl + media play or pause button
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x4F), // ctrl + shift + o
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x4C), // ctrl + shift + l
+                //Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x52), // ctrl + shift + r
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x49), // ctrl + shift + i
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x55), // ctrl + shift + u
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x24), // ctrl + shift + home
+                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x4B), // ctrl + shift + k
             };
 
             var ErrorCantCreatHotKeysList = new List<uint>();
@@ -1596,20 +1597,45 @@ namespace znMusicPlayerWUI
                 {
                     OpenDesktopLyricWindow();
                 }
-                else if (code == "5373958")
+                else if (code == "5373958" || code == "4784134")
                 {
-                    // 随机播放
+                    App.playingList.PlayBehaviour = App.playingList.PlayBehaviour == Background.PlayBehaviour.随机播放 ? Background.PlayBehaviour.顺序播放 : Background.PlayBehaviour.随机播放;
                 }
                 else if (code == "5177350")
                 {
                     App.AppWindowLocalOverlappedPresenter.Restore();
                 }
+                else if (code == "5570566")
+                {
+                    if (IsDesktopLyricWindowOpen)
+                    {
+                        DesktopLyricWindow.Activate();
+                        DesktopLyricWindow.overlappedPresenter.Restore();
+                    }
+                }
+                else if (code == "2359302")
+                {
+                    if (App.playingList.NowPlayingList.Any())
+                    {
+                        App.playingList.Play(App.playingList.NowPlayingList.First());
+                    }
+                }
+                else if (code == "4915206")
+                {
+                    if (IsDesktopLyricWindowOpen)
+                    {
+                        if (!DesktopLyricWindow.IsLock)
+                        {
+                            DesktopLyricWindow.Lock();
+                        }
+                    }
+                }
                 else
                 {
-                    Debug.WriteLine("Error Hotkey:");
-                    Debug.WriteLine(uMsg);
-                    Debug.WriteLine(wParam.Value);
-                    Debug.WriteLine(lParam.Value);
+                    ShowDialog("未知热键", "未知的热键：\n" +
+                        $"●uMsg：{uMsg}\n" +
+                        $"●wParam.Value：{wParam.Value}\n" +
+                        $"●lParam.Value：{lParam.Value}");
                 }
                 return (Windows.Win32.Foundation.LRESULT)IntPtr.Zero;
             }

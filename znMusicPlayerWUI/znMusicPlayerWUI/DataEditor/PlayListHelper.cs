@@ -124,9 +124,9 @@ namespace znMusicPlayerWUI.DataEditor
         public static async Task<JObject> AddLocalMusicDataToPlayList(string listName, FileInfo localFlie, JObject jdata)
         {
             MusicData localAudioData;
-            TagLib.File tagFile;
+            TagLib.File tagFile = null;
             TagLib.Tag tag = null;
-            bool isNoError = true;
+            bool isError = false;
 
             try
             {
@@ -134,15 +134,16 @@ namespace znMusicPlayerWUI.DataEditor
                 {
                     tagFile = TagLib.File.Create(localFlie.FullName);
                     tag = tagFile.Tag;
-                    if (tag.IsEmpty) isNoError = false;
+                    if (tag.IsEmpty) isError = true;
+                    if (tag.Performers == null) isError = true;
                 });
             }
             catch
             {
-                isNoError = false;
+                isError = true;
             }
 
-            if (isNoError)
+            if (!isError)
             {
                 List<Artist> artists = null;
                 if (tag.Performers.Any())
@@ -153,6 +154,7 @@ namespace znMusicPlayerWUI.DataEditor
                         artists.Add(new(a, null, null));
                     }
                 }
+                
 
                 localAudioData = new MusicData(
                     tag.Title == null ? localFlie.Name : tag.Title, null, artists, tag.Album,

@@ -19,7 +19,7 @@ namespace znMusicPlayerWUI.Controls
 {
     public partial class SongItem : Grid, IDisposable
     {
-        private bool _ShowImage = true;
+        private bool _ShowImage = false;
 
         public bool AutoLoadImage = false;
         public bool CanClickPlay { get; set; } = true;

@@ -319,5 +319,28 @@ namespace znMusicPlayerWUI.Pages
         private void Page_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
         }
+
+        private void HotKeyBaseGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            await MainWindow.ShowDialog("热键帮助", "目前暂不支持更改热键键位。\n" +
+                "使用以下热键可在不与此程序的窗口交互的情况下控制程序的行为：\n" +
+                "●Ctrl + 左键：上一首歌曲\n" +
+                "●Ctrl + 右键：下一首歌曲\n" +
+                "●Ctrl + 下键：暂停正在播放的歌曲\n" +
+                "●Ctrl + 上键：停止正在播放的歌曲\n" +
+                "●Ctrl + 减号键：减少音量\n" +
+                "●Ctrl + 加号键：增大音量\n" +
+                "●Ctrl + Shift + O键：尝试唤起应用程序窗口\n" +
+                "●Ctrl + Shift + L键：打开/关闭桌面歌词\n" +
+                "●Ctrl + Shift + I键：打开/关闭随机播放\n" +
+                "●Ctrl + Shift + U键：尝试将桌面歌词置顶\n" +
+                "●Ctrl + Shift + K键：锁定桌面歌词"
+                );
+        }
     }
 }

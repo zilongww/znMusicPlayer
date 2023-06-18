@@ -62,15 +62,9 @@ namespace znMusicPlayerWUI.Helpers
 
             try
             {
-                var downloader = DownloadBuilder.New()
-                    .WithUrl(address)
-                    .WithFileName(downloadPath)
-                    .Build();
-                var stream = await downloader.StartAsync();
-                await Task.Delay(50);
-                downloader.Stop();
-                stream.Dispose();
-                downloader.Dispose();
+                var d = new DownloadService();
+                await d.DownloadFileTaskAsync(address, downloadPath);
+                d.Dispose();
             }
             catch { }
         }

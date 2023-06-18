@@ -237,7 +237,7 @@ namespace znMusicPlayerWUI
             // MP3
             ".mp3",
             // MPEG-4
-            ".m4a", ".m4v", ".mov", ".mp4",
+            ".m4a", ".m4v", ".mov", ".mp4", ".mkv",
             // SAMI
             ".sami", ".smi",
             // other

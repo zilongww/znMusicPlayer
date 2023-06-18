@@ -29,6 +29,7 @@ using System.Collections.ObjectModel;
 using Windows.Devices.Input;
 using znMusicPlayerWUI.DataEditor;
 using PInvoke;
+using znMusicPlayerWUI.Media;
 
 namespace znMusicPlayerWUI.Windowed
 {
@@ -87,7 +88,17 @@ namespace znMusicPlayerWUI.Windowed
 
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
             App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
+            App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
             AudioPlayer_PlayStateChanged(App.audioPlayer);
+
+            //AppWindow.Closing += AppWindow_Closing;
+        }
+
+        private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
+        {
+            App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
+            App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
+            App.audioPlayer.VolumeChanged -= AudioPlayer_VolumeChanged;
         }
 
         int showBorderCount = 0;
@@ -117,11 +128,22 @@ namespace znMusicPlayerWUI.Windowed
             }
         }
 
+        private void AudioPlayer_VolumeChanged(Media.AudioPlayer audioPlayer, object data)
+        {
+
+            ShowInfomation($"音量：{Math.Round(audioPlayer.Volume * 100)}");
+        }
+
+        private void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
+        {
+            ShowInfomation($"正在播放：{audioPlayer.MusicData.Title}");
+        }
+
         int showCount = 0;
-        private async void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
+        private async void ShowInfomation(string text)
         {
             InfoTBBorder.Opacity = 1;
-            InfoTB.Text = $"正在播放：{audioPlayer.MusicData.Title}";
+            InfoTB.Text = text;
 
             showCount++;
             await Task.Delay(5000);
@@ -256,7 +278,7 @@ namespace znMusicPlayerWUI.Windowed
         static SizeInt32 lastWindowSize = default;
 
         public bool IsLock = false;
-        private void LockButton_Click(object sender, RoutedEventArgs e)
+        public void Lock()
         {
             if (IsLock)
             {
@@ -279,6 +301,11 @@ namespace znMusicPlayerWUI.Windowed
                 AppWindow.Resize(sizeInt32);
                 AppWindow.Resize(sizeInt32_1);
             }
+        }
+
+        private void LockButton_Click(object sender, RoutedEventArgs e)
+        {
+            Lock();
         }
 
         public void UpdataDragSize()
