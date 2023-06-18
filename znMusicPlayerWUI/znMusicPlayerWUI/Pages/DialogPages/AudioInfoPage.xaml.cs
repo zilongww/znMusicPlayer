@@ -41,11 +41,27 @@ namespace znMusicPlayerWUI.Pages.DialogPages
 
         private async void SetAudioInfoText()
         {
-            ATL.Track tfile = null;
-            await Task.Run(() =>
+            if (App.audioPlayer.FileReader != null)
             {
-                tfile = new ATL.Track(App.audioPlayer.FileReader.FileName);
-            });
+                if (App.audioPlayer.FileReader.isMidi)
+                {
+                    AudioInfoGrid.Visibility = Visibility.Collapsed;
+                    return;
+                }
+            }
+
+            ATL.Track tfile = null;
+            if (App.audioPlayer.tfile == null)
+            {
+                await Task.Run(() =>
+                {
+                    tfile = new ATL.Track(App.audioPlayer.FileReader.FileName);
+                });
+            }
+            else
+            {
+                tfile = App.audioPlayer.tfile;
+            }
 
             if (tfile != null)
             {
@@ -91,38 +107,51 @@ namespace znMusicPlayerWUI.Pages.DialogPages
 
         private async void SetOutInfoText()
         {
-            string SampleRateText = "未知";
-            var getd = await OutDevice.GetWasapiDeviceFromOtherAPI(App.audioPlayer.NowOutDevice);
-            if (App.audioPlayer.WasapiOnly && App.audioPlayer.NowOutDevice.DeviceType == AudioPlayer.OutApi.Wasapi)
+            if (App.audioPlayer.FileReader.isMidi)
             {
-                if (App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate != App.audioPlayer.FileReader.WaveFormat.SampleRate)
-                    SampleRateText = $"{App.audioPlayer.FileReader.WaveFormat.SampleRate} Hz -> {App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate} Hz（重采样）";
-                else
-                    SampleRateText = $"{App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate} Hz";
+                ((TextBlock)OutInfoSp.Children[2]).Text = $"Midi -> {App.audioPlayer.MidiOutputDevice.Name}";
+                ((TextBlock)OutInfoSp.Children[3]).Visibility = Visibility.Collapsed;
+                ((TextBlock)OutInfoSp.Children[4]).Visibility = Visibility.Collapsed;
+                ((TextBlock)OutInfoSp.Children[5]).Visibility = Visibility.Collapsed;
+                ((TextBlock)OutInfoSp.Children[6]).Visibility = Visibility.Collapsed;
+                ((TextBlock)OutInfoSp.Children[7]).Visibility = Visibility.Collapsed;
+                ((TextBlock)OutInfoSp.Children[8]).Visibility = Visibility.Collapsed;
             }
             else
             {
-                if (getd.SampleRate != App.audioPlayer.FileReader.WaveFormat.SampleRate)
-                    SampleRateText = $"{App.audioPlayer.FileReader.WaveFormat.SampleRate} Hz -> {getd.SampleRate} Hz（重采样）";
+                string SampleRateText = "未知";
+                var getd = await OutDevice.GetWasapiDeviceFromOtherAPI(App.audioPlayer.NowOutDevice);
+                if (App.audioPlayer.WasapiOnly && App.audioPlayer.NowOutDevice.DeviceType == AudioPlayer.OutApi.Wasapi)
+                {
+                    if (App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate != App.audioPlayer.FileReader.WaveFormat.SampleRate)
+                        SampleRateText = $"{App.audioPlayer.FileReader.WaveFormat.SampleRate} Hz -> {App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate} Hz（重采样）";
+                    else
+                        SampleRateText = $"{App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate} Hz";
+                }
                 else
-                    SampleRateText = $"{App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate} Hz（SRC）";
+                {
+                    if (getd.SampleRate != App.audioPlayer.FileReader.WaveFormat.SampleRate)
+                        SampleRateText = $"{App.audioPlayer.FileReader.WaveFormat.SampleRate} Hz -> {getd.SampleRate} Hz（重采样）";
+                    else
+                        SampleRateText = $"{App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate} Hz（SRC）";
 
-            }
+                }
 
-            string channelsText = null;
-            if (App.audioPlayer.FileReader.WaveFormat.Channels != getd.Channels)
-            {
-                channelsText = $"{App.audioPlayer.FileReader.WaveFormat.Channels} 声道 -> {getd.Channels} 声道";
-            }
-            else
-            {
-                channelsText = $"{App.audioPlayer.FileReader.WaveFormat.Channels} 声道";
-            }
+                string channelsText = null;
+                if (App.audioPlayer.FileReader.WaveFormat.Channels != getd.Channels)
+                {
+                    channelsText = $"{App.audioPlayer.FileReader.WaveFormat.Channels} 声道 -> {getd.Channels} 声道";
+                }
+                else
+                {
+                    channelsText = $"{App.audioPlayer.FileReader.WaveFormat.Channels} 声道";
+                }
 
-            ((TextBlock)OutInfoSp.Children[2]).Text = $"{App.audioPlayer.NowOutDevice.DeviceType} -> {App.audioPlayer.NowOutDevice.DeviceName}";
-            ((TextBlock)OutInfoSp.Children[4]).Text = SampleRateText;
-            ((TextBlock)OutInfoSp.Children[6]).Text = channelsText;
-            ((TextBlock)OutInfoSp.Children[8]).Text = $"{App.audioPlayer.Latency} ms";
+                ((TextBlock)OutInfoSp.Children[2]).Text = $"{App.audioPlayer.NowOutDevice.DeviceType} -> {App.audioPlayer.NowOutDevice.DeviceName}";
+                ((TextBlock)OutInfoSp.Children[4]).Text = SampleRateText;
+                ((TextBlock)OutInfoSp.Children[6]).Text = channelsText;
+                ((TextBlock)OutInfoSp.Children[8]).Text = $"{App.audioPlayer.Latency} ms";
+            }
         }
 
         private string ConvertCodecFamilyIntToString(int codecFamily)

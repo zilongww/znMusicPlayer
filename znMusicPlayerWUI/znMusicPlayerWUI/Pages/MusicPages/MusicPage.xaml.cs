@@ -301,7 +301,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     {
                         //ScrollViewerBehavior.(scrollViewer, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48);
                         //sv.GetAnimationBaseValue(sv.ver);
-                        sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48, null, disableAnimation);
+                        sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2, null, disableAnimation);
                     }
                     else
                     {
@@ -526,7 +526,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void LrcBaseListView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            LrcBaseListView.Padding = new Thickness(0, LrcBaseListView.ActualHeight / 2 + 68, 0, LrcBaseListView.ActualHeight / 2);
+            LrcBaseListView.Padding = new Thickness(0, LrcBaseListView.ActualHeight / 2, 0, LrcBaseListView.ActualHeight / 2);
             LrcSecondListView.Padding = new Thickness(0, LrcSecondListView.ActualHeight / 2, 0, LrcSecondListView.ActualHeight / 2);
         }
 

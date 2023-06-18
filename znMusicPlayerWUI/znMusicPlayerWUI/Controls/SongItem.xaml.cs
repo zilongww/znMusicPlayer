@@ -19,7 +19,7 @@ namespace znMusicPlayerWUI.Controls
 {
     public partial class SongItem : Grid, IDisposable
     {
-        private bool _ShowImage = false;
+        private bool _ShowImage = true;
 
         public bool AutoLoadImage = false;
         public bool CanClickPlay { get; set; } = true;
@@ -105,7 +105,8 @@ namespace znMusicPlayerWUI.Controls
                 case MusicFrom.neteaseMusic:
                     try
                     {
-                        a = await FileHelper.GetImageSource(await Media.ImageManage.GetImageSource(musicData), (int)(50 * ImageScaleDPI), (int)(50 * ImageScaleDPI), true);
+                        var b = await Media.ImageManage.GetImageSource(musicData);
+                        a = await FileHelper.GetImageSource(b, (int)(50 * ImageScaleDPI), (int)(50 * ImageScaleDPI), true);
                     }
                     catch { }
                     break;
@@ -113,7 +114,11 @@ namespace znMusicPlayerWUI.Controls
                 case MusicFrom.localMusic:
                     if (musicData.InLocal != null)
                     {
-                        a = await CodeHelper.GetCover(musicData.InLocal);
+                        try
+                        {
+                            a = await CodeHelper.GetCover(musicData.InLocal);
+                        }
+                        catch { a = null; }
                     }
                     break;
 

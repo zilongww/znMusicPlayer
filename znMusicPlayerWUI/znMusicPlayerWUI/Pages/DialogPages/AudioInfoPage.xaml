@@ -68,7 +68,7 @@
                     <TextBlock x:Name="FileSourceInfoSizeTB" Text="加载中..."/>
                 </StackPanel>
             </Grid>
-            <Grid Margin="0,8,0,0">
+            <Grid Margin="0,8,0,0" x:Name="AudioInfoGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition/>

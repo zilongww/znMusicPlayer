@@ -246,7 +246,7 @@ namespace znMusicPlayerWUI.Media
         public enum OutApi { WaveOut, DirectSound, Wasapi, Asio, None }
         public IWavePlayer NowOutObj { get; set; } = null;
         public MidiFile MidiFile { get; set; } = null;
-        public OutputDevice MidiOutputDevice { get; set; } = OutputDevice.GetByIndex(0);
+        public OutputDevice MidiOutputDevice { get; set; } = null;
         public Playback MidiPlayback { get; set; } = null;
         public MusicData MusicData { get; private set; }
         public bool IsReloadErrorFile { get; set; }
@@ -345,7 +345,8 @@ namespace znMusicPlayerWUI.Media
                 {
                     if (FileReader.isMidi)
                     {
-                        MidiPlayback.MoveToTime(new MetricTimeSpan(value.Hours, value.Minutes, value.Seconds, value.Milliseconds));
+                        if (MidiPlayback != null)
+                            MidiPlayback.MoveToTime(new MetricTimeSpan(value.Hours, value.Minutes, value.Seconds, value.Milliseconds));
                     }
                     else
                     {
@@ -687,7 +688,8 @@ namespace znMusicPlayerWUI.Media
             await Task.Run(() =>
             {
                 fileReader = new AudioFileReader(filePath);
-
+                FileSize = File.ReadAllBytes(filePath).Length;
+                UpdataInfo();
                 if (fileReader.isMidi)
                 {
                     WaveInfo = "midi";
@@ -700,24 +702,6 @@ namespace znMusicPlayerWUI.Media
                 fileProvider.Pitch = Pitch;
                 fileProvider.Tempo = Tempo;
                 fileProvider.Rate = Rate;
-
-                FileSize = File.ReadAllBytes(filePath).Length;
-                try
-                {
-                    tfile = new ATL.Track(filePath);
-                }
-                catch { }
-                if (tfile != null)
-                {
-                    try
-                    {
-                        WaveInfo = $"{(decimal)tfile.SampleRate / 1000}kHz-{tfile.Bitrate}kbps-{tfile.AudioFormat.MimeList.First().Split('/')[1]}";
-                    }
-                    catch
-                    {
-                        WaveInfo = "未知";
-                    }
-                }
             });
             if (EqEnabled)
             {
@@ -829,6 +813,27 @@ namespace znMusicPlayerWUI.Media
             catch (Exception err) { Debug.WriteLine(err.ToString()); }
         }
 
+        public void UpdataInfo()
+        {
+            try
+            {
+                tfile = new ATL.Track(_filePath);
+            }
+            catch { }
+            if (tfile != null)
+            {
+                FileType = tfile.AudioFormat.MimeList.First().Split('/')[1];
+                try
+                {
+                    WaveInfo = $"{(decimal)tfile.SampleRate / 1000}kHz-{tfile.Bitrate}kbps-{FileType}";
+                }
+                catch
+                {
+                    WaveInfo = "未知";
+                }
+            }
+        }
+
         [Obsolete(message:"不建议使用，性能较差")]
         public void SetEqualizer(int position, float db)
         {
@@ -919,7 +924,7 @@ namespace znMusicPlayerWUI.Media
 
             try
             {
-                MidiOutputDevice.Dispose();
+                MidiOutputDevice?.Dispose();
             }
             finally
             {

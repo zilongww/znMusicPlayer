@@ -163,16 +163,16 @@ namespace znMusicPlayerWUI.Windowed
         {
             if (nowLyricsData == null)
             {
-                T1.Text = App.AppName;
-                T2.Text = "无歌词";
+                T1.Text = App.audioPlayer.MusicData.Title;
+                T2.Text = App.audioPlayer.MusicData.ButtonName;
                 V1.HorizontalAlignment = HorizontalAlignment.Center;
                 V2.HorizontalAlignment = HorizontalAlignment.Center;
                 return;
             }
             if (nowLyricsData.Lyric == null)
             {
-                T1.Text = App.AppName;
-                T2.Text = "无歌词";
+                T1.Text = App.audioPlayer.MusicData.Title;
+                T2.Text = App.audioPlayer.MusicData.ButtonName;
                 V1.HorizontalAlignment = HorizontalAlignment.Center;
                 V2.HorizontalAlignment = HorizontalAlignment.Center;
                 return;

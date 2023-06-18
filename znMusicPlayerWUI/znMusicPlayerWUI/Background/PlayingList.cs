@@ -12,6 +12,7 @@ using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Helpers;
 using WinRT;
 using znMusicPlayerWUI.Media;
+using Melanchall.DryWetMidi.Core;
 
 namespace znMusicPlayerWUI.Background
 {
@@ -169,6 +170,10 @@ namespace znMusicPlayerWUI.Background
                 {
                     await Play(musicData, isAutoPlay);
                 }
+            }
+            catch (NotEnoughBytesException err)
+            {
+                await MainWindow.ShowDialog("播放Midi音频时出现错误", $"似乎不支持此Midi音频文件。\n错误信息：{err.Message}");
             }
             catch (Exception e)
             {

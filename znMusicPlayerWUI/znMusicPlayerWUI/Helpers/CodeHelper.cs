@@ -23,6 +23,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Graphics.Imaging;
 using static System.Net.Mime.MediaTypeNames;
 using Windows.UI.ViewManagement;
+using ATL;
 
 namespace znMusicPlayerWUI.Helpers
 {
@@ -272,7 +273,44 @@ namespace znMusicPlayerWUI.Helpers
             return str;
         }
         #endregion
+/*
+        public static async Task<ImageSource> GetCover(string path)
+        {
+            try
+            {
+                Track track = null;
+                IList<PictureInfo> embeddedPictures = null;
+                await Task.Run(() => { track = new(path); embeddedPictures = track.EmbeddedPictures; });
 
+                foreach (PictureInfo pic in embeddedPictures)
+                {
+                    var a = new MemoryStream(pic.PictureData);
+                    var b = await SaveToImageSource(a);
+                    await a.DisposeAsync();
+                    return b;
+                }
+            }
+            catch { }
+            return null;
+        }
+
+        public static async Task<ImageSource> SaveToImageSource(this MemoryStream stream)
+        {
+            ImageSource imageSource = null;
+            try
+            {
+                var ras = stream.AsRandomAccessStream();
+                BitmapDecoder decoder = await BitmapDecoder.CreateAsync(BitmapDecoder.JpegDecoderId, ras);
+                var provider = await decoder.GetPixelDataAsync();
+                byte[] buffer = provider.DetachPixelData();
+                WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+                await bitmap.PixelBuffer.AsStream().WriteAsync(buffer, 0, buffer.Length);
+                imageSource = bitmap;
+            }
+            catch { }
+            return imageSource;
+        }
+*/
         public static async Task<ImageSource> GetCover(string path)
         {
             try
