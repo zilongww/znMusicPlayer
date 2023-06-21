@@ -89,7 +89,6 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             DataContext = this;
             SizeChanged += MusicPage_SizeChanged;
 
-            LrcBaseListView.ItemsSource = App.lyricManager.NowPlayingLyrics;
             UpdataInterfaceDesign();
         }
 
@@ -100,7 +99,9 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             AudioPlayer_CacheLoadedChanged(App.audioPlayer);
             AudioPlayer_TimingChanged(App.audioPlayer);
             PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
+            isCodeChangedLrcItem = true;
             LyricManager_PlayingLyricSelectedChange1(App.lyricManager.NowLyricsData);
+            isCodeChangedLrcItem = false;
             App.audioPlayer.ReCallTiming();
             //Debug.WriteLine("MusicPage Updataed Events.");
         }
@@ -144,15 +145,29 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             ViewState = musicPageViewState;
             if (ViewState == MusicPageViewState.View)
             {
+                LrcBaseListView.ItemsSource = App.lyricManager.NowPlayingLyrics;
                 AddEvents();
             }
             else
             {
                 RemoveEvents();
+                RemoveLyricListItemSourceAsync();
             }
 #if DEBUG
             Debug.WriteLine($"MusicPage: ViewState 已被设置为 {musicPageViewState}.");
 #endif
+        }
+
+        private async void RemoveLyricListItemSourceAsync()
+        {
+            await Task.Delay(200);
+            if (ViewState == MusicPageViewState.Hidden)
+            {
+                LrcBaseListView.ItemsSource = null;
+#if DEBUG
+                Debug.WriteLine($"MusicPage: LrcBaseListView.ItemSource 已被设置为 null.");
+#endif
+            }
         }
 
         private void PlayingList_NowPlayingImageLoading(ImageSource imageSource, string _)
@@ -267,12 +282,12 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         public async void SelectedChangedDo(bool disableAnimation = false)
         {
+            if (App.lyricManager.NowLyricsData == null) return;
+
             isCodeChangedLrcItem = true;
             LrcBaseListView.SelectedItem = App.lyricManager.NowLyricsData;
             LrcSecondListView.SelectedItem = App.lyricManager.NowLyricsData;
             isCodeChangedLrcItem = false;
-
-            if (App.lyricManager.NowLyricsData == null) return;
 
             var sv = isMiniPage ? scrollViewer1 : scrollViewer;
             if (sv != null && !inScroll && App.lyricManager.NowLyricsData.Lyric != null)

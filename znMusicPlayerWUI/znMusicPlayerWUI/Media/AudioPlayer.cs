@@ -40,8 +40,7 @@ namespace znMusicPlayerWUI.Media
         public int SampleRate { get; set; }
         public int Channels { get; set; }
         public long Latency { get; set; }
-        //
-        //public bool IsDefaultDevice { get; set; } = false;
+        public bool IsDefaultDevice { get; set; } = false;
         public OutDevice(OutApi deviceType, object device = null, string deviceName = "")
         {
             DeviceType = deviceType;
@@ -51,7 +50,7 @@ namespace znMusicPlayerWUI.Media
 
         public override string ToString()
         {
-            return $"{DeviceType} - {DeviceName}";
+            return $"{DeviceType} - {(IsDefaultDevice ? defaultName : DeviceName)}";
         }
 
         public override string GetMD5()
@@ -62,7 +61,7 @@ namespace znMusicPlayerWUI.Media
         public static OutDevice GetWasapiDefaultDevice(MMDeviceEnumerator enumerator)
         {
             var dout = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-            var od = new OutDevice(OutApi.Wasapi, dout.ID, defaultName);
+            var od = new OutDevice(OutApi.Wasapi, dout.ID, dout.FriendlyName) { IsDefaultDevice = true };
             od.SampleRate = dout.AudioClient.MixFormat.SampleRate;
             od.Channels = dout.AudioClient.MixFormat.Channels;
             return od;
@@ -110,7 +109,7 @@ namespace znMusicPlayerWUI.Media
                 {
                     var wocb = WaveOut.GetCapabilities(n);
                     string name = wocb.ProductName;
-                    OutDevice outDevice = new OutDevice(OutApi.WaveOut, n, name == "Microsoft 声音映射器" || name == "Microsoft Sound Mapper" ? defaultName : name);
+                    OutDevice outDevice = new OutDevice(OutApi.WaveOut, n, name) { IsDefaultDevice = name == "Microsoft 声音映射器" || name == "Microsoft Sound Mapper" ? true : false };
                     outDevices.Add(outDevice);
                 }
                 if (outDevices.Count < 2) outDevices.Clear();
@@ -119,7 +118,7 @@ namespace znMusicPlayerWUI.Media
                 foreach (var dev in DirectSoundOut.Devices)
                 {
                     string name = dev.Description;
-                    OutDevice outDevice = new OutDevice(OutApi.DirectSound, dev, name == "主声音驱动程序" ? defaultName : name);
+                    OutDevice outDevice = new OutDevice(OutApi.DirectSound, dev, name) { IsDefaultDevice = name == "主声音驱动程序" ? true : false };
                     outDevices.Add(outDevice);
                 }
                 if (outDevices.Count < 2) outDevices.Clear();
