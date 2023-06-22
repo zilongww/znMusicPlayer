@@ -135,24 +135,46 @@
                                     <Frame x:Name="PlayContent"
                                            IsTabStop="True" MinWidth="0"
                                            CommonNavigationTransitionInfo.IsStaggerElement="True">
+                                        <Frame.ContentTransitions>
+                                            <TransitionCollection>
+                                                <ContentThemeTransition/>
+                                            </TransitionCollection>
+                                        </Frame.ContentTransitions>
                                     </Frame>
                                 </Border>
                                 <StackPanel VerticalAlignment="Center"
                                             Margin="0,0,0,0"
                                             Grid.Column="1"
                                             IsHitTestVisible="False">
+                                    <StackPanel.Transitions>
+                                        <TransitionCollection>
+                                            <RepositionThemeTransition/>
+                                        </TransitionCollection>
+                                    </StackPanel.Transitions>
                                     <TextBlock x:Name="PlayTitle"
                                                Text="znMusicPlayer"
                                                FontSize="20"
                                                TextWrapping="NoWrap"
                                                HorizontalAlignment="Left"
-                                               TextTrimming="CharacterEllipsis"/>
+                                               TextTrimming="CharacterEllipsis">
+                                        <TextBlock.Transitions>
+                                            <TransitionCollection>
+                                                <ContentThemeTransition/>
+                                            </TransitionCollection>
+                                        </TextBlock.Transitions>
+                                    </TextBlock>
                                     <TextBlock x:Name="PlayArtist"
                                                Text="No media playing"
                                                FontSize="14"
                                                TextWrapping="NoWrap"
                                                HorizontalAlignment="Left"
-                                               TextTrimming="CharacterEllipsis"/>
+                                               TextTrimming="CharacterEllipsis">
+                                        <TextBlock.Transitions>
+                                            <TransitionCollection>
+                                                <ContentThemeTransition/>
+                                            </TransitionCollection>
+                                        </TextBlock.Transitions>
+                                    </TextBlock>
                                 </StackPanel>
                             </Grid>
 

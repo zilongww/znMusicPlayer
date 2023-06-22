@@ -94,13 +94,17 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Border x:Name="AlbumImage_BaseBorder"
-                            IsHitTestVisible="False"
-                            CornerRadius="{ThemeResource ControlCornerRadius}"
-                            Width="50"
-                            Height="50">
-                        <local:Imagezn x:Name="AlbumImage" ShowMenuBehavior="None"/>
-                    </Border>
+                    <Grid x:Name="AlbumImage_BaseGrid"
+                          Width="50"
+                          Height="50">
+                        <Border x:Name="AlbumImage_BaseBorder"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                IsHitTestVisible="False"
+                                CornerRadius="{ThemeResource ControlCornerRadius}">
+                            <local:Imagezn x:Name="AlbumImage" ShowMenuBehavior="None"/>
+                        </Border>
+                    </Grid>
                     <Grid VerticalAlignment="Center"
                           HorizontalAlignment="Left"
                           Margin="10,0,0,0"

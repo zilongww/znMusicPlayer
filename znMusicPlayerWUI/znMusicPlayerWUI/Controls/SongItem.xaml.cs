@@ -58,7 +58,7 @@ namespace znMusicPlayerWUI.Controls
             set
             {
                 _ShowImage = value;
-                AlbumImage_BaseBorder.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+                AlbumImage_BaseGrid.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 

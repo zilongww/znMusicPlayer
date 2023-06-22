@@ -36,6 +36,7 @@ using System.Reflection.Metadata;
 using znMusicPlayerWUI.DataEditor;
 using CommunityToolkit.WinUI.UI;
 using Vanara.PInvoke;
+using ColorCode.Compilation.Languages;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -117,11 +118,9 @@ namespace znMusicPlayerWUI
 
             loadingst.Children.Add(loadingprogress);
             loadingst.Children.Add(loadingtextBlock);
-
             // 第一次点击不会响应动画。。。
             App.LoadSettings();
             ReadLAE();
-
             RegisterHotKeys();
         }
 

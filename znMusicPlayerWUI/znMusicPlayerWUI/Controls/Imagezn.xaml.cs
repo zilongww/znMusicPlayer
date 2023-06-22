@@ -156,6 +156,13 @@ namespace znMusicPlayerWUI.Controls
                     catch{ }
                 };
                 ImageSource.Source = Source;
+
+                AnimateHelper.AnimateScalar(
+                    ImageSourceBefore, 0, 1,
+                    0.2f, 1, 0.22f, 1f,
+                    out var visual1, out var compositor1, out var scalarKeyFrameAnimation1);
+                visual1.Opacity = 1;
+                visual1.StartAnimation("Opacity", scalarKeyFrameAnimation1);
             }
             else
             {
