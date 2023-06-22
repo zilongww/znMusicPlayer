@@ -52,6 +52,9 @@ namespace znMusicPlayerWUI
         public static Window SWindow;
         public static MusicPage SMusicPage = new();
         public static Grid STopControlsBaseGrid;
+        public static TextBlock SPlayTitle;
+        public static TextBlock SPlayArtist;
+        public static TextBlock SLyricTextBlock;
         public static Grid SWindowGridBaseTop;
         public static Grid SWindowGridBase;
         public static Grid SVolumeBaseGrid;
@@ -79,6 +82,9 @@ namespace znMusicPlayerWUI
             SContent = this.Content;
             SNavView = NavView;
             SContentFrame = ContentFrame;
+            SPlayTitle = PlayTitle;
+            SPlayArtist = PlayArtist;
+            SLyricTextBlock = LyricTextBlock;
             STopControlsBaseGrid = TopControlsBaseGrid;
             SWindowGridBaseTop = WindowGridBase;
             SWindowGridBase = GridBase;
@@ -606,12 +612,55 @@ namespace znMusicPlayerWUI
 
         }
 
+        MusicData pointConnectAnimationMusicData = null;
         private void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
         {
             if (audioPlayer.MusicData == null) return;
+            if (pointConnectAnimationMusicData == audioPlayer.MusicData) return;
+            pointConnectAnimationMusicData = audioPlayer.MusicData;
             PlayTitle.Text = audioPlayer.MusicData.Title;
             PlayArtist.Text = audioPlayer.MusicData.ButtonName;
             PlayingListBaseView.SelectedItem = audioPlayer.MusicData;
+
+            foreach (var i in SongItem.StaticSongItems)
+            {
+                if (i != null)
+                {
+                    if (i.MusicData == audioPlayer.MusicData)
+                    {
+                        i.InfoRoot.Opacity = 0;
+                        ConnectedAnimation canimation =
+                            ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("changeAnimation", i.AlbumImage_BaseBorder);
+                        canimation.Configuration = new BasicConnectedAnimationConfiguration();
+                        ConnectedAnimation animation =
+                            ConnectedAnimationService.GetForCurrentView().GetAnimation("changeAnimation");
+                        if (animation != null)
+                        {
+                            animation.Completed += (_, __) => i.InfoRoot.Opacity = 1;
+                            animation.TryStart(VisualTreeHelper.GetParent(SPlayContent) as UIElement);
+                        }
+
+                        ConnectedAnimation canimation1 =
+                            ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("changeAnimation1", i.TitleTextBlock);
+                        canimation1.Configuration = new BasicConnectedAnimationConfiguration();
+                        ConnectedAnimation animation1 =
+                            ConnectedAnimationService.GetForCurrentView().GetAnimation("changeAnimation1");
+                        if (animation1 != null)
+                        {
+                            animation1.TryStart(PlayTitle);
+                        }
+                        ConnectedAnimation canimation2 =
+                            ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("changeAnimation2", i.ButtonNameTextBlock);
+                        canimation2.Configuration = new BasicConnectedAnimationConfiguration();
+                        ConnectedAnimation animation2 =
+                            ConnectedAnimationService.GetForCurrentView().GetAnimation("changeAnimation2");
+                        if (animation2 != null)
+                        {
+                            animation2.TryStart(PlayArtist);
+                        }
+                    }
+                }
+            }
         }
 
         private void AudioPlayer_PlayStateChanged(Media.AudioPlayer audioPlayer)
@@ -1180,12 +1229,42 @@ namespace znMusicPlayerWUI
 
                 SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
                 MusicPageViewStateChanged?.Invoke(MusicPageViewState.Hidden);
+
+                ConnectedAnimation canimation =
+                    ConnectedAnimationService.GetForCurrentView().GetAnimation("upAnimation");
+                if (canimation != null)
+                {
+                    canimation.TryStart(VisualTreeHelper.GetParent(SPlayContent) as UIElement);
+                }
+                ConnectedAnimation canimation1 =
+                    ConnectedAnimationService.GetForCurrentView().GetAnimation("upAnimation1");
+                if (canimation1 != null)
+                {
+                    canimation1.TryStart(SPlayTitle);
+                }
+                ConnectedAnimation canimation2 =
+                    ConnectedAnimationService.GetForCurrentView().GetAnimation("upAnimation2");
+                if (canimation2 != null)
+                {
+                    canimation2.TryStart(SPlayArtist);
+                }
+
+                if (App.lyricManager.NowPlayingLyrics.Any())
+                {
+                    ConnectedAnimation canimation3 =
+                    ConnectedAnimationService.GetForCurrentView().GetAnimation("upAnimation3");
+                    if (canimation3 != null)
+                    {
+                        canimation3.TryStart(SLyricTextBlock);
+                    }
+                }
             }
             else
             {
                 InOpenMusicPage = true;
                 SMusicPageBaseFrame.Content = SMusicPage;
                 SMusicPageBaseFrame.Visibility = Visibility.Visible;
+
                 AnimateHelper.AnimateOffset(
                     SMusicPageBaseFrame,
                     0, 0, 0, 0.76,
@@ -1320,8 +1399,6 @@ namespace znMusicPlayerWUI
         bool inSelectionChange = false;
         private async void PlayingListBaseView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (inSelectionChange) return;
-
             inSelectionChange = true;
             if (PlayingListBaseView.SelectedItem != null)
             {

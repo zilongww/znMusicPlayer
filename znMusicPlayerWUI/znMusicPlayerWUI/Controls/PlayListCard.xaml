@@ -24,12 +24,12 @@
             BorderThickness="1"
             BorderBrush="{ThemeResource CardStrokeColorDefaultSolid}">
         <Grid>
-            <Rectangle x:Name="BackColorBaseRectAngle" Fill="{ThemeResource CardBackgroundFillColorDefault}" Opacity="1"/>
+            <Rectangle x:Name="BackColorBaseRectAngle" Fill="{ThemeResource LayerFillColorDefault}" Opacity="1"/>
             <StackPanel>
                 <Grid Width="150" Height="150">
                     <local:Imagezn x:Name="PlayListImage" Stretch="UniformToFill" ShowMenuBehavior="None"/>
                 </Grid>
-                <TextBlock Padding="6,4" TextTrimming="CharacterEllipsis" Height="50">
+                <TextBlock x:Name="TextBaseTb" Padding="6,4" TextTrimming="CharacterEllipsis" Height="50">
                     <Run Text="{Binding ListShowName}"/><LineBreak/><Run Text="{Binding Songs.Count}" FontSize="12"/>首歌曲
                 </TextBlock>
             </StackPanel>

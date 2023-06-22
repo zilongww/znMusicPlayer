@@ -40,6 +40,14 @@ namespace znMusicPlayerWUI.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            base.OnNavigatedTo(e);
+            ConnectedAnimation animation =
+                ConnectedAnimationService.GetForCurrentView().GetAnimation("forwardAnimation");
+            if (animation != null)
+            {
+                animation.TryStart(PlayList_ImageBaseBorder);
+            }
+
             PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
             App.playListReader.Updataed += PlayListReader_Updataed;
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
@@ -356,7 +364,6 @@ namespace znMusicPlayerWUI.Pages
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (!Children.Items.Any()) return;
             foreach (var songItem in MusicDataList)
             {
                 App.playingList.Add(songItem.MusicData, false);
@@ -421,7 +428,7 @@ namespace znMusicPlayerWUI.Pages
         {
             if (Children.SelectedItems.Any())
             {
-                foreach (var item in MusicDataList)
+                foreach (SongItemBindBase item in Children.SelectedItems)
                 {
                     App.playingList.Add(item.MusicData);
                 }

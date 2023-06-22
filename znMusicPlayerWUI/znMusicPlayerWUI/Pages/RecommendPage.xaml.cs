@@ -24,6 +24,9 @@ using WinRT;
 using Windows.Foundation.Metadata;
 using Microsoft.Windows.AppNotifications;
 using znMusicPlayerWUI.Helpers;
+using System.Diagnostics;
+using ATL.CatalogDataReaders;
+using znMusicPlayerWUI.DataEditor;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -39,8 +42,10 @@ namespace znMusicPlayerWUI.Pages
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             //await App.playingList.Play(App.playListReader.NowMusicListDatas[0].Songs[0]);
-            
-            GC.Collect();
+
+            CueSharp.CueSheet cueSheet = new CueSharp.CueSheet("E:\\vedio\\anime\\[170816] TVアニメ「Fate／Apocrypha」OPテーマ「英雄 運命の詩」／EGOIST [通常盤] [FLAC+CUE]\\VVCL-1080.cue");
+
+            //GC.Collect();*
             try
             {
                 abcd.Source = App.playingList.NowPlayingList[new Random().Next(0, App.playingList.NowPlayingList.Count - 1)].PicturePath;

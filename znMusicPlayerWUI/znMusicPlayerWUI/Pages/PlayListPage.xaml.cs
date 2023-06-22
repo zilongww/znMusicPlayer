@@ -15,6 +15,7 @@ using znMusicPlayerWUI.Controls;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Reflection.Emit;
+using Microsoft.UI.Xaml.Media.Animation;
 
 namespace znMusicPlayerWUI.Pages
 {

@@ -140,7 +140,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         }
 
         public MusicPageViewState ViewState = MusicPageViewState.Hidden;
-        private void ViewChange(MusicPageViewState musicPageViewState)
+        private async void ViewChange(MusicPageViewState musicPageViewState)
         {
             ViewState = musicPageViewState;
             if (ViewState == MusicPageViewState.View)
@@ -150,6 +150,26 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             }
             else
             {
+                ConnectedAnimation canimation =
+                    ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("upAnimation", AlbumImageBorder);
+                canimation.Configuration = new BasicConnectedAnimationConfiguration();
+                ConnectedAnimation canimation1 =
+                    ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("upAnimation1", TitleRunText);
+                canimation1.Configuration = new BasicConnectedAnimationConfiguration();
+                ConnectedAnimation canimation2 =
+                    ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("upAnimation2", ArtistRunText);
+                canimation2.Configuration = new BasicConnectedAnimationConfiguration();
+                if (App.lyricManager.NowPlayingLyrics.Any())
+                {
+                    var e = (isMiniPage ? LrcSecondListView : LrcBaseListView).ContainerFromIndex(LrcBaseListView.SelectedIndex) as UIElement;
+                    if (e != null)
+                    {
+                        ConnectedAnimation canimation3 =
+                            ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("upAnimation3", e);
+                        canimation3.Configuration = new BasicConnectedAnimationConfiguration();
+                    }
+                }
+
                 RemoveEvents();
                 RemoveLyricListItemSourceAsync();
             }

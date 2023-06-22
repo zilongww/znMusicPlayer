@@ -15,6 +15,7 @@ using znMusicPlayerWUI.DataEditor;
 using NAudio.Wave;
 using ATL.AudioData;
 using znMusicPlayerWUI.Media;
+using CueSharp;
 
 namespace znMusicPlayerWUI.Pages.DialogPages
 {
@@ -29,14 +30,26 @@ namespace znMusicPlayerWUI.Pages.DialogPages
         public void Init()
         {
             SetFileSourceInfoText();
+            SetCUEInfoText();
             SetAudioInfoText();
             SetOutInfoText();
         }
 
-        private void SetFileSourceInfoText()
+        private async void SetFileSourceInfoText()
         {
-            FileSourceInfoPathTB.Text = App.audioPlayer.FileReader.FileName;
-            FileSourceInfoSizeTB.Text = CodeHelper.GetAutoSizeString(App.audioPlayer.FileSize, 2);
+            string filePath = "";
+            string createTime = "";
+            await Task.Run(() =>
+            {
+                FileInfo fileInfo = new(App.audioPlayer.FileReader.FileName);
+                createTime = fileInfo.CreationTime.ToString();
+                filePath = fileInfo.DirectoryName;
+            });
+
+            ((TextBlock)FileInfoSp.Children[2]).Text = App.audioPlayer.FileReader.FileName;
+            ((TextBlock)FileInfoSp.Children[4]).Text = filePath;
+            ((TextBlock)FileInfoSp.Children[6]).Text = createTime;
+            ((TextBlock)FileInfoSp.Children[8]).Text = CodeHelper.GetAutoSizeString(App.audioPlayer.FileSize, 2);
         }
 
         private async void SetAudioInfoText()
@@ -68,7 +81,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 ((TextBlock)AudioInfoSp.Children[1]).Text = $"{App.audioPlayer.FileType}" +
                     $"{(ConvertCodecFamilyIntToString(tfile.CodecFamily) == null ? "" : $"  {ConvertCodecFamilyIntToString(tfile.CodecFamily)}")}" +
                     $"  {tfile.SampleRate} Hz  {tfile.Bitrate} kbps" +
-                    $"  {tfile.ChannelsArrangement.NbChannels} 声道  {App.audioPlayer.FileReader.TotalTime.ToString("hh\\:mm\\:ss\\.f")}({tfile.Duration}s)";
+                    $"  {tfile.ChannelsArrangement.NbChannels} 声道  {App.audioPlayer.FileReader.TotalTime.ToString("hh\\:mm\\:ss\\.ff")}({tfile.Duration}s)";
 
                 if (tfile.BitDepth == -1)
                 {
@@ -93,7 +106,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 {
                     var element = tfile.AdditionalFields.ElementAt(i);
                     if (element.Key == "VORBIS-VENDOR") continue;
-                    additionalFields += $"● {element.Key}: {element.Value}{(i == tfile.AdditionalFields.Count -1 ? "" : "\n")}";
+                    additionalFields += $"● {element.Key}: {element.Value}{(i == tfile.AdditionalFields.Count - 1 ? "" : "\n")}";
                 }
                 ((TextBlock)AudioInfoSp.Children[7]).Text = string.IsNullOrEmpty(additionalFields) ? "无内容" : additionalFields;
 
@@ -158,6 +171,75 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 ((TextBlock)OutInfoSp.Children[6]).Text = channelsText;
                 ((TextBlock)OutInfoSp.Children[8]).Text = $"{App.audioPlayer.Latency} ms";
             }
+        }
+
+        private async void SetCUEInfoText()
+        {
+            if (App.audioPlayer.MusicData == null) return;
+            if (App.audioPlayer.MusicData.CUETrackData == null)
+            {
+                CUEInfoGrid.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            CueSharp.CueSheet cueSheet = await Task.Run(() =>
+            {
+                return new CueSharp.CueSheet(App.audioPlayer.MusicData.CUETrackData.Path);
+            });
+            if (cueSheet == null)
+            {
+                CUEInfoGrid.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            string nowTrackName = $"标题：{App.audioPlayer.MusicData.Title}\n艺术家：{App.audioPlayer.MusicData.ArtistName}\n" +
+                $"索引：{App.audioPlayer.MusicData.CUETrackData.Index}\n" +
+                $"开始时间：{App.audioPlayer.MusicData.CUETrackData.StartDuration.ToString("hh\\:mm\\:ss\\.ff")}\n" +
+                $"结束时间：{App.audioPlayer.MusicData.CUETrackData.EndDuration.ToString("hh\\:mm\\:ss\\.ff")}\n" +
+                $"时长：{App.audioPlayer.MusicData.CUETrackData.Duration.ToString("hh\\:mm\\:ss\\.ff")}";
+
+            string tracksName = "";
+            for (int i = 0; i < cueSheet.Tracks.Length; i++)
+            {
+                var track = cueSheet.Tracks[i];
+                string index = "";
+                for (int j = 0; j < track.Indices.Length; j++)
+                {
+                    var index2 = track.Indices[j];
+                    index += $"index{index2.Number}->{index2.Minutes}:{index2.Seconds}:{index2.Frames}{(j == track.Indices.Length - 1 ? "" : " || ")}";
+                }
+                tracksName += $"● {track.TrackNumber}\n  标题：{track.Title}\n  艺术家：{track.Performer}\n  Index：{index}{(i == cueSheet.Tracks.Length - 1 ? "" : "\n")}";
+            }
+
+            string commentsName = "";
+            if (cueSheet.Comments.Any())
+            {
+                for (int i = 0; i < cueSheet.Comments.Length; i++)
+                {
+                    var comment = cueSheet.Comments[i];
+                    commentsName += $"● {comment}{(i == cueSheet.Comments.Length - 1 ? "" : "\n")}";
+                }
+            }
+
+            string garbageName = "";
+            if (cueSheet.Garbage.Any())
+            {
+                for (int i = 0; i < cueSheet.Garbage.Length; i++)
+                {
+                    var garbage = cueSheet.Garbage[i];
+                    garbageName += $"● {garbage}{(i == cueSheet.Garbage.Length - 1 ? "" : "\n")}";
+                }
+            }
+
+            ((TextBlock)CUEInfoSp.Children[2]).Text = App.audioPlayer.MusicData.CUETrackData.Path;
+            ((TextBlock)CUEInfoSp.Children[4]).Text = cueSheet.Title;
+            ((TextBlock)CUEInfoSp.Children[6]).Text = string.IsNullOrEmpty(cueSheet.Performer) ? "未知" : cueSheet.Performer;
+            ((TextBlock)CUEInfoSp.Children[8]).Text = string.IsNullOrEmpty(nowTrackName) ? "无内容" : nowTrackName;
+            ((TextBlock)CUEInfoSp.Children[10]).Text = string.IsNullOrEmpty(tracksName) ? "无内容" : tracksName;
+            ((TextBlock)CUEInfoSp.Children[12]).Text = string.IsNullOrEmpty(cueSheet.CDTextFile) ? "无内容" : cueSheet.CDTextFile;
+            ((TextBlock)CUEInfoSp.Children[14]).Text = string.IsNullOrEmpty(commentsName) ? "无内容" : commentsName;
+            ((TextBlock)CUEInfoSp.Children[16]).Text = string.IsNullOrEmpty(cueSheet.Catalog) ? "无内容" : cueSheet.Catalog;
+            ((TextBlock)CUEInfoSp.Children[18]).Text = string.IsNullOrEmpty(garbageName) ? "无内容" : garbageName; ;
         }
 
         private string ConvertCodecFamilyIntToString(int codecFamily)

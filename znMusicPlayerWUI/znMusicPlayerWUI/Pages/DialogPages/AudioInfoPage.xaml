@@ -34,7 +34,7 @@
                 <Setter Property="Fill" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
             </Style>
         </ScrollViewer.Resources>
-        <StackPanel Orientation="Vertical" Margin="-1,0,0,0">
+        <StackPanel Orientation="Vertical" Margin="0,0,14,0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -60,12 +60,65 @@
                         </Rectangle>
                     </Grid>
                 </Grid>
-                <StackPanel Grid.Column="1" Margin="8,-2,0,0">
+                <StackPanel x:Name="FileInfoSp" Grid.Column="1" Margin="8,-2,0,0">
                     <TextBlock Text="文件" Style="{ThemeResource TitleTextStyle}"/>
                     <TextBlock Style="{ThemeResource SubTextStyle}" Text="文件路径"/>
-                    <TextBlock x:Name="FileSourceInfoPathTB" Text="加载中..."/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="文件位置"/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="创建日期"/>
+                    <TextBlock Text="加载中..."/>
                     <TextBlock Style="{ThemeResource SubTextStyle}" Text="文件大小"/>
-                    <TextBlock x:Name="FileSourceInfoSizeTB" Text="加载中..."/>
+                    <TextBlock Text="加载中..."/>
+                </StackPanel>
+            </Grid>
+            <Grid Margin="0,8,0,0" x:Name="CUEInfoGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Viewbox Width="20" Height="20" Stretch="Uniform">
+                        <TextBlock Text="CUE" Margin="1" IsTextSelectionEnabled="False"/>
+                    </Viewbox>
+                    <Rectangle Grid.Row="1"/>
+                    <Grid Grid.Row="1" VerticalAlignment="Bottom">
+                        <Rectangle Height="8">
+                            <Rectangle.RenderTransform>
+                                <RotateTransform Angle="30" CenterY="8"/>
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+                        <Rectangle Height="8">
+                            <Rectangle.RenderTransform>
+                                <RotateTransform Angle="-30" CenterY="8"/>
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+                    </Grid>
+                </Grid>
+                <StackPanel x:Name="CUEInfoSp" Grid.Column="1" Margin="8,-2,0,0">
+                    <TextBlock Text="CUE信息" Style="{ThemeResource TitleTextStyle}"/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="CUE路径"/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="标题"/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="艺术家"/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="当前播放音频"/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="音频列表"/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="CD文本"/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="描述"/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="识别码"/>
+                    <TextBlock Text="加载中..."/>
+                    <TextBlock Style="{ThemeResource SubTextStyle}" Text="其它"/>
+                    <TextBlock Text="加载中..."/>
                 </StackPanel>
             </Grid>
             <Grid Margin="0,8,0,0" x:Name="AudioInfoGrid">

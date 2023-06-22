@@ -48,11 +48,10 @@ namespace znMusicPlayerWUI.Background
 
         private async void AudioPlayer_PlayEnd(Media.AudioPlayer audioPlayer)
         {
-            //System.Diagnostics.Debug.WriteLine(App.playingList.PlayBehaviour);
             switch (PlayBehaviour)
             {
                 case PlayBehaviour.顺序播放:
-                    await App.playingList.PlayNext(true);
+                    await App.playingList.PlayNext(true, false);
                     break;
                 case PlayBehaviour.随机播放:
                     await Play(NowPlayingList[new Random().Next(NowPlayingList.Count - 1)], true);
@@ -122,16 +121,9 @@ namespace znMusicPlayerWUI.Background
                 PlayingListItemChange?.Invoke(NowPlayingList);
         }
 
-        bool isLoadingPlay = false;
-        public async Task<bool> Play(MusicData musicData, bool isAutoPlay = false)
+        public async Task<bool> Play(MusicData musicData, bool isAutoPlay = false, bool freezeTime = true)
         {
-            if (isLoadingPlay) return false;
-            isLoadingPlay = true;
-            FreezePlayTime();
-            AddHistory(musicData);
-
             Add(musicData);
-            bool a = true;
 
             NAudio.Wave.PlaybackState playState;
             if (App.audioPlayer.NowOutObj != null)
@@ -148,50 +140,61 @@ namespace znMusicPlayerWUI.Background
                 playState = NAudio.Wave.PlaybackState.Playing;
             }
 
-            try
-            {
-                await App.audioPlayer.SetSource(musicData);
-                if (playState == NAudio.Wave.PlaybackState.Playing)
-                    App.audioPlayer.SetPlay();
-            }
-            catch (DivideByZeroException)
-            {
-                a = false;
-                var data = DataFolderBase.JSettingData;
-                data[DataFolderBase.SettingParams.AudioLatency.ToString()] = 
-                    DataFolderBase.SettingDefault[DataFolderBase.SettingParams.AudioLatency.ToString()];
-                App.audioPlayer.Latency = (int)data[DataFolderBase.SettingParams.AudioLatency.ToString()];
-                DataFolderBase.JSettingData = data;
+            return await FreezePlayTime(musicData, playState, isAutoPlay, freezeTime);
+        }
 
-                var retryPlay = await MainWindow.ShowDialog("播放失败",
-                    $"播放音频时出现错误，可能是播放延迟设置不正确导致的。\n" +
-                    $"已将播放延迟设置到默认值，请尝试重新播放.");
-                if (retryPlay == Microsoft.UI.Xaml.Controls.ContentDialogResult.Secondary)
+        int freezeTimeCount = 0;
+        private async Task<bool> FreezePlayTime(MusicData musicData, NAudio.Wave.PlaybackState playState, bool isAutoPlay, bool freezeTime = true)
+        {
+            var a = true;
+            freezeTimeCount++;
+            if (freezeTime) await Task.Delay(200);
+            freezeTimeCount--;
+
+            System.Diagnostics.Debug.WriteLine(freezeTimeCount);
+            if (freezeTimeCount <= 0)
+            {
+                System.Diagnostics.Debug.WriteLine(musicData.Title);
+                AddHistory(musicData);
+                try
                 {
-                    await Play(musicData, isAutoPlay);
+                    await App.audioPlayer.SetSource(musicData);
+                    if (playState == NAudio.Wave.PlaybackState.Playing)
+                        App.audioPlayer.SetPlay();
                 }
-            }
-            catch (NotEnoughBytesException err)
-            {
-                await MainWindow.ShowDialog("播放Midi音频时出现错误", $"似乎不支持此Midi音频文件。\n错误信息：{err.Message}");
-            }
-            catch (Exception e)
-            {
-                a = false;
+                catch (DivideByZeroException)
+                {
+                    a = false;
+                    var data = DataFolderBase.JSettingData;
+                    data[DataFolderBase.SettingParams.AudioLatency.ToString()] =
+                        DataFolderBase.SettingDefault[DataFolderBase.SettingParams.AudioLatency.ToString()];
+                    App.audioPlayer.Latency = (int)data[DataFolderBase.SettingParams.AudioLatency.ToString()];
+                    DataFolderBase.JSettingData = data;
+
+                    var retryPlay = await MainWindow.ShowDialog("播放失败",
+                        $"播放音频时出现错误，可能是播放延迟设置不正确导致的。\n" +
+                        $"已将播放延迟设置到默认值，请尝试重新播放.");
+                    if (retryPlay == Microsoft.UI.Xaml.Controls.ContentDialogResult.Secondary)
+                    {
+                        await Play(musicData, isAutoPlay);
+                    }
+                }
+                catch (NotEnoughBytesException err)
+                {
+                    await MainWindow.ShowDialog("播放Midi音频时出现错误", $"似乎不支持此Midi音频文件。\n错误信息：{err.Message}");
+                }
+                catch (Exception e)
+                {
+                    a = false;
 #if DEBUG
-                await MainWindow.ShowDialog("播放音频时出现错误", e.ToString());
+                    await MainWindow.ShowDialog("播放音频时出现错误", e.ToString());
 #else
                 await MainWindow.ShowDialog("播放音频时出现错误", e.Message);
 #endif
+                }
+
             }
-
             return a;
-        }
-
-        private async void FreezePlayTime()
-        {
-            await Task.Delay(200);
-            isLoadingPlay = false;
         }
 
         private async void AddHistory(MusicData musicData)
@@ -199,7 +202,7 @@ namespace znMusicPlayerWUI.Background
             await SongHistoryHelper.AddHistory(new() { MusicData = musicData, Time = DateTime.Now });
         }
 
-        public async Task<bool> PlayNext(bool isAutoPlay = false)
+        public async Task<bool> PlayNext(bool isAutoPlay = false, bool freezeTime = true)
         {
             if (NowPlayingList.Any())
             {
@@ -209,7 +212,7 @@ namespace znMusicPlayerWUI.Background
                     a = 0;
                 }
 
-                return await Play(NowPlayingList[a], isAutoPlay);
+                return await Play(NowPlayingList[a], isAutoPlay, freezeTime);
             }
 
             return true;

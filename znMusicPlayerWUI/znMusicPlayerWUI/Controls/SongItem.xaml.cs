@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Pages;
 using System.Security.Cryptography;
+using System.Diagnostics;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -118,7 +119,7 @@ namespace znMusicPlayerWUI.Controls
                         {
                             a = await CodeHelper.GetCover(musicData.InLocal);
                         }
-                        catch { a = null; }
+                        catch(Exception err) { Debug.WriteLine(err); a = null; }
                     }
                     break;
 
@@ -377,12 +378,15 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
+        public static List<SongItem> StaticSongItems = new();
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
+            StaticSongItems.Add(this);
         }
 
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
+            StaticSongItems.Remove(this);
             Dispose();
         }
 

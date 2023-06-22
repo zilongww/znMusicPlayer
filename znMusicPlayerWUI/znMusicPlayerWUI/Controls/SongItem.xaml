@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" Loaded="Grid_Loaded" Unloaded="Grid_Unloaded"
-    RightTapped="Button_RightTapped" Background="{x:Null}"
+    RightTapped="Button_RightTapped" Background="{x:Null}" x:FieldModifier="Public" 
     PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
     PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited"
     DoubleTapped="Grid_DoubleTapped" Holding="Grid_Holding" x:Name="root">
@@ -89,7 +89,10 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
                 
-                <Grid>
+                <Grid x:Name="InfoRoot" Opacity="1" x:FieldModifier="Public">
+                    <Grid.OpacityTransition>
+                        <ScalarTransition/>
+                    </Grid.OpacityTransition>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition/>
@@ -100,7 +103,7 @@
                         <Border x:Name="AlbumImage_BaseBorder"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                IsHitTestVisible="False"
+                                IsHitTestVisible="False" x:FieldModifier="Public"
                                 CornerRadius="{ThemeResource ControlCornerRadius}">
                             <local:Imagezn x:Name="AlbumImage" ShowMenuBehavior="None"/>
                         </Border>
@@ -113,7 +116,7 @@
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="{x:Bind MusicData.Title,Mode=OneWay}" IsHitTestVisible="False" Grid.Row="0"/>
+                        <TextBlock x:Name="TitleTextBlock" x:FieldModifier="Public" Text="{x:Bind MusicData.Title,Mode=OneWay}" IsHitTestVisible="False" Grid.Row="0"/>
                         <Grid Grid.Row="1" HorizontalAlignment="Left">
                             <Button BorderThickness="0"
                                     Background="Transparent"
@@ -123,7 +126,7 @@
                                     Flyout="{ThemeResource mf}"
                                     Content=" "
                                     HorizontalAlignment="Stretch"/>
-                            <TextBlock x:Name="ButtonNameTextBlock" IsHitTestVisible="False" FontSize="12" Text="{x:Bind MusicData.ButtonName,Mode=OneWay}" Foreground="{ThemeResource SystemChromeDisabledLowColor}" TextTrimming="CharacterEllipsis"/>
+                            <TextBlock x:Name="ButtonNameTextBlock" x:FieldModifier="Public" IsHitTestVisible="False" FontSize="12" Text="{x:Bind MusicData.ButtonName,Mode=OneWay}" Foreground="{ThemeResource SystemChromeDisabledLowColor}" TextTrimming="CharacterEllipsis"/>
                         </Grid>
 
                     </Grid>

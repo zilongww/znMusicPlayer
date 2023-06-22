@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Microsoft.UI.Xaml.Media;
+using ATL.CatalogDataReaders;
+using System.Formats.Tar;
 
 namespace znMusicPlayerWUI.DataEditor
 {
@@ -123,55 +125,120 @@ namespace znMusicPlayerWUI.DataEditor
 
         public static async Task<JObject> AddLocalMusicDataToPlayList(string listName, FileInfo localFlie, JObject jdata)
         {
-            MusicData localAudioData;
-            TagLib.File tagFile = null;
-            TagLib.Tag tag = null;
-            bool isError = false;
-
-            try
+            if (localFlie.Extension == ".cue")
             {
                 await Task.Run(() =>
                 {
-                    tagFile = TagLib.File.Create(localFlie.FullName);
-                    tag = tagFile.Tag;
-                    if (tag.IsEmpty) isError = true;
-                    if (tag.Performers == null) isError = true;
-                });
-            }
-            catch
-            {
-                isError = true;
-            }
-
-            if (!isError)
-            {
-                List<Artist> artists = null;
-                if (tag.Performers.Any())
-                {
-                    artists = new();
-                    foreach (var a in tag.Performers)
+                    CueSharp.CueSheet cueSheet = new CueSharp.CueSheet(localFlie.FullName);
+                    string path = $"{localFlie.DirectoryName}\\{cueSheet.Tracks.First().DataFile.Filename}";
+                    TimeSpan duration = default;
+                    try
                     {
-                        artists.Add(new(a, null, null));
+                        var tagFile = TagLib.File.Create(path);
+                        duration = tagFile.Properties.Duration;
+                        tagFile.Dispose();
                     }
-                }
-                
+                    catch
+                    {
+                        var track = new ATL.Track(path);
+                        duration = TimeSpan.FromMilliseconds(track.DurationMs);
+                    }
 
-                localAudioData = new MusicData(
-                    tag.Title == null ? localFlie.Name : tag.Title, null, artists, tag.Album,
-                    inLocal: localFlie.FullName, from: MusicFrom.localMusic
-                    );
+                    List<MusicData> data = new List<MusicData>();
+                    foreach (var t in cueSheet.Tracks)
+                    {
+                        //开始的时间
+                        CueSharp.Index startIndex = t.Indices.Last();
+                        TimeSpan startTime = new(0, 0, startIndex.Minutes, startIndex.Seconds, startIndex.Frames * 10);
+
+                        //结束的时间
+                        int endCount = t.TrackNumber;
+                        CueSharp.Index endIndex = default;
+                        TimeSpan endTime = default;
+                        if (endCount < cueSheet.Tracks.Length)
+                        {
+                            endIndex = cueSheet.Tracks[t.TrackNumber].Indices.Last();
+                            endTime = new(0, 0, endIndex.Minutes, endIndex.Seconds, endIndex.Frames * 10);
+                        }
+                        else
+                        {
+                            endTime = duration;
+                        }
+
+                        MusicData musicData = new(t.Title, null, new List<Artist>() { new(t.Performer) }, cueSheet.Title)
+                        {
+                            From = MusicFrom.localMusic,
+                            InLocal = path,
+                            CUETrackData = new()
+                            {
+                                Index = t.TrackNumber,
+                                StartDuration = startTime,
+                                EndDuration = endTime,
+                                Path = localFlie.FullName
+                            }
+                        };
+                        data.Add(musicData);
+                    }
+                    data.Reverse();
+                    foreach (var i in data)
+                    {
+                        AddMusicDataToPlayList(listName, i, jdata);
+                    }
+                });
+
+                return jdata;
             }
             else
             {
-                localAudioData = new MusicData(
-                    localFlie.Name, null, null,
-                    inLocal: localFlie.FullName, from: MusicFrom.localMusic
-                    );
+                MusicData localAudioData;
+                TagLib.File tagFile = null;
+                TagLib.Tag tag = null;
+                bool isError = false;
+
+                try
+                {
+                    await Task.Run(() =>
+                    {
+                        tagFile = TagLib.File.Create(localFlie.FullName);
+                        tag = tagFile.Tag;
+                        if (tag.IsEmpty) isError = true;
+                        if (tag.Performers == null) isError = true;
+                    });
+                }
+                catch
+                {
+                    isError = true;
+                }
+
+                if (!isError)
+                {
+                    List<Artist> artists = null;
+                    if (tag.Performers.Any())
+                    {
+                        artists = new();
+                        foreach (var a in tag.Performers)
+                        {
+                            artists.Add(new(a, null, null));
+                        }
+                    }
+
+
+                    localAudioData = new MusicData(
+                        tag.Title == null ? localFlie.Name : tag.Title, null, artists, tag.Album,
+                        inLocal: localFlie.FullName, from: MusicFrom.localMusic
+                        );
+                }
+                else
+                {
+                    localAudioData = new MusicData(
+                        localFlie.Name, null, null,
+                        inLocal: localFlie.FullName, from: MusicFrom.localMusic
+                        );
+                }
+
+                localAudioData.RelaseTime = localFlie.CreationTime.Ticks.ToString();
+                return AddMusicDataToPlayList(listName, localAudioData, jdata);
             }
-
-            localAudioData.RelaseTime = localFlie.CreationTime.Ticks.ToString();
-
-            return AddMusicDataToPlayList(listName, localAudioData, jdata);
         }
     }
 }

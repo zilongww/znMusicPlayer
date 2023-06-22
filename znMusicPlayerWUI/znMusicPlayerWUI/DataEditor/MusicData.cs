@@ -62,6 +62,18 @@ namespace znMusicPlayerWUI.DataEditor
         }
     }
 
+    public class CUETrackData
+    {
+        public string Path { get; set; } = null;
+        public int Index { get; set; } = 0;
+        public TimeSpan Duration
+        {
+            get => EndDuration - StartDuration;
+        }
+        public TimeSpan StartDuration { get; set; } = default;
+        public TimeSpan EndDuration { get; set; } = default;
+    }
+
     public class Artist
     {
         public string Name { get; set; }
@@ -83,6 +95,15 @@ namespace znMusicPlayerWUI.DataEditor
         }
     }
 
+    public class Album
+    {
+        public string Title { get; set; }
+        public string ID { get; set; }
+        public string PicturePath { get; set; }
+        public string Describee { get; set; }
+        public MusicListData Songs { get; set; }
+    }
+
     public class MusicData : OnlyClass
     {
         public string Title { get; set; }
@@ -94,6 +115,7 @@ namespace znMusicPlayerWUI.DataEditor
         public string RelaseTime { get; set; }
         public MusicFrom From { get; set; }
         public string InLocal { get; set; }
+        public CUETrackData CUETrackData { get; set; } = null;
 
         string _artistName = null;
         public string ArtistName
@@ -153,7 +175,7 @@ namespace znMusicPlayerWUI.DataEditor
 
         public override string GetMD5()
         {
-            return CodeHelper.ToMD5($"{Title}{Artists.Count}{Artists[0].ID}{Artists.Count}{Album}{ID}{AlbumID}{From}{InLocal}");
+            return CodeHelper.ToMD5($"{Title}{Artists[0].Name}{Artists[0].ID}{Artists.Count}{Album}{ID}{AlbumID}{From}{InLocal}{(CUETrackData != null ? $"{CUETrackData.StartDuration}{CUETrackData.EndDuration}" : "")}");
         }
     }
 

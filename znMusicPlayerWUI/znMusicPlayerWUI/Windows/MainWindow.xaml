@@ -130,8 +130,8 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <Border CornerRadius="5"
-                                            Height="66"
-                                            Margin="0,0,10,0">
+                                        Height="66"
+                                        Margin="0,0,10,0">
                                     <Frame x:Name="PlayContent"
                                            IsTabStop="True" MinWidth="0"
                                            CommonNavigationTransitionInfo.IsStaggerElement="True">
@@ -157,11 +157,6 @@
                                                TextWrapping="NoWrap"
                                                HorizontalAlignment="Left"
                                                TextTrimming="CharacterEllipsis">
-                                        <TextBlock.Transitions>
-                                            <TransitionCollection>
-                                                <ContentThemeTransition/>
-                                            </TransitionCollection>
-                                        </TextBlock.Transitions>
                                     </TextBlock>
                                     <TextBlock x:Name="PlayArtist"
                                                Text="No media playing"
@@ -169,11 +164,6 @@
                                                TextWrapping="NoWrap"
                                                HorizontalAlignment="Left"
                                                TextTrimming="CharacterEllipsis">
-                                        <TextBlock.Transitions>
-                                            <TransitionCollection>
-                                                <ContentThemeTransition/>
-                                            </TransitionCollection>
-                                        </TextBlock.Transitions>
                                     </TextBlock>
                                 </StackPanel>
                             </Grid>

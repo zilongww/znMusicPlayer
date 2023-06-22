@@ -25,10 +25,14 @@ namespace znMusicPlayerWUI.Controls
         private MusicListData MusicListData { get; set; }
         public double ImageScaleDPI { get; set; } = 1.0;
         public string ID { get; set; }
+        public Imagezn ConnectAnimationElement { get; set; }
+        public TextBlock ConnectAnimationElement1 { get; set; }
 
         public PlayListCard()
         {
             InitializeComponent();
+            ConnectAnimationElement = PlayListImage;
+            ConnectAnimationElement1 = TextBaseTb;
         }
 
         public async Task Init(MusicFrom musicFrom, string id)

@@ -324,6 +324,7 @@ namespace znMusicPlayerWUI.Media
         {
             get
             {
+                if (localFileIniting) return default;
                 if (FileReader != null)
                 {
                     if (FileReader.isMidi)
@@ -333,13 +334,22 @@ namespace znMusicPlayerWUI.Media
                     }
                     else
                     {
-                        return FileReader.CurrentTime - TimeSpan.FromMilliseconds(Latency);
+                        if (MusicData.CUETrackData != null)
+                        {
+                            //Debug.WriteLine($"{FileReader.CurrentTime}  --  {MusicData.CUETrackData.EndDuration}");
+                            return FileReader.CurrentTime - MusicData.CUETrackData.StartDuration - TimeSpan.FromMilliseconds(Latency);
+                        }
+                        else
+                        {
+                            return FileReader.CurrentTime - TimeSpan.FromMilliseconds(Latency);
+                        }
                     }
                 }
                 return TimeSpan.Zero;
             }
             set
             {
+                if (localFileIniting) return;
                 if (FileReader != null)
                 {
                     if (FileReader.isMidi)
@@ -349,7 +359,14 @@ namespace znMusicPlayerWUI.Media
                     }
                     else
                     {
-                        FileReader.CurrentTime = value;
+                        if (MusicData.CUETrackData != null)
+                        {
+                            FileReader.CurrentTime = MusicData.CUETrackData.StartDuration + value;
+                        }
+                        else
+                        {
+                            FileReader.CurrentTime = value;
+                        }
                     }
                     TimingChanged?.Invoke(this);
                 }
@@ -360,6 +377,7 @@ namespace znMusicPlayerWUI.Media
         {
             get
             {
+                if (localFileIniting) return TimeSpan.MaxValue;
                 if (FileReader != null)
                 {
                     if (FileReader.isMidi)
@@ -369,7 +387,14 @@ namespace znMusicPlayerWUI.Media
                     }
                     else
                     {
-                        return FileReader.TotalTime;// - TimeSpan.FromMilliseconds(Latency);
+                        if (MusicData.CUETrackData != null)
+                        {
+                            return MusicData.CUETrackData.Duration;
+                        }
+                        else
+                        {
+                            return FileReader.TotalTime;// - TimeSpan.FromMilliseconds(Latency);
+                        }
                     }
                 }
                 return TimeSpan.Zero;
@@ -477,8 +502,6 @@ namespace znMusicPlayerWUI.Media
         }
 
         public string WaveInfo { get; set; } = "";
-
-        public bool IsInReading = false;
 
         public AudioPlayer()
         {
@@ -670,7 +693,21 @@ namespace znMusicPlayerWUI.Media
         public ATL.Track tfile = null;
         public async Task SetSource(string filePath)
         {
+            MusicData musicData = MusicData;
+            if (localFileIniting) return;
             if (filePath != _filePath) return;
+            if (FileReader != null)
+            {
+                if (filePath == FileReader.FileName)
+                {
+                    if (MusicData.CUETrackData != null)
+                        FileReader.CurrentTime = MusicData.CUETrackData.StartDuration;
+                    PreviewSourceChanged?.Invoke(this);
+                    SourceChanged?.Invoke(this);
+                    localFileIniting = false;
+                    return;
+                }
+            }
 
             if (NowOutDevice.DeviceType == OutApi.None)
             {
@@ -684,6 +721,7 @@ namespace znMusicPlayerWUI.Media
             AudioFileReader fileReader = null;
             AudioEffects.SoundTouchWaveProvider fileProvider = null;
             localFileIniting = true;
+
             await Task.Run(() =>
             {
                 fileReader = new AudioFileReader(filePath);
@@ -706,25 +744,35 @@ namespace znMusicPlayerWUI.Media
             {
                 EqualizerBand = EqualizerBand;
             }
-
-            IsInReading = false;
-
-            PreviewSourceChanged?.Invoke(this);
-            if (filePath != FileReader?.FileName)
-                SourceChanged?.Invoke(this);
-
             await Task.Run(() => DisposeAll());
-
             FileReader = fileReader;
             FileProvider = fileProvider;
 
-            if (!FileReader.isMidi)
+            if (MusicData.CUETrackData != null)
+            {
+                FileReader.CurrentTime = musicData.CUETrackData.StartDuration;
+                TimingChanged += AudioPlayer_TimingChanged;
+            }
+
+            PreviewSourceChanged?.Invoke(this);
+            SourceChanged?.Invoke(this);
+
+            if (FileReader.isMidi)
+            {
+                MidiOutputDevice = OutputDevice.GetByIndex(0);
+                MidiFile = MidiFile.Read(filePath);
+                MidiPlayback = MidiFile.GetPlayback(MidiOutputDevice);
+                MidiPlayback.Finished += (_, __) => MainWindow.Invoke(() => AudioPlayer_PlaybackStopped(null, null));
+                MidiPlayback.Speed = Tempo;
+            }
+            else
             {
                 bool notDefaultLatency = false;
                 if (Latency != (int)SettingDefault[SettingParams.AudioLatency.ToString()])
                 {
                     notDefaultLatency = true;
                 }
+
                 switch (NowOutDevice.DeviceType)
                 {
                     case OutApi.WaveOut:
@@ -770,16 +818,13 @@ namespace znMusicPlayerWUI.Media
                         break;
                 }
             }
-            else
-            {
-                MidiOutputDevice = OutputDevice.GetByIndex(0);
-                MidiFile = MidiFile.Read(filePath);
-                MidiPlayback = MidiFile.GetPlayback(MidiOutputDevice);
-                MidiPlayback.Finished += (_, __) => MainWindow.Invoke(() => AudioPlayer_PlaybackStopped(null, null));
-                MidiPlayback.Speed = Tempo;
-            }
 
             localFileIniting = false;
+        }
+
+        private void AudioPlayer_TimingChanged(AudioPlayer audioPlayer)
+        {
+
         }
 
         public async Task Reload()
@@ -851,7 +896,9 @@ namespace znMusicPlayerWUI.Media
                 {
                     var a = CurrentTime + TimeSpan.FromSeconds(1.5);
                     if (a >= TotalTime)
+                    {
                         PlayEnd?.Invoke(this);
+                    }
                 }
             }
         }
@@ -893,14 +940,15 @@ namespace znMusicPlayerWUI.Media
             timer.Start();
             if (PlaybackState != PlaybackState.Playing) timer.Stop();
             if (TimingChanged == null) timer.Stop();
-
             TimingChanged?.Invoke(this);
+            AudioPlayer_PlaybackStopped(null, null);
         }
 
         bool isDisposing = false;
         public void DisposeAll()
         {
             isDisposing = true;
+            TimingChanged -= AudioPlayer_TimingChanged;
 
             try
             {

@@ -147,14 +147,6 @@ namespace znMusicPlayerWUI.Controls
                     out var visual, out var compositor, out var scalarKeyFrameAnimation);
                 visual.Opacity = 0;
                 visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
-                compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
-                {
-                    try
-                    {
-                        ImageSourceBefore.Source = null;
-                    }
-                    catch{ }
-                };
                 ImageSource.Source = Source;
 
                 AnimateHelper.AnimateScalar(
@@ -162,6 +154,15 @@ namespace znMusicPlayerWUI.Controls
                     0.2f, 1, 0.22f, 1f,
                     out var visual1, out var compositor1, out var scalarKeyFrameAnimation1);
                 visual1.Opacity = 1;
+                compositor1.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
+                {
+                    try
+                    {
+                        ImageSourceBefore.Source = null;
+                        //3System.Diagnostics.Debug.WriteLine("www");
+                    }
+                    catch(Exception err) { System.Diagnostics.Debug.WriteLine(err); }
+                };
                 visual1.StartAnimation("Opacity", scalarKeyFrameAnimation1);
             }
             else
@@ -174,6 +175,16 @@ namespace znMusicPlayerWUI.Controls
                 visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
                 ImageSource.Source = Source;
                 firstLoad = false;
+            }
+            RefreshImageSource();
+        }
+
+        private async void RefreshImageSource()
+        {
+            await Task.Delay(1100);
+            if (ImageSource.Source == null)
+            {
+                ImageSourceBefore.Source = null;
             }
         }
 
