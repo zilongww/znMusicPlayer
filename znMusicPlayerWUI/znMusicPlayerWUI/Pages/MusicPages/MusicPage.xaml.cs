@@ -551,6 +551,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             var lrcItem = (sender as ListView).SelectedItem as LyricData;
             if (lrcItem != null && !isCodeChangedLrcItem)
             {
+                if (lrcItem.Lyric == null) return;
                 // 加1ms，否则会短时间判定到上一句歌词
                 App.audioPlayer.CurrentTime = lrcItem.LyricTimeSpan + TimeSpan.FromMilliseconds(App.audioPlayer.Latency + 1);
 #if DEBUG

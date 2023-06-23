@@ -11,7 +11,7 @@
         <TextBlock x:Name="WaveInfoTB"
                    Text="{Binding WaveInfo,Mode=TwoWay}"
                    VerticalAlignment="Top" HorizontalAlignment="Right" Margin="84,-34,0,0"/>
-        <ScrollViewer>
+        <ScrollView HorizontalScrollMode="Disabled">
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="均衡器" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Margin="0,0,4,0"/>
@@ -48,7 +48,9 @@
                         <TextBlock Text="12-" Margin="0,8,0,0"/>
                         <TextBlock Text="Hz" Margin="0,8,0,0"/>
                     </StackPanel>
-                    <ScrollViewer Padding="0,0,0,16" Margin="38,28,0,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled" HorizontalScrollMode="Enabled">
+                    <ScrollViewer Padding="0,0,0,16" Margin="38,28,0,0"
+                                VerticalScrollBarVisibility="Hidden" VerticalScrollMode="Disabled"
+                                HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled">
                         <Grid Padding="0,2,0,2">
                             <StackPanel x:Name="SliderStackBase" Orientation="Horizontal">
                                 <StackPanel.Resources>
@@ -155,6 +157,6 @@
                     </StackPanel>
                 </GridView>
             </StackPanel>
-        </ScrollViewer>
+        </ScrollView>
     </Grid>
 </Page>

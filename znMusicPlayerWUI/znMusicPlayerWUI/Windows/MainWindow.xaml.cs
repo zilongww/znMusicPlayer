@@ -403,7 +403,7 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region Dialog
-        static ScrollViewer dialogScrollViewer = new();
+        static ScrollView dialogScrollViewer = new() { HorizontalScrollMode = ScrollingScrollMode.Disabled };
         static bool dialogShow = false;
         static List<object[]> dialogShowObjects = new();
         public static async Task<ContentDialogResult> ShowDialog(

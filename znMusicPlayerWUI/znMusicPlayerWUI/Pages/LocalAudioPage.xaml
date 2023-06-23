@@ -6,14 +6,69 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" SizeChanged="Page_SizeChanged">
-    <ListView x:Name="ListViewBase" HorizontalContentAlignment="Center" SelectionMode="None">
+    <Grid>
+        <ListView x:Name="ListViewBase" HorizontalContentAlignment="Center" SelectionMode="None" Visibility="Collapsed">
+            <ListView.Header>
+                <Grid x:Name="HeaderBaseGrid">
+                    <Rectangle x:Name="HeaderBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
+                    <TextBlock x:Name="HeaderBaseTextBlock" Text="本地音频" Style="{ThemeResource TBHeader}"/>
+                </Grid>
+            </ListView.Header>
+        </ListView>
+        
+        <Grid x:Name="LayoutRoot">
 
-        <ListView.Header>
-            <Grid x:Name="HeaderBaseGrid">
-                <Rectangle x:Name="HeaderBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
-                <TextBlock x:Name="HeaderBaseTextBlock" Text="本地音频" Style="{ThemeResource TBHeader}"/>
-            </Grid>
-        </ListView.Header>
+            <Image x:Name="BackgroundImage"
+           ImageOpened="ImageBrush_OnImageOpened"
+           Source="/Images/SugarAndSalt.jpg"
+           Stretch="UniformToFill" />
 
-    </ListView>
+            <GridView x:Name="Posters" Margin="200,48" RequestedTheme="Light">
+                <GridView.Resources>
+                    <Style TargetType="ListViewItem" />
+                    <Style TargetType="Image">
+                        <Setter Property="Stretch" Value="UniformToFill" />
+                        <Setter Property="Width" Value="300" />
+                        <Setter Property="Margin" Value="12" />
+                    </Style>
+                </GridView.Resources>
+                <GridViewItem>
+                    <TextBlock Text="Assets/Posters/1.jpg" />
+                </GridViewItem>
+                <GridViewItem>
+                    <TextBlock Text="Assets/Posters/2.jpg" />
+                </GridViewItem>
+                <GridViewItem>
+                    <TextBlock Text="Assets/Posters/3.jpg" />
+                </GridViewItem>
+                <GridViewItem>
+                    <TextBlock Text="Assets/Posters/4.jpg" />
+                </GridViewItem>
+                <GridViewItem>
+                    <TextBlock Text="Assets/Posters/5.jpg" />
+                </GridViewItem>
+                <GridViewItem>
+                    <TextBlock Text="Assets/Posters/6.jpg" />
+                </GridViewItem>
+                <GridViewItem>
+                    <TextBlock Text="Assets/Posters/7.jpg" />
+                </GridViewItem>
+                <GridViewItem>
+                    <TextBlock Text="Assets/Posters/8.jpg" />
+                </GridViewItem>
+                <GridViewItem>
+                    <TextBlock Text="Assets/Posters/9.jpg" />
+                </GridViewItem>
+                <GridViewItem>
+                    <TextBlock Text="Assets/Posters/10.jpg" />
+                </GridViewItem>
+                <GridViewItem>
+                    <TextBlock Text="Assets/Posters/11.jpg" />
+                </GridViewItem>
+                <GridViewItem>
+                    <TextBlock Text="Assets/Posters/12.jpg" />
+                </GridViewItem>
+            </GridView>
+        </Grid>
+    </Grid>
 </Page>

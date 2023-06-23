@@ -43,9 +43,9 @@ namespace znMusicPlayerWUI.Pages
         {
             //await App.playingList.Play(App.playListReader.NowMusicListDatas[0].Songs[0]);
 
-            CueSharp.CueSheet cueSheet = new CueSharp.CueSheet("E:\\vedio\\anime\\[170816] TVアニメ「Fate／Apocrypha」OPテーマ「英雄 運命の詩」／EGOIST [通常盤] [FLAC+CUE]\\VVCL-1080.cue");
+            //CueSharp.CueSheet cueSheet = new CueSharp.CueSheet("E:\\vedio\\anime\\[170816] TVアニメ「Fate／Apocrypha」OPテーマ「英雄 運命の詩」／EGOIST [通常盤] [FLAC+CUE]\\VVCL-1080.cue");
 
-            //GC.Collect();*
+            //GC.Collect();
             try
             {
                 abcd.Source = App.playingList.NowPlayingList[new Random().Next(0, App.playingList.NowPlayingList.Count - 1)].PicturePath;

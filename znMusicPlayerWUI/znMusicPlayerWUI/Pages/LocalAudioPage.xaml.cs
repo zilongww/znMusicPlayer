@@ -15,6 +15,15 @@ using znMusicPlayerWUI.Controls;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Reflection.Emit;
+using CommunityToolkit.WinUI.UI.Media.Helpers;
+using Microsoft.Graphics.Canvas.UI.Composition;
+using Microsoft.Graphics.Canvas;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.Foundation;
+using Windows.Graphics.Display;
+using Windows.Graphics.DirectX;
+using System.Numerics;
+using Microsoft.Graphics.Canvas.Effects;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -27,6 +36,7 @@ namespace znMusicPlayerWUI.Pages
 
         public void UpdataShyHeader()
         {
+            return;
             // 设置header为顶层
             var headerPresenter = (UIElement)VisualTreeHelper.GetParent((UIElement)ListViewBase.Header);
             var headerContainer = (UIElement)VisualTreeHelper.GetParent(headerPresenter);
@@ -82,6 +92,47 @@ namespace znMusicPlayerWUI.Pages
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdataShyHeader();
+        }
+
+        private bool _imageLoaded;
+
+        // this is an initial way of handling resize 
+        // I will investigate expressions
+        private async void OnSizeChanged(object sender, SizeChangedEventArgs args)
+        {
+            if (!_imageLoaded)
+            {
+                return;
+            }
+            await RenderOverlayAsync();
+        }
+
+        private async void ImageBrush_OnImageOpened(object sender, RoutedEventArgs e)
+        {
+            _imageLoaded = true;
+            await RenderOverlayAsync();
+        }
+
+        // this method must be called after the background image is opened, otherwise
+        // the render target bitmap is empty
+        Compositor _compositor = null;
+        private async Task RenderOverlayAsync()
+        {
+            var compositor = Window.Current.Compositor;
+            var effect = new AlphaMaskEffect()
+            {
+                Source = new CompositionEffectSourceParameter("Source"),
+                AlphaMask = new CompositionEffectSourceParameter("Mask"),
+            };
+
+            var opacityMaskSurface = LoadedImageSurface.StartLoadFromUri(new Uri("ms-appx:///Images/opacityMask.png"));
+            var opacityBrush = compositor.CreateSurfaceBrush(opacityMaskSurface);
+            opacityBrush.Stretch = CompositionStretch.UniformToFill;
+
+            var effectFactory = compositor.CreateEffectFactory(effect);
+            var compositionBrush = effectFactory.CreateBrush();
+            compositionBrush.SetSourceParameter("Source", source);
+            compositionBrush.SetSourceParameter("Mask", opacityBrush);
         }
     }
 }
