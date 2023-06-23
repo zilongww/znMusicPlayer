@@ -32,22 +32,6 @@ namespace znMusicPlayerWUI.Helpers
     /// </summary>
     public static class AnimateHelper
     {
-        public static Storyboard AnimateOpacity(UIElement element, double from, double to, double timeSecond, EasingFunctionBase easingFunction = null)
-        {
-            var storyboard = new Storyboard();
-            DoubleAnimation doubleAnimation = new DoubleAnimation();
-
-            doubleAnimation.From = from;
-            doubleAnimation.To = to;
-            doubleAnimation.Duration = new Duration(TimeSpan.FromSeconds(timeSecond));
-            doubleAnimation.EasingFunction = easingFunction;
-            Storyboard.SetTarget(doubleAnimation, element);
-            Storyboard.SetTargetProperty(doubleAnimation, "Opacity");
-
-            storyboard.Children.Add(doubleAnimation);
-            return storyboard;
-        }
-
         public static void AnimateScalar(UIElement element, float scalar, double TimeSecond,
                                           float cubicBezierEasing1, float cubicBezierEasing2, float cubicBezierEasing3, float cubicBezierEasing4,
                                           out Visual elementVisual, out Compositor compositor, out ScalarKeyFrameAnimation animation)
@@ -74,58 +58,6 @@ namespace znMusicPlayerWUI.Helpers
 
             animation.Duration = TimeSpan.FromSeconds(TimeSecond);
             animation.InsertKeyFrame((float)TimeSecond, new Vector3(offsetX, offsetY, offsetZ), easing);
-        }
-
-        public static Storyboard AnimateTransform(
-            UIElement element, UIElement parent,
-            double fromValueX = double.NaN, double fromValueY = double.NaN,
-            double toValueX = double.NaN, double toValueY = double.NaN,
-            double timeSecondX = 1.0, double timeSecondY = 1.0)
-        {
-            if (element.RenderTransform == null)
-            {
-                element.RenderTransform = new Microsoft.UI.Xaml.Media.TranslateTransform();
-            }
-
-            if (fromValueX == double.NaN || fromValueY == double.NaN)
-            {
-                var position = element.TransformToVisual(parent).TransformPoint(new Point());
-
-                if (fromValueX == double.NaN)
-                    fromValueX = position.X;
-
-                if (fromValueY == double.NaN)
-                    fromValueY = position.Y;
-            }
-
-            var storyboard = new Storyboard();
-
-            // x
-            var xAnimation = new DoubleAnimation
-            {
-                Duration = new Duration(TimeSpan.FromSeconds(timeSecondX)),
-                From = fromValueX,
-                To = toValueX,
-                EnableDependentAnimation = true
-            };
-            Storyboard.SetTarget(xAnimation, element);
-            Storyboard.SetTargetProperty(xAnimation, "(UIElement.RenderTransform).(TranslateTransform.X)");
-
-            // y
-            var yAnimation = new DoubleAnimation
-            {
-                Duration = new Duration(TimeSpan.FromSeconds(timeSecondY)),
-                From = fromValueY,
-                To = toValueY,
-                EnableDependentAnimation = true
-            };
-            Storyboard.SetTarget(yAnimation, element);
-            Storyboard.SetTargetProperty(yAnimation, "(UIElement.RenderTransform).(TranslateTransform.Y)");
-
-            storyboard.Children.Add(xAnimation);
-            storyboard.Children.Add(yAnimation);
-
-            return storyboard;
         }
     }
 

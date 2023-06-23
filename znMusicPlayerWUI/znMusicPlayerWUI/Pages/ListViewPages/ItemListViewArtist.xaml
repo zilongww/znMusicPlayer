@@ -77,7 +77,7 @@
                                         <SymbolIcon Symbol="ContactInfo"/>
                                     </Border>
                                     <Border x:Name="Artist_DownToList" Background="{ThemeResource AcrylicNormal}" CornerRadius="8" Width="44" Height="44" BorderThickness="0" Margin="4,0,0,0">
-                                        <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="12"
+                                        <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" Padding="12"
                                                 ToolTipService.ToolTip="滑动到列表" Click="Button_Click_6">
                                             <AnimatedIcon>
                                                 <AnimatedIcon.Source>

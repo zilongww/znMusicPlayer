@@ -6,39 +6,40 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:control="using:znMusicPlayerWUI.Controls"
     mc:Ignorable="d">
-
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" ScrollViewer.ZoomMode="Enabled" ScrollViewer.CanContentRenderOutsideBounds="True">
-        <StackPanel HorizontalAlignment="Stretch"
+    <Grid>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" ScrollViewer.ZoomMode="Enabled" ScrollViewer.CanContentRenderOutsideBounds="True">
+            <StackPanel HorizontalAlignment="Stretch"
                     Orientation="Vertical"
                     Margin="0,14,0,0">
-            <StackPanel Orientation="Horizontal">
-                <Border CornerRadius="6">
-                    <controls:ImageEx x:Name="abcd"
+                <StackPanel Orientation="Horizontal">
+                    <Border CornerRadius="6">
+                        <controls:ImageEx x:Name="abcd"
                                       Source="/Images/SugarAndSalt.jpg"
                                       Width="120" Height="120"
                                       Opacity="1" Loaded="Image_Loaded"/>
-                </Border>
-                <StackPanel VerticalAlignment="Center"
+                    </Border>
+                    <StackPanel VerticalAlignment="Center"
                             Margin="10,0,0,0">
-                    <TextBlock Text="znMusicPlayer"
+                        <TextBlock Text="znMusicPlayer"
                                FontSize="28"/>
-                    <TextBlock Text="Copyright © 2018-2023 znMusicPlayer by zilongcn"
+                        <TextBlock Text="Copyright © 2018-2023 znMusicPlayer by zilongcn"
                                FontSize="12"/>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
-            <TextBlock Margin="0,12,0,0"
+                <TextBlock Margin="0,12,0,0"
                        TextWrapping="Wrap"
                        IsTextSelectionEnabled="True">
                 版本号：<Run x:Name="VersionRun" Text="1.0.0"/>
                 <LineBreak/>程序框架：WinUI3 1.4
                 <LineBreak/>平台：.NET 7
                 <LineBreak/>邮箱：zilongcn233@outlook.com
-            </TextBlock>
-            <Button Margin="0,12,0,0"
+                </TextBlock>
+                <Button Margin="0,12,0,0"
                     Content="Github"
                     Click="Button_Click"/>
-        </StackPanel>
-    </ScrollViewer>
-
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </Page>

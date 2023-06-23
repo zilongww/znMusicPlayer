@@ -181,6 +181,7 @@ namespace znMusicPlayerWUI.Media
 
         public void OnDefaultDeviceChanged(DataFlow dataFlow, Role deviceRole, string defaultDeviceId)
         {
+            Debug.WriteLine("Defualt Device Changed.");
             OnDefaultDeviceChangedEvent?.Invoke(dataFlow, deviceRole, defaultDeviceId);
         }
 

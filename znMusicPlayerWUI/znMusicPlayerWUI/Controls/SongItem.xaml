@@ -98,8 +98,8 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Grid x:Name="AlbumImage_BaseGrid"
-                          Width="50"
-                          Height="50">
+                          Width="58"
+                          Height="58">
                         <Border x:Name="AlbumImage_BaseBorder"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"

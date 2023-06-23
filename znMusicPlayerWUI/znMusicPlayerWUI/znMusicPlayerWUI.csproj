@@ -17,6 +17,7 @@
   <ItemGroup>
     <None Remove="Background.zip" />
     <None Remove="Controls\ArtistCard.xaml" />
+    <None Remove="Controls\AutoView.xaml" />
     <None Remove="Controls\DownloadCard.xaml" />
     <None Remove="Controls\Imagezn.xaml" />
     <None Remove="Controls\ItemListViewArtist.xaml" />
@@ -93,6 +94,12 @@
     <Reference Include="Bass.Net">
       <HintPath>D:\UserData\Download\Bass.Net.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Controls\AutoView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

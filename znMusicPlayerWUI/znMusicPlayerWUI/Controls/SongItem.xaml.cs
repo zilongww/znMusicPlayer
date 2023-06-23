@@ -85,7 +85,6 @@ namespace znMusicPlayerWUI.Controls
 
             UpdataFlyoutMenuContext(bindBase.MusicData);
             UpdataImageInterface(bindBase.MusicData);
-            MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
         }
 
         public void UpdataFlyoutMenuContext(MusicData musicData)
@@ -107,7 +106,7 @@ namespace znMusicPlayerWUI.Controls
                     try
                     {
                         var b = await Media.ImageManage.GetImageSource(musicData);
-                        a = await FileHelper.GetImageSource(b, (int)(50 * ImageScaleDPI), (int)(50 * ImageScaleDPI), true);
+                        a = await FileHelper.GetImageSource(b, (int)(58 * ImageScaleDPI), (int)(58 * ImageScaleDPI), true);
                     }
                     catch { }
                     break;
@@ -136,6 +135,7 @@ namespace znMusicPlayerWUI.Controls
             {
                 ShowImage = false;
             }
+            MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
         }
 
         public static void OnMusicDataChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
