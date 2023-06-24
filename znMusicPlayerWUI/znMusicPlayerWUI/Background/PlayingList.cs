@@ -148,13 +148,14 @@ namespace znMusicPlayerWUI.Background
         {
             var a = true;
             freezeTimeCount++;
-            if (freezeTime) await Task.Delay(200);
+            if (freezeTime)
+                await Task.Delay(200);
             freezeTimeCount--;
 
-            System.Diagnostics.Debug.WriteLine(freezeTimeCount);
+            //System.Diagnostics.Debug.WriteLine(freezeTimeCount);
             if (freezeTimeCount <= 0)
             {
-                System.Diagnostics.Debug.WriteLine(musicData.Title);
+                //System.Diagnostics.Debug.WriteLine(musicData.Title);
                 AddHistory(musicData);
                 try
                 {

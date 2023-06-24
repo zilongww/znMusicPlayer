@@ -13,6 +13,7 @@ using System.IO;
 using znMusicPlayerWUI.DataEditor;
 using System.Net.Http.Json;
 using Downloader;
+using System.ComponentModel.DataAnnotations;
 
 namespace znMusicPlayerWUI.Helpers
 {
@@ -50,21 +51,26 @@ namespace znMusicPlayerWUI.Helpers
         /// <exception cref="FileNotFoundException"></exception>
         public static async Task DownloadFileAsync(string address, string downloadPath)
         {
-            if (!IsNetworkConnected) throw new WebException("网络未连接。");
+            bool err1 = false;
 
-            Uri uriResult;
+            await Task.Run(() =>
+            {
+                if (!Uri.TryCreate(address, UriKind.Absolute, out Uri uriResult)) err1 = true;
+            });
 
-            if (!Uri.TryCreate(address, UriKind.Absolute, out uriResult))
+            if (err1)
                 throw new InvalidOperationException("无法定位到网络地址，请检查你的域名服务器是否正常工作或DNS配置是否正确。");
-
-            if (!File.Exists(downloadPath))
-                throw new FileNotFoundException("找不到目标文件。");
 
             try
             {
-                var d = new DownloadService();
-                await d.DownloadFileTaskAsync(address, downloadPath);
-                d.Dispose();
+                await Task.Run(async () =>
+                {
+                    var data = await Client.GetByteArrayAsync(address);
+                    var stream = File.Create(downloadPath);
+                    stream.Write(data);
+                    stream.Close();
+                    stream.Dispose();
+                });
             }
             catch { }
         }
@@ -86,9 +92,10 @@ namespace znMusicPlayerWUI.Helpers
         static List<MusicData> loadingImages = new();
         public static async Task<string> GetPicturePathAsync(MusicData musicData)
         {
-            while (loadingImages.Count > 3)
+            while (loadingImages.Count > 1)
             {
-                await Task.Delay(250);
+                System.Diagnostics.Debug.WriteLine(musicData.Title);
+                await Task.Delay(1000);
             }
             loadingImages.Add(musicData);
 
@@ -103,11 +110,11 @@ namespace znMusicPlayerWUI.Helpers
                         //string address = MetingService.NeteaseMeting.PicObj(musicData.AlbumID).url;
 
                         string address = $"http://music.163.com/api/song/detail/?id={musicData.ID}&ids=%5B{musicData.ID}%5D";
-
                         string result = null;
-                        result = await GetStringAsync(address);
-                        await Task.Run(() =>
+
+                        await Task.Run(async () =>
                         {
+                            result = await Client.GetStringAsync(address);
                             if (!string.IsNullOrEmpty(result))
                             {
                                 if (!result.Contains("操作频繁"))

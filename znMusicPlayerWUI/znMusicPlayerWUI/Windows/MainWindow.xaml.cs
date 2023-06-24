@@ -488,35 +488,37 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region AudioPlayer Events
+        private void SetLyricToNormal()
+        {
+            AppTitleTextBlock.Text = $"{App.AppName}";
+            LyricTextBlock.Text = null;
+        }
+
         private void LyricManager_PlayingLyricSelectedChange(LyricData _)
         {
             try
             {
-                if (_ != null)
+                if (_ == null) { SetLyricToNormal(); return; }
+                if (_.Lyric == null) { SetLyricToNormal(); return; }
+                if (!_.Lyric.Any()) { SetLyricToNormal(); return; }
+
+                int tcount = 1;
+                int num = App.lyricManager.NowPlayingLyrics.IndexOf(_);
+                try
                 {
-                    int tcount = 1;
-                    int num = App.lyricManager.NowPlayingLyrics.IndexOf(_);
-                    try
+                    while (_?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num + tcount]?.Lyric?.FirstOrDefault())
                     {
-                        while (_?.Lyric?.FirstOrDefault() == App.lyricManager.NowPlayingLyrics[num + tcount]?.Lyric?.FirstOrDefault())
-                        {
-                            tcount++;
-                        }
+                        tcount++;
                     }
-                    catch { }
-
-                    string t1text = tcount == 1
-                        ? _?.Lyric?.FirstOrDefault()
-                        : $"{_?.Lyric?.FirstOrDefault()} (x{tcount})";
-
-                    AppTitleTextBlock.Text = $"{App.AppName} -";
-                    LyricTextBlock.Text = $" {t1text}";
                 }
-                else
-                {
-                    AppTitleTextBlock.Text = $"{App.AppName}";
-                    LyricTextBlock.Text = null;
-                }
+                catch { }
+
+                string t1text = tcount == 1
+                    ? _?.Lyric?.FirstOrDefault()
+                    : $"{_?.Lyric?.FirstOrDefault()} (x{tcount})";
+
+                AppTitleTextBlock.Text = $"{App.AppName} -";
+                LyricTextBlock.Text = $" {t1text}";
             }
             catch (Exception err)
             {

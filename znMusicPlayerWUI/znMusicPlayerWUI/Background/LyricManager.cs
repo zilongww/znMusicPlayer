@@ -159,8 +159,9 @@ namespace znMusicPlayerWUI.Background
         public void ReCallUpdata()
         {
             //System.Diagnostics.Debug.WriteLine($"Lyric Lasted Count {PlayingLyricSelectedChange?.GetInvocationList().Length}");
-            if (!timer.IsEnabled) timer.Start();
+            timer.Start();
             if (PlayingLyricSelectedChange == null) timer.Stop();
+            if (!NowPlayingLyrics.Any()) timer.Stop();
 
             //System.Diagnostics.Debug.WriteLine($"Lyric Timing Changed: {App.audioPlayer.CurrentTime}.");
 

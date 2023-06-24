@@ -131,7 +131,7 @@ namespace znMusicPlayerWUI.Pages
 
             var effectFactory = compositor.CreateEffectFactory(effect);
             var compositionBrush = effectFactory.CreateBrush();
-            compositionBrush.SetSourceParameter("Source", source);
+            //compositionBrush.SetSourceParameter("Source", source);
             compositionBrush.SetSourceParameter("Mask", opacityBrush);
         }
     }

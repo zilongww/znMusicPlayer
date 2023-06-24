@@ -99,6 +99,7 @@ namespace znMusicPlayerWUI.Controls
 
         public void Dispose()
         {
+            Source = null;
             ImageSource.Source = null;
             ImageSourceBefore.Source = null;
             firstLoad = true;

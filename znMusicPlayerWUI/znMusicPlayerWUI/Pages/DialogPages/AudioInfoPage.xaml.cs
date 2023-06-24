@@ -182,9 +182,9 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 return;
             }
 
-            CueSharp.CueSheet cueSheet = await Task.Run(() =>
+            CueSheet cueSheet = await Task.Run(() =>
             {
-                return new CueSharp.CueSheet(App.audioPlayer.MusicData.CUETrackData.Path);
+                return new CueSheet(App.audioPlayer.MusicData.CUETrackData.Path);
             });
             if (cueSheet == null)
             {
@@ -198,7 +198,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 $"结束时间：{App.audioPlayer.MusicData.CUETrackData.EndDuration.ToString("hh\\:mm\\:ss\\.ff")}\n" +
                 $"时长：{App.audioPlayer.MusicData.CUETrackData.Duration.ToString("hh\\:mm\\:ss\\.ff")}";
 
-            string tracksName = "";
+            string tracksName = $"共 {cueSheet.Tracks.Length} 首\n";
             for (int i = 0; i < cueSheet.Tracks.Length; i++)
             {
                 var track = cueSheet.Tracks[i];

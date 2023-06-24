@@ -187,21 +187,25 @@ namespace znMusicPlayerWUI.Media
 
         public void OnDeviceAdded(string deviceId)
         {
+            Debug.WriteLine("Device added.");
             OnDeviceAddedEvent?.Invoke(deviceId);
         }
 
         public void OnDeviceRemoved(string deviceId)
         {
-            OnDeviceAddedEvent?.Invoke(deviceId);
+            Debug.WriteLine("Device removed.");
+            OnDeviceRemovedEvent?.Invoke(deviceId);
         }
 
         public void OnDeviceStateChanged(string deviceId, DeviceState newState)
         {
+            Debug.WriteLine($"Device State changed. deviceId:{deviceId}/newState:{newState}.");
             OnDeviceStateChangedEvent?.Invoke(deviceId, newState);
         }
 
         public void OnPropertyValueChanged(string deviceId, PropertyKey propertyKey)
         {
+            Debug.WriteLine($"Device PropertyValue changed. deviceId:{deviceId}/propertyKey:{propertyKey.ToString()}.");
             OnPropertyValueChangedEvent?.Invoke(deviceId, propertyKey);
         }
 
@@ -510,6 +514,7 @@ namespace znMusicPlayerWUI.Media
             timer.Tick += (_, __) => { ReCallTiming(); };
 
             ClientDeviceEvents.notificationClient.OnDefaultDeviceChangedEvent += NotificationClient_OnDefaultDeviceChangedEvent;
+            ClientDeviceEvents.notificationClient.OnDeviceRemovedEvent += NotificationClient_OnDeviceRemovedEvent;
         }
 
         bool isInReloadDefaultDeviceChanged = false;
@@ -522,13 +527,22 @@ namespace znMusicPlayerWUI.Media
             }
             if (isInReloadDefaultDeviceChanged) return;
             if (NowOutObj.GetType() != typeof(DirectSoundOut) && NowOutObj.GetType() != typeof(WasapiOut)) return;
-            if (NowOutDevice.DeviceName != OutDevice.defaultName) return;
+            if (!NowOutDevice.IsDefaultDevice) return;
 
             isInReloadDefaultDeviceChanged = true;
             if (NowOutObj.GetType() == typeof(WasapiOut)) NowOutDevice = OutDevice.GetWasapiDefaultDevice();
-            MainWindow.Invoke(()=> SetReloadAsync());
+            MainWindow.Invoke(() =>
+            {
+                SetPause();
+                SetReloadAsync();
+            });
             await Task.Delay(1);
             isInReloadDefaultDeviceChanged = false;
+        }
+
+        private void NotificationClient_OnDeviceRemovedEvent(string deviceId)
+        {
+            Debug.WriteLine("removed");
         }
 
         MusicData PointMusicData = null;
@@ -536,6 +550,7 @@ namespace znMusicPlayerWUI.Media
         List<MusicData> LoadingMusicDatas = new();
         public async Task SetSource(MusicData musicData)
         {
+            isCUEEndCalled = false;
             if (musicData == MusicData)
             {
                 if (FileReader != null)
@@ -548,7 +563,12 @@ namespace znMusicPlayerWUI.Media
             if (LoadingMusicDatas.Contains(musicData))
             {
                 //TODO:用户视觉反馈
-                throw new Exception("当前音频正在缓存，请稍后。");
+                if (musicData.CUETrackData == null)
+                    throw new Exception("当前音频正在缓存，请稍后。");
+                else
+                {
+                    return;
+                }
             }
 
             PointMusicData = musicData;
@@ -887,6 +907,7 @@ namespace znMusicPlayerWUI.Media
                 FileReader.CreateFilters();
         }
 
+        bool isCUEEndCalled = false;
         private void AudioPlayer_PlaybackStopped(object sender, StoppedEventArgs e)
         {
             if (FileReader != null)
@@ -898,7 +919,11 @@ namespace znMusicPlayerWUI.Media
                     var a = CurrentTime + TimeSpan.FromSeconds(1.5);
                     if (a >= TotalTime)
                     {
-                        PlayEnd?.Invoke(this);
+                        if (!isCUEEndCalled)
+                        {
+                            if (MusicData.CUETrackData != null) isCUEEndCalled = true;
+                            PlayEnd?.Invoke(this);
+                        }
                     }
                 }
             }
@@ -941,8 +966,10 @@ namespace znMusicPlayerWUI.Media
             timer.Start();
             if (PlaybackState != PlaybackState.Playing) timer.Stop();
             if (TimingChanged == null) timer.Stop();
+            if (!timer.IsEnabled) return;
+
             TimingChanged?.Invoke(this);
-            AudioPlayer_PlaybackStopped(null, null);
+            if (MusicData.CUETrackData != null) AudioPlayer_PlaybackStopped(null, null);
         }
 
         bool isDisposing = false;

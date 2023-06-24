@@ -65,22 +65,11 @@ namespace znMusicPlayerWUI.Media
                 loadNum++;
                 LoadingImages.Add(musicData);
 
-                if (Helpers.WebHelper.IsNetworkConnected)
+                if (!Helpers.WebHelper.IsNetworkConnected) resultPath = "/Images/SugarAndSalt.jpg";
+                else
                 {
                     //System.Diagnostics.Debug.WriteLine(musicData.AlbumID);
                     string b = $@"{DataEditor.DataFolderBase.ImageCacheFolder}\{musicData.From}{(string.IsNullOrEmpty(musicData.AlbumID) ? musicData.MD5.Replace(@"/", "#") : musicData.AlbumID)}";
-                    await Task.Run(() =>
-                    {
-                        if (!System.IO.File.Exists(b))
-                        {
-                            try
-                            {
-                                System.IO.File.Create(b).Close();
-                            }
-                            catch { }
-                        }
-                    });
-
                     string a;
                     if (musicData.PicturePath != null)
                     {
@@ -94,10 +83,6 @@ namespace znMusicPlayerWUI.Media
                     bool error = await DownloadPic(a, b);
                     if (error) resultPath = resultPath = null;//await GetImageSource(musicData);
                     else resultPath = b;
-                }
-                else
-                {
-                    resultPath = "/Images/SugarAndSalt.jpg";
                 }
 
                 LoadingImages.Remove(musicData);
