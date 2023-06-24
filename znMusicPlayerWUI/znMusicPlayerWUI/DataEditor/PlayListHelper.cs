@@ -226,7 +226,8 @@ namespace znMusicPlayerWUI.DataEditor
                     localAudioData = new MusicData(
                         tag.Title == null ? localFlie.Name : tag.Title, null, artists, tag.Album,
                         inLocal: localFlie.FullName, from: MusicFrom.localMusic
-                        );
+                        )
+                    { Index = (int)tag.Track };
                 }
                 else
                 {

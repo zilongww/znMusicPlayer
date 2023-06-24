@@ -20,7 +20,7 @@ namespace znMusicPlayerWUI.DataEditor
     public enum DataType { 歌曲, 歌单, 本地歌单, 专辑, 用户, 艺术家 }
     public enum SearchDataType { 歌曲 = 1, 歌单 = 1000, 专辑 = 10, 用户 = 1002, 艺术家 = 100 }
     public enum MusicKbps { aac, wma, Kbps128, Kbps192, Kbps320, Kbps1000 }
-    public enum PlaySort { 默认排序, 名称升序, 名称降序, 艺术家升序, 艺术家降序, 专辑升序, 专辑降序, 时间升序, 时间降序 }
+    public enum PlaySort { 默认升序, 默认降序, 名称升序, 名称降序, 艺术家升序, 艺术家降序, 专辑升序, 专辑降序, 时间升序, 时间降序, 索引升序, 索引降序 }
 
     public abstract class OnlyClass
     {
@@ -116,6 +116,7 @@ namespace znMusicPlayerWUI.DataEditor
         public MusicFrom From { get; set; }
         public string InLocal { get; set; }
         public CUETrackData CUETrackData { get; set; } = null;
+        public int Index { get; set; } = 0;
 
         string _artistName = null;
         public string ArtistName

@@ -36,6 +36,8 @@ namespace znMusicPlayerWUI.Pages
         {
             InitializeComponent();
             DataContext = this;
+            var _enumval = Enum.GetValues(typeof(PlaySort)).Cast<PlaySort>();
+            SortComboBox.ItemsSource = _enumval.ToList();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -142,35 +144,47 @@ namespace znMusicPlayerWUI.Pages
                 var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
                 MusicData[] array = null;
 
-                SortComboBox.SelectedIndex = (int)NavToObj.PlaySort;
-                switch (SortComboBox.SelectedIndex)
+                SortComboBox.SelectedItem = NavToObj.PlaySort;
+                switch ((PlaySort)SortComboBox.SelectedItem)
                 {
-                    case 0: //默认
+                    case PlaySort.默认升序:
                         array = NavToObj.Songs.ToArray();
                         break;
-                    case 1: //名称升序
+                    case PlaySort.默认降序:
+                        List<MusicData> list = new();
+                        foreach (var d in NavToObj.Songs) list.Add(d);
+                        list.Reverse();
+                        array = list.ToArray();
+                        break;
+                    case PlaySort.名称升序:
                         array = NavToObj.Songs.OrderBy(m => m.Title).ToArray();
                         break;
-                    case 2: //名称降序
+                    case PlaySort.名称降序:
                         array = NavToObj.Songs.OrderByDescending(m => m.Title).ToArray();
                         break;
-                    case 3: //艺术家升序
+                    case PlaySort.艺术家升序:
                         array = NavToObj.Songs.OrderBy(m => m.Artists[0].Name).ToArray();
                         break;
-                    case 4: //艺术家降序
+                    case PlaySort.艺术家降序:
                         array = NavToObj.Songs.OrderByDescending(m => m.Artists[0].Name).ToArray();
                         break;
-                    case 5: //专辑升序
+                    case PlaySort.专辑升序:
                         array = NavToObj.Songs.OrderBy(m => m.Album).ToArray();
                         break;
-                    case 6: //专辑降序
+                    case PlaySort.专辑降序:
                         array = NavToObj.Songs.OrderByDescending(m => m.Album).ToArray();
                         break;
-                    case 7: //时间升序
+                    case PlaySort.时间升序:
                         array = NavToObj.Songs.OrderBy(m => m.RelaseTime).ToArray();
                         break;
-                    case 8: //时间降序
+                    case PlaySort.时间降序:
                         array = NavToObj.Songs.OrderByDescending(m => m.RelaseTime).ToArray();
+                        break;
+                    case PlaySort.索引升序:
+                        array = NavToObj.Songs.OrderBy(m => m.Index).ToArray();
+                        break;
+                    case PlaySort.索引降序:
+                        array = NavToObj.Songs.OrderByDescending(m => m.Index).ToArray();
                         break;
                 }
 
@@ -616,16 +630,14 @@ namespace znMusicPlayerWUI.Pages
             //AddToPlayListFlyout.Items.Clear();
         }
 
-        bool isfirst = true;
         private async void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (isfirst)
-            {
-                isfirst = false;
+            if (isLoading)
                 return;
-            }
+            if (NavToObj.PlaySort == (PlaySort)SortComboBox.SelectedItem)
+                return;
 
-            NavToObj.PlaySort = (PlaySort)Enum.Parse(typeof(PlaySort), SortComboBox.SelectedItem as string);
+            NavToObj.PlaySort = (PlaySort)SortComboBox.SelectedItem;
             InitData();
             var data = JObject.Parse(await PlayListHelper.ReadData());
             data[NavToObj.ListName] = JObject.FromObject(NavToObj);

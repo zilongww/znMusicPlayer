@@ -78,6 +78,14 @@ namespace znMusicPlayerWUI.Pages.DialogPages
 
             if (tfile != null)
             {
+                string additionalFields = "";
+                for (int i = 0; i < tfile.AdditionalFields.Count; i++)
+                {
+                    var element = tfile.AdditionalFields.ElementAt(i);
+                    if (element.Key == "VORBIS-VENDOR") continue;
+                    additionalFields += $"● {element.Key}: {(string.IsNullOrEmpty(element.Value) ? "无内容" : element.Value)}{(i == tfile.AdditionalFields.Count - 1 ? "" : "\n")}";
+                }
+
                 ((TextBlock)AudioInfoSp.Children[1]).Text = $"{App.audioPlayer.FileType}" +
                     $"{(ConvertCodecFamilyIntToString(tfile.CodecFamily) == null ? "" : $"  {ConvertCodecFamilyIntToString(tfile.CodecFamily)}")}" +
                     $"  {tfile.SampleRate} Hz  {tfile.Bitrate} kbps" +
@@ -89,7 +97,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                     AudioInfoSp.Children[3].Visibility = Visibility.Collapsed;
                 }
                 else
-                    ((TextBlock)AudioInfoSp.Children[3]).Text = $"{tfile.BitDepth} bit";
+                    ((TextBlock)AudioInfoSp.Children[3]).Text = $"{tfile.BitDepth} 位";
 
                 if (tfile.AdditionalFields.ContainsKey("VORBIS-VENDOR"))
                 {
@@ -101,13 +109,6 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                     AudioInfoSp.Children[5].Visibility = Visibility.Collapsed;
                 }
 
-                string additionalFields = "";
-                for (int i = 0; i < tfile.AdditionalFields.Count; i++)
-                {
-                    var element = tfile.AdditionalFields.ElementAt(i);
-                    if (element.Key == "VORBIS-VENDOR") continue;
-                    additionalFields += $"● {element.Key}: {element.Value}{(i == tfile.AdditionalFields.Count - 1 ? "" : "\n")}";
-                }
                 ((TextBlock)AudioInfoSp.Children[7]).Text = string.IsNullOrEmpty(additionalFields) ? "无内容" : additionalFields;
 
                 //((TextBlock)AudioInfoSp.Children[8]).Text = "";
@@ -129,6 +130,8 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 ((TextBlock)OutInfoSp.Children[6]).Visibility = Visibility.Collapsed;
                 ((TextBlock)OutInfoSp.Children[7]).Visibility = Visibility.Collapsed;
                 ((TextBlock)OutInfoSp.Children[8]).Visibility = Visibility.Collapsed;
+                ((TextBlock)OutInfoSp.Children[9]).Visibility = Visibility.Collapsed;
+                ((TextBlock)OutInfoSp.Children[10]).Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -167,9 +170,10 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 }
 
                 ((TextBlock)OutInfoSp.Children[2]).Text = outInfo;
-                ((TextBlock)OutInfoSp.Children[4]).Text = sampleRateText;
-                ((TextBlock)OutInfoSp.Children[6]).Text = channelsText;
-                ((TextBlock)OutInfoSp.Children[8]).Text = $"{App.audioPlayer.Latency} ms";
+                ((TextBlock)OutInfoSp.Children[4]).Text = string.IsNullOrEmpty(App.audioPlayer.FileReader.DecodeName) ? "未知" : App.audioPlayer.FileReader.DecodeName;
+                ((TextBlock)OutInfoSp.Children[6]).Text = sampleRateText;
+                ((TextBlock)OutInfoSp.Children[8]).Text = channelsText;
+                ((TextBlock)OutInfoSp.Children[10]).Text = $"{App.audioPlayer.Latency} ms";
             }
         }
 
@@ -239,7 +243,8 @@ namespace znMusicPlayerWUI.Pages.DialogPages
             ((TextBlock)CUEInfoSp.Children[12]).Text = string.IsNullOrEmpty(cueSheet.CDTextFile) ? "无内容" : cueSheet.CDTextFile;
             ((TextBlock)CUEInfoSp.Children[14]).Text = string.IsNullOrEmpty(commentsName) ? "无内容" : commentsName;
             ((TextBlock)CUEInfoSp.Children[16]).Text = string.IsNullOrEmpty(cueSheet.Catalog) ? "无内容" : cueSheet.Catalog;
-            ((TextBlock)CUEInfoSp.Children[18]).Text = string.IsNullOrEmpty(garbageName) ? "无内容" : garbageName; ;
+            ((TextBlock)CUEInfoSp.Children[18]).Text = string.IsNullOrEmpty(cueSheet.CalculateCDDBdiscID()) ? "无内容" : cueSheet.CalculateCDDBdiscID();
+            ((TextBlock)CUEInfoSp.Children[20]).Text = string.IsNullOrEmpty(garbageName) ? "无内容" : garbageName; ;
         }
 
         private string ConvertCodecFamilyIntToString(int codecFamily)

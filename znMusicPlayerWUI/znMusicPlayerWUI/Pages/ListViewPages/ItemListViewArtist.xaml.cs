@@ -111,41 +111,9 @@ namespace znMusicPlayerWUI.Pages
                 LoadingRing.IsIndeterminate = true;
                 await Task.Delay(100);
                 var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
-                MusicData[] array = null;
-
-                switch (SortComboBox.SelectedIndex)
-                {
-                    case 0: //默认
-                        array = musicListData.Songs.ToArray();
-                        break;
-                    case 1: //名称升序
-                        array = musicListData.Songs.OrderBy(m => m.Title).ToArray();
-                        break;
-                    case 2: //名称降序
-                        array = musicListData.Songs.OrderByDescending(m => m.Title).ToArray();
-                        break;
-                    case 3: //艺术家升序
-                        array = musicListData.Songs.OrderBy(m => m.Artists[0].Name).ToArray();
-                        break;
-                    case 4: //艺术家降序
-                        array = musicListData.Songs.OrderByDescending(m => m.Artists[0].Name).ToArray();
-                        break;
-                    case 5: //专辑升序
-                        array = musicListData.Songs.OrderBy(m => m.Album).ToArray();
-                        break;
-                    case 6: //专辑降序
-                        array = musicListData.Songs.OrderByDescending(m => m.Album).ToArray();
-                        break;
-                    case 7: //时间升序
-                        array = musicListData.Songs.OrderBy(m => m.RelaseTime).ToArray();
-                        break;
-                    case 8: //时间降序
-                        array = musicListData.Songs.OrderByDescending(m => m.RelaseTime).ToArray();
-                        break;
-                }
 
                 MusicDataList.Clear();
-                foreach (var i in array)
+                foreach (var i in musicListData.Songs)
                 {
                     MusicDataList.Add(new() { MusicData = i, ImageScaleDPI = dpi });
                 }
@@ -410,17 +378,6 @@ namespace znMusicPlayerWUI.Pages
         private void AddToPlayListFlyout_Closed(object sender, object e)
         {
             //AddToPlayListFlyout.Items.Clear();
-        }
-
-        bool isfirst = true;
-        private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (isfirst)
-            {
-                isfirst = false;
-                return;
-            }
-            InitData();
         }
 
         private void Button_Click_6(object sender, RoutedEventArgs e)

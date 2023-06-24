@@ -61,18 +61,14 @@ namespace znMusicPlayerWUI.Helpers
             if (err1)
                 throw new InvalidOperationException("无法定位到网络地址，请检查你的域名服务器是否正常工作或DNS配置是否正确。");
 
-            try
+            var data = await Client.GetByteArrayAsync(address);
+            await Task.Run(() =>
             {
-                await Task.Run(async () =>
-                {
-                    var data = await Client.GetByteArrayAsync(address);
-                    var stream = File.Create(downloadPath);
-                    stream.Write(data);
-                    stream.Close();
-                    stream.Dispose();
-                });
-            }
-            catch { }
+                var stream = File.Create(downloadPath);
+                stream.Write(data);
+                stream.Close();
+                stream.Dispose();
+            });
         }
 
         /// <summary>
@@ -95,7 +91,7 @@ namespace znMusicPlayerWUI.Helpers
             while (loadingImages.Count > 1)
             {
                 System.Diagnostics.Debug.WriteLine(musicData.Title);
-                await Task.Delay(1000);
+                await Task.Delay(400);
             }
             loadingImages.Add(musicData);
 
@@ -114,7 +110,11 @@ namespace znMusicPlayerWUI.Helpers
 
                         await Task.Run(async () =>
                         {
-                            result = await Client.GetStringAsync(address);
+                            try
+                            {
+                                result = await Client.GetStringAsync(address);
+                            }
+                            catch(Exception err) { System.Diagnostics.Debug.WriteLine(err); return; }
                             if (!string.IsNullOrEmpty(result))
                             {
                                 if (!result.Contains("操作频繁"))

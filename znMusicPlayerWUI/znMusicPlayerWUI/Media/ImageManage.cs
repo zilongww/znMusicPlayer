@@ -45,12 +45,7 @@ namespace znMusicPlayerWUI.Media
         {
             while (LoadingImages.Contains(musicData))
             {
-                await Task.Delay(500);
-            }
-
-            while (loadNum > maxLoadNum)
-            {
-                await Task.Delay(500);
+                await Task.Delay(1000);
             }
 
             string cachePath = await Helpers.FileHelper.GetImageCache(musicData);
@@ -62,6 +57,11 @@ namespace znMusicPlayerWUI.Media
             }
             else
             {
+                while (loadNum > maxLoadNum)
+                {
+                    await Task.Delay(400);
+                }
+
                 loadNum++;
                 LoadingImages.Add(musicData);
 

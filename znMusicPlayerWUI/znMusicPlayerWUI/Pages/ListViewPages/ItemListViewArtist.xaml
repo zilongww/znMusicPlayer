@@ -110,24 +110,6 @@
                                             DefaultLabelPosition="Right"
                                             Margin="0,0,14,0"
                                             Background="Transparent">
-                                    <CommandBar.SecondaryCommands>
-                                        <AppBarElementContainer AllowFocusOnInteraction="True">
-                                            <ComboBox x:Name="SortComboBox"
-                                                      SelectionChanged="SortComboBox_SelectionChanged"
-                                                      Header="排序方式" SelectedIndex="0"
-                                                      Margin="12, 4">
-                                                <x:String>默认排序</x:String>
-                                                <x:String>名称升序</x:String>
-                                                <x:String>名称降序</x:String>
-                                                <x:String>艺术家升序</x:String>
-                                                <x:String>艺术家降序</x:String>
-                                                <x:String>专辑升序</x:String>
-                                                <x:String>专辑降序</x:String>
-                                                <x:String>时间升序</x:String>
-                                                <x:String>时间降序</x:String>
-                                            </ComboBox>
-                                        </AppBarElementContainer>
-                                    </CommandBar.SecondaryCommands>
                                     <AppBarButton x:Name="SelectAllButton"
                                                   Click="SelectAllButton_Click"
                                                   Label="选中全部"
