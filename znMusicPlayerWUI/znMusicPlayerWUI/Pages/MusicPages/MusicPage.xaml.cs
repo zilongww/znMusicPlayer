@@ -357,7 +357,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         {
             if (ShowLrcPage)
             {
-                App.lyricManager.ReCallUpdata();
+                if (nowLyricsData != null) App.lyricManager.ReCallUpdata();
                 SelectedChangedDo();
             }
         }

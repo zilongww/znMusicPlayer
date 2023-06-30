@@ -292,7 +292,11 @@ namespace znMusicPlayerWUI.Media
             set
             {
                 _eqEnalbed = value;
-                if (FileReader != null) FileReader.EqEnabled = value;
+                if (FileReader != null)
+                {
+                    EqualizerBand = EqualizerBand;
+                    FileReader.EqEnabled = value;
+                }
             }
         }
         
@@ -761,13 +765,13 @@ namespace znMusicPlayerWUI.Media
                 fileProvider.Tempo = Tempo;
                 fileProvider.Rate = Rate;
             });
+            await Task.Run(() => DisposeAll());
+            FileReader = fileReader;
+            FileProvider = fileProvider;
             if (EqEnabled)
             {
                 EqualizerBand = EqualizerBand;
             }
-            await Task.Run(() => DisposeAll());
-            FileReader = fileReader;
-            FileProvider = fileProvider;
 
             if (MusicData.CUETrackData != null)
             {
@@ -776,7 +780,6 @@ namespace znMusicPlayerWUI.Media
             }
 
             PreviewSourceChanged?.Invoke(this);
-            SourceChanged?.Invoke(this);
 
             if (FileReader.isMidi)
             {
@@ -840,6 +843,7 @@ namespace znMusicPlayerWUI.Media
                 }
             }
 
+            SourceChanged?.Invoke(this);
             localFileIniting = false;
         }
 
