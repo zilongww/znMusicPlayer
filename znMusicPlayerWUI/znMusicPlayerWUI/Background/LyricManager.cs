@@ -44,7 +44,7 @@ namespace znMusicPlayerWUI.Background
 
         public LyricManager()
         {
-            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(15) };
+            timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(100) };
             timer.Tick += (_, __) => ReCallUpdata();
 
             //MainWindow.WindowViewStateChanged += MainWindow_WindowViewStateChanged;
@@ -163,7 +163,7 @@ namespace znMusicPlayerWUI.Background
             if (PlayingLyricSelectedChange == null) timer.Stop();
             if (!NowPlayingLyrics.Any()) timer.Stop();
 
-            //System.Diagnostics.Debug.WriteLine($"Lyric Timing Changed: {App.audioPlayer.CurrentTime}.");
+            //System.Diagnostics.Debug.WriteLine($"Lyric Timing Changed: {timer.Interval.TotalMilliseconds}.");
 
             foreach (var data in NowPlayingLyrics)
             {
@@ -201,6 +201,9 @@ namespace znMusicPlayerWUI.Background
                 MusicData = audioPlayer.MusicData;
                 await InitLyricList(audioPlayer.MusicData);
                 PlayingLyricSourceChange?.Invoke(NowPlayingLyrics);
+
+                //if (audioPlayer.NowOutDevice.DeviceType == Media.AudioPlayer.OutApi.Wasapi) timer.Interval = TimeSpan.FromMilliseconds(audioPlayer.Latency);
+                //else timer.Interval = TimeSpan.FromMilliseconds(100);
                 timer.Start();
             }
         }

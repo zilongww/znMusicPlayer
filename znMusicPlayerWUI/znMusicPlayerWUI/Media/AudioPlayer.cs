@@ -244,6 +244,7 @@ namespace znMusicPlayerWUI.Media
         public event AudioPlayerDelegate EqualizerBandChanged;
 
         DispatcherTimer timer;
+
         public ClientDeviceEvents ClientDeviceEvents { get; private set; } = new();
         public Media.AudioFileReader FileReader { get; set; } = null;
         public AudioEffects.SoundTouchWaveProvider FileProvider { get; set; } = null;
@@ -350,7 +351,7 @@ namespace znMusicPlayerWUI.Media
                         }
                         else
                         {
-                            return FileReader.CurrentTime - TimeSpan.FromMilliseconds(Latency);
+                            return FileReader.CurrentTime - (NowOutDevice.DeviceType != OutApi.Wasapi ? TimeSpan.FromMilliseconds(Latency) : TimeSpan.Zero);
                         }
                     }
                 }
@@ -849,7 +850,6 @@ namespace znMusicPlayerWUI.Media
 
         private void AudioPlayer_TimingChanged(AudioPlayer audioPlayer)
         {
-
         }
 
         public async Task Reload()
