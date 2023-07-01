@@ -40,6 +40,7 @@ namespace znMusicPlayerWUI.Helpers
         }
         #endregion/// <summary>
 
+        private static List<string> DownloadingPathCache = new();
         /// <summary>
         /// 下载文件 
         /// </summary>
@@ -51,6 +52,8 @@ namespace znMusicPlayerWUI.Helpers
         /// <exception cref="FileNotFoundException"></exception>
         public static async Task DownloadFileAsync(string address, string downloadPath)
         {
+            if (downloadPath.Contains(address)) return;
+            DownloadingPathCache.Add(address);
             bool err1 = false;
 
             await Task.Run(() =>
@@ -69,6 +72,8 @@ namespace znMusicPlayerWUI.Helpers
                 stream.Close();
                 stream.Dispose();
             });
+
+            DownloadingPathCache.Remove(address);
         }
 
         /// <summary>
@@ -90,7 +95,7 @@ namespace znMusicPlayerWUI.Helpers
         {
             while (loadingImages.Count > 1)
             {
-                System.Diagnostics.Debug.WriteLine(musicData.Title);
+                //System.Diagnostics.Debug.WriteLine(musicData.Title);
                 await Task.Delay(400);
             }
             loadingImages.Add(musicData);

@@ -43,7 +43,7 @@ namespace znMusicPlayerWUI.Helpers
             var easing = compositor.CreateCubicBezierEasingFunction(new Vector2(cubicBezierEasing1, cubicBezierEasing2), new Vector2(cubicBezierEasing3, cubicBezierEasing4));
 
             animation.Duration = TimeSpan.FromSeconds(TimeSecond);
-            animation.InsertKeyFrame((float)TimeSecond, scalar, easing);
+            animation.InsertKeyFrame(1, scalar, easing);
         }
 
         public static void AnimateOffset(UIElement element, float offsetX, float offsetY, float offsetZ, double TimeSecond,
@@ -57,7 +57,7 @@ namespace znMusicPlayerWUI.Helpers
             animation = compositor.CreateVector3KeyFrameAnimation();
 
             animation.Duration = TimeSpan.FromSeconds(TimeSecond);
-            animation.InsertKeyFrame((float)TimeSecond, new Vector3(offsetX, offsetY, offsetZ), easing);
+            animation.InsertKeyFrame(1, new Vector3(offsetX, offsetY, offsetZ), easing);
         }
     }
 
@@ -243,48 +243,50 @@ namespace znMusicPlayerWUI.Helpers
             return imageSource;
         }
 */
-        public static async Task<ImageSource> GetCover(string path)
+
+        public static async Task<ImageSource> GetCover(string filePath)
         {
+            ImageSource result = null;
             try
             {
                 TagLib.File f = null;
-                await Task.Run(() => f = TagLib.File.Create(path));
+                await Task.Run(() => f = TagLib.File.Create(filePath));
                 if (f == null) return null;
-                if (f.Tag.Pictures != null && f.Tag.Pictures.Length != 0)
+                if (f.Tag.Pictures == null) return null;
+                if (f.Tag.Pictures.Length == 0) return null;
+
+                var a = await Task.Run(() =>
                 {
-                    return await SaveToImageSource(await Task.Run(() =>
-                    {
-                        var bin = f.Tag.Pictures[0].Data.Data;
-                        f.Dispose();
-                        return bin;
-                    }));
-                }
-                else
-                    return null;
+                    var bin = f.Tag.Pictures[0].Data.Data;
+                    f.Dispose();
+                    return bin;
+                });
+                result = await SaveToImageSource(a);
             }
-            catch
-            {
-                return null;
-            }
+            catch { result = null; }
+
+            return result;
         }
 
         public static async Task<ImageSource> SaveToImageSource(this byte[] imageBuffer)
         {
             ImageSource imageSource = null;
-            try
+            MemoryStream stream = null;
+            IRandomAccessStream ras = null;
+            await Task.Run(() =>
             {
-                using (MemoryStream stream = new MemoryStream(imageBuffer))
-                {
-                    var ras = stream.AsRandomAccessStream();
-                    BitmapDecoder decoder = await BitmapDecoder.CreateAsync(BitmapDecoder.JpegDecoderId, ras);
-                    var provider = await decoder.GetPixelDataAsync();
-                    byte[] buffer = provider.DetachPixelData();
-                    WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
-                    await bitmap.PixelBuffer.AsStream().WriteAsync(buffer, 0, buffer.Length);
-                    imageSource = bitmap;
-                }
-            }
-            catch { }
+                stream = new MemoryStream(imageBuffer);
+                ras = stream.AsRandomAccessStream();
+            });
+
+            BitmapDecoder decoder = await BitmapDecoder.CreateAsync(BitmapDecoder.JpegDecoderId, ras);
+            var provider = await decoder.GetPixelDataAsync();
+            byte[] buffer = await Task.Run(() => provider.DetachPixelData());
+            WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+            await bitmap.PixelBuffer.AsStream().WriteAsync(buffer, 0, buffer.Length);
+            imageSource = bitmap;
+            await Task.Run(() => { stream.Dispose(); ras.Dispose(); });
+
             return imageSource;
         }
 

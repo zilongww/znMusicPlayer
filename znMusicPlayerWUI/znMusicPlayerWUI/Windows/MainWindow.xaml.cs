@@ -1217,8 +1217,9 @@ namespace znMusicPlayerWUI
                 SMusicPageBaseFrame.Content = SMusicPage;
                 AnimateHelper.AnimateOffset(
                     SMusicPageBaseFrame,
-                    0, (float)SMusicPageBaseGrid.ActualHeight, 0, 0.42,
-                    1f, 0f, 1f, 1f,
+                    0, (float)SMusicPageBaseGrid.ActualHeight, 0,
+                    0.2,
+                    0.5f, 0, 0.75f, 0,
                     out Visual contentGridVisual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
                 contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
                 compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
@@ -1269,8 +1270,9 @@ namespace znMusicPlayerWUI
 
                 AnimateHelper.AnimateOffset(
                     SMusicPageBaseFrame,
-                    0, 0, 0, 0.76,
-                    0.2f, 1f, 0.22f, 1f,
+                    0, 0, 0,
+                    0.5,
+                    0.16f, 1, 0.3f, 1,
                     out Visual contentGridVisual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
                 contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
                 compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>

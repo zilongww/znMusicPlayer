@@ -27,7 +27,7 @@ namespace znMusicPlayerWUI.Controls
 {
     public partial class Imagezn : Grid, IDisposable
     {
-        public enum ShowMenuBehaviors { Tapped, None }
+        public enum ShowMenuBehaviors { Tapped, OnlyLightUp, None }
 
         private ShowMenuBehaviors _showMenuBehavior = default;
         public ShowMenuBehaviors ShowMenuBehavior
@@ -107,7 +107,7 @@ namespace znMusicPlayerWUI.Controls
 
         private async void UpdataDatas()
         {
-            var imageSource = await FileHelper.GetImageSource(await ImageManage.GetImageSource(DataSource), (int)(50 * dataDPI), (int)(50 * dataDPI), true);
+            var imageSource = (await ImageManage.GetImageSource(DataSource, (int)(50 * dataDPI), (int)(50 * dataDPI), true)).Item1;
             if (imageSource != null)
             {
 
@@ -143,7 +143,7 @@ namespace znMusicPlayerWUI.Controls
             {
                 ImageSourceBefore.Source = ImageSource.Source;
                 AnimateHelper.AnimateScalar(
-                    ImageSource, 1, 1,
+                    ImageSource, 1, 2,
                     0.2f, 1, 0.22f, 1f,
                     out var visual, out var compositor, out var scalarKeyFrameAnimation);
                 visual.Opacity = 0;
@@ -151,7 +151,7 @@ namespace znMusicPlayerWUI.Controls
                 ImageSource.Source = Source;
 
                 AnimateHelper.AnimateScalar(
-                    ImageSourceBefore, 0, 1,
+                    ImageSourceBefore, 0, 2,
                     0.2f, 1, 0.22f, 1f,
                     out var visual1, out var compositor1, out var scalarKeyFrameAnimation1);
                 visual1.Opacity = 1;
@@ -169,7 +169,7 @@ namespace znMusicPlayerWUI.Controls
             else
             {
                 AnimateHelper.AnimateScalar(
-                    ImageSource, 1, 1,
+                    ImageSource, 1, 2,
                     0.2f, 1, 0.22f, 1f,
                     out var visual, out var compositor, out var scalarKeyFrameAnimation);
                 visual.Opacity = 0;
@@ -191,7 +191,7 @@ namespace znMusicPlayerWUI.Controls
 
         private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
+            if (ShowMenuBehavior == ShowMenuBehaviors.None || ShowMenuBehavior == ShowMenuBehaviors.OnlyLightUp) return;
             ScrollView scrollViewer = new()
             {
                 ZoomMode = ScrollingZoomMode.Enabled,
@@ -263,23 +263,37 @@ namespace znMusicPlayerWUI.Controls
         private async void Grid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
-            //ImageMassAlphaTransition.Duration = TimeSpan.FromMilliseconds(250);
             isPointEnter = true;
-            ImageMassAlpha.Opacity = 1;
-/*
+
+            ImageMassAlpha.Visibility = Visibility.Visible;
+            AnimateHelper.AnimateScalar(
+                ImageMassAlpha, 1f, 0.2,
+                0.2f, 1, 0.22f, 1f,
+                out var visual, out var compositor, out var scalarKeyFrameAnimation);
+            visual.StartAnimation(nameof(ImageMassAlpha.Opacity), scalarKeyFrameAnimation);
+
             if (isFirstAnimate)
             {
                 isFirstAnimate = false;
-                await Task.Delay(1);
+                await Task.Delay(6);
                 Grid_PointerEntered(null, null);
-            }*/
+            }
         }
 
         private void Grid_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
             isPointEnter = false;
-            ImageMassAlpha.Opacity = 0;
+            AnimateHelper.AnimateScalar(
+                ImageMassAlpha, 0, 0.5,
+                0, 0, 0, 0,
+                out var visual, out var compositor, out var scalarKeyFrameAnimation);
+            visual.StartAnimation(nameof(ImageMassAlpha.Opacity), scalarKeyFrameAnimation);
+            compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
+            {
+                if (!isPointEnter)
+                    ImageMassAlpha.Visibility = Visibility.Collapsed;
+            };
         }
 
         bool IsMouse4Click = false;

@@ -5,7 +5,7 @@
     xmlns:local="using:znMusicPlayerWUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" MaxWidth="150"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" Background="Transparent"
     Loaded="UILoaded" Unloaded="UIUnloaded"
     PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited"
@@ -24,16 +24,16 @@
             BorderThickness="1"
             BorderBrush="{ThemeResource CardStrokeColorDefaultSolid}">
         <Grid>
+            <Rectangle x:Name="ABackColorBaseRectAngle" Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" Opacity="0"/>
             <Rectangle x:Name="BackColorBaseRectAngle" Fill="{ThemeResource LayerFillColorDefault}" Opacity="1"/>
             <StackPanel>
-                <Grid Width="150" Height="150">
-                    <local:Imagezn x:Name="PlayListImage" Stretch="UniformToFill" ShowMenuBehavior="None"/>
+                <Grid Width="200" Height="200">
+                    <local:Imagezn x:Name="PlayListImage" Stretch="UniformToFill" ShowMenuBehavior="OnlyLightUp"/>
                 </Grid>
                 <TextBlock x:Name="TextBaseTb" Padding="6,4" TextTrimming="CharacterEllipsis" Height="50">
                     <Run Text="{Binding ListShowName}"/><LineBreak/><Run Text="{Binding Songs.Count}" FontSize="12"/>首歌曲
                 </TextBlock>
             </StackPanel>
-            <Rectangle x:Name="PlayListImageMass" Fill="{ThemeResource BottomBackground}" Opacity="0"/>
         </Grid>
     </Border>
 </Grid>

@@ -165,7 +165,7 @@ namespace znMusicPlayerWUI.DataEditor
                             endTime = duration;
                         }
 
-                        MusicData musicData = new(t.Title, null, new List<Artist>() { new(t.Performer) }, cueSheet.Title)
+                        MusicData musicData = new(t.Title, null, new List<Artist>() { new(string.IsNullOrEmpty(t.Performer) ? cueSheet.Performer : t.Performer) }, cueSheet.Title)
                         {
                             From = MusicFrom.localMusic,
                             InLocal = path,
@@ -175,7 +175,8 @@ namespace znMusicPlayerWUI.DataEditor
                                 StartDuration = startTime,
                                 EndDuration = endTime,
                                 Path = localFlie.FullName
-                            }
+                            },
+                            Index = t.TrackNumber
                         };
                         data.Add(musicData);
                     }

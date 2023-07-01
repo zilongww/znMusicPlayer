@@ -23,7 +23,7 @@
                     <StaticResource x:Key="AcrylicNormal" ResourceKey="AcrylicInAppFillColorDefaultBrush"/>
                     <Color x:Key="MusicPageImageBlurFallbackColor">#BA000000</Color>
                     <StaticResource x:Key="MusicPageSelectLyricForeground" ResourceKey="AccentAAFillColorTertiaryBrush"/>
-                    <Color x:Key="BlurImageAcrylicBrush">#3c3c3c</Color>
+                    <Color x:Key="BlurImageAcrylicBrush">#272727</Color>
                     <AcrylicBrush x:Key="MusicPageImageAcrylicBrush" TintLuminosityOpacity="0.85" TintOpacity="0.0" FallbackColor="#BA000000" TintColor="#FF202020" Opacity="1"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">

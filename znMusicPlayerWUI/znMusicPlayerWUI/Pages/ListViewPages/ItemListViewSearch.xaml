@@ -35,7 +35,8 @@
                 <Border VerticalAlignment="Top"
                         x:Name="menu_border"
                         BorderBrush="{ThemeResource BorderNormal}"
-                        Loaded="menu_border_Loaded">
+                        Loaded="menu_border_Loaded"
+                        Margin="0,0,0,6">
                     <Grid SizeChanged="Result_BaseGrid_SizeChanged">
                         <Rectangle x:Name="BackColorBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
                         <StackPanel>

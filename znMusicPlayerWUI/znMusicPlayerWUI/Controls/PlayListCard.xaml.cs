@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Media;
 using znMusicPlayerWUI.Media;
 using znMusicPlayerWUI.DataEditor;
 using Newtonsoft.Json.Linq;
+using Windows.UI;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -63,8 +64,9 @@ namespace znMusicPlayerWUI.Controls
             basicRectVisual.Size = new Vector2((float)(ActualWidth - 8), (float)ActualHeight);
 
             dropShadow = compositor.CreateDropShadow();
-            dropShadow.BlurRadius = 30f;
+            dropShadow.BlurRadius = 50f;
             dropShadow.Opacity = 0f;
+            dropShadow.Color = Color.FromArgb(255, 0, 0, 0);
             dropShadow.Offset = new Vector3(0, 2, 0);
 
             basicRectVisual.Shadow = dropShadow;
@@ -77,17 +79,18 @@ namespace znMusicPlayerWUI.Controls
             CreatShadow();
             if (MusicListData != null)
             {
+                int size = (int)(200 * ImageScaleDPI);
                 if (MusicListData.ListDataType == DataType.本地歌单)
                 {
-                    PlayListImage.Source = await FileHelper.GetImageSource(MusicListData.PicturePath, (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
+                    PlayListImage.Source = await FileHelper.GetImageSource(MusicListData.PicturePath, size, size, true);
                 }
                 else if (MusicListData.ListDataType == DataType.歌单)
                 {
-                    PlayListImage.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(MusicListData), (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
+                    PlayListImage.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(MusicListData), size, size, true);
                 }
                 else
                 {
-                    PlayListImage.Source = await FileHelper.GetImageSource(null, (int)(150 * ImageScaleDPI), (int)(150 * ImageScaleDPI), true);
+                    PlayListImage.Source = null;
                 }
             }
         }
@@ -110,16 +113,18 @@ namespace znMusicPlayerWUI.Controls
             {
                 AnimateHelper.AnimateOffset(
                     Children[1] as Border,
-                    0, -2, 0, 0.5,
+                    0, -2, 0,
+                    0.2,
                     0.2f, 1f, 0.22f, 1f,
                     out Visual visual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
                 visual.StartAnimation(nameof(visual.Offset), animation);
 
                 AnimateHelper.AnimateScalar(
-                    PlayListImageMass,
-                    0.3f, 0.5, 0.2f, 1, 0.22f, 1,
-                    out Visual visual1, out Compositor compositor1, out ScalarKeyFrameAnimation animation1);
-                visual1.StartAnimation(nameof(visual1.Opacity), animation1);
+                    ABackColorBaseRectAngle,
+                    1f, 0.2,
+                    0.2f, 1, 0.22f, 1,
+                    out Visual visual2, out Compositor compositor2, out ScalarKeyFrameAnimation animation2);
+                visual2.StartAnimation(nameof(visual2.Opacity), animation2);
 
                 if (dropShadow != null)
                 {
@@ -137,7 +142,8 @@ namespace znMusicPlayerWUI.Controls
             {
                 AnimateHelper.AnimateOffset(
                     Children[1] as Border,
-                    0, 0, 0, 0.5,
+                    0, 0, 0,
+                    0.2,
                     0.2f, 1f, 0.22f, 1f,
                     out Visual visual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
                 visual.StartAnimation(nameof(visual.Offset), animation);
@@ -147,7 +153,7 @@ namespace znMusicPlayerWUI.Controls
                 if (dropShadow != null)
                 {
                     ScalarKeyFrameAnimation blurAnimation = compositor.CreateScalarKeyFrameAnimation();
-                    blurAnimation.InsertKeyFrame(0.5f, 0f);
+                    blurAnimation.InsertKeyFrame(1, 0f);
                     blurAnimation.Duration = TimeSpan.FromSeconds(0.5);
                     dropShadow.StartAnimation("Opacity", blurAnimation);
                 }
@@ -157,10 +163,12 @@ namespace znMusicPlayerWUI.Controls
         private void ExitMass()
         {
             AnimateHelper.AnimateScalar(
-                PlayListImageMass,
-                0f, 0.5f, 0.2f, 1, 0.22f, 1,
-                out Visual visual1, out Compositor compositor1, out ScalarKeyFrameAnimation animation1);
-            visual1.StartAnimation(nameof(visual1.Opacity), animation1);
+                ABackColorBaseRectAngle,
+                0, 0.2,
+                0.2f, 1, 0.22f, 1,
+                out Visual visual2, out Compositor compositor2, out ScalarKeyFrameAnimation animation2);
+            visual2.StartAnimation(nameof(visual2.Opacity), animation2);
+
         }
 
         bool isPressed = false;

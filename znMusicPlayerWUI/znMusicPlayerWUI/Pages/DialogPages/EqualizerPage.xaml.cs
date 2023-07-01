@@ -147,7 +147,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 inChange = true;
                 for (int f = 0; f < audioPlayer.EqualizerBand.Count; f++)
                 {
-                    EqSliders[f].Value = audioPlayer.EqualizerBand[f][2];
+                    EqSliders[f].Value = audioPlayer.EqualizerBand[f][2] * 10;
                 }
                 if (!inComboxChange)
                     EqComboBox.SelectedItem = Media.AudioEqualizerBands.NameGetCHName(Media.AudioEqualizerBands.GetNameFromBands(audioPlayer.EqualizerBand));
@@ -176,8 +176,9 @@ namespace znMusicPlayerWUI.Pages.DialogPages
             if (!inChange)
             {
                 var a = sender as Slider;
+
                 EqComboBox.SelectedItem = "自定义";
-                Media.AudioEqualizerBands.CustomBands[int.Parse(a.Name.Remove(0, 2))][2] = (float)a.Value;
+                Media.AudioEqualizerBands.CustomBands[int.Parse(a.Name.Remove(0, 2))][2] = (float)a.Value / 10;
                 AudioPlayer.EqualizerBand = Media.AudioEqualizerBands.CustomBands;
             }
         }
@@ -236,6 +237,24 @@ namespace znMusicPlayerWUI.Pages.DialogPages
             (sender as Button).IsEnabled = false;
             await App.audioPlayer.Reload();
             (sender as Button).IsEnabled = true;
+        }
+    }
+
+    public class ThumbToolTipValueConverter : Microsoft.UI.Xaml.Data.IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value is double)
+            {
+                double dValue = System.Convert.ToDouble(value) / 10;
+                return dValue;
+            }
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            return null;
         }
     }
 }

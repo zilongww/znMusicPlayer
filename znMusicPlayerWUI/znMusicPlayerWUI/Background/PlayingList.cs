@@ -87,24 +87,9 @@ namespace znMusicPlayerWUI.Background
             string path;
             ImageSource a = null;
 
-            if (audioPlayer.MusicData?.InLocal != null)
-            {
-                try
-                {
-                    a = await CodeHelper.GetCover(audioPlayer.MusicData.InLocal);
-                }
-                catch (Exception err)
-                {
-                    System.Diagnostics.Debug.WriteLine("2------" + err.Message);
-                }
-                path = audioPlayer.MusicData.InLocal;
-            }
-            else
-            {
-                var _ = await Media.ImageManage.GetImageSource(audioPlayer.MusicData);
-                a = await FileHelper.GetImageSource(_);
-                path = _;
-            }
+            var _ = await ImageManage.GetImageSource(audioPlayer.MusicData);
+            a = _.Item1;
+            path = _.Item2;
 
             NowPlayingImage = a;
             NowPlayingImageLoaded?.Invoke(NowPlayingImage, path);

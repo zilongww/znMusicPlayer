@@ -204,16 +204,13 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void PlayingList_NowPlayingImageLoaded(ImageSource imageSource, string _)
         {
-            if (BackgroundBaseImage.Source != imageSource)
-            {
-                ImageSources = imageSource;
-                if (App.audioPlayer?.MusicData?.AlbumID != MusicData?.AlbumID) return;
-                BackgroundBaseImage.Source = ImageSources;
-                AlbumImageBase.Source = imageSource;
+            ImageSources = imageSource;
+            BackgroundBaseImage.Source = ImageSources;
+            AlbumImageBase.Source = imageSource;
 #if DEBUG
-                Debug.WriteLine($"MusicPage: 图片已被更改.");
+            Debug.WriteLine($"MusicPage: 图片已被更改.");
 #endif
-            }
+
         }
 
         private void BackgroundBaseImage_Loaded(object sender, RoutedEventArgs e)

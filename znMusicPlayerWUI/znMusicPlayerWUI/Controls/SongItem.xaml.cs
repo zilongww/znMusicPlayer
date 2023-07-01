@@ -98,33 +98,7 @@ namespace znMusicPlayerWUI.Controls
                 AlbumImage.Dispose();
             }
 
-            ImageSource a = null;
-
-            switch (musicData.From)
-            {
-                case MusicFrom.neteaseMusic:
-                    try
-                    {
-                        var b = await Media.ImageManage.GetImageSource(musicData);
-                        a = await FileHelper.GetImageSource(b, (int)(58 * ImageScaleDPI), (int)(58 * ImageScaleDPI), true);
-                    }
-                    catch { }
-                    break;
-
-                case MusicFrom.localMusic:
-                    if (musicData.InLocal != null)
-                    {
-                        try
-                        {
-                            a = await CodeHelper.GetCover(musicData.InLocal);
-                        }
-                        catch(Exception err) { Debug.WriteLine(err); a = null; }
-                    }
-                    break;
-
-                default:
-                    break;
-            }
+            ImageSource a = (await Media.ImageManage.GetImageSource(musicData, (int)(58 * ImageScaleDPI), (int)(58 * ImageScaleDPI), true)).Item1;
 
             if (a != null)
             {

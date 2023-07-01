@@ -1,9 +1,13 @@
-﻿using Microsoft.VisualBasic;
+﻿using Microsoft.UI.Xaml.Media;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Devices.Scanners;
+using znMusicPlayerWUI.Helpers;
 
 namespace znMusicPlayerWUI.Media
 {
@@ -41,55 +45,108 @@ namespace znMusicPlayerWUI.Media
             return error;
         }
 
-        public static async Task<string> GetImageSource(DataEditor.MusicData musicData)
+        static Dictionary<string, ImageSource> localImageCache = new();
+        /// <summary>
+        /// 返回musicData对应的图像对象和图像所在的本地路径
+        /// </summary>
+        /// <param name="musicData"></param>
+        /// <param name="decodePixelWidth"></param>
+        /// <param name="decodePixelHeight"></param>
+        /// <param name="useBitmapImage"></param>
+        /// <returns>
+        /// <list type="table">
+        /// <item>T1: ImageSource，图像对象</item>
+        /// <item>T2: string，图像在本地的路径</item>
+        /// </list>
+        /// </returns>
+        public static async Task<Tuple<ImageSource, string>> GetImageSource(DataEditor.MusicData musicData, int decodePixelWidth = 0, int decodePixelHeight = 0, bool useBitmapImage = false)
         {
-            while (LoadingImages.Contains(musicData))
-            {
-                await Task.Delay(1000);
-            }
-
-            string cachePath = await Helpers.FileHelper.GetImageCache(musicData);
+            ImageSource source = null;
             string resultPath = null;
-
-            if (cachePath != null)
+            if (musicData.From == DataEditor.MusicFrom.localMusic)
             {
-                resultPath = cachePath;
+                string foundation = musicData.CUETrackData == null
+                    ? string.IsNullOrEmpty(musicData.Album) ? musicData.InLocal : musicData.Album
+                    : musicData.InLocal;
+                if (localImageCache.ContainsKey(foundation))
+                {
+                    try
+                    {
+                        while (localImageCache[foundation] == null) await Task.Delay(400);
+                        source = localImageCache[foundation];
+                    }
+                    catch { }
+                }
+                else
+                {
+                    localImageCache.Add(foundation, null);
+                    source = await CodeHelper.GetCover(musicData.InLocal);
+                    if (source != null) localImageCache[foundation] = source;
+                    else
+                    {
+                        string coverPath = await Task.Run(() =>
+                        {
+                            FileInfo fileInfo = new FileInfo(musicData.InLocal);
+                            string coverPath = $"{fileInfo.DirectoryName}\\Cover.jpg";
+                            if (File.Exists(coverPath)) return coverPath;
+                            else return null;
+                        });
+                        if (coverPath != null)
+                        {
+                            source = await FileHelper.GetImageSource(coverPath);//, decodePixelWidth, decodePixelHeight, useBitmapImage);
+                            localImageCache[foundation] = source;
+                        }
+                        else
+                            localImageCache.Remove(foundation);
+                    }
+                }
             }
             else
             {
-                while (loadNum > maxLoadNum)
+                while (LoadingImages.Contains(musicData))
                 {
-                    await Task.Delay(400);
+                    await Task.Delay(1000);
+                }
+                resultPath = await FileHelper.GetImageCache(musicData);
+                if (resultPath == null)
+                {
+                    while (loadNum > maxLoadNum)
+                    {
+                        await Task.Delay(400);
+                    }
+                    loadNum++;
+                    LoadingImages.Add(musicData);
+
+                    if (WebHelper.IsNetworkConnected)
+                    {
+                        string b = $@"{DataEditor.DataFolderBase.ImageCacheFolder}\{musicData.From}{(string.IsNullOrEmpty(musicData.AlbumID) ? musicData.MD5.Replace(@"/", "#") : musicData.AlbumID)}";
+                        string a;
+                        if (musicData.PicturePath != null)
+                        {
+                            a = musicData.PicturePath;
+                        }
+                        else
+                        {
+                            a = await WebHelper.GetPicturePathAsync(musicData);
+                        }
+
+                        bool error = await DownloadPic(a, b);
+                        if (!error) resultPath = b;
+                    }
                 }
 
-                loadNum++;
-                LoadingImages.Add(musicData);
-
-                if (!Helpers.WebHelper.IsNetworkConnected) resultPath = "/Images/SugarAndSalt.jpg";
-                else
+                try
                 {
-                    //System.Diagnostics.Debug.WriteLine(musicData.AlbumID);
-                    string b = $@"{DataEditor.DataFolderBase.ImageCacheFolder}\{musicData.From}{(string.IsNullOrEmpty(musicData.AlbumID) ? musicData.MD5.Replace(@"/", "#") : musicData.AlbumID)}";
-                    string a;
-                    if (musicData.PicturePath != null)
-                    {
-                        a = musicData.PicturePath;
-                    }
-                    else
-                    {
-                        a = await Helpers.WebHelper.GetPicturePathAsync(musicData);
-                    }
-
-                    bool error = await DownloadPic(a, b);
-                    if (error) resultPath = resultPath = null;//await GetImageSource(musicData);
-                    else resultPath = b;
+                    source = await FileHelper.GetImageSource(resultPath, decodePixelWidth, decodePixelHeight, useBitmapImage);
                 }
-
-                LoadingImages.Remove(musicData);
-                loadNum--;
+                finally
+                {
+                    LoadingImages.Remove(musicData);
+                    loadNum--;
+                }
             }
 
-            return resultPath;
+            return new(source, resultPath);
         }
 
         public static async Task<string> GetImageSource(DataEditor.MusicListData musicListData)
