@@ -178,6 +178,11 @@ namespace znMusicPlayerWUI.DataEditor
         {
             return CodeHelper.ToMD5($"{Title}{Artists[0].Name}{Artists[0].ID}{Artists.Count}{Album}{ID}{AlbumID}{From}{InLocal}{(CUETrackData != null ? $"{CUETrackData.StartDuration}{CUETrackData.EndDuration}" : "")}");
         }
+
+        public override string ToString()
+        {
+            return $"{Title} - {ButtonName}";
+        }
     }
 
     public class MusicListData : OnlyClass

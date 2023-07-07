@@ -9,7 +9,7 @@
     xmlns:control="using:znMusicPlayerWUI.Controls"
     mc:Ignorable="d">
     <Grid>
-        <ScrollView HorizontalScrollBarVisibility="Auto" ScrollView.ZoomMode="Enabled">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentRenderOutsideBounds="True" ScrollViewer.ZoomMode="Enabled">
             <StackPanel HorizontalAlignment="Stretch"
                     Orientation="Vertical"
                     Margin="0,14,0,0">
@@ -40,6 +40,9 @@
                     Content="Github"
                     Click="Button_Click"/>
             </StackPanel>
-        </ScrollView>
+        </ScrollViewer>
+        <control:AutoScrollViewer Background="Black" RequestedTheme="Dark" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12">
+            <TextBlock Text="Auto Scroll To View Control Test" Width="200"/>
+        </control:AutoScrollViewer>
     </Grid>
 </Page>

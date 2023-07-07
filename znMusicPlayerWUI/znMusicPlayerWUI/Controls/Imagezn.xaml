@@ -11,7 +11,10 @@
     Tapped="Grid_Tapped" RightTapped="Grid_RightTapped"
     PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
     PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited"
-    MinWidth="0" MinHeight="0">
+    MinWidth="0" MinHeight="0" SizeChanged="RootGrid_SizeChanged">
+    <Grid.Clip>
+        <RectangleGeometry x:Name="RGClip"/>
+    </Grid.Clip>
     <Image x:Name="ImageSourceBefore" Stretch="{Binding ElementName=ImageSource, Path=Stretch}"
            HorizontalAlignment="{Binding ElementName=RootGrid,Path=HorizontalAlignment}"
            VerticalAlignment="{Binding ElementName=RootGrid,Path=VerticalAlignment}"/>

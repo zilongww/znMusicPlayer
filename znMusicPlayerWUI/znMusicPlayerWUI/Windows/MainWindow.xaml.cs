@@ -403,7 +403,7 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region Dialog
-        static ScrollView dialogScrollViewer = new() { HorizontalScrollMode = ScrollingScrollMode.Disabled };
+        static ScrollViewer dialogScrollViewer = new() { HorizontalScrollMode = ScrollMode.Disabled };
         static bool dialogShow = false;
         static List<object[]> dialogShowObjects = new();
         public static async Task<ContentDialogResult> ShowDialog(
@@ -1203,18 +1203,17 @@ namespace znMusicPlayerWUI
 
         public static bool InOpenMusicPage { get; set; } = false;
         static bool isFirstInMusicPage = true;
+        static bool isHiddenMusicPageAnimationNotCompleted = false;
         public static void OpenOrCloseMusicPage()
         {
             if (App.audioPlayer.MusicData == null) return;
 
+            SMusicPageBaseFrame.Content = SMusicPage;
             if (InOpenMusicPage)
             {
                 InOpenMusicPage = false;
-                SWindowGridBase.Visibility = Visibility.Visible;
-#if DEBUG
-                Debug.WriteLine("主界面被显示。");
-#endif
-                SMusicPageBaseFrame.Content = SMusicPage;
+
+                isHiddenMusicPageAnimationNotCompleted = true;
                 AnimateHelper.AnimateOffset(
                     SMusicPageBaseFrame,
                     0, (float)SMusicPageBaseGrid.ActualHeight, 0,
@@ -1222,13 +1221,16 @@ namespace znMusicPlayerWUI
                     0.5f, 0, 0.75f, 0,
                     out Visual contentGridVisual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
                 contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
-                compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
+                SetMainPageVisibility(true);
+                /*compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
                 {
                     if (!InOpenMusicPage)
                     {
                         SMusicPageBaseFrame.Visibility = Visibility.Collapsed;
+                        isHiddenMusicPageAnimationNotCompleted = false;
+                        Debug.WriteLine("音乐界面被隐藏。");
                     }
-                };
+                };*/
 
                 SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
                 MusicPageViewStateChanged?.Invoke(MusicPageViewState.Hidden);
@@ -1265,8 +1267,6 @@ namespace znMusicPlayerWUI
             else
             {
                 InOpenMusicPage = true;
-                SMusicPageBaseFrame.Content = SMusicPage;
-                SMusicPageBaseFrame.Visibility = Visibility.Visible;
 
                 AnimateHelper.AnimateOffset(
                     SMusicPageBaseFrame,
@@ -1274,17 +1274,18 @@ namespace znMusicPlayerWUI
                     0.5,
                     0.16f, 1, 0.3f, 1,
                     out Visual contentGridVisual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
-                contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
-                compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
+                SetMainPageVisibility(false);
+                /*compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
                 {
-                    if (InOpenMusicPage)
+                    if (InOpenMusicPage && !isHiddenMusicPageAnimationNotCompleted)
                     {
                         SWindowGridBase.Visibility = Visibility.Collapsed;
 #if DEBUG
-                        System.Diagnostics.Debug.WriteLine("主界面被隐藏。");
+                        Debug.WriteLine("主界面被隐藏。");
 #endif
                     }
-                };
+                };*/
+                contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
 
                 SMusicPage.MusicPageViewStateChange(MusicPageViewState.View);
                 MusicPageViewStateChanged?.Invoke(MusicPageViewState.View);
@@ -1292,6 +1293,28 @@ namespace znMusicPlayerWUI
                 {
                     isFirstInMusicPage = false;
                     SWindowGridBase.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        private static async void SetMainPageVisibility(bool visibility)
+        {
+            if (visibility)
+            {
+                SWindowGridBase.Visibility = Visibility.Visible;
+                Debug.WriteLine("主界面被显示。");
+                await Task.Delay(200);
+                if (!InOpenMusicPage)
+                    SMusicPageBaseFrame.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                SMusicPageBaseFrame.Visibility = Visibility.Visible;
+                await Task.Delay(500);
+                if (InOpenMusicPage)
+                {
+                    SWindowGridBase.Visibility = Visibility.Collapsed;
+                    Debug.WriteLine("主界面被隐藏。");
                 }
             }
         }

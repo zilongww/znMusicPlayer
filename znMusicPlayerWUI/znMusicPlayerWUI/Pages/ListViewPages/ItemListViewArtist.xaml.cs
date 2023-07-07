@@ -191,6 +191,7 @@ namespace znMusicPlayerWUI.Pages
             {
                 scrollViewer = (VisualTreeHelper.GetChild(Children, 0) as Border).Child as ScrollViewer;
                 scrollViewer.CanContentRenderOutsideBounds = true;
+                scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
 
                 // 设置header为顶层
                 var headerPresenter = (UIElement)VisualTreeHelper.GetParent((UIElement)Children.Header);
@@ -200,6 +201,11 @@ namespace znMusicPlayerWUI.Pages
 
             UpdataCommandToolBarWidth();
             Result_BaseGrid_SizeChanged(null, null);
+        }
+
+        private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        {
+            headerVisual.IsPixelSnappingEnabled = true;
         }
 
         private void Result_BaseGrid_SizeChanged(object sender, SizeChangedEventArgs e)

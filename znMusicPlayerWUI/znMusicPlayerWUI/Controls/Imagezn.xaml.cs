@@ -192,11 +192,11 @@ namespace znMusicPlayerWUI.Controls
         private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             if (ShowMenuBehavior == ShowMenuBehaviors.None || ShowMenuBehavior == ShowMenuBehaviors.OnlyLightUp) return;
-            ScrollView scrollViewer = new()
+            ScrollViewer scrollViewer = new()
             {
-                ZoomMode = ScrollingZoomMode.Enabled,
-                HorizontalScrollMode = ScrollingScrollMode.Enabled,
-                HorizontalScrollBarVisibility = ScrollingScrollBarVisibility.Visible
+                ZoomMode = ZoomMode.Enabled,
+                HorizontalScrollMode = ScrollMode.Enabled,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
             };
             TextBlock textBlock = new() { Text = "Ctrl键滑动滚轮或双指滑动可进行缩放 100%", Margin = new(84, -32, 0, 0), IsHitTestVisible = false };
             scrollViewer.ViewChanged += (_, __) =>
@@ -272,6 +272,14 @@ namespace znMusicPlayerWUI.Controls
                 out var visual, out var compositor, out var scalarKeyFrameAnimation);
             visual.StartAnimation(nameof(ImageMassAlpha.Opacity), scalarKeyFrameAnimation);
 
+            AnimateHelper.AnimateScalar(
+                ImageSource, 1.07f, 0.2,
+                0.2f, 1, 0.22f, 1f,
+                out var scaleVisual, out var compositor1, out var animation);
+            scaleVisual.CenterPoint = new(scaleVisual.Size.X / 2, scaleVisual.Size.Y / 2, 1);
+            scaleVisual.StartAnimation("Scale.X", animation);
+            scaleVisual.StartAnimation("Scale.Y", animation);
+
             if (isFirstAnimate)
             {
                 isFirstAnimate = false;
@@ -285,7 +293,7 @@ namespace znMusicPlayerWUI.Controls
             if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
             isPointEnter = false;
             AnimateHelper.AnimateScalar(
-                ImageMassAlpha, 0, 0.5,
+                ImageMassAlpha, 0, 1.2,
                 0, 0, 0, 0,
                 out var visual, out var compositor, out var scalarKeyFrameAnimation);
             visual.StartAnimation(nameof(ImageMassAlpha.Opacity), scalarKeyFrameAnimation);
@@ -294,6 +302,14 @@ namespace znMusicPlayerWUI.Controls
                 if (!isPointEnter)
                     ImageMassAlpha.Visibility = Visibility.Collapsed;
             };
+
+            AnimateHelper.AnimateScalar(
+                ImageSource, 1f, 1.2,
+                0.2f, 1, 0.22f, 1f,
+                out var scaleVisual, out var compositor1, out var animation);
+            scaleVisual.CenterPoint = new(scaleVisual.Size.X / 2, scaleVisual.Size.Y / 2, 1);
+            scaleVisual.StartAnimation("Scale.X", animation);
+            scaleVisual.StartAnimation("Scale.Y", animation);
         }
 
         bool IsMouse4Click = false;
@@ -316,6 +332,12 @@ namespace znMusicPlayerWUI.Controls
                 MenuFlyoutItem_Click(null, null);
             }
             IsMouse4Click = false;
+        }
+
+        private void RootGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //ImageSource.CenterPoint = new(5, 5, 1);
+            RGClip.Rect = new(0, 0, ActualWidth, ActualHeight);
         }
     }
 }

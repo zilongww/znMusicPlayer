@@ -77,10 +77,15 @@ namespace znMusicPlayerWUI.Pages
         Visual headerVisual;
         Visual backgroundVisual;
         Visual logoVisual;
+        ScrollViewer scrollViewer;
         private void UpdataShyHeader()
         {
-            var scrollViewer = (VisualTreeHelper.GetChild(BaseGridView, 0) as Border).Child as ScrollViewer;
-            scrollViewer.CanContentRenderOutsideBounds = true;
+            if (scrollViewer == null)
+            {
+                scrollViewer = (VisualTreeHelper.GetChild(BaseGridView, 0) as Border).Child as ScrollViewer;
+                scrollViewer.CanContentRenderOutsideBounds = true;
+                scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
+            }
 
             var padingSize = 40;
             // Get the visual that represents our HeaderTextBlock 
@@ -127,6 +132,11 @@ namespace znMusicPlayerWUI.Pages
             var backgroundVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 1, {progress})");
             backgroundVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             backgroundVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
+        }
+
+        private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        {
+            headerVisual.IsPixelSnappingEnabled = true;
         }
 
         private void BaseGridView_Loaded(object sender, RoutedEventArgs e)

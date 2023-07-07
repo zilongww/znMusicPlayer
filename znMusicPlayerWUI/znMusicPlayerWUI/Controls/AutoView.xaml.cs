@@ -22,7 +22,6 @@ namespace znMusicPlayerWUI.Controls
     public enum ViewMode { Horizontal, Vertical, None };
     public partial class AutoScrollViewer : Grid
     {
-        DispatcherTimer _timer;
         public ViewMode ViewMode { get; set; } = ViewMode.Horizontal;
         public bool isHorizontalContentOutOfBounds { get; private set; } = false;
         public bool isVerticalContentOutOfBounds { get; private set; } = false;
@@ -30,19 +29,12 @@ namespace znMusicPlayerWUI.Controls
         public AutoScrollViewer()
         {
             InitializeComponent();
-            _timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(64) };
-            _timer.Tick += (_, __) => UpdataContentInterface();
         }
 
         FrameworkElement content = null;
         private async void sizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (isStop)
-            {
-                _timer.Stop();
-                return;
-            }
-            RGClip.Rect = new(0, 0, ActualWidth, ActualHeight);
+            //RGClip.Rect = new(0, 0, ActualWidth, ActualHeight);
             if (!Children.Any()) return;
             content = Children.First() as FrameworkElement;
             if (content == null) return;
@@ -52,33 +44,24 @@ namespace znMusicPlayerWUI.Controls
             if (content.ActualHeight > ActualHeight) isVerticalContentOutOfBounds = true;
             else isVerticalContentOutOfBounds = false;
 
-            Debug.WriteLine("animating");
-            _timer.Start();
+            UpdataContentInterface();
         }
 
-        bool allowAnimate = true;
-        bool isHorizontalAnimating = false;
-        bool isVerticalAnimating = false;
         public async void UpdataContentInterface()
         {
             if (!isHorizontalContentOutOfBounds && !isVerticalContentOutOfBounds)
             {
-                _timer.Stop();
                 return;
             }
 
             if (ViewMode == ViewMode.Horizontal && isHorizontalContentOutOfBounds)
             {
-                content.Margin = new(content.Margin.Left - 5, 0, 0, 0);
-                Debug.WriteLine($"{content.ActualWidth} / {Math.Abs(content.Margin.Left) + ActualWidth + 3}");
-                if (content.ActualWidth < Math.Abs(content.Margin.Left) + ActualWidth + 3)
-                {
-                    Debug.WriteLine("animated");
-                    _timer.Stop();
-                    await Task.Delay(1000);
-                    content.Margin = new(0, 0, 0, 0);
-                }
-
+                AnimateHelper.AnimateOffset(content,
+                    -(float)content.ActualWidth, 0, 1,
+                    5,
+                    0, 0, 0, 0,
+                    out var elementVisual, out var compositor, out var animation);
+                elementVisual.StartAnimation(nameof(elementVisual.Offset), animation);
             }
             else if (ViewMode == ViewMode.Vertical && isVerticalContentOutOfBounds)
             {
@@ -86,23 +69,12 @@ namespace znMusicPlayerWUI.Controls
             }
             else
             {
-                _timer.Stop();
             }
-        }
-
-        bool isStop = false;
-        public void StopScrolling()
-        {
-            isStop = true;
-            _timer.Stop();
-            isHorizontalAnimating = false;
-            isVerticalAnimating = false;
         }
 
         private async void unloaded(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("unloaded");
-            StopScrolling();
         }
     }
 }

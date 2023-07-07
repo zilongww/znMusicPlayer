@@ -123,6 +123,8 @@ namespace znMusicPlayerWUI.Pages
             }
         }
 
+        ScrollViewer scrollViewer;
+        Visual headerVisual;
         public void UpdataShyHeader()
         {
             // 设置header为顶层
@@ -130,8 +132,13 @@ namespace znMusicPlayerWUI.Pages
             var headerContainer = (UIElement)VisualTreeHelper.GetParent(headerPresenter);
             Canvas.SetZIndex(headerContainer, 1);
 
-            var scrollViewer = (VisualTreeHelper.GetChild(ListViewBase, 0) as Border).Child as ScrollViewer;
-            scrollViewer.CanContentRenderOutsideBounds = true;
+            if (scrollViewer == null)
+            {
+                headerVisual = ElementCompositionPreview.GetElementVisual(HeaderBaseGrid);
+                scrollViewer = (VisualTreeHelper.GetChild(ListViewBase, 0) as Border).Child as ScrollViewer;
+                scrollViewer.CanContentRenderOutsideBounds = true;
+                scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
+            }
 
             CompositionPropertySet scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(scrollViewer);
             Compositor compositor = scrollerPropertySet.Compositor;
@@ -139,7 +146,6 @@ namespace znMusicPlayerWUI.Pages
             var padingSize = 40;
             // Get the visual that represents our HeaderTextBlock 
             // And define the progress animation string
-            var headerVisual = ElementCompositionPreview.GetElementVisual(HeaderBaseGrid);
             String progress = $"Clamp(-scroller.Translation.Y / {padingSize}, 0, 1.0)";
 
             // Shift the header by 50 pixels when scrolling down
@@ -175,6 +181,11 @@ namespace znMusicPlayerWUI.Pages
             var backgroundVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 1, {progress})");
             backgroundVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             backgroundVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
+        }
+
+        private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        {
+            headerVisual.IsPixelSnappingEnabled = true;
         }
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)

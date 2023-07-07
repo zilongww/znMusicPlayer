@@ -64,6 +64,7 @@ namespace znMusicPlayerWUI.Pages
             scrollViewer.ScrollToVerticalOffset(scrollOffset);
         }
 
+        Visual headerVisual;
         public void UpdataShyHeader()
         {
             if (scrollViewer == null) return;
@@ -73,7 +74,6 @@ namespace znMusicPlayerWUI.Pages
             var padingSize = 50;
             // Get the visual that represents our HeaderTextBlock 
             // And define the progress animation string
-            var headerVisual = ElementCompositionPreview.GetElementVisual(HeaderBaseGrid);
             String progress = $"Clamp(-scroller.Translation.Y / {padingSize}, 0, 1.0)";
 
             // Shift the header by 50 pixels when scrolling down
@@ -129,10 +129,17 @@ namespace znMusicPlayerWUI.Pages
             var headerContainer = (UIElement)VisualTreeHelper.GetParent(headerPresenter);
             Canvas.SetZIndex(headerContainer, 1);
 
+            headerVisual = ElementCompositionPreview.GetElementVisual(HeaderBaseGrid);
             scrollViewer = (VisualTreeHelper.GetChild(ListViewBase, 0) as Border).Child as ScrollViewer;
             scrollViewer.CanContentRenderOutsideBounds = true;
+            scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
             UpdataShyHeader();
             Init();
+        }
+
+        private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        {
+            headerVisual.IsPixelSnappingEnabled = true;
         }
     }
 }

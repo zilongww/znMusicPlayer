@@ -552,9 +552,15 @@ namespace znMusicPlayerWUI.Media
 
         MusicData PointMusicData = null;
         string PointFilePath = null;
+        int frezzeSetSourceCount = 0;
         List<MusicData> LoadingMusicDatas = new();
         public async Task SetSource(MusicData musicData)
         {
+            frezzeSetSourceCount++;
+            await Task.Delay(200);
+            frezzeSetSourceCount--;
+            if (frezzeSetSourceCount > 0) return;
+
             isCUEEndCalled = false;
             if (musicData == MusicData)
             {
@@ -679,6 +685,7 @@ namespace znMusicPlayerWUI.Media
                     try
                     {
                         _filePath = resultPath;
+                        Debug.WriteLine($"AudioPlayer：正在加载 \"{resultPath}\".");
                         await SetSource(resultPath);
                     }
                     catch (Exception err)
@@ -769,6 +776,7 @@ namespace znMusicPlayerWUI.Media
             await Task.Run(() => DisposeAll());
             FileReader = fileReader;
             FileProvider = fileProvider;
+            Debug.WriteLine($"AudioPlayer：FileReader filePath \"{fileReader.FileName}\".");
             if (EqEnabled)
             {
                 EqualizerBand = EqualizerBand;
@@ -842,6 +850,8 @@ namespace znMusicPlayerWUI.Media
                         NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
                         break;
                 }
+                Debug.WriteLine($"AudioPlayer：Inited FileReader filePath \"{fileReader.FileName}\".");
+                Debug.WriteLine($"AudioPlayer：Inited MusicData \"{MusicData}\".");
             }
 
             SourceChanged?.Invoke(this);

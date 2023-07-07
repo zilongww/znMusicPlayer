@@ -204,6 +204,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void PlayingList_NowPlayingImageLoaded(ImageSource imageSource, string _)
         {
+            if (imageSource == ImageSources) return;
             ImageSources = imageSource;
             BackgroundBaseImage.Source = ImageSources;
             AlbumImageBase.Source = imageSource;

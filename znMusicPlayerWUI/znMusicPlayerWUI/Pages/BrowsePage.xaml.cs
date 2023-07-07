@@ -42,15 +42,27 @@ namespace znMusicPlayerWUI.Pages
             LoadList2();
         }
 
+        private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        {
+            headerVisual.IsPixelSnappingEnabled = true;
+        }
+
+        ScrollViewer scrollViewer;
+        Visual headerVisual;
         public void UpdataShyHeader()
         {
+            if (scrollViewer == null)
+            {
+                headerVisual = ElementCompositionPreview.GetElementVisual(HeaderBaseGrid);
+                scrollViewer = (VisualTreeHelper.GetChild(ListViewBase, 0) as Border).Child as ScrollViewer;
+                scrollViewer.CanContentRenderOutsideBounds = true;
+                scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
+            }
+
             // 设置header为顶层
             var headerPresenter = (UIElement)VisualTreeHelper.GetParent((UIElement)ListViewBase.Header);
             var headerContainer = (UIElement)VisualTreeHelper.GetParent(headerPresenter);
             Canvas.SetZIndex(headerContainer, 1);
-
-            var scrollViewer = (VisualTreeHelper.GetChild(ListViewBase, 0) as Border).Child as ScrollViewer;
-            scrollViewer.CanContentRenderOutsideBounds = true;
 
             CompositionPropertySet scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(scrollViewer);
             Compositor compositor = scrollerPropertySet.Compositor;
@@ -58,7 +70,6 @@ namespace znMusicPlayerWUI.Pages
             var padingSize = 40;
             // Get the visual that represents our HeaderTextBlock 
             // And define the progress animation string
-            var headerVisual = ElementCompositionPreview.GetElementVisual(HeaderBaseGrid);
             String progress = $"Clamp(-scroller.Translation.Y / {padingSize}, 0, 1.0)";
 
             var offsetExpression = compositor.CreateExpressionAnimation($"-scroller.Translation.Y - {progress} * {padingSize}");

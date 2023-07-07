@@ -313,6 +313,7 @@ namespace znMusicPlayerWUI.Pages
             commandBarVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(-6,168,0), Vector3(-6,67,0), {progress})");
             commandBarVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             commandBarVisual.StartAnimation(nameof(commandBarVisual.Offset), commandBarVisualOffsetAnimation);
+            headerVisual.IsPixelSnappingEnabled = true;
             /*
             Visual textVisual = ElementCompositionPreview.GetElementVisual(Result_Search_Header);
             Vector3 finalOffset = new Vector3(0, (float)Result_Search_Header.ActualHeight, 0);
