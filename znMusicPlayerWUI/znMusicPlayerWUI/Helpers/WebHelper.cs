@@ -131,7 +131,7 @@ namespace znMusicPlayerWUI.Helpers
                         });
                         break;
                     default:
-                        addressResult = musicData.PicturePath;
+                        addressResult = musicData.Album.PicturePath;
                         break;
                 }
             }

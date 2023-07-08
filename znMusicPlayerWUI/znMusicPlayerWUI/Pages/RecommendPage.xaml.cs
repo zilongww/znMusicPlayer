@@ -48,7 +48,7 @@ namespace znMusicPlayerWUI.Pages
             //GC.Collect();
             try
             {
-                abcd.Source = App.playingList.NowPlayingList[new Random().Next(0, App.playingList.NowPlayingList.Count - 1)].PicturePath;
+                abcd.Source = App.playingList.NowPlayingList[new Random().Next(0, App.playingList.NowPlayingList.Count - 1)].Album.PicturePath;
             }
             catch { }
             return;

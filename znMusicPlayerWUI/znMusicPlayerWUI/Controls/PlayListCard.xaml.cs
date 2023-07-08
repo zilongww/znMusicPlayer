@@ -233,9 +233,9 @@ namespace znMusicPlayerWUI.Controls
                 var playlist = await App.metingServices.NeteaseServices.GetPlayList(MusicListData.ID);
                 MusicListData = playlist;
 
-                var data = JObject.Parse(await PlayListHelper.ReadData());
+                var data = await PlayListHelper.ReadData();
                 data[MusicListData.ListName] = JObject.FromObject(playlist);
-                await PlayListHelper.SaveData(data.ToString());
+                await PlayListHelper.SaveData(data);
 
                 await App.playListReader.Refresh();
 

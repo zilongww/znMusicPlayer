@@ -74,11 +74,11 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                     }
                     catch (Exception err)
                     {
-                        //var b = await MainWindow.ShowDialog("添加播放列表时出现错误", err.Message, "确定", "重试");
-                        //if (b == ContentDialogResult.Primary)
-                        //{
-                        //    AddPlayListPage_ResultEvent(contentDialogResult);
-                        //}
+                        var b = await MainWindow.ShowDialog("添加播放列表时出现错误", err.Message, "确定", "重试");
+                        if (b == ContentDialogResult.Primary)
+                        {
+                            AddPlayListPage_ResultEvent(contentDialogResult);
+                        }
                     }
                 }
 

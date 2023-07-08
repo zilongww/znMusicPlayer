@@ -184,8 +184,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                                     ld.Songs.Add(new(
                                         (string)song["name"], (string)song["id"],
                                         artists,
-                                        (string)song["al"]["name"], (string)song["al"]["id"],
-                                        (string)song["al"]["picUrl"],
+                                        new((string)song["al"]["name"], (string)song["al"]["id"], (string)song["al"]["picUrl"]),
                                         (string)song["publishTime"],
                                         MusicFrom.neteaseMusic
                                         ));
@@ -256,11 +255,9 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                     (string)md["name"],
                     (string)md["id"],
                     artists,
-                    (string)md["al"]["name"],
-                    (string)md["al"]["id"],
-                    (string)md["al"]["picUrl"],
+                    new((string)md["al"]["name"], (string)md["al"]["id"], (string)md["al"]["picUrl"]),
                     (string)md["publishTime"],
-                    MusicFrom.neteaseMusic// from
+                    MusicFrom.neteaseMusic
                     ));
             }
             return datas;
@@ -307,7 +304,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                             //System.Diagnostics.Debug.WriteLine(pls["message"]);
                         }
                     }
-                    catch { }
+                    catch(Exception err) { System.Diagnostics.Debug.WriteLine(err); }
                     return null;
                 };
 

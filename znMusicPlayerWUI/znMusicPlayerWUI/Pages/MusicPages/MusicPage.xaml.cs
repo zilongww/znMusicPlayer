@@ -378,7 +378,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             if (audioPlayer.MusicData == null) return;
             TitleRunText.Text = audioPlayer.MusicData.Title;
             ArtistRunText.Text = audioPlayer.MusicData.ArtistName;
-            AlbumRunText.Text = audioPlayer.MusicData.Album;
+            AlbumRunText.Text = audioPlayer.MusicData.Album.Title;
             OtherRunText.Text = audioPlayer.MusicData.From.ToString();
             AudioInfoRunText.Text = audioPlayer.WaveInfo;
 

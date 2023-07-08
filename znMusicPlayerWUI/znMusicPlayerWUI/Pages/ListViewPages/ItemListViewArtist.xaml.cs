@@ -368,7 +368,7 @@ namespace znMusicPlayerWUI.Pages
         private async void A_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.ShowLoadingDialog();
-            var text = JObject.Parse(await PlayListHelper.ReadData());
+            var text = await PlayListHelper.ReadData();
             foreach (SongItemBindBase item in Children.SelectedItems)
             {
                 MainWindow.SetLoadingText($"正在添加：{item.MusicData.Title} - {item.MusicData.ButtonName}");
@@ -377,7 +377,7 @@ namespace znMusicPlayerWUI.Pages
                     ((sender as MenuFlyoutItem).Tag as MusicListData).ListName,
                     item.MusicData, text);
             }
-            await PlayListHelper.SaveData(text.ToString());
+            await PlayListHelper.SaveData(text);
             MainWindow.HideDialog();
         }
 

@@ -102,6 +102,25 @@ namespace znMusicPlayerWUI.DataEditor
         public string PicturePath { get; set; }
         public string Describee { get; set; }
         public MusicListData Songs { get; set; }
+        public Album(string title, string ID = null, string picturePath = null, string describee = null, MusicListData songs = null)
+        {
+            Title = string.IsNullOrEmpty(title) ? "未知" : title;
+            this.ID = ID == "0" || string.IsNullOrEmpty(ID) ? null : ID;
+            PicturePath = picturePath;
+            Describee = describee;
+            Songs = songs;
+        }
+
+        public bool IsNull()
+        {
+            if (string.IsNullOrEmpty(Title) && string.IsNullOrEmpty(ID)) return true;
+            return false;
+        }
+
+        public override string ToString()
+        {
+            return Title;
+        }
     }
 
     public class MusicData : OnlyClass
@@ -109,9 +128,7 @@ namespace znMusicPlayerWUI.DataEditor
         public string Title { get; set; }
         public string ID { get; set; }
         public List<Artist> Artists { get; set; }
-        public string Album { get; set; }
-        public string AlbumID { get; set; }
-        public string PicturePath { get; set; }
+        public Album Album { get; set; }
         public string RelaseTime { get; set; }
         public MusicFrom From { get; set; }
         public string InLocal { get; set; }
@@ -145,9 +162,7 @@ namespace znMusicPlayerWUI.DataEditor
         public MusicData(string title = "",
                          string ID = "",
                          List<Artist> artists = null,
-                         string album = null,
-                         string albumID = null,
-                         string picturePath = null,
+                         Album album = null,
                          string relaseTime = null,
                          MusicFrom from = MusicFrom.kwMusic,
                          string inLocal = null)
@@ -155,9 +170,7 @@ namespace znMusicPlayerWUI.DataEditor
             this.Title = title;
             this.ID = ID;
             this.Artists = artists == null ? new List<Artist>() { new Artist() { Name = "未知" } } : artists;
-            this.Album = string.IsNullOrEmpty(album) ? "未知" : album;
-            this.AlbumID = albumID == "0" || string.IsNullOrEmpty(albumID) ? null : albumID;
-            this.PicturePath = picturePath;
+            this.Album = album;
             this.RelaseTime = relaseTime;
             this.From = from;
             this.InLocal = inLocal;
@@ -176,7 +189,7 @@ namespace znMusicPlayerWUI.DataEditor
 
         public override string GetMD5()
         {
-            return CodeHelper.ToMD5($"{Title}{Artists[0].Name}{Artists[0].ID}{Artists.Count}{Album}{ID}{AlbumID}{From}{InLocal}{(CUETrackData != null ? $"{CUETrackData.StartDuration}{CUETrackData.EndDuration}" : "")}");
+            return CodeHelper.ToMD5($"{Title}{Artists[0].Name}{Artists[0].ID}{Artists.Count}{Album?.Title}{ID}{Album?.ID}{From}{InLocal}{(CUETrackData != null ? $"{CUETrackData.StartDuration}{CUETrackData.EndDuration}" : "")}");
         }
 
         public override string ToString()

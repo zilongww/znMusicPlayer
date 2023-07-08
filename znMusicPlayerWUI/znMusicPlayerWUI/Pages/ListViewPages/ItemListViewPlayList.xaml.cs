@@ -95,8 +95,7 @@ namespace znMusicPlayerWUI.Pages
 
         private void CreatShadow()
         {
-            var visual = ElementCompositionPreview.GetElementVisual(PlayList_Image);
-            compositor = visual.Compositor;
+            compositor = logoVisual.Compositor;
 
             var basicRectVisual = compositor.CreateSpriteVisual();
             basicRectVisual.Size = PlayList_Image.RenderSize.ToVector2();
@@ -244,11 +243,27 @@ namespace znMusicPlayerWUI.Pages
         ExpressionAnimation logoVisualOffsetYAnimation;
         ExpressionAnimation stackVisualOffsetAnimation;
         ExpressionAnimation commandBarVisualOffsetAnimation;
+        int logoSizeCount = 0;
         public void UpdataShyHeader(bool xOnly = false)
         {
             if (scrollViewer == null) return;
 
-            double anotherHeight = 112;
+            int logoHeight = 280;
+            double anotherHeight = 154;
+            int anotherXEnd = 151;
+            double logoSizeEnd = 0.45;
+            int commandYEnd = 84;
+
+            if (logoSizeCount == 1)
+            {
+                logoHeight = 160;
+                logoSizeEnd = 0.66;
+                anotherHeight = 54;
+                anotherXEnd = 131;
+                commandYEnd = 63;
+            }
+            int anotherX = 24 + logoHeight + 12;
+
             String progress = $"Clamp(-scroller.Translation.Y / {anotherHeight}, 0, 1.0)";
 
             if (scrollerPropertySet == null)
@@ -293,24 +308,27 @@ namespace znMusicPlayerWUI.Pages
                 backgroundVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
                 backgroundVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
 
-                logoVisualOffsetYAnimation = compositor.CreateExpressionAnimation($"Lerp(24, {anotherHeight} + 8, {progress})");
+                logoVisualOffsetYAnimation = compositor.CreateExpressionAnimation($"Lerp(24, {anotherHeight} + 12, {progress})");
                 logoVisualOffsetYAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
                 logoVisual.StartAnimation("Offset.Y", logoVisualOffsetYAnimation);
 
-                logoVisualOffsetXAnimation = compositor.CreateExpressionAnimation($"Lerp(24, 24, {progress})");
+                logoVisualOffsetXAnimation = compositor.CreateExpressionAnimation($"Lerp(24, 12, {progress})");
                 logoVisualOffsetXAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
                 logoVisual.StartAnimation("Offset.X", logoVisualOffsetXAnimation);
 
-                stackVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(246,24,0), Vector3(140,{anotherHeight} + 4,0), {progress})");
+                stackVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3({anotherX},24,0), Vector3({anotherXEnd},{anotherHeight} + 12,0), {progress})");
                 stackVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
                 stackVisual.StartAnimation(nameof(stackVisual.Offset), stackVisualOffsetAnimation);
             }
+
+            string sizelogo = null;
+            if (logoSizeCount == 0) sizelogo = "1,1";
             // Logo scale and transform                                          from               to
-            logoHeaderScaleAnimation = compositor.CreateExpressionAnimation("Lerp(Vector2(1,1), Vector2(0.5, 0.5), " + progress + ")");
+            logoHeaderScaleAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector2(1,1), Vector2({logoSizeEnd}, {logoSizeEnd}), " + progress + ")");
             logoHeaderScaleAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             logoVisual.StartAnimation("Scale.xy", logoHeaderScaleAnimation);
 
-            commandBarVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(-6,168,0), Vector3(-6,67,0), {progress})");
+            commandBarVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(-6,{logoHeight - commandBarVisual.Size.Y + 6},0), Vector3(-6,{commandYEnd},0), {progress})");
             commandBarVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             commandBarVisual.StartAnimation(nameof(commandBarVisual.Offset), commandBarVisualOffsetAnimation);
             headerVisual.IsPixelSnappingEnabled = true;
@@ -371,10 +389,26 @@ namespace znMusicPlayerWUI.Pages
             UpdataInfoWidth();
         }
 
-        private void Result_BaseGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        private async void Result_BaseGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            if (ActualWidth <= 660 || ActualHeight <= 348)
+            {
+                logoSizeCount = 1;
+                PlayList_ImageBaseBorder.Width = 160;
+                PlayList_ImageBaseBorder.Height = 160;
+            }
+            else
+            {
+                logoSizeCount = 0;
+                PlayList_ImageBaseBorder.Width = 280;
+                PlayList_ImageBaseBorder.Height = 280;
+            }/*
+            System.Diagnostics.Debug.WriteLine(ActualWidth);
+            System.Diagnostics.Debug.WriteLine(ActualHeight);*/
             UpdataShyHeader();
             UpdataInfoWidth();
+            await Task.Delay(1);
+            CreatShadow();
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -457,7 +491,7 @@ namespace znMusicPlayerWUI.Pages
                 var result = await MainWindow.ShowDialog("移除歌曲", $"真的要从歌单中移除这{Children.SelectedItems.Count}首歌曲吗？", "取消", "确定");
                 if (result == ContentDialogResult.Primary)
                 {
-                    var jdata = JObject.Parse(await PlayListHelper.ReadData());
+                    var jdata = await PlayListHelper.ReadData();
                     MainWindow.ShowLoadingDialog("正在移除");
                     int num = 0;
                     foreach (SongItemBindBase item in Children.SelectedItems)
@@ -467,7 +501,7 @@ namespace znMusicPlayerWUI.Pages
                         MainWindow.SetLoadingProgressRingValue(Children.SelectedItems.Count, num);
                         jdata = PlayListHelper.DeleteMusicDataFromPlayList(NavToObj.ListName, item.MusicData, jdata);
                     }
-                    await PlayListHelper.SaveData(jdata.ToString());
+                    await PlayListHelper.SaveData(jdata);
                     await App.playListReader.Refresh();
                     foreach (var m in App.playListReader.NowMusicListDatas)
                     {
@@ -525,7 +559,7 @@ namespace znMusicPlayerWUI.Pages
                     App.SupportedMediaFormats);
                 if (files.Any())
                 {
-                    var jdata = JObject.Parse(await PlayListHelper.ReadData());
+                    var jdata = await PlayListHelper.ReadData();
                     MainWindow.HideDialog();
                     foreach (var i in files)
                     {
@@ -533,7 +567,7 @@ namespace znMusicPlayerWUI.Pages
                         await Task.Run(() => fi = new FileInfo(i.Path));
                         jdata = await PlayListHelper.AddLocalMusicDataToPlayList(NavToObj.ListName, fi, jdata);
                     }
-                    await PlayListHelper.SaveData(jdata.ToString());
+                    await PlayListHelper.SaveData(jdata);
                     await App.playListReader.Refresh();
                     foreach (var m in App.playListReader.NowMusicListDatas)
                     {
@@ -552,7 +586,7 @@ namespace znMusicPlayerWUI.Pages
                 Windows.Storage.StorageFolder folder = await FileHelper.UserSelectFolder(PickerLocationId.MusicLibrary);
                 if (folder != null)
                 {
-                    var jdata = JObject.Parse(await PlayListHelper.ReadData());
+                    var jdata = await PlayListHelper.ReadData();
                     DirectoryInfo directory = null;
                     await Task.Run(() => directory = Directory.CreateDirectory(folder.Path));
                     foreach (var i in directory.GetFiles())
@@ -562,7 +596,7 @@ namespace znMusicPlayerWUI.Pages
                             jdata = await PlayListHelper.AddLocalMusicDataToPlayList(NavToObj.ListName, i, jdata);
                         }
                     }
-                    await PlayListHelper.SaveData(jdata.ToString());
+                    await PlayListHelper.SaveData(jdata);
                     await App.playListReader.Refresh();
                     foreach (var m in App.playListReader.NowMusicListDatas)
                     {
@@ -613,7 +647,7 @@ namespace znMusicPlayerWUI.Pages
         private async void A_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.ShowLoadingDialog();
-            var text = JObject.Parse(await PlayListHelper.ReadData());
+            var text = await PlayListHelper.ReadData();
             foreach (SongItemBindBase item in Children.SelectedItems)
             {
                 MainWindow.SetLoadingText($"正在添加：{item.MusicData.Title} - {item.MusicData.ButtonName}");
@@ -622,7 +656,7 @@ namespace znMusicPlayerWUI.Pages
                     ((sender as MenuFlyoutItem).Tag as MusicListData).ListName,
                     item.MusicData, text);
             }
-            await PlayListHelper.SaveData(text.ToString());
+            await PlayListHelper.SaveData(text);
             MainWindow.HideDialog();
         }
 
@@ -640,9 +674,9 @@ namespace znMusicPlayerWUI.Pages
 
             NavToObj.PlaySort = (PlaySort)SortComboBox.SelectedItem;
             InitData();
-            var data = JObject.Parse(await PlayListHelper.ReadData());
+            var data = await PlayListHelper.ReadData();
             data[NavToObj.ListName] = JObject.FromObject(NavToObj);
-            await PlayListHelper.SaveData(data.ToString());
+            await PlayListHelper.SaveData(data);
         }
 
         List<SongItemBindBase> searchMusicDatas = new();

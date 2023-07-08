@@ -194,7 +194,7 @@ namespace znMusicPlayerWUI.Background
                 }
 
                 tag.Title = dm.MusicData.Title;
-                tag.Album = dm.MusicData.Album;
+                tag.Album = dm.MusicData.Album.Title;
                 tag.Comment = $"Download with {App.AppName}";
                 tag.Description = tag.Comment;
 

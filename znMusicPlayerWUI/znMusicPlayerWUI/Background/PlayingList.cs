@@ -79,7 +79,7 @@ namespace znMusicPlayerWUI.Background
             }
             else
             {
-                if (audioPlayer.MusicData.AlbumID == lastMusicData?.AlbumID) return;
+                if (audioPlayer.MusicData.Album.ID == lastMusicData?.Album.ID) return;
             }
             lastMusicData = audioPlayer.MusicData;
 

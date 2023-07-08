@@ -301,7 +301,7 @@ namespace znMusicPlayerWUI.Controls
         // 单击详细信息按钮
         private async void Info_Click(object sender, RoutedEventArgs e)
         {
-            await MainWindow.ShowDialog($"{MusicData.Title} 的详细信息：", $"标题：{MusicData.Title}\n艺术家&专辑：{MusicData.ButtonName}\nID：{MusicData.ID}\n来源：{MusicData.From}\n图片地址：{MusicData.PicturePath}");
+            await MainWindow.ShowDialog($"{MusicData.Title} 的详细信息：", $"标题：{MusicData.Title}\n艺术家&专辑：{MusicData.ButtonName}\nID：{MusicData.ID}\n来源：{MusicData.From}\n图片地址：{MusicData.Album.PicturePath}");
         }
 
         // 双击元素 播放

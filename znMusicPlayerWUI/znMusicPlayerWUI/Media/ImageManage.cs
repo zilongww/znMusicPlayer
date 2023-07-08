@@ -66,7 +66,7 @@ namespace znMusicPlayerWUI.Media
             if (musicData.From == DataEditor.MusicFrom.localMusic)
             {
                 string foundation = musicData.CUETrackData == null
-                    ? string.IsNullOrEmpty(musicData.Album) ? musicData.InLocal : musicData.Album
+                    ? string.IsNullOrEmpty(musicData.Album.Title) ? musicData.InLocal : musicData.Album.Title
                     : musicData.InLocal;
                 if (localImageCache.ContainsKey(foundation))
                 {
@@ -119,11 +119,11 @@ namespace znMusicPlayerWUI.Media
 
                     if (WebHelper.IsNetworkConnected)
                     {
-                        string b = $@"{DataEditor.DataFolderBase.ImageCacheFolder}\{musicData.From}{(string.IsNullOrEmpty(musicData.AlbumID) ? musicData.MD5.Replace(@"/", "#") : musicData.AlbumID)}";
+                        string b = $@"{DataEditor.DataFolderBase.ImageCacheFolder}\{musicData.From}{(string.IsNullOrEmpty(musicData.Album.ID) ? musicData.MD5.Replace(@"/", "#") : musicData.Album.ID)}";
                         string a;
-                        if (musicData.PicturePath != null)
+                        if (musicData.Album.PicturePath != null)
                         {
-                            a = musicData.PicturePath;
+                            a = musicData.Album.PicturePath;
                         }
                         else
                         {

@@ -81,7 +81,7 @@ namespace znMusicPlayerWUI.Helpers
         /// </returns>
         public static async Task<string> GetImageCache(DataEditor.MusicData musicData)
         {
-            return await GetImageCache(musicData.From + (string.IsNullOrEmpty(musicData.AlbumID) ? musicData.MD5.Replace(@"/", "#") : musicData.AlbumID));
+            return await GetImageCache(musicData.From + (string.IsNullOrEmpty(musicData.Album.ID) ? musicData.MD5.Replace(@"/", "#") : musicData.Album.ID));
         }
         
         /// <summary>

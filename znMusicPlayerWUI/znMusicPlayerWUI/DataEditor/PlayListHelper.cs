@@ -8,6 +8,7 @@ using System.IO;
 using Microsoft.UI.Xaml.Media;
 using ATL.CatalogDataReaders;
 using System.Formats.Tar;
+using Newtonsoft.Json;
 
 namespace znMusicPlayerWUI.DataEditor
 {
@@ -30,9 +31,9 @@ namespace znMusicPlayerWUI.DataEditor
 
         public static async Task AddPlayList(MusicListData musicListData)
         {
-            var jdata = JObject.Parse(await ReadData());
+            var jdata = await ReadData();
             jdata.Add(musicListData.ListName, JObject.FromObject(musicListData));
-            await SaveData(jdata.ToString());
+            await SaveData(jdata);
         }
 
         public static JObject AddPlayList(MusicListData musicListData, JObject addData)
@@ -43,9 +44,9 @@ namespace znMusicPlayerWUI.DataEditor
 
         public static async Task DeletePlayList(MusicListData musicListData)
         {
-            var jdata = JObject.Parse(await ReadData());
+            var jdata = await ReadData();
             jdata.Remove(musicListData.ListName);
-            await SaveData(jdata.ToString());
+            await SaveData(jdata);
         }
 
         public static JObject AddMusicDataToPlayList(string listName, MusicData musicData, JObject jdata)
@@ -77,8 +78,8 @@ namespace znMusicPlayerWUI.DataEditor
 
         public static async Task AddMusicDataToPlayList(string listName, MusicData musicData)
         {
-            JObject text = JObject.Parse(await ReadData());
-            await SaveData(AddMusicDataToPlayList(listName, musicData, text).ToString());
+            JObject text = await ReadData();
+            await SaveData(AddMusicDataToPlayList(listName, musicData, text));
         }
 
         public static JObject DeleteMusicDataFromPlayList(string listName, MusicData musicData, JObject jdata)
@@ -99,7 +100,7 @@ namespace znMusicPlayerWUI.DataEditor
 
         public static async Task DeleteMusicDataFromPlayList(string listName, MusicData musicData)
         {
-            await SaveData(DeleteMusicDataFromPlayList(listName, musicData, JObject.Parse(await ReadData())).ToString());
+            await SaveData(DeleteMusicDataFromPlayList(listName, musicData, await ReadData()));
         }
 
         public static JObject MackJsPlayListData(MusicListData musicListData)
@@ -107,19 +108,19 @@ namespace znMusicPlayerWUI.DataEditor
             return new JObject() { { musicListData.ListName, JObject.FromObject(musicListData) } };
         }
 
-        public static async Task SaveData(string data)
+        public static async Task SaveData(JObject data)
         {
             await Task.Run(() =>
             {
-                File.WriteAllText(DataFolderBase.PlayListDataPath, data);
+                File.WriteAllText(DataFolderBase.PlayListDataPath, data.ToString());
             });
         }
 
-        public static async Task<string> ReadData()
+        public static async Task<JObject> ReadData()
         {
             return await Task.Run(() =>
             {
-                return File.ReadAllText(DataFolderBase.PlayListDataPath);
+                return JObject.Parse(File.ReadAllText(DataFolderBase.PlayListDataPath));
             });
         }
 
@@ -165,7 +166,10 @@ namespace znMusicPlayerWUI.DataEditor
                             endTime = duration;
                         }
 
-                        MusicData musicData = new(t.Title, null, new List<Artist>() { new(string.IsNullOrEmpty(t.Performer) ? cueSheet.Performer : t.Performer) }, cueSheet.Title)
+                        MusicData musicData = new(
+                            t.Title, null,
+                            new List<Artist>() { new(string.IsNullOrEmpty(t.Performer) ? cueSheet.Performer : t.Performer) },
+                            new(cueSheet.Title))
                         {
                             From = MusicFrom.localMusic,
                             InLocal = path,
@@ -225,7 +229,7 @@ namespace znMusicPlayerWUI.DataEditor
 
 
                     localAudioData = new MusicData(
-                        tag.Title == null ? localFlie.Name : tag.Title, null, artists, tag.Album,
+                        tag.Title == null ? localFlie.Name : tag.Title, null, artists, new(tag.Album),
                         inLocal: localFlie.FullName, from: MusicFrom.localMusic
                         )
                     { Index = (int)tag.Track };
@@ -233,7 +237,7 @@ namespace znMusicPlayerWUI.DataEditor
                 else
                 {
                     localAudioData = new MusicData(
-                        localFlie.Name, null, null,
+                        localFlie.Name, null, null, new(null),
                         inLocal: localFlie.FullName, from: MusicFrom.localMusic
                         );
                 }
