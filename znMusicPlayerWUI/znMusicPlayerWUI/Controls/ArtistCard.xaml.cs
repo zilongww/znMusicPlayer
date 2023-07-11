@@ -17,6 +17,8 @@ using Microsoft.UI.Xaml.Media;
 using znMusicPlayerWUI.Media;
 using znMusicPlayerWUI.DataEditor;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using znMusicPlayerWUI.Pages.ListViewPages;
+using znMusicPlayerWUI.Pages;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -139,10 +141,7 @@ namespace znMusicPlayerWUI.Controls
                 }
                 else
                 {
-                    MainWindow.SetNavViewContent(
-                    typeof(Pages.ItemListViewArtist),
-                    Artist,
-                    new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+                    ListViewPage.SetPageToListViewPage<ItemListViewArtist>(Artist);
                 }
             }
             isPressed = false;

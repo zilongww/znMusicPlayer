@@ -631,7 +631,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         }
 
         private void InfoBaseTitle_Loaded(object sender, RoutedEventArgs e)
-        {
+        {/*
             foreach (var data in App.audioPlayer.MusicData.Artists)
             {
                 var item = new MenuFlyoutItem()
@@ -641,14 +641,11 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 };
                 item.Click += (sender, e) =>
                 {
-                    MainWindow.SetNavViewContent(
-                    typeof(ItemListViewArtist),
-                    (sender as MenuFlyoutItem).Tag,
-                    new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+                    ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewArtist>((sender as MenuFlyoutItem).Tag);
                     MainWindow.OpenOrCloseMusicPage();
                 };
                 ArtistFlyout.Items.Add(item);
-            }
+            }*/
         }
 
         private void ArtistFlyout_Opening(object sender, object e)
@@ -663,10 +660,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 };
                 item.Click += (sender, e) =>
                 {
-                    MainWindow.SetNavViewContent(
-                        typeof(ItemListViewArtist),
-                        (sender as MenuFlyoutItem).Tag,
-                        new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+                    ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewArtist>((sender as MenuFlyoutItem).Tag);
                     MainWindow.OpenOrCloseMusicPage();
                 };
                 ArtistFlyout.Items.Add(item);
@@ -706,14 +700,13 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void TitleSearchMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.SetNavViewContent(
-                typeof(ItemListViewSearch),
-                new List<object> {
+            ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewSearch>(
+                new List<object>
+                {
                     MusicData.Title,
                     MusicData.From,
                     SearchDataType.歌曲
-                },
-                new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+                });
             MainWindow.OpenOrCloseMusicPage();
         }
 
@@ -727,6 +720,8 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private async void AlbumMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewAlbum>(MusicData.Album);
+            MainWindow.OpenOrCloseMusicPage();
         }
 
         private async void AudioInfoButton_Click(object sender, RoutedEventArgs e)
@@ -737,6 +732,37 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private void TitleFlyout_Opening(object sender, object e)
         {
             TitleMenuFlyoutText.Text = MusicData.Title;
+        }
+
+        private void AlbumFlyout_Opening(object sender, object e)
+        {
+            AlbumFlyout.Items.Clear();
+            var a = new MenuFlyoutItem() { Text = "复制" };
+            var a1 = new MenuFlyoutItem() { Text = "打开" };
+            a.Click += A_Click;
+            a1.Click += A_Click;
+            AlbumFlyout.Items.Add(a);
+            AlbumFlyout.Items.Add(a1);
+        }
+
+        private void A_Click(object sender, RoutedEventArgs e)
+        {
+            var a = sender as MenuFlyoutItem;
+            if (a != null)
+            {
+                if  (a.Text == "复制")
+                {
+                    var dp = new Windows.ApplicationModel.DataTransfer.DataPackage();
+                    dp.RequestedOperation = Windows.ApplicationModel.DataTransfer.DataPackageOperation.Copy;
+                    dp.SetText(MusicData.Album.Title);
+                    Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dp);
+                }
+                else
+                {
+                    ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewAlbum>(MusicData.Album);
+                    MainWindow.OpenOrCloseMusicPage();
+                }
+            }
         }
     }
 }

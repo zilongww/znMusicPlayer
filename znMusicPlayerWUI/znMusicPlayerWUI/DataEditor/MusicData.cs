@@ -77,6 +77,7 @@ namespace znMusicPlayerWUI.DataEditor
     public class Artist
     {
         public string Name { get; set; }
+        public string Name2 { get; set; }
         public string ID { get; set; }
         public string PicturePath { get; set; }
         public string Describee { get; set; }
@@ -101,10 +102,12 @@ namespace znMusicPlayerWUI.DataEditor
         public string ID { get; set; }
         public string PicturePath { get; set; }
         public string Describee { get; set; }
+        public string RelaseTime { get; set; }
+        public List<Artist> Artists { get; set; }
         public MusicListData Songs { get; set; }
-        public Album(string title, string ID = null, string picturePath = null, string describee = null, MusicListData songs = null)
+        public Album(string title = null, string ID = null, string picturePath = null, string describee = null, MusicListData songs = null)
         {
-            Title = string.IsNullOrEmpty(title) ? "未知" : title;
+            Title = title;
             this.ID = ID == "0" || string.IsNullOrEmpty(ID) ? null : ID;
             PicturePath = picturePath;
             Describee = describee;
@@ -113,8 +116,7 @@ namespace znMusicPlayerWUI.DataEditor
 
         public bool IsNull()
         {
-            if (string.IsNullOrEmpty(Title) && string.IsNullOrEmpty(ID)) return true;
-            return false;
+            return string.IsNullOrEmpty(Title) && string.IsNullOrEmpty(ID);
         }
 
         public override string ToString()
@@ -126,6 +128,7 @@ namespace znMusicPlayerWUI.DataEditor
     public class MusicData : OnlyClass
     {
         public string Title { get; set; }
+        public string Title2 { get; set; }
         public string ID { get; set; }
         public List<Artist> Artists { get; set; }
         public Album Album { get; set; }

@@ -95,6 +95,7 @@ namespace znMusicPlayerWUI.Pages
 
         private void CreatShadow()
         {
+            if (logoVisual == null) return;
             compositor = logoVisual.Compositor;
 
             var basicRectVisual = compositor.CreateSpriteVisual();
@@ -221,12 +222,15 @@ namespace znMusicPlayerWUI.Pages
         {
             if (NavToObj.ListDataType == DataType.本地歌单)
             {
-                PlayList_Image.Source = await FileHelper.GetImageSource(NavToObj.PicturePath);
+                bool isExists = true;
+                await Task.Run(() => { isExists = File.Exists(NavToObj.PicturePath); });
+                if (isExists) PlayList_Image.Source = await FileHelper.GetImageSource(NavToObj.PicturePath);
             }
             else if (NavToObj.ListDataType == DataType.歌单)
             {
                 PlayList_Image.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(NavToObj));
             }
+            System.Diagnostics.Debug.WriteLine("图片加载完成。");
         }
 
         CompositionPropertySet scrollerPropertySet;
@@ -373,12 +377,12 @@ namespace znMusicPlayerWUI.Pages
                 Canvas.SetZIndex(headerContainer, 1);
             }
 
-            CreatShadow();
             UpdataCommandToolBarWidth();
 
             UpdataShyHeader();
             await Task.Delay(1);
             UpdataShyHeader();
+            CreatShadow();
         }
 
         bool isFirstScroll = true;

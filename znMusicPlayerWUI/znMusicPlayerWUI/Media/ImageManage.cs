@@ -151,7 +151,8 @@ namespace znMusicPlayerWUI.Media
 
         public static async Task<string> GetImageSource(DataEditor.MusicListData musicListData)
         {
-            string cachePath = await Helpers.FileHelper.GetImageCache(musicListData);
+            if (musicListData == null) return null;
+            string cachePath = await FileHelper.GetImageCache(musicListData);
             string resultPath = null;
 
             if (cachePath != null)
@@ -160,15 +161,15 @@ namespace znMusicPlayerWUI.Media
             }
             else
             {
-                if (Helpers.WebHelper.IsNetworkConnected)
+                if (WebHelper.IsNetworkConnected)
                 {
                     string b = $@"{DataEditor.DataFolderBase.ImageCacheFolder}\{musicListData.ListFrom}{musicListData.ListDataType}{musicListData.ID}";
                     await Task.Run(() =>
                     {
-                        if (!System.IO.File.Exists(b))
-                            System.IO.File.Create(b).Close();
+                        if (!File.Exists(b))
+                            File.Create(b).Close();
                     });
-                    await Helpers.WebHelper.DownloadFileAsync(musicListData.PicturePath, b);
+                    await WebHelper.DownloadFileAsync(musicListData.PicturePath, b);
                     resultPath = b;
                 }
                 else

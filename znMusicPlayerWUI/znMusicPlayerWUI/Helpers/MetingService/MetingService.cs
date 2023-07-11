@@ -23,6 +23,7 @@ namespace znMusicPlayerWUI.Helpers
         public Task<object> GetSearch(string keyword, int pageNumber = 1, int pageSize = 30, SearchDataType type = default);
         public Task<MusicListData> GetPlayList(string id);
         public Task<Artist> GetArtist(string id);
+        public Task<Album> GetAlbum(string id);
     }
 
     public class MetingServices

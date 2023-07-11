@@ -987,10 +987,7 @@ namespace znMusicPlayerWUI
                 default:
                     if ((args.SelectedItem as NavigationViewItem)?.Tag.GetType() == typeof(MusicListData))
                     {
-                        SetNavViewContent(
-                            typeof(ItemListViewPlayList),
-                            (args.SelectedItem as NavigationViewItem).Tag,
-                            new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+                        Pages.ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewPlayList>((args.SelectedItem as NavigationViewItem).Tag);
                     }
                     else
                     {
@@ -1043,6 +1040,7 @@ namespace znMusicPlayerWUI
 
                 case "ItemListViewSearch":
                 case "ItemListViewArtist":
+                case "ItemListViewAlbum":
                     SNavView.SelectedItem = null;
                     break;
 

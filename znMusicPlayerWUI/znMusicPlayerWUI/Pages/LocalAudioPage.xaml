@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" SizeChanged="Page_SizeChanged">
     <Grid>
-        <ListView x:Name="ListViewBase" HorizontalContentAlignment="Center" SelectionMode="None" Visibility="Collapsed">
+        <ListView x:Name="ListViewBase" HorizontalContentAlignment="Center" SelectionMode="None">
             <ListView.Header>
                 <Grid x:Name="HeaderBaseGrid">
                     <Rectangle x:Name="HeaderBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
@@ -15,8 +15,8 @@
                 </Grid>
             </ListView.Header>
         </ListView>
-        
-        <Grid x:Name="LayoutRoot">
+
+        <Grid x:Name="LayoutRoot" Visibility="Collapsed">
 
             <Image x:Name="BackgroundImage"
            ImageOpened="ImageBrush_OnImageOpened"

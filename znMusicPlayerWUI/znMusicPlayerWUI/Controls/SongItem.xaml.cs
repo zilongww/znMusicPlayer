@@ -82,9 +82,31 @@ namespace znMusicPlayerWUI.Controls
             MusicData = bindBase.MusicData;
             musicListData = bindBase.MusicListData;
             ImageScaleDPI = bindBase.ImageScaleDPI;
+            TitleTextBlock.Text = MusicData.Title;
 
-            UpdataFlyoutMenuContext(bindBase.MusicData);
-            UpdataImageInterface(bindBase.MusicData);
+            if (MusicData.From == MusicFrom.localMusic)
+            {
+                TestFileExists();
+            }
+            else
+            {
+                UpdataImageInterface(bindBase.MusicData);
+            }
+        }
+
+        public async void TestFileExists()
+        {
+            bool isExists = true;
+            string local = MusicData.InLocal;
+            await Task.Run(() => { isExists = File.Exists(local); });
+            if (!isExists)
+            {
+                FileNotExistsRoot.Visibility = Visibility.Visible;
+                return;
+            }
+
+            FileNotExistsRoot.Visibility = Visibility.Collapsed;
+            UpdataImageInterface(MusicData);
         }
 
         public void UpdataFlyoutMenuContext(MusicData musicData)
@@ -98,8 +120,13 @@ namespace znMusicPlayerWUI.Controls
                 AlbumImage.Dispose();
             }
 
-            ImageSource a = (await Media.ImageManage.GetImageSource(musicData, (int)(58 * ImageScaleDPI), (int)(58 * ImageScaleDPI), true)).Item1;
+            if (MusicListData?.ListDataType == DataType.专辑)
+            {
+                ShowImage = false;
+                return;
+            }
 
+            ImageSource a = (await Media.ImageManage.GetImageSource(musicData, (int)(58 * ImageScaleDPI), (int)(58 * ImageScaleDPI), true)).Item1;
             if (a != null)
             {
                 ShowImage = true;
@@ -125,10 +152,7 @@ namespace znMusicPlayerWUI.Controls
         #region Events
         private void A_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.SetNavViewContent(
-            typeof(ItemListViewArtist),
-            (Artist)(sender as MenuFlyoutItem).Tag,
-            new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+            Pages.ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewArtist>((sender as MenuFlyoutItem).Tag);
 
             //var artist = await App.metingServices.NeteaseServices.GetArtist(((Artist)(sender as MenuFlyoutItem).Tag).ID);
             //await MainWindow.ShowDialog("result", $"{artist.Name}\n{artist.PicturePath}\n{artist.Describee}\n{artist.HotSongs.Songs.Count}");
@@ -417,5 +441,10 @@ namespace znMusicPlayerWUI.Controls
             }
         }
         #endregion
+
+        private void mfi_Click(object sender, RoutedEventArgs e)
+        {
+            Pages.ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewAlbum>(MusicData.Album);
+        }
     }
 }

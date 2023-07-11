@@ -18,6 +18,8 @@ using znMusicPlayerWUI.Media;
 using znMusicPlayerWUI.DataEditor;
 using Newtonsoft.Json.Linq;
 using Windows.UI;
+using znMusicPlayerWUI.Pages.ListViewPages;
+using znMusicPlayerWUI.Pages;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -190,10 +192,7 @@ namespace znMusicPlayerWUI.Controls
                 }
                 else
                 {
-                    MainWindow.SetNavViewContent(
-                    typeof(Pages.ItemListViewPlayList),
-                    MusicListData,
-                    new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+                    ListViewPage.SetPageToListViewPage<ItemListViewPlayList>(MusicListData);
                 }
             }
             isPressed = false;

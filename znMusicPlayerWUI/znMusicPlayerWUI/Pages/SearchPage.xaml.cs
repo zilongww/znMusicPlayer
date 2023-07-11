@@ -31,14 +31,14 @@ namespace znMusicPlayerWUI.Pages
 
         public void StartSearch(string title)
         {
-            MainWindow.SetNavViewContent(
-                typeof(ItemListViewSearch),
+            ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewSearch>(
                 new List<object> {
                     title,
-                    Enum.Parse(typeof(MusicFrom), SearchSourceComboBox.SelectedItem as string),
-                    Enum.Parse(typeof(SearchDataType), SearchTypeComboBox.SelectedItem as string)
-                },
-                new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+                    Enum.Parse(typeof(MusicFrom),
+                    SearchSourceComboBox.SelectedItem as string),
+                    Enum.Parse(typeof(SearchDataType),
+                    SearchTypeComboBox.SelectedItem as string)
+                });
         }
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)

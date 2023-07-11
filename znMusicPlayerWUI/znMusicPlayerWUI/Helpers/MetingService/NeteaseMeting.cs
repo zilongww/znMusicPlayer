@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vanara.Extensions;
 using znMusicPlayerWUI.DataEditor;
 
 namespace znMusicPlayerWUI.Helpers.MetingService
@@ -255,8 +256,8 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                     (string)md["name"],
                     (string)md["id"],
                     artists,
-                    new((string)md["al"]["name"], (string)md["al"]["id"], (string)md["al"]["picUrl"]),
-                    (string)md["publishTime"],
+                    new((string)md["al"]["name"], (string)md["al"]["id"], md["al"].Contains("picUrl") ? (string)md["al"]["picUrl"] : null),
+                    md.Contains("publishTime") ? (string)md["publishTime"] : null,
                     MusicFrom.neteaseMusic
                     ));
             }
@@ -370,7 +371,80 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                     }
                 }
 
-                return default;
+                return null;
+            });
+        }
+
+        public async Task<Album> GetAlbum(string id)
+        {
+            return await Task.Run(() =>
+            {
+                var getAlbumAction = Album () =>
+                {
+                    var data = JObject.Parse(Services.FormatMethod(false).Album(id));
+                    
+                    //System.Diagnostics.Debug.WriteLine(data);
+                    Album Album = null;
+                    try
+                    {
+                        if (data["code"].ToString() == "200")
+                        {
+                            var album = data["album"];
+                            var artist = album["artist"];
+                            Album = new()
+                            {
+                                Title = (string)album["name"],
+                                ID = id,
+                                PicturePath = (string)album["picUrl"],
+                                Describee = (string)album["description"],
+                                RelaseTime = (string)album["publishTime"]
+                            };
+                            Album.Artists = new()
+                        {
+                            new()
+                            {
+                                Name = (string)artist["name"],
+                                Name2 = (string)artist["trans"],
+                                ID = (string)artist["id"],
+                                PicturePath = (string)artist["picUrl"],
+                            }
+                        };
+                            Album.Songs = new()
+                            {
+                                ListFrom = MusicFrom.neteaseMusic,
+                                ListDataType = DataType.专辑
+                            };
+                            foreach (var song in UnpackMusicData(data["songs"]))
+                            {
+                                Album.Songs.Songs.Add(song);
+                            }
+                        }
+                    }
+                    catch(Exception err)
+                    {
+                        System.Diagnostics.Debug.WriteLine(err);
+                    }
+
+                    return Album;
+                };
+
+                for (int i = 0; i <= App.metingServices.RetryCount; i++)
+                {
+                    Album a = null;
+                    try
+                    {
+                        a = getAlbumAction();
+                    }
+                    catch(Exception err) { a = null; }
+
+                    if (a != null)
+                    {
+                        if (!a.IsNull())
+                            return a;
+                    }
+                }
+
+                return null;
             });
         }
     }
