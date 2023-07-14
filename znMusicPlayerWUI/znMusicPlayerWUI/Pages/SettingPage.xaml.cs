@@ -350,7 +350,10 @@ namespace znMusicPlayerWUI.Pages
                 "●Ctrl + Shift + L键：打开/关闭桌面歌词\n" +
                 "●Ctrl + Shift + I键：打开/关闭随机播放\n" +
                 "●Ctrl + Shift + U键：尝试将桌面歌词置顶\n" +
-                "●Ctrl + Shift + K键：锁定桌面歌词"
+                "●Ctrl + Shift + K键：锁定桌面歌词\n" +
+                "●Ctrl + Shift + Home键：播放正在播放歌曲列表的第一首歌曲\n" +
+                "●Alt + 左键 或 退格键 或 鼠标4键：返回上一页\n" +
+                "●Alt + 右键 或 鼠标5键：返回下一页"
                 );
         }
     }

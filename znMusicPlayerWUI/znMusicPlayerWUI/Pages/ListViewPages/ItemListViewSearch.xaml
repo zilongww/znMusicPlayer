@@ -28,7 +28,7 @@
                   SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="helper:SongItemBindBase">
-                    <controlszn:SongItem/>
+                    <controlszn:SongItem Margin="0,0,4,0"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Header>
@@ -59,7 +59,8 @@
                                 <CommandBar Grid.Column="1" x:Name="ToolsCommandBar"
                                             DefaultLabelPosition="Right"
                                             HorizontalAlignment="Left"
-                                            Margin="30,0,16,0"
+                                            Margin="20,0,16,0"
+                                            AccessKey="Z"
                                             Background="Transparent">
                                     <AppBarButton x:Name="SelectAllButton"
                                                   Click="SelectAllButton_Click"
@@ -125,7 +126,8 @@
                                     <AppBarSeparator x:Name="SelectorSeparator"/>
 
                                     <AppBarButton Click="Button_Click"
-                                                  Label="播放全部"
+                                                  Label="播放全部（Alt+Q）"
+                                                  AccessKey="Q"
                                                   Background="{ThemeResource AccentAAFillColorTertiaryBrush}"
                                                   Foreground="{ThemeResource SystemControlForegroundAltHighBrush}"
                                                   ToolTipService.ToolTip="播放全部"
@@ -136,6 +138,7 @@
                                     </AppBarButton>
                                     <AppBarButton Click="Button_Click_1"
                                                   Label="刷新"
+                                                  AccessKey="R"
                                                   ToolTipService.ToolTip="刷新">
                                         <AppBarButton.Icon>
                                             <PathIcon Data="{StaticResource 刷新}"/>
@@ -143,6 +146,7 @@
                                     </AppBarButton>
                                     <AppBarButton Click="Button_Click_2"
                                                   Label="多选"
+                                                  AccessKey="S"
                                                   ToolTipService.ToolTip="多选"
                                                   x:Name="SelectItemButton">
                                         <AppBarButton.Icon>
@@ -155,11 +159,13 @@
                                     <AppBarButton Click="Button_Click_3"
                                                   x:Name="SearchHomeButton"
                                                   Label="首页"
+                                                  AccessKey="H"
                                                   Icon="Home"
                                                   ToolTipService.ToolTip="首页">
                                     </AppBarButton>
                                     <AppBarButton x:Name="SearchPageSelectorCustom"
                                                   ToolTipService.ToolTip="自定义页面"
+                                                  AccessKey="P"
                                                   Label="自定义页面" AllowFocusOnInteraction="True"
                                                   Icon="Page2" Tapped="AppBarButton_Tapped">
                                         <FlyoutBase.AttachedFlyout>
@@ -202,6 +208,7 @@
                                                           Click="Button_Click_4"
                                                           LabelPosition="Collapsed"
                                                           ToolTipService.ToolTip="上一页"
+                                                          AccessKey="F"
                                                           Icon="Back">
                                             </AppBarButton>
                                             <TextBlock Grid.Column="1"
@@ -214,6 +221,7 @@
                                                           Click="Button_Click_5"
                                                           LabelPosition="Collapsed"
                                                           Icon="Forward"
+                                                          AccessKey="G"
                                                           ToolTipService.ToolTip="下一页">
                                             </AppBarButton>
                                         </Grid>

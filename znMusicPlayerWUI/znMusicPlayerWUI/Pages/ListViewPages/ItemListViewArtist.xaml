@@ -24,7 +24,7 @@
                   SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="helper:SongItemBindBase">
-                    <controlszn:SongItem/>
+                    <controlszn:SongItem Margin="0,0,4,0"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Header>
@@ -79,7 +79,8 @@
                                     </Border>
                                     <Border x:Name="Artist_DownToList" Background="{ThemeResource AcrylicNormal}" CornerRadius="8" Width="44" Height="44" BorderThickness="0" Margin="4,0,0,0">
                                         <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="12"
-                                                ToolTipService.ToolTip="滑动到列表" Click="Button_Click_6">
+                                                ToolTipService.ToolTip="滑动到列表" Click="Button_Click_6"
+                                                AccessKey="D">
                                             <AnimatedIcon>
                                                 <AnimatedIcon.Source>
                                                     <m:AnimatedChevronDownSmallVisualSource/>
@@ -175,7 +176,8 @@
                                     <AppBarSeparator x:Name="SelectorSeparator"/>
 
                                     <AppBarButton Click="Button_Click"
-                                                  Label="播放全部"
+                                                  Label="播放全部（Alt+Q）"
+                                                  AccessKey="Q"
                                                   Background="{ThemeResource AccentAAFillColorTertiaryBrush}"
                                                   Foreground="{ThemeResource SystemControlForegroundAltHighBrush}"
                                                   ToolTipService.ToolTip="播放全部"
@@ -185,6 +187,7 @@
                                         </AppBarButton.Icon>
                                     </AppBarButton>
                                     <AppBarButton Click="Button_Click_1"
+                                                  AccessKey="R"
                                                   Label="刷新"
                                                   ToolTipService.ToolTip="刷新">
                                         <AppBarButton.Icon>

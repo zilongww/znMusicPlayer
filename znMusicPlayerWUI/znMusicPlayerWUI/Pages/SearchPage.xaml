@@ -17,7 +17,9 @@
                         MaxWidth="{StaticResource MaxWidthControls}">
                 <AutoSuggestBox PlaceholderText="搜索"
                                 QuerySubmitted="AutoSuggestBox_QuerySubmitted"
-                                VerticalAlignment="Top">
+                                VerticalAlignment="Top"
+                                AccessKey="Q"
+                                AccessKeyInvoked="AutoSuggestBox_AccessKeyInvoked">
                     <AutoSuggestBox.QueryIcon>
                         <AnimatedIcon x:Name='SearchAnimatedIcon'>
                             <AnimatedIcon.Source>
@@ -31,9 +33,10 @@
                 </AutoSuggestBox>
                 <StackPanel Orientation="Horizontal">
                     <ComboBox x:Name="SearchSourceComboBox"
-                          Margin="0,12,0,0"
-                          VerticalAlignment="Center"
-                          Header="搜索源">
+                              Margin="0,12,0,0"
+                              AccessKey="W"
+                              VerticalAlignment="Center"
+                              Header="搜索源">
                         <ComboBox.Transitions>
                             <TransitionCollection>
                                 <RepositionThemeTransition/>
@@ -42,6 +45,7 @@
                     </ComboBox>
                         <ComboBox x:Name="SearchTypeComboBox"
                           Margin="12,12,0,0"
+                                  AccessKey="C"
                           VerticalAlignment="Center"
                           Header="搜索类型">
                         <ComboBox.Transitions>

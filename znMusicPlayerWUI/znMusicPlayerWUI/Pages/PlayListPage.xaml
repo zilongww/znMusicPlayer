@@ -22,12 +22,12 @@
                 <TextBlock x:Name="BaseGridView_HeaderTextBlock" Text="播放列表" Style="{ThemeResource TBHeader}"/>
                 <CommandBar VerticalAlignment="Bottom" Margin="0,0,10,-6" Background="Transparent"
                             OverflowButtonVisibility="Auto" DefaultLabelPosition="Right">
-                    <AppBarButton Label="刷新" Click="AppBarButton_Click">
+                    <AppBarButton Label="刷新" AccessKey="R" Click="AppBarButton_Click">
                         <AppBarButton.Icon>
                             <PathIcon Data="{StaticResource 刷新}"/>
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton Label="添加" Click="AppBarButton_Click_1">
+                    <AppBarButton Label="添加" AccessKey="A" Click="AppBarButton_Click_1">
                         <AppBarButton.Icon>
                             <PathIcon Data="{StaticResource 添加}"/>
                         </AppBarButton.Icon>

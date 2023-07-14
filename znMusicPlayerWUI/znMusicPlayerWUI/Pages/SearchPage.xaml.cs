@@ -65,5 +65,9 @@ namespace znMusicPlayerWUI.Pages
             StartSearch(a);
         }
 
+        private void AutoSuggestBox_AccessKeyInvoked(UIElement sender, Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs args)
+        {
+            (sender as AutoSuggestBox).Focus(FocusState.Programmatic);
+        }
     }
 }

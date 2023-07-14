@@ -188,9 +188,12 @@ namespace znMusicPlayerWUI.Pages
                         break;
                 }
 
+                int count = 0;
                 foreach (var i in array)
                 {
                     if (i == null) continue;
+                    count++;
+                    i.Count = count;
                     MusicDataList.Add(new() { MusicData = i, MusicListData = NavToObj, ImageScaleDPI = dpi });
                 }
                 array = null;
@@ -719,7 +722,12 @@ namespace znMusicPlayerWUI.Pages
 
         private void Children_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            var a = Children.ContainerFromItem(Children.SelectedItem);
+        }
 
+        private void SearchBox_AccessKeyInvoked(UIElement sender, Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs args)
+        {
+            (sender as FrameworkElement).Focus(FocusState.Programmatic);
         }
     }
 }

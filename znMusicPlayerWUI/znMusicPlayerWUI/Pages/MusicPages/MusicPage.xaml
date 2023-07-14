@@ -135,13 +135,13 @@
                                 <Setter Property="Margin" Value="0,4,0,0"/>
                             </Style>
                         </StackPanel.Resources>
-                        <Button x:Name="ArtistRunButton" Click="ArtistRunButton_Click">
+                        <Button x:Name="ArtistRunButton" AccessKey="A" Click="ArtistRunButton_Click">
                             <Button.Flyout>
                                 <MenuFlyout x:Name="ArtistFlyout" Opening="ArtistFlyout_Opening"/>
                             </Button.Flyout>
                             <TextBlock x:Name="ArtistRunText"/>
                         </Button>
-                        <Button x:Name="TitleRunButton" Click="TitleRunButton_Click">
+                        <Button x:Name="TitleRunButton" AccessKey="T" Click="TitleRunButton_Click">
                             <Button.Flyout>
                                 <MenuFlyout x:Name="TitleFlyout" Opening="TitleFlyout_Opening">
                                     <MenuFlyoutItem IsEnabled="False" x:Name="TitleMenuFlyoutText"/>
@@ -151,7 +151,7 @@
                             </Button.Flyout>
                             <TextBlock x:Name="TitleRunText" FontWeight="Normal" FontSize="24" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/>
                         </Button>
-                        <Button x:Name="AlbumRunButton" Click="AlbumRunButton_Click">
+                        <Button x:Name="AlbumRunButton" AccessKey="B" Click="AlbumRunButton_Click">
                             <Button.Flyout>
                                 <MenuFlyout x:Name="AlbumFlyout" Opening="AlbumFlyout_Opening">
                                     <MenuFlyoutItem x:Name="AlbumMenuItem" Click="AlbumMenuItem_Click"/>
@@ -159,10 +159,10 @@
                             </Button.Flyout>
                             <TextBlock x:Name="AlbumRunText"/>
                         </Button>
-                        <Button x:Name="OtherRunButton" Click="OtherRunButton_Click">
+                        <Button x:Name="OtherRunButton" AccessKey="O" Click="OtherRunButton_Click">
                             <TextBlock x:Name="OtherRunText"/>
                         </Button>
-                        <Button x:Name="AudioInfoButton" Click="AudioInfoButton_Click">
+                        <Button x:Name="AudioInfoButton" AccessKey="I"  Click="AudioInfoButton_Click">
                             <TextBlock x:Name="AudioInfoRunText" Text="{Binding App.audioPlayer}"/>
                         </Button>
                     </StackPanel>
@@ -215,6 +215,7 @@
                             </TextBlock.Transitions>
                         </TextBlock>
                         <Slider x:Name="PlaySlider"
+                                AccessKey="S"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 IsThumbToolTipEnabled="False"
@@ -291,16 +292,16 @@
                                               Fill="{ThemeResource ButtonForegroundThemeBrush}"
                                               Stretch="UniformToFill" Margin="2"/>
                                     </Button>
-                                    <Button x:Name="VloumeButton" Click="VloumeButton_Click" Padding="13" ToolTipService.ToolTip="音频">
+                                    <Button x:Name="VloumeButton" AccessKey="V" Click="VloumeButton_Click" Padding="13" ToolTipService.ToolTip="音频">
                                         <Path Data="{StaticResource 音量2}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform"/>
                                     </Button>
-                                    <Button x:Name="PlayListButton" Click="PlayListButton_Click" Padding="13" ToolTipService.ToolTip="正在播放列表">
+                                    <Button x:Name="PlayListButton" AccessKey="L" Click="PlayListButton_Click" Padding="13" ToolTipService.ToolTip="正在播放列表">
                                         <Path Data="{StaticResource 播放列表}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform"/>
                                     </Button>
-                                    <Button x:Name="EqButton" Click="EqButton_Click" Padding="13" ToolTipService.ToolTip="音频设置">
+                                    <Button x:Name="EqButton" AccessKey="E" Click="EqButton_Click" Padding="13" ToolTipService.ToolTip="音频设置">
                                         <Path Data="{StaticResource 均衡器}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform"/>
                                     </Button>
-                                    <Button x:Name="FullScreenButton" Click="FullScreenButton_Click" Padding="14" ToolTipService.ToolTip="全屏/退出全屏">
+                                    <Button x:Name="FullScreenButton" AccessKey="F" Click="FullScreenButton_Click" Padding="14" ToolTipService.ToolTip="全屏/退出全屏">
                                         <Grid>
                                             <Path x:Name="FullScreenIcon" Data="{StaticResource 全屏}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform"/>
                                             <Path x:Name="UnFullScreenIcon" Data="{StaticResource 退出全屏}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform" Visibility="Collapsed"/>
@@ -318,6 +319,7 @@
                 VerticalAlignment="Top" HorizontalAlignment="Left"
                 HorizontalContentAlignment="Left" CornerRadius="0,0,4,0"
                 Width="84" Height="48" Padding="12" BorderThickness="0,1,1,1"
+                AccessKey="B"
                 ToolTipService.ToolTip="一目了然，不言而喻。">
             <AnimatedIcon>
                 <AnimatedIcon.Source>

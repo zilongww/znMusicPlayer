@@ -70,6 +70,24 @@ namespace znMusicPlayerWUI.Controls
             //ShowImage = false;
         }
 
+        private void SongItem_KeyUp(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                rmf.ShowAt(this);
+            }
+        }
+
+        private void SongItem_LostFocus(object sender, RoutedEventArgs e)
+        {
+            RightToolBar.Visibility = Visibility.Collapsed;
+        }
+
+        private void SongItem_GotFocus(object sender, RoutedEventArgs e)
+        {
+            RightToolBar.Visibility = Visibility.Visible;
+        }
+
         private void SongItem_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             if (DataContext == null) return;
@@ -82,7 +100,6 @@ namespace znMusicPlayerWUI.Controls
             MusicData = bindBase.MusicData;
             musicListData = bindBase.MusicListData;
             ImageScaleDPI = bindBase.ImageScaleDPI;
-            TitleTextBlock.Text = MusicData.Title;
 
             if (MusicData.From == MusicFrom.localMusic)
             {
@@ -123,6 +140,7 @@ namespace znMusicPlayerWUI.Controls
             if (MusicListData?.ListDataType == DataType.专辑)
             {
                 ShowImage = false;
+                MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
                 return;
             }
 
@@ -445,6 +463,11 @@ namespace znMusicPlayerWUI.Controls
         private void mfi_Click(object sender, RoutedEventArgs e)
         {
             Pages.ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewAlbum>(MusicData.Album);
+        }
+
+        private void root_AccessKeyInvoked(UIElement sender, Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs args)
+        {
+            rmf.ShowAt(this);
         }
     }
 }

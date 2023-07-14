@@ -29,7 +29,7 @@
                   ui:ScrollViewerExtensions.EnableMiddleClickScrolling="True">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="helper:SongItemBindBase">
-                    <controlszn:SongItem/>
+                    <controlszn:SongItem Margin="0,0,4,0"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Header>
@@ -71,24 +71,28 @@
                                               VerticalAlignment="Top"
                                               Grid.Row="1">
                                             <CommandBar x:Name="ToolsCommandBar"
-                                                DefaultLabelPosition="Right"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top">
+                                                        DefaultLabelPosition="Right"
+                                                        HorizontalAlignment="Left"
+                                                        VerticalAlignment="Top"
+                                                        AccessKey="Z">
                                                 <CommandBar.SecondaryCommands>
                                                     <AppBarElementContainer AllowFocusOnInteraction="True">
                                                         <ComboBox x:Name="SortComboBox"
-                                                          SelectionChanged="SortComboBox_SelectionChanged"
-                                                          Header="排序方式"
-                                                          Margin="12, 4">
+                                                                  SelectionChanged="SortComboBox_SelectionChanged"
+                                                                  Header="排序方式"
+                                                                  AccessKey="X"
+                                                                  Margin="12, 4">
                                                         </ComboBox>
                                                     </AppBarElementContainer>
                                                     <AppBarElementContainer AllowFocusOnInteraction="True">
                                                         <AutoSuggestBox Header="搜索歌曲"
-                                                            PlaceholderText="搜索列表歌曲"
-                                                            TextChanged="AutoSuggestBox_TextChanged"
-                                                            QuerySubmitted="AutoSuggestBox_QuerySubmitted"
-                                                            Margin="12, 4"
-                                                            x:Name="SearchBox">
+                                                                        PlaceholderText="搜索列表歌曲"
+                                                                        TextChanged="AutoSuggestBox_TextChanged"
+                                                                        QuerySubmitted="AutoSuggestBox_QuerySubmitted"
+                                                                        Margin="12, 4"
+                                                                        AccessKey="C"
+                                                                        AccessKeyInvoked="SearchBox_AccessKeyInvoked"
+                                                                        x:Name="SearchBox">
                                                             <AutoSuggestBox.QueryIcon>
                                                                 <AnimatedIcon x:Name='SearchAnimatedIcon'>
                                                                     <AnimatedIcon.Source>
@@ -166,33 +170,37 @@
                                                 <AppBarSeparator x:Name="SelectorSeparator"/>
 
                                                 <AppBarButton Click="Button_Click"
-                                                  Label="播放全部"
-                                                  Background="{ThemeResource SystemAccentColorLight1}"
-                                                  ToolTipService.ToolTip="播放全部"
-                                                  x:Name="PlayAllButton">
+                                                              AccessKey="Q"
+                                                              Label="播放全部（Alt+Q）"
+                                                              Background="{ThemeResource SystemAccentColorLight1}"
+                                                              ToolTipService.ToolTip="播放全部"
+                                                              x:Name="PlayAllButton">
                                                     <AppBarButton.Icon>
                                                         <PathIcon Data="{StaticResource 播放ol}"/>
                                                     </AppBarButton.Icon>
                                                 </AppBarButton>
                                                 <AppBarButton x:Name="AddLocalFilesButton"
-                                                  Click="AddLocalFilesButton_Click"
-                                                  Label="添加本地文件"
-                                                  ToolTipService.ToolTip="添加本地文件">
+                                                              AccessKey="W"
+                                                              Click="AddLocalFilesButton_Click"
+                                                              Label="添加本地文件"
+                                                              ToolTipService.ToolTip="添加本地文件">
                                                     <AppBarButton.Icon>
                                                         <PathIcon Data="{StaticResource 添加文件}"/>
                                                     </AppBarButton.Icon>
                                                 </AppBarButton>
                                                 <AppBarButton Click="Button_Click_1"
-                                                  Label="刷新"
-                                                  ToolTipService.ToolTip="刷新">
+                                                              AccessKey="R"
+                                                              Label="刷新"
+                                                              ToolTipService.ToolTip="刷新">
                                                     <AppBarButton.Icon>
                                                         <PathIcon Data="{StaticResource 刷新}"/>
                                                     </AppBarButton.Icon>
                                                 </AppBarButton>
                                                 <AppBarButton Click="Button_Click_2"
-                                                  Label="多选"
-                                                  ToolTipService.ToolTip="多选"
-                                                  x:Name="SelectItemButton">
+                                                              Label="多选"
+                                                              AccessKey="S"
+                                                              ToolTipService.ToolTip="多选"
+                                                              x:Name="SelectItemButton">
                                                     <AppBarButton.Icon>
                                                         <PathIcon Data="{StaticResource 全选}"/>
                                                     </AppBarButton.Icon>

@@ -8,7 +8,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" SizeChanged="Page_SizeChanged" Loaded="Page_Loaded">
-    <ListView x:Name="ListViewBase" HorizontalContentAlignment="Center" SelectionMode="None">
+    <ListView x:Name="ListViewBase" HorizontalContentAlignment="Center" SelectionMode="None"
+              Padding="0,0,0,14">
 
         <ListView.Header>
             <Grid x:Name="HeaderBaseGrid">
@@ -40,7 +41,7 @@
 
         <ListView.ItemTemplate>
             <DataTemplate x:DataType="data:SongHistoryData">
-                <controls:SongHistoryCard HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"/>
+                <controls:SongHistoryCard HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="0,0,4,0"/>
             </DataTemplate>
         </ListView.ItemTemplate>
         

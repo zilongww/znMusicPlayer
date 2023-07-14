@@ -37,6 +37,7 @@ using znMusicPlayerWUI.DataEditor;
 using CommunityToolkit.WinUI.UI;
 using Vanara.PInvoke;
 using ColorCode.Compilation.Languages;
+using CommunityToolkit.WinUI.UI.Animations;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -96,7 +97,11 @@ namespace znMusicPlayerWUI
             teachingTipPlayingList = PlayingListBasePopup;
             teachingTipVolume = VolumeBasePopup;
             SPlayContent = PlayContent;
-            AsyncDialog = new ContentDialog() { XamlRoot = SContent.XamlRoot, CloseButtonCommand = null };
+            AsyncDialog = new ContentDialog()
+            {
+                XamlRoot = SContent.XamlRoot,
+                CloseButtonCommand = null
+            };
             equalizerPage = new Pages.DialogPages.EqualizerPage();
             SubClassing();
 
@@ -408,7 +413,9 @@ namespace znMusicPlayerWUI
         static List<object[]> dialogShowObjects = new();
         public static async Task<ContentDialogResult> ShowDialog(
             object title, object content,
-            string closeButtonText = "确定", string primaryButtonText = null)
+            string closeButtonText = "确定", string primaryButtonText = null, string secondaryButtonText = null,
+            ContentDialogButton defaultButton = ContentDialogButton.None,
+            bool fullSizeDesired = false)
         {
             try
             {
@@ -427,9 +434,12 @@ namespace znMusicPlayerWUI
                     AsyncDialog.Background = App.Current.Resources["AcrylicNormal"] as AcrylicBrush;
                     AsyncDialog.CloseButtonText = closeButtonText;
                     AsyncDialog.PrimaryButtonText = primaryButtonText;
+                    AsyncDialog.SecondaryButtonText = secondaryButtonText;
+                    AsyncDialog.FullSizeDesired = fullSizeDesired;
                     AsyncDialog.CloseButtonCommand = null;
                     AsyncDialog.XamlRoot = SContent.XamlRoot;
                     AsyncDialog.RequestedTheme = SWindowGridBaseTop.RequestedTheme;
+                    AsyncDialog.DefaultButton = defaultButton;
                     result = await AsyncDialog.ShowAsync();
                     dialogShow = false;
 
@@ -437,12 +447,12 @@ namespace znMusicPlayerWUI
                     {
                         var a = dialogShowObjects[0];
                         dialogShowObjects.Remove(a);
-                        await ShowDialog(a[0], a[1], (string)a[2], (string)a[3]);
+                        await ShowDialog(a[0], a[1], (string)a[2], (string)a[3], (string)a[4], (ContentDialogButton)a[5], (bool)a[6]);
                     }
                 }
                 else
                 {
-                    dialogShowObjects.Add(new object[] { title, content, closeButtonText, primaryButtonText });
+                    dialogShowObjects.Add(new object[] { title, content, closeButtonText, primaryButtonText, secondaryButtonText, defaultButton, fullSizeDesired });
                 }
                 return result;
             }
@@ -1087,6 +1097,18 @@ namespace znMusicPlayerWUI
             return true;
         }
 
+        public static void TryGoForward()
+        {
+            if (SContentFrame.CanGoForward)
+            {
+                IsBackRequest = true;
+                SContentFrame.GoForward();
+                UpdataNavViewSelectedItem();
+                SNavView.IsBackEnabled = SContentFrame.CanGoBack;
+                IsBackRequest = false;
+            }
+        }
+
         private void NavView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
         {
             TryGoBack();
@@ -1171,6 +1193,11 @@ namespace znMusicPlayerWUI
             Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode flyoutPlacementMode = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.RightEdgeAlignedBottom,
             Thickness placementMargin = default)
         {
+            if (teachingTipVolume.IsOpen)
+            {
+                teachingTipVolume.Hide();
+                return;
+            }
             STopControlsBaseGrid.HorizontalAlignment = horizontalAlignment;
             STopControlsBaseGrid.VerticalAlignment = verticalAlignment;
             STopControlsBaseGrid.Margin = placementMargin == default ? new(0, 0, 4, 94) : placementMargin;
@@ -1194,7 +1221,8 @@ namespace znMusicPlayerWUI
             teachingTipPlayingList.ShowAt(STopControlsBaseGrid);
             try
             {
-                await SPlayingListBaseView.SmoothScrollIntoViewWithItemAsync(App.audioPlayer.MusicData);
+                await Task.Delay(10);
+                await SPlayingListBaseView.SmoothScrollIntoViewWithItemAsync(App.audioPlayer.MusicData, ScrollItemPlacement.Center);
             }
             catch { }
         }
@@ -1319,12 +1347,42 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region Key Events
+        bool isAltDown = false;
         private void Grid_KeyDown(object sender, KeyRoutedEventArgs e)
         {
+            switch (e.Key)
+            {
+                case Windows.System.VirtualKey.Back:
+                case Windows.System.VirtualKey.GoBack:
+                    TryGoBack();
+                    break;
+                case Windows.System.VirtualKey.GoForward:
+                    TryGoForward();
+                    break;
+                case Windows.System.VirtualKey.Menu:
+                    isAltDown = true;
+                    break;
+                case Windows.System.VirtualKey.Left:
+                    if (isAltDown)
+                        TryGoBack();
+                    break;
+                case Windows.System.VirtualKey.Right:
+                    if (isAltDown)
+                        TryGoForward();
+                    break;
+            }
         }
 
         private void Grid_KeyUp(object sender, KeyRoutedEventArgs e)
         {
+            switch (e.Key)
+            {
+                case Windows.System.VirtualKey.Menu:
+                    isAltDown = false;
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void Grid_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -1335,14 +1393,7 @@ namespace znMusicPlayerWUI
             }
             else if (e.GetCurrentPoint(sender as UIElement).Properties.IsXButton2Pressed)
             {
-                if (ContentFrame.CanGoForward)
-                {
-                    IsBackRequest = true;
-                    ContentFrame.GoForward();
-                    UpdataNavViewSelectedItem();
-                    SNavView.IsBackEnabled = SContentFrame.CanGoBack;
-                    IsBackRequest = false;
-                }
+                TryGoForward();
             }
         }
 
@@ -1401,6 +1452,7 @@ namespace znMusicPlayerWUI
         // 均衡器按钮点击事件
         private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
+            OpenOrCloseVolume();
             await ShowEqualizerDialog();
         }
 
@@ -1417,6 +1469,11 @@ namespace znMusicPlayerWUI
             {
                 App.audioPlayer.Volume = NoVolumeValue;
             }
+        }
+
+        private void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            App.playingList.NowPlayingList.Remove((sender as Button).DataContext as MusicData);
         }
         #endregion
 

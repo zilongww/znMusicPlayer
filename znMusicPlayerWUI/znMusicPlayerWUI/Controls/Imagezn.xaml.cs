@@ -212,7 +212,7 @@ namespace znMusicPlayerWUI.Controls
             Grid grid = new();
             grid.Children.Add(border);
             grid.Children.Add(textBlock);
-            var result = await MainWindow.ShowDialog("查看图片", grid, "确定", "保存到文件...");
+            var result = await MainWindow.ShowDialog("查看图片", grid, "确定", "保存到文件...", defaultButton: ContentDialogButton.Close, fullSizeDesired: true);
             if (result == ContentDialogResult.Primary)
             {
                 StorageFile f = null;

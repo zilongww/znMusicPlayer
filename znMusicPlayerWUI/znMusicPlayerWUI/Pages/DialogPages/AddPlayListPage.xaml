@@ -11,30 +11,32 @@
                SelectionChanged="PivotList_SelectionChanged_1"
                Loaded="PivotList_Loaded">
             <Pivot.Items>
-                <PivotItem Header="添加播放列表">
+                <PivotItem Header="添加播放列表" AccessKey="A">
                     <StackPanel x:Name="AddLocalPage"
                             Orientation="Vertical">
                         <TextBox Header="播放列表名称"
-                             PlaceholderText="输入你想要的播放列表名称"
-                             Margin="0,10,0,0"
-                             x:Name="AddLocalPage_ListNameTB"/>
+                                 PlaceholderText="输入你想要的播放列表名称"
+                                 Margin="0,10,0,0"
+                                 x:Name="AddLocalPage_ListNameTB"
+                                 AccessKey="N"/>
 
                         <TextBlock Text="封面" Margin="0,10,0,0"/>
                         <VariableSizedWrapGrid Orientation="Horizontal" Margin="0,4,0,0">
                             <TextBox PlaceholderText="输入图片路径"
-                                 MinWidth="108" Margin="0,4,4,0"
-                                 x:Name="AddLocalPage_ListImageTB"/>
+                                     MinWidth="108" Margin="0,4,4,0"
+                                     x:Name="AddLocalPage_ListImageTB"
+                                     AccessKey="P"/>
                             <Button x:Name="AddLocalPage_ListImageSelectBtn"
-                                Content="选择文件" Click="AddLocalPage_ListImageSelectBtn_Click"
+                                Content="选择文件" AccessKey="S" Click="AddLocalPage_ListImageSelectBtn_Click"
                                 VerticalAlignment="Bottom" Margin="0,2,0,0"/>
                         </VariableSizedWrapGrid>
                     </StackPanel>
                 </PivotItem>
-                <PivotItem Header="导入外部列表">
+                <PivotItem Header="导入外部列表" AccessKey="D">
                     <Grid x:Name="AddOutSidePage">
                         <StackPanel>
-                            <ComboBox x:Name="AddOutSidePage_PlatfromCb" Header="外部平台" Margin="0,10,0,0"/>
-                            <TextBox x:Name="AddOutSidePage_IDTb" Header="歌单ID" Margin="0,10,0,0"/>
+                            <ComboBox x:Name="AddOutSidePage_PlatfromCb" Header="外部平台" Margin="0,10,0,0" AccessKey="P"/>
+                            <TextBox x:Name="AddOutSidePage_IDTb" Header="歌单ID" Margin="0,10,0,0" AccessKey="O"/>
                         </StackPanel>
                     </Grid>
                 </PivotItem>

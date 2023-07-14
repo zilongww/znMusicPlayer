@@ -113,8 +113,11 @@ namespace znMusicPlayerWUI.Pages
                 var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
 
                 MusicDataList.Clear();
+                int count = 0;
                 foreach (var i in musicListData.Songs)
                 {
+                    count++;
+                    i.Count = count;
                     MusicDataList.Add(new() { MusicData = i, ImageScaleDPI = dpi });
                 }
             }

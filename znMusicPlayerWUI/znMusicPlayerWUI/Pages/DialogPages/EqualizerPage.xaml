@@ -18,11 +18,11 @@
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="均衡器" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Margin="0,0,4,0"/>
-                    <ToggleSwitch x:Name="EqEnableTS" VerticalAlignment="Center" IsOn="{Binding EqEnabled, Mode=TwoWay}"/>
+                    <ToggleSwitch x:Name="EqEnableTS" AccessKey="E" VerticalAlignment="Center" IsOn="{Binding EqEnabled, Mode=TwoWay}"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="预设" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                    <ComboBox x:Name="EqComboBox" Width="134" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}" SelectionChanged="ComboBox_SelectionChanged" Loaded="EqComboBox_Loaded">
+                    <ComboBox x:Name="EqComboBox" AccessKey="Q" Width="134" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}" SelectionChanged="ComboBox_SelectionChanged" Loaded="EqComboBox_Loaded">
                         <x:String>自定义</x:String>
                         <x:String>高音增强</x:String>
                         <x:String>低音增强</x:String>
@@ -33,7 +33,7 @@
                         <x:String>电视</x:String>
                         <x:String>汽车</x:String>
                     </ComboBox>
-                    <Button x:Name="ResetButton" Content="重置" Margin="12,0,0,0" Visibility="Collapsed" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}" Click="ResetButton_Click"/>
+                    <Button x:Name="ResetButton" AccessKey="R" Content="重置" Margin="12,0,0,0" Visibility="Collapsed" IsEnabled="{Binding ElementName=EqEnableTS, Path=IsOn}" Click="ResetButton_Click"/>
                 </StackPanel>
                 <Grid Margin="0,8,0,0">
                     <Grid.RowDefinitions>
@@ -82,43 +82,43 @@
                                     </Style>
                                 </StackPanel.Resources>
                                 <StackPanel>
-                                    <Slider x:Name="Eq0" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
+                                    <Slider x:Name="Eq0" AccessKey="1" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
                                     <TextBlock Text="31"/>
                                 </StackPanel>
                                 <StackPanel>
-                                    <Slider x:Name="Eq1" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
+                                    <Slider x:Name="Eq1" AccessKey="2" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
                                     <TextBlock Text="62"/>
                                 </StackPanel>
                                 <StackPanel>
-                                    <Slider x:Name="Eq2" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
+                                    <Slider x:Name="Eq2" AccessKey="3" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
                                     <TextBlock Text="125"/>
                                 </StackPanel>
                                 <StackPanel>
-                                    <Slider x:Name="Eq3" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
+                                    <Slider x:Name="Eq3" AccessKey="4" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
                                     <TextBlock Text="250"/>
                                 </StackPanel>
                                 <StackPanel>
-                                    <Slider x:Name="Eq4" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
+                                    <Slider x:Name="Eq4" AccessKey="5" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
                                     <TextBlock Text="500"/>
                                 </StackPanel>
                                 <StackPanel>
-                                    <Slider x:Name="Eq5" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
+                                    <Slider x:Name="Eq5" AccessKey="6" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
                                     <TextBlock Text="1k"/>
                                 </StackPanel>
                                 <StackPanel>
-                                    <Slider x:Name="Eq6" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
+                                    <Slider x:Name="Eq6" AccessKey="7" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
                                     <TextBlock Text="2k"/>
                                 </StackPanel>
                                 <StackPanel>
-                                    <Slider x:Name="Eq7" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
+                                    <Slider x:Name="Eq7" AccessKey="8" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
                                     <TextBlock Text="4k"/>
                                 </StackPanel>
                                 <StackPanel>
-                                    <Slider x:Name="Eq8" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
+                                    <Slider x:Name="Eq8" AccessKey="9" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
                                     <TextBlock Text="8k"/>
                                 </StackPanel>
                                 <StackPanel>
-                                    <Slider x:Name="Eq9" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
+                                    <Slider x:Name="Eq9" AccessKey="0" IsEnabled="{Binding ElementName=EqEnableTS,Path=IsOn}"/>
                                     <TextBlock Text="16k"/>
                                 </StackPanel>
                             </StackPanel>
@@ -135,17 +135,17 @@
                             <Setter Property="Height" Value="68"/>
                         </Style>
                     </GridView.ItemContainerStyle>
-                    <Slider x:Name="aSlider" Header="变调：1x"
+                    <Slider x:Name="aSlider" Header="变调：1x" AccessKey="C"
                             Width="140" Minimum="1" Maximum="25" HorizontalAlignment="Left"
                             Value="{Binding Pitch,Mode=TwoWay}"
                             TickFrequency="1.14" TickPlacement="Outside"
                             IsThumbToolTipEnabled="False"/>
-                    <Slider x:Name="bSlider" Header="速度：1x"
+                    <Slider x:Name="bSlider" Header="速度：1x" AccessKey="S"
                             Width="140" Minimum="1" Maximum="25" HorizontalAlignment="Left"
                             Value="{Binding Tempo,Mode=TwoWay}"
                             TickFrequency="1.14" TickPlacement="Outside"
                             IsThumbToolTipEnabled="False"/>
-                    <Slider x:Name="cSlider" Header="速度比：1x"
+                    <Slider x:Name="cSlider" Header="速度比：1x" AccessKey="N"
                             Width="140" Minimum="1" Maximum="25"
                             Value="{Binding Rate,Mode=TwoWay}"
                             TickFrequency="1.14" TickPlacement="Outside"
@@ -153,19 +153,19 @@
                             IsThumbToolTipEnabled="False"/>
                     <StackPanel>
                         <TextBlock Text="音频输出" Margin="{StaticResource HubSectionHeaderThemeMargin}"/>
-                        <DropDownButton x:Name="OutDevicesDropDownButton" Click="OutDevicesDropDownButton_Click" Width="140">
+                        <DropDownButton x:Name="OutDevicesDropDownButton" AccessKey="O" Click="OutDevicesDropDownButton_Click" Width="140">
                             <DropDownButton.Flyout>
                                 <MenuFlyout x:Name="OutDevicesFlyout"/>
                             </DropDownButton.Flyout>
                             <TextBlock x:Name="OutDevicesTextBlock" Text="{Binding AudioPlayer.NowOutDevice}"/>
                         </DropDownButton>
                     </StackPanel>
-                    <NumberBox x:Name="LatencyNumberBox" Header="音频缓冲时间" Width="140" Value="{Binding Latency,Mode=TwoWay}" PlaceholderText="整数（ms）" Maximum="1000" Minimum="50" SpinButtonPlacementMode="Compact"/>
-                    <ToggleSwitch Header="Wasapi独占声卡" IsOn="{Binding WasapiOnly,Mode=TwoWay}"/>
+                    <NumberBox x:Name="LatencyNumberBox" Header="音频缓冲时间" AccessKey="L" Width="140" Value="{Binding Latency,Mode=TwoWay}" PlaceholderText="整数（ms）" Maximum="1000" Minimum="50" SpinButtonPlacementMode="Compact"/>
+                    <ToggleSwitch Header="Wasapi独占声卡" AccessKey="W" IsOn="{Binding WasapiOnly,Mode=TwoWay}"/>
                     <StackPanel Background="Transparent"
                                 ToolTipService.ToolTip="当播放中断或出错时尝试重新加载">
                         <TextBlock Text="重新加载音频" Margin="{StaticResource HubSectionHeaderThemeMargin}"/>
-                        <Button Click="ReloadAudio_Click">
+                        <Button Click="ReloadAudio_Click" AccessKey="T">
                             <Path Data="{StaticResource 刷新}"
                                   Stretch="UniformToFill"
                                   Fill="{ThemeResource ButtonForegroundThemeBrush}"

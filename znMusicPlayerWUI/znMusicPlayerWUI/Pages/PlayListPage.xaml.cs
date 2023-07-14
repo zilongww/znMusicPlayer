@@ -63,9 +63,15 @@ namespace znMusicPlayerWUI.Pages
             if (App.playListReader.NowMusicListDatas == null)
                 await App.playListReader.Refresh();
 
+            int count = 0;
             foreach (var item in App.playListReader.NowMusicListDatas)
             {
-                var a = new PlayListCard() { ImageScaleDPI = dpi };
+                count++;
+                var a = new PlayListCard()
+                {
+                    ImageScaleDPI = dpi,
+                    AccessKey = $"L{count}"
+                };
                 a.Init(item);
                 BaseGridView.Items.Add(a);
             }

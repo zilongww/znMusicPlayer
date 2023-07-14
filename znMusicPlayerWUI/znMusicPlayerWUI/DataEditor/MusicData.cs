@@ -137,6 +137,7 @@ namespace znMusicPlayerWUI.DataEditor
         public string InLocal { get; set; }
         public CUETrackData CUETrackData { get; set; } = null;
         public int Index { get; set; } = 0;
+        public int Count { get; set; }
 
         string _artistName = null;
         public string ArtistName

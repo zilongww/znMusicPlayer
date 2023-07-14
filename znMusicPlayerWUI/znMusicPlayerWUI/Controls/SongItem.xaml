@@ -5,11 +5,12 @@
     xmlns:local="using:znMusicPlayerWUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Loaded="Grid_Loaded" Unloaded="Grid_Unloaded"
+    mc:Ignorable="d" Loaded="Grid_Loaded" Unloaded="Grid_Unloaded" KeyUp="SongItem_KeyUp"
     RightTapped="Button_RightTapped" Background="{x:Null}" x:FieldModifier="Public" 
     PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
     PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited"
-    DoubleTapped="Grid_DoubleTapped" Holding="Grid_Holding" x:Name="root">
+    DoubleTapped="Grid_DoubleTapped" Holding="Grid_Holding" x:Name="root"
+    AccessKeyInvoked="root_AccessKeyInvoked">
     
     <Grid.Resources>
         <MenuFlyout x:Name="rmf" Opening="rmf_Opening" Opened="rmf_Opened" Closed="rmf_Closed">
@@ -88,7 +89,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <Grid x:Name="InfoRoot" Opacity="1" x:FieldModifier="Public">
                     <Grid.OpacityTransition>
                         <ScalarTransition/>
@@ -125,7 +126,17 @@
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock x:Name="TitleTextBlock" x:FieldModifier="Public" IsHitTestVisible="False" Grid.Row="0"/>
+                        <TextBlock x:Name="TitleTextBlock"
+                                   x:FieldModifier="Public"
+                                   IsHitTestVisible="False"
+                                   Grid.Row="0"
+                                   Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
+                                   FontSize="10">
+                            <Run Text="{Binding MusicData.Count}"/>.
+                            <Run Text="{Binding MusicData.Title}"
+                                 Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
+                                 FontSize="14"/>
+                        </TextBlock>
                         <Grid Grid.Row="1" HorizontalAlignment="Left">
                             <Button BorderThickness="0"
                                     Background="Transparent"
@@ -153,7 +164,7 @@
                         </Viewbox>
                     </Button>
                 </StackPanel>
-                
+
             </Grid>
         </Grid>
     </Border>

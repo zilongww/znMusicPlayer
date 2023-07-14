@@ -10,7 +10,7 @@
     Loaded="UILoaded" Unloaded="UIUnloaded"
     PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited"
     PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
-    RightTapped="Grid_RightTapped" Holding="Grid_Holding">
+    RightTapped="Grid_RightTapped" Holding="Grid_Holding" AccessKeyInvoked="Grid_AccessKeyInvoked">
 
     <Grid.Resources>
         <MenuFlyout x:Name="FlyoutMenu">

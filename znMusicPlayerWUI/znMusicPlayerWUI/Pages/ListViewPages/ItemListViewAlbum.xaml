@@ -39,7 +39,7 @@
                 <Border VerticalAlignment="Stretch"
                         x:Name="menu_border"
                         BorderThickness="0">
-                    <Border MaxHeight="300" Margin="0,0,0,6"
+                    <Border Height="300" Margin="0,0,0,6"
                             BorderThickness="0" CornerRadius="0,0,8,8">
                         <Grid SizeChanged="Result_BaseGrid_SizeChanged" Name="Album_ImageBaseGrid">
 
@@ -79,6 +79,7 @@
                                         <CommandBar x:Name="ToolsCommandBar"
                                                     DefaultLabelPosition="Right"
                                                     HorizontalAlignment="Left"
+                                                    AccessKey="Z"
                                                     Grid.Row="2"
                                                     Background="Transparent">
                                             <AppBarButton x:Name="SelectAllButton"
@@ -145,7 +146,8 @@
                                             <AppBarSeparator x:Name="SelectorSeparator"/>
 
                                             <AppBarButton Click="Button_Click"
-                                                          Label="播放全部"
+                                                          Label="播放全部（Alt+Q）"
+                                                          AccessKey="Q"
                                                           Background="{ThemeResource AccentAAFillColorTertiaryBrush}"
                                                           Foreground="{ThemeResource SystemControlForegroundAltHighBrush}"
                                                           ToolTipService.ToolTip="播放全部"
@@ -156,6 +158,7 @@
                                             </AppBarButton>
                                             <AppBarButton Click="Button_Click_1"
                                                           Label="刷新"
+                                                          AccessKey="R"
                                                           ToolTipService.ToolTip="刷新">
                                                 <AppBarButton.Icon>
                                                     <PathIcon Data="{StaticResource 刷新}"/>
@@ -164,6 +167,7 @@
                                             <AppBarButton Click="Button_Click_2"
                                                           Label="多选"
                                                           ToolTipService.ToolTip="多选"
+                                                          AccessKey="S"
                                                           x:Name="SelectItemButton">
                                                 <AppBarButton.Icon>
                                                     <PathIcon Data="{StaticResource 全选}"/>

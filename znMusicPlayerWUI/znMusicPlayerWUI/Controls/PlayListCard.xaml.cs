@@ -246,5 +246,11 @@ namespace znMusicPlayerWUI.Controls
                 await MainWindow.ShowDialog("更新歌单失败", $"更新歌单时遇到错误，请重试。\n错误信息：{ex}");
             }
         }
+
+        private void Grid_AccessKeyInvoked(UIElement sender, Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs args)
+        {
+            if (MusicListData != null)
+                ListViewPage.SetPageToListViewPage<ItemListViewPlayList>(MusicListData);
+        }
     }
 }

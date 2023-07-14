@@ -64,7 +64,7 @@ namespace znMusicPlayerWUI
         public static IntPtr AppDesktopLyricWindowHandle;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.2.4 Preview";
+        public static readonly string AppVersion = "0.2.45 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -175,9 +175,11 @@ namespace znMusicPlayerWUI
 
         private void M_window_Closed(object sender, WindowEventArgs args)
         {
+            SMTC.DisplayUpdater.ClearAll();
+            SMTC.DisplayUpdater.Update();
             audioPlayer.DisposeAll();
             SaveSettings();
-            this.Exit();
+            Exit();
         }
 
         public static void LoadSettings()

@@ -134,8 +134,11 @@ namespace znMusicPlayerWUI.Pages
                 {
                     case SearchDataType.歌曲:
                         MusicData[] array = (searchDatas as MusicListData).Songs.ToArray();
+                        int count = pageNumber * pageSize - pageSize;
                         foreach (var i in array)
                         {
+                            count++;
+                            i.Count = count;
                             MusicDataList.Add(new() { MusicData = i, ImageScaleDPI = dpi });
                         }
                         ItemPresenterControlBridge.Margin = new(14, 0, 16, 0);

@@ -114,8 +114,11 @@ namespace znMusicPlayerWUI.Pages
                 var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
 
                 MusicDataList.Clear();
+                int count = 0;
                 foreach (var i in musicListData.Songs)
                 {
+                    count++;
+                    i.Count = count;
                     MusicDataList.Add(new() { MusicData = i, ImageScaleDPI = dpi, MusicListData = musicListData });
                 }
             }
@@ -223,7 +226,7 @@ namespace znMusicPlayerWUI.Pages
         }
 
         Vector3 ATBOffset = default;
-        private async void menu_border_Loaded(object sender, RoutedEventArgs e)
+        private void menu_border_Loaded(object sender, RoutedEventArgs e)
         {
             if (scrollViewer == null)
             {
