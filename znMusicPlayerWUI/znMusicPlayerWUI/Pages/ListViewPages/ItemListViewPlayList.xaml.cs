@@ -24,6 +24,7 @@ using CommunityToolkit.WinUI.UI;
 using znMusicPlayerWUI.Controls;
 using System.Collections.ObjectModel;
 using System.Data;
+using Vanara.Extensions;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -728,6 +729,28 @@ namespace znMusicPlayerWUI.Pages
         private void SearchBox_AccessKeyInvoked(UIElement sender, Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs args)
         {
             (sender as FrameworkElement).Focus(FocusState.Programmatic);
+        }
+
+        private async void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            switch ((sender as Button).Tag)
+            {
+                case "0":
+                    scrollViewer.ChangeView(null, 0, null);
+                    break;
+                case "1":
+                    scrollViewer.ChangeView(null, scrollViewer.ScrollableHeight, null);
+                    break;
+                case "2":
+                    foreach(var i in MusicDataList)
+                    {
+                        if (i.MusicData == App.audioPlayer.MusicData)
+                        {
+                           await Children.SmoothScrollIntoViewWithItemAsync(i, ScrollItemPlacement.Center);
+                        }
+                    }
+                    break;
+            }
         }
     }
 }

@@ -97,6 +97,7 @@ namespace znMusicPlayerWUI.Controls
 
         public void Init(SongItemBindBase bindBase)
         {
+            if (bindBase == null) return;
             MusicData = bindBase.MusicData;
             musicListData = bindBase.MusicListData;
             ImageScaleDPI = bindBase.ImageScaleDPI;

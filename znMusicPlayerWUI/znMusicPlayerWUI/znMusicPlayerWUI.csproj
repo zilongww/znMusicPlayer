@@ -44,6 +44,7 @@
     <None Remove="Pages\SearchPage.xaml" />
     <None Remove="Pages\SettingPage.xaml" />
     <None Remove="Windows\MediaPlayerWindow.xaml" />
+    <None Remove="Windows\NotifyIconWindow.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
@@ -206,6 +207,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Pages\RecommendPage.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Windows\NotifyIconWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Windows\MediaPlayerWindow.xaml">

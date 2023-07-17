@@ -21,6 +21,7 @@ using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Media;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
+using CommunityToolkit.WinUI.UI;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -214,7 +215,7 @@ namespace znMusicPlayerWUI.Pages
         private void Result_BaseGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             menu_border.MinHeight = LittleBarGrid.ActualHeight;
-            try { menu_border.Height = ActualHeight ; }
+            try { menu_border.Height = ActualHeight - 54; }
             catch { }
             ImageClip.Rect = new(0, 0, Artist_ImageBaseGrid.ActualWidth, Artist_ImageBaseGrid.ActualHeight);
             UpdataShyHeader();
@@ -392,6 +393,27 @@ namespace znMusicPlayerWUI.Pages
         private void Button_Click_6(object sender, RoutedEventArgs e)
         {
             scrollViewer.ChangeView(null, menu_border.ActualHeight - LittleBarGrid.ActualHeight, null);
+        }
+        private async void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            switch ((sender as Button).Tag)
+            {
+                case "0":
+                    scrollViewer.ChangeView(null, 0, null);
+                    break;
+                case "1":
+                    scrollViewer.ChangeView(null, scrollViewer.ScrollableHeight, null);
+                    break;
+                case "2":
+                    foreach (var i in MusicDataList)
+                    {
+                        if (i.MusicData == App.audioPlayer.MusicData)
+                        {
+                            await Children.SmoothScrollIntoViewWithItemAsync(i, ScrollItemPlacement.Center);
+                        }
+                    }
+                    break;
+            }
         }
     }
 }

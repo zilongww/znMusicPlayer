@@ -127,12 +127,24 @@ namespace znMusicPlayerWUI
             App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
             MusicPageViewStateChanged += MainWindow_MusicPageViewStateChanged;
 
+            this.AppWindow.Closing += AppWindow_Closing;
+
             loadingst.Children.Add(loadingprogress);
             loadingst.Children.Add(loadingtextBlock);
             // 第一次点击不会响应动画。。。
             App.LoadSettings();
             ReadLAE();
             RegisterHotKeys();
+        }
+
+        bool isBackground = false;
+        private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
+        {
+            return;
+            args.Cancel = true;
+            RemoveEvents();
+            this.AppWindow.Hide();
+            isBackground = true;
         }
 
         public async void ReadLAE()
@@ -213,7 +225,7 @@ namespace znMusicPlayerWUI
             App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
             isAddEvents = true;
             UpdataWhenDataLated();
-            //System.Diagnostics.Debug.WriteLine("Added Events.");
+            System.Diagnostics.Debug.WriteLine("Added Events.");
         }
 
         private void RemoveEvents()
@@ -228,13 +240,18 @@ namespace znMusicPlayerWUI
             App.playingList.NowPlayingImageLoaded -= PlayingList_NowPlayingImageLoaded;
             App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange;
             isAddEvents = false;
-            //System.Diagnostics.Debug.WriteLine("Removed Events.");
+            System.Diagnostics.Debug.WriteLine("Removed Events.");
         }
 
         static ApplicationTheme applicationTheme = App.Current.RequestedTheme;
         public static bool isMinSize = false;
         private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
+            if (isBackground)
+            {
+                isBackground = false;
+                AddEvents();
+            }
             if (args.WindowActivationState == WindowActivationState.PointerActivated ||
                 args.WindowActivationState == WindowActivationState.CodeActivated)
             {
@@ -1562,8 +1579,11 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region Desktop Lyric Window Events
+        public delegate void DesktopLyricDelegate();
+        public static event DesktopLyricDelegate DesktopLyricWindowOpenedEvent;
+        public static event DesktopLyricDelegate DesktopLyricWindowClosedEvent;
         public static bool IsDesktopLyricWindowOpen = false;
-        static DesktopLyricWindow DesktopLyricWindow = null;
+        public static DesktopLyricWindow DesktopLyricWindow = null;
         static bool isInChangingLyricWindow = false;
 
         public static async void OpenDesktopLyricWindow(bool timeDelay = true)
@@ -1577,14 +1597,8 @@ namespace znMusicPlayerWUI
                     DesktopLyricWindow = new();
                     DesktopLyricWindow.Closed += DesktopLyricWindow_Closed;
 
-                    if (false)
-                    {
-                        var windowHandle = new IntPtr((long)DesktopLyricWindow.AppWindow.Id.Value);
-                        Vanara.PInvoke.User32.SetWindowLong(windowHandle,
-                            Vanara.PInvoke.User32.WindowLongFlags.GWL_STYLE, (IntPtr)Vanara.PInvoke.User32.WindowStyles.WS_DISABLED);
-                    }
-
-                    DesktopLyricWindow.Activate();
+                    DesktopLyricWindow.AppWindow.Show(false);
+                    DesktopLyricWindowOpenedEvent?.Invoke();
                 }
                 else
                 {
@@ -1607,6 +1621,7 @@ namespace znMusicPlayerWUI
         {
             DesktopLyricWindow = null;
             IsDesktopLyricWindowOpen = false;
+            DesktopLyricWindowClosedEvent?.Invoke();
         }
         #endregion
 

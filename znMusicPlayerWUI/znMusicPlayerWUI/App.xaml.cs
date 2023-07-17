@@ -49,7 +49,6 @@ namespace znMusicPlayerWUI
         public static readonly Windows.Media.SystemMediaTransportControls SMTC = BackgroundMediaPlayer.Current?.SystemMediaTransportControls;
         public static readonly MetingServices metingServices = new();
         public static readonly AudioPlayer audioPlayer = new();
-        public static readonly AudioPlayerBass audioPlayerBass = new();
         public static readonly PlayingList playingList = new();
         public static readonly LyricManager lyricManager = new();
         public static readonly DownloadManager downloadManager = new();
@@ -62,9 +61,11 @@ namespace znMusicPlayerWUI
         public static FullScreenPresenter AppWindowLocalFullScreenPresenter;
         public static IntPtr AppWindowLocalHandle;
         public static IntPtr AppDesktopLyricWindowHandle;
+        public static System.Windows.Forms.NotifyIcon notifyIcon;
+        public static NotifyIconWindow NotifyIconWindow;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.2.45 Preview";
+        public static readonly string AppVersion = "0.2.47 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -75,6 +76,11 @@ namespace znMusicPlayerWUI
             DataFolderBase.InitFiles();
             this.InitializeComponent();
             UnhandledException += App_UnhandledException;
+
+            notifyIcon = new System.Windows.Forms.NotifyIcon();
+            notifyIcon.Text = AppName;
+            notifyIcon.Icon = new($"{System.IO.Directory.GetCurrentDirectory()}\\icon.ico");
+            notifyIcon.Visible = true;
 
             SMTC.IsPlayEnabled = true;
             SMTC.IsPauseEnabled = true;
@@ -167,10 +173,11 @@ namespace znMusicPlayerWUI
                 1140 * (int)dpi, 640 * (int)dpi,
                 false
                 );
-
+            
             m_window.Activate();
             m_window.Closed += M_window_Closed;
             //AppWindowLocal.SetPresenter(AppWindowLocalPresenter);
+            NotifyIconWindow = new();
         }
 
         private void M_window_Closed(object sender, WindowEventArgs args)

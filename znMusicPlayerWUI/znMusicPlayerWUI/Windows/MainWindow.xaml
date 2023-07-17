@@ -400,10 +400,9 @@
                 </Flyout>
             </Grid.Resources>
         </Grid>
-        
+
         <Grid x:Name="MusicPageBaseGrid">
             <Frame x:Name="MusicPageBaseFrame"/>
         </Grid>
-
     </Grid>
 </Window>

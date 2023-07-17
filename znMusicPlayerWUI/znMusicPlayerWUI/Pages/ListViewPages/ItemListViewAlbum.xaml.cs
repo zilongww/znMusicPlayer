@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using znMusicPlayerWUI.Pages.ListViewPages;
 using System.Diagnostics;
+using CommunityToolkit.WinUI.UI;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -438,6 +439,27 @@ namespace znMusicPlayerWUI.Pages
         private void AddToPlayListFlyout_Closed(object sender, object e)
         {
             //AddToPlayListFlyout.Items.Clear();
+        }
+        private async void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            switch ((sender as Button).Tag)
+            {
+                case "0":
+                    scrollViewer.ChangeView(null, 0, null);
+                    break;
+                case "1":
+                    scrollViewer.ChangeView(null, scrollViewer.ScrollableHeight, null);
+                    break;
+                case "2":
+                    foreach (var i in MusicDataList)
+                    {
+                        if (i.MusicData == App.audioPlayer.MusicData)
+                        {
+                            await Children.SmoothScrollIntoViewWithItemAsync(i, ScrollItemPlacement.Center);
+                        }
+                    }
+                    break;
+            }
         }
     }
 }
