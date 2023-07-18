@@ -1,0 +1,316 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using Vanara.PInvoke;
+using Microsoft.UI.Xaml;
+using System.Collections.ObjectModel;
+
+namespace znMusicPlayerWUI.Background.HotKeys
+{
+    public enum HotKeyID
+    {
+        PreviousSong = 1101,
+        NextSong,
+        Pause,
+        Stop,
+        VolumeAdd,
+        VolumeRemove,
+        OpenMainWindow,
+        OpenLyricWindow,
+        RandomPlay,
+        TryActivityLyricWindow,
+        ReturnToFirstSong,
+        LockLyricWindow
+    }
+
+    public class HotKey
+    {
+        public User32.HotKeyModifiers HotKeyModifiers { get; set; }
+        public Windows.System.VirtualKey VirtualKey { get; set; }
+        public HotKeyID HotKeyID { get; set; }
+        public HotKey(User32.HotKeyModifiers hotKeyModifiers, Windows.System.VirtualKey virtualKey, HotKeyID hotKeyID)
+        {
+            HotKeyModifiers = hotKeyModifiers;
+            VirtualKey = virtualKey;
+            HotKeyID = hotKeyID;
+        }
+
+        public static string GetHKMString(User32.HotKeyModifiers hotKeyModifiers)
+        {
+            switch (hotKeyModifiers)
+            {
+                case User32.HotKeyModifiers.MOD_ALT:
+                    return "Alt";
+                case User32.HotKeyModifiers.MOD_CONTROL:
+                    return "Ctrl";
+                case User32.HotKeyModifiers.MOD_SHIFT:
+                    return "Shift";
+                case User32.HotKeyModifiers.MOD_WIN:
+                    return "Win";
+                default:
+                    if ((User32.HotKeyModifiers.MOD_WIN | User32.HotKeyModifiers.MOD_CONTROL) == hotKeyModifiers)
+                    {
+                        return "Win + Ctrl";
+                    }
+                    else if ((User32.HotKeyModifiers.MOD_WIN | User32.HotKeyModifiers.MOD_SHIFT) == hotKeyModifiers)
+                    {
+                        return "Win + Shift";
+                    }
+                    else if ((User32.HotKeyModifiers.MOD_WIN | User32.HotKeyModifiers.MOD_ALT) == hotKeyModifiers)
+                    {
+                        return "Win + Alt";
+                    }
+                    else if ((User32.HotKeyModifiers.MOD_WIN | User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT) == hotKeyModifiers)
+                    {
+                        return "Win + Ctrl + Shift";
+                    }
+                    else if ((User32.HotKeyModifiers.MOD_WIN | User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_ALT) == hotKeyModifiers)
+                    {
+                        return "Win + Ctrl + Alt";
+                    }
+                    else if ((User32.HotKeyModifiers.MOD_WIN | User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT | User32.HotKeyModifiers.MOD_ALT) == hotKeyModifiers)
+                    {
+                        return "Win + Ctrl + Shift + Alt";
+                    }
+                    else if ((User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT) == hotKeyModifiers)
+                    {
+                        return "Ctrl + Shift";
+                    }
+                    else if ((User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_ALT) == hotKeyModifiers)
+                    {
+                        return "Ctrl + Alt";
+                    }
+                    else if ((User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT | User32.HotKeyModifiers.MOD_ALT) == hotKeyModifiers)
+                    {
+                        return "Ctrl + Shift + Alt";
+                    }
+                    else if ((User32.HotKeyModifiers.MOD_SHIFT | User32.HotKeyModifiers.MOD_ALT) == hotKeyModifiers)
+                    {
+                        return "Shift + Alt";
+                    }
+                    break;
+            }
+            return string.Empty;
+        }
+
+        public static string GetHotKeyIDString(HotKeyID hotKeyID)
+        {
+            switch (hotKeyID)
+            {
+                case HotKeyID.PreviousSong:
+                    return "上一首";
+                case HotKeyID.NextSong:
+                    return "下一首";
+                case HotKeyID.Pause:
+                    return "暂停/播放";
+                case HotKeyID.Stop:
+                    return "停止";
+                case HotKeyID.VolumeAdd:
+                    return "音量加";
+                case HotKeyID.VolumeRemove:
+                    return "音量减";
+                case HotKeyID.OpenMainWindow:
+                    return "打开主窗口";
+                case HotKeyID.OpenLyricWindow:
+                    return "打开桌面歌词窗口";
+                case HotKeyID.RandomPlay:
+                    return "打开/关闭随机播放";
+                case HotKeyID.TryActivityLyricWindow:
+                    return "尝试使桌面歌词窗口成为前台窗口";
+                case HotKeyID.ReturnToFirstSong:
+                    return "返回正在播放歌单的第一首歌曲";
+                case HotKeyID.LockLyricWindow:
+                    return "锁定歌词窗口";
+            }
+            return string.Empty;
+        }
+    }
+
+    public class HotKeyManager
+    {
+        public Window RegistedWindow { get; private set; }
+        public nint RegistedWindowHandle { get; private set; }
+        public ObservableCollection<HotKey> RegistedHotKeys { get; private set; } = new();
+
+        public HotKeyManager()
+        {
+        }
+
+        public void Init(Window window)
+        {
+            RegistedWindow = window;
+            RegistedWindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(window);
+
+            List<HotKey> willRegisterHotKeysList = new()
+            {
+                new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Left, HotKeyID.PreviousSong),
+                new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Right, HotKeyID.NextSong),
+                new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Down, HotKeyID.Pause),
+                new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Up, HotKeyID.Stop),
+                new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Subtract, HotKeyID.VolumeRemove),
+                new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Add, HotKeyID.VolumeAdd),
+                new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.O, HotKeyID.OpenMainWindow),
+                new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.L, HotKeyID.OpenLyricWindow),
+                new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.I, HotKeyID.RandomPlay),
+                new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.U, HotKeyID.TryActivityLyricWindow),
+                new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.Home, HotKeyID.ReturnToFirstSong),
+                new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.K, HotKeyID.LockLyricWindow)
+            };
+
+            RegisterHotKeys(willRegisterHotKeysList);
+            InitCallBack();
+        }
+
+        public bool RegisterHotKey(HotKey hotKey)
+        {
+            var r = User32.RegisterHotKey(
+                RegistedWindowHandle, (int)hotKey.HotKeyID, hotKey.HotKeyModifiers, (uint)hotKey.VirtualKey);
+            if (r) RegistedHotKeys.Add(hotKey);
+            return r;
+        }
+
+        public bool UnregisterHotKey(HotKeyID hotKeyID)
+        {
+            var r = User32.UnregisterHotKey(RegistedWindowHandle, (int)hotKeyID);
+            if (r)
+            {
+                foreach (var item in RegistedHotKeys)
+                {
+                    if (item.HotKeyID == hotKeyID)
+                    {
+                        RegistedHotKeys.Remove(item);
+                        break;
+                    }
+                }
+            }
+            return r;
+        }
+
+        public bool ChangeHotKey(HotKey hotKey)
+        {
+            if (!UnregisterHotKey(hotKey.HotKeyID)) return false;
+            return RegisterHotKey(hotKey);
+        }
+
+        /// <summary>
+        /// 批量注册热键
+        /// </summary>
+        /// <param name="willRegisterHotKeysList"></param>
+        /// <returns></returns>
+        public List<HotKey> RegisterHotKeys(List<HotKey> willRegisterHotKeysList)
+        {
+            var ErrorCantCreatHotKeysList = new List<HotKey>();
+
+            // 循环列表注册热键
+            foreach (HotKey key in willRegisterHotKeysList)
+            {
+                bool IsRegister = RegisterHotKey(key);
+                if (!IsRegister) ErrorCantCreatHotKeysList.Add(key);
+            }
+
+            return ErrorCantCreatHotKeysList;
+        }
+
+        private void InitCallBack()
+        {
+            hotKeyPrc = HotKeyPrc;
+            var hotKeyPrcPointer = Marshal.GetFunctionPointerForDelegate(hotKeyPrc);
+            origPrc =
+                Marshal.GetDelegateForFunctionPointer<Windows.Win32.UI.WindowsAndMessaging.WNDPROC>(
+                    (IntPtr)Windows.Win32.PInvoke.SetWindowLongPtr(
+                        new Windows.Win32.Foundation.HWND(RegistedWindowHandle),
+                        Windows.Win32.UI.WindowsAndMessaging.WINDOW_LONG_PTR_INDEX.GWL_WNDPROC,
+                        hotKeyPrcPointer)
+                    );
+        }
+
+        private const uint WM_HOTKEY = 0x0312;
+        private Windows.Win32.UI.WindowsAndMessaging.WNDPROC origPrc;
+        private Windows.Win32.UI.WindowsAndMessaging.WNDPROC hotKeyPrc;
+        private Windows.Win32.Foundation.LRESULT HotKeyPrc(Windows.Win32.Foundation.HWND hwnd,
+            uint uMsg,
+            Windows.Win32.Foundation.WPARAM wParam,
+            Windows.Win32.Foundation.LPARAM lParam)
+        {
+            if (uMsg == WM_HOTKEY)
+            {
+                nuint id = wParam.Value;
+                HotKeyID hotKeyID = (HotKeyID)id;
+
+                switch (hotKeyID)
+                {
+                    case HotKeyID.PreviousSong:
+                        App.playingList.PlayPrevious();
+                        break;
+                    case HotKeyID.NextSong:
+                        App.playingList.PlayNext();
+                        break;
+                    case HotKeyID.Pause:
+                        if (App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+                        {
+                            App.audioPlayer.SetPause();
+                        }
+                        else
+                        {
+                            App.audioPlayer.SetPlay();
+                        }
+                        break;
+                    case HotKeyID.Stop:
+                        App.audioPlayer.CurrentTime = TimeSpan.Zero;
+                        App.audioPlayer.SetStop();
+                        break;
+                    case HotKeyID.VolumeAdd:
+                        App.audioPlayer.Volume += 0.01f;
+                        break;
+                    case HotKeyID.VolumeRemove:
+                        App.audioPlayer.Volume -= 0.01f;
+                        break;
+                    case HotKeyID.OpenLyricWindow:
+                        MainWindow.OpenDesktopLyricWindow();
+                        break;
+                    case HotKeyID.RandomPlay:
+                        App.playingList.PlayBehaviour = App.playingList.PlayBehaviour == Background.PlayBehaviour.随机播放 ? Background.PlayBehaviour.顺序播放 : Background.PlayBehaviour.随机播放;
+                        break;
+                    case HotKeyID.OpenMainWindow:
+                        App.AppWindowLocal.Show();
+                        App.AppWindowLocalOverlappedPresenter.Restore();
+                        PInvoke.User32.SetForegroundWindow(App.AppWindowLocalHandle);
+                        break;
+                    case HotKeyID.TryActivityLyricWindow:
+                        if (MainWindow.DesktopLyricWindow != null)
+                        {
+                            MainWindow.DesktopLyricWindow.Activate();
+                            MainWindow.DesktopLyricWindow.overlappedPresenter.Restore();
+                        }
+                        break;
+                    case HotKeyID.ReturnToFirstSong:
+                        if (App.playingList.NowPlayingList.Any())
+                        {
+                            App.playingList.Play(App.playingList.NowPlayingList.First());
+                        }
+                        break;
+                    case HotKeyID.LockLyricWindow:
+                        if (MainWindow.DesktopLyricWindow != null)
+                        {
+                            if (!MainWindow.DesktopLyricWindow.IsLock)
+                            {
+                                MainWindow.DesktopLyricWindow.Lock();
+                            }
+                        }
+                        break;
+                    default:
+                        MainWindow.ShowDialog("未知热键", "未知的热键：\n" +
+                            $"●uMsg：{uMsg}\n" +
+                            $"●wParam.Value：{wParam.Value}\n" +
+                            $"●lParam.Value：{lParam.Value}");
+                        break;
+                }
+
+                return (Windows.Win32.Foundation.LRESULT)IntPtr.Zero;
+            }
+            return Windows.Win32.PInvoke.CallWindowProc(origPrc, hwnd, uMsg, wParam, lParam);
+        }
+    }
+}

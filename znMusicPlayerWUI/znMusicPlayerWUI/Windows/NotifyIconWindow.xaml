@@ -65,7 +65,7 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <TextBlock x:Name="TimeTB" Text="00:00/00:00"/>
-                            <Slider x:Name="TimeSD" Grid.Column="1" Margin="4,0,0,0" ValueChanged="TimeSD_ValueChanged"/>
+                            <Slider x:Name="TimeSD" Grid.Column="1" Margin="4,0,0,0" ValueChanged="TimeSD_ValueChanged" AccessKey="Q"/>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -133,7 +133,7 @@
                             <RowDefinition />
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <ToggleButton x:Name="TB_Lyric" Click="TB_Lyric_Click">
+                        <ToggleButton x:Name="TB_Lyric" Click="TB_Lyric_Click" AccessKey="A">
                             <FontIcon Glyph="词" FontSize="16" FontFamily="{StaticResource ContentControlThemeFontFamily}"/>
                         </ToggleButton>
                         <TextBlock Text="桌面歌词" Grid.Row="1"/>
@@ -143,13 +143,13 @@
                             <RowDefinition />
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <Button Padding="17">
+                        <Button Padding="17" AccessKey="S">
                             <Button.Flyout>
                                 <MenuFlyout>
-                                    <MenuFlyoutItem Text="顺序播放" Click="MenuFlyoutItem_Click" Tag="0"/>
-                                    <MenuFlyoutItem Text="随机播放" Click="MenuFlyoutItem_Click" Tag="1"/>
-                                    <MenuFlyoutItem Text="单曲循环" Click="MenuFlyoutItem_Click" Tag="2"/>
-                                    <MenuFlyoutItem Text="播放完成后停止" Click="MenuFlyoutItem_Click" Tag="3"/>
+                                    <MenuFlyoutItem Text="顺序播放" Click="MenuFlyoutItem_Click" Tag="0" AccessKey="Z"/>
+                                    <MenuFlyoutItem Text="随机播放" Click="MenuFlyoutItem_Click" Tag="1" AccessKey="X"/>
+                                    <MenuFlyoutItem Text="单曲循环" Click="MenuFlyoutItem_Click" Tag="2" AccessKey="C"/>
+                                    <MenuFlyoutItem Text="播放完成后停止" Click="MenuFlyoutItem_Click" Tag="3" AccessKey="v"/>
                                 </MenuFlyout>
                             </Button.Flyout>
                             <Path Fill="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 顺序播放}" Stretch="Uniform"/>
@@ -168,7 +168,7 @@
                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xe995;" FontSize="16"/>
                 </Button>
                 <Slider x:Name="VolumeSD" Grid.Column="1" VerticalAlignment="Center" Margin="12,0,12,0"
-                        ValueChanged="VolumeSD_ValueChanged"/>
+                        ValueChanged="VolumeSD_ValueChanged" IsThumbToolTipEnabled="False"/>
                 <TextBlock Grid.Column="2" Width="24" VerticalAlignment="Center" TextAlignment="Center" Text="{Binding ElementName=VolumeSD,Path=Value}"/>
             </Grid>
         </Grid>
@@ -184,17 +184,17 @@
             </Grid.Resources>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
                         Margin="4,3,8,5">
-                <Button Click="Button_Click" Tag="returnback" ToolTipService.ToolTip="返回到应用程序">
+                <Button Click="Button_Click" Tag="returnback" ToolTipService.ToolTip="返回到应用程序" AccessKey="Z">
                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xe944;" FontSize="16"/>
                 </Button>
-                <Button Click="Button_Click" Tag="setting" ToolTipService.ToolTip="设置">
+                <Button Click="Button_Click" Tag="setting" ToolTipService.ToolTip="设置" AccessKey="X">
                     <AnimatedIcon>
                         <AnimatedIcon.Source>
                             <m:AnimatedSettingsVisualSource/>
                         </AnimatedIcon.Source>
                     </AnimatedIcon>
                 </Button>
-                <Button Click="Button_Click" Tag="off" ToolTipService.ToolTip="关闭应用程序">
+                <Button Click="Button_Click" Tag="off" ToolTipService.ToolTip="关闭应用程序" AccessKey="C">
                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xe7e8;" FontSize="16"/>
                 </Button>
             </StackPanel>

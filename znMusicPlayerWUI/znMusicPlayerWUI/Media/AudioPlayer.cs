@@ -205,7 +205,7 @@ namespace znMusicPlayerWUI.Media
 
         public void OnPropertyValueChanged(string deviceId, PropertyKey propertyKey)
         {
-            Debug.WriteLine($"Device PropertyValue changed. deviceId:{deviceId}/propertyKey:{propertyKey.ToString()}.");
+            Debug.WriteLine($"Device PropertyValue changed. deviceId: {deviceId} / propertyKey:{propertyKey.formatId.ToString()}.");
             OnPropertyValueChangedEvent?.Invoke(deviceId, propertyKey);
         }
 

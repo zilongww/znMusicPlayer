@@ -162,35 +162,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                             if (type == SearchDataType.歌曲)
                             {
                                 MusicListData ld = new(keyword, keyword, null, MusicFrom.neteaseMusic, null, null);
-                                ld.Songs = new();
-
-                                foreach (var song in a["result"]["songs"])
-                                {
-                                    List<Artist> artists = null;
-                                    // 添加歌手
-                                    if (song["ar"] != null)
-                                    {
-                                        artists = new();
-                                        foreach (var artist in song["ar"])
-                                        {
-                                            artists.Add(new(
-                                                (string)artist["name"],
-                                                (string)artist["id"],
-                                                null
-                                                ));
-                                        }
-                                    }
-
-                                    // 初始化歌曲信息
-                                    ld.Songs.Add(new(
-                                        (string)song["name"], (string)song["id"],
-                                        artists,
-                                        new((string)song["al"]["name"], (string)song["al"]["id"], (string)song["al"]["picUrl"]),
-                                        (string)song["publishTime"],
-                                        MusicFrom.neteaseMusic
-                                        ));
-                                }
-
+                                ld.Songs = UnpackMusicData(a["result"]["songs"]);
                                 return ld;
                             }
                             else if (type == SearchDataType.歌单)
@@ -242,7 +214,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
         public List<MusicData> UnpackMusicData(JToken token)
         {
             var datas = new List<MusicData>();
-            foreach (var md in token)
+            foreach (JObject md in token)
             {
                 List<Artist> artists = new();
                 foreach (var artist in md["ar"])
@@ -252,14 +224,18 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                         (string)artist["id"], null
                         ));
                 }
-                datas.Add(new(
+
+                MusicData data = new(
                     (string)md["name"],
                     (string)md["id"],
                     artists,
                     new((string)md["al"]["name"], (string)md["al"]["id"], md["al"].Contains("picUrl") ? (string)md["al"]["picUrl"] : null),
-                    md.Contains("publishTime") ? (string)md["publishTime"] : null,
-                    MusicFrom.neteaseMusic
-                    ));
+                    md.ContainsKey("publishTime") ? (string)md["publishTime"] : null,
+                    MusicFrom.neteaseMusic);
+
+                if (md.ContainsKey("tns"))
+                    data.Title2 = (string)md["tns"].First();
+                datas.Add(data);
             }
             return datas;
         }
@@ -335,8 +311,9 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                     Artist artist = new();
                     if (data["code"].ToString() == "200")
                     {
-                        var art = data["artist"];
+                        JObject art = (JObject)data["artist"];
                         artist.Name = (string)art["name"];
+                        artist.Name2 = art.ContainsKey("trans") ? (string)art["trans"] : null;
                         artist.ID = (string)art["id"];
                         artist.PicturePath = (string)art["img1v1Url"];
                         artist.Describee = (string)art["briefDesc"];
@@ -389,35 +366,33 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                     {
                         if (data["code"].ToString() == "200")
                         {
-                            var album = data["album"];
+                            JObject album = (JObject)data["album"];
                             var artist = album["artist"];
                             Album = new()
                             {
                                 Title = (string)album["name"],
+                                Title2 = album["alias"].Any() ? (string)album["alias"].First : null,
                                 ID = id,
                                 PicturePath = (string)album["picUrl"],
                                 Describee = (string)album["description"],
                                 RelaseTime = (string)album["publishTime"]
                             };
                             Album.Artists = new()
-                        {
-                            new()
                             {
-                                Name = (string)artist["name"],
-                                Name2 = (string)artist["trans"],
-                                ID = (string)artist["id"],
-                                PicturePath = (string)artist["picUrl"],
-                            }
-                        };
+                                new()
+                                {
+                                    Name = (string)artist["name"],
+                                    Name2 = (string)artist["trans"],
+                                    ID = (string)artist["id"],
+                                    PicturePath = (string)artist["picUrl"],
+                                }
+                            };
                             Album.Songs = new()
                             {
                                 ListFrom = MusicFrom.neteaseMusic,
                                 ListDataType = DataType.专辑
                             };
-                            foreach (var song in UnpackMusicData(data["songs"]))
-                            {
-                                Album.Songs.Songs.Add(song);
-                            }
+                            Album.Songs.Songs = UnpackMusicData(data["songs"]);
                         }
                     }
                     catch(Exception err)

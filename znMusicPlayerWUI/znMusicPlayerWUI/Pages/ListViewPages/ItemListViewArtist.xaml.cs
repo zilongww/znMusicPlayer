@@ -102,7 +102,7 @@ namespace znMusicPlayerWUI.Pages
             }
             NavToObj = obj;
             musicListData = NavToObj.HotSongs;
-            Artist_SmallName.Text = NavToObj.Name;
+            Artist_SmallName.Text = string.IsNullOrEmpty(NavToObj.Name2) ? NavToObj.Name : $"{NavToObj.Name}（{NavToObj.Name2}）";
             ToolTipService.SetToolTip(Artist_Info, NavToObj.Describee);
 
             if (musicListData != null)

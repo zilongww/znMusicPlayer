@@ -227,7 +227,15 @@ namespace znMusicPlayerWUI.Controls
             try
             {
                 var deletePath = await ImageManage.GetImageSource(MusicListData);
-                await Task.Run(() => File.Delete(deletePath));
+                await Task.Run(() =>
+                {
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(deletePath)) File.Delete(deletePath);
+                    }
+                    catch { }
+                });
+
 
                 var playlist = await App.metingServices.NeteaseServices.GetPlayList(MusicListData.ID);
                 MusicListData = playlist;

@@ -58,6 +58,7 @@ namespace znMusicPlayerWUI.Windowed
             this.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
             this.AppWindow.IsShownInSwitchers = false;
             this.AppWindow.Title = $"{App.AppName} NotifyIcon";
+            this.AppWindow.SetIcon("icon.ico");
 
             this.AppWindow.TitleBar.ButtonBackgroundColor = Color.FromArgb(0, 0, 0, 0);
             this.AppWindow.TitleBar.ButtonForegroundColor = Color.FromArgb(0, 255, 255, 255);
@@ -235,6 +236,7 @@ namespace znMusicPlayerWUI.Windowed
         private void NotifyIcon_DoubleClick(object sender, EventArgs e)
         {
             App.AppWindowLocal.Show();
+            App.AppWindowLocalOverlappedPresenter.Restore();
             PInvoke.User32.SetForegroundWindow(App.AppWindowLocalHandle);
         }
 
@@ -427,6 +429,7 @@ namespace znMusicPlayerWUI.Windowed
                     break;
                 case "returnback":
                     App.AppWindowLocal.Show();
+                    App.AppWindowLocalOverlappedPresenter.Restore();
                     PInvoke.User32.SetForegroundWindow(App.AppWindowLocalHandle);
                     break;
             }

@@ -35,7 +35,6 @@ namespace znMusicPlayerWUI.Windowed
 {
     public sealed partial class DesktopLyricWindow : Window
     {
-        public AppWindow AppWindow { get; private set; }
         public OverlappedPresenter overlappedPresenter { get; private set; }
         private SUBCLASSPROC subClassProc;
         bool transparent = true;
@@ -43,7 +42,6 @@ namespace znMusicPlayerWUI.Windowed
         public DesktopLyricWindow()
         {
             InitializeComponent();
-            AppWindow = WindowHelperzn.WindowHelper.GetAppWindowForCurrentWindow(this);
             /*
             WindowHelper.Window.hWnd = WindowHelper.Window.GetHWnd(this);
             WindowHelper.Window.MakeTransparent();*/
@@ -58,7 +56,7 @@ namespace znMusicPlayerWUI.Windowed
                 AppWindow.SetPresenter(overlappedPresenter);
                 AppWindow.IsShownInSwitchers = false;
                 AppWindow.Title = "Desktop Lyric Window";
-                AppWindow.SetIcon(null);
+                AppWindow.SetIcon("icon.ico");
                 AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
                 AppWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
                 AppWindow.TitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;

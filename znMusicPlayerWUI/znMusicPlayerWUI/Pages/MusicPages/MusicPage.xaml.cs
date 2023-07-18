@@ -377,6 +377,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         {
             if (audioPlayer.MusicData == null) return;
             TitleRunText.Text = audioPlayer.MusicData.Title;
+            Title2RunText.Text = audioPlayer.MusicData.Title2;
             ArtistRunText.Text = audioPlayer.MusicData.ArtistName;
             AlbumRunText.Text = audioPlayer.MusicData.Album.Title;
             OtherRunText.Text = audioPlayer.MusicData.From.ToString();
@@ -731,7 +732,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void TitleFlyout_Opening(object sender, object e)
         {
-            TitleMenuFlyoutText.Text = MusicData.Title;
+            TitleMenuFlyoutText.Text = $"{MusicData.Title}（{MusicData.Title2}）";
         }
 
         private void AlbumFlyout_Opening(object sender, object e)

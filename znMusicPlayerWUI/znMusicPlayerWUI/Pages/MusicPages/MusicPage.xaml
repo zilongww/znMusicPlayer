@@ -149,7 +149,10 @@
                                     <MenuFlyoutItem x:Name="CopyMenuItem" Click="CopyMenuItem_Click" Text="复制" Icon="copy"/>
                                 </MenuFlyout>
                             </Button.Flyout>
-                            <TextBlock x:Name="TitleRunText" FontWeight="Normal" FontSize="24" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="TitleRunText" FontWeight="Normal" FontSize="24" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                                <TextBlock x:Name="Title2RunText" VerticalAlignment="Bottom" Foreground="{ThemeResource ApplicationPressedForegroundThemeBrush}"/>
+                            </StackPanel>
                         </Button>
                         <Button x:Name="AlbumRunButton" AccessKey="B" Click="AlbumRunButton_Click">
                             <Button.Flyout>

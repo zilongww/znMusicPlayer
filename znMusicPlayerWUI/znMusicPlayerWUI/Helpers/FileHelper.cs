@@ -267,9 +267,13 @@ namespace znMusicPlayerWUI.Helpers
             });
         }
 
-        public static string FileTypeGet(string name)
+        public static string FileTypeGet(string filename)
         {
-            FileStream fs = new FileStream(@name, FileMode.Open, FileAccess.Read);
+            return FileTypeGet(File.Create(filename));
+        }
+
+        public static string FileTypeGet(FileStream fs)
+        {
             byte[] imagebytes = new byte[fs.Length];
             BinaryReader br = new BinaryReader(fs);
             imagebytes = br.ReadBytes(2);

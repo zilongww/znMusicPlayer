@@ -34,6 +34,7 @@ using Windows.Media.Playback;
 using Windows.Media;
 using Windows.Storage.Streams;
 using Windows.Storage;
+using znMusicPlayerWUI.Background.HotKeys;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -53,6 +54,7 @@ namespace znMusicPlayerWUI
         public static readonly LyricManager lyricManager = new();
         public static readonly DownloadManager downloadManager = new();
         public static readonly PlayListReader playListReader = new();
+        public static readonly HotKeyManager hotKeyManager = new();
 
         public static Window WindowLocal;
         public static AppWindow AppWindowLocal;
@@ -65,7 +67,7 @@ namespace znMusicPlayerWUI
         public static NotifyIconWindow NotifyIconWindow;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.2.47 Preview";
+        public static readonly string AppVersion = "0.2.48 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -176,6 +178,7 @@ namespace znMusicPlayerWUI
             
             m_window.Activate();
             m_window.Closed += M_window_Closed;
+            hotKeyManager.Init(m_window);
             //AppWindowLocal.SetPresenter(AppWindowLocalPresenter);
             NotifyIconWindow = new();
         }

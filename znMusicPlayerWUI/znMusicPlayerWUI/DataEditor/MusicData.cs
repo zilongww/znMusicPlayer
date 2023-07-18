@@ -99,6 +99,7 @@ namespace znMusicPlayerWUI.DataEditor
     public class Album
     {
         public string Title { get; set; }
+        public string Title2 { get; set; }
         public string ID { get; set; }
         public string PicturePath { get; set; }
         public string Describee { get; set; }

@@ -129,6 +129,7 @@
                         <TextBlock x:Name="TitleTextBlock"
                                    x:FieldModifier="Public"
                                    IsHitTestVisible="False"
+                                   TextTrimming="CharacterEllipsis"
                                    Grid.Row="0"
                                    Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                                    FontSize="10">
@@ -136,6 +137,7 @@
                             <Run Text="{Binding MusicData.Title}"
                                  Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
                                  FontSize="14"/>
+                            <Run Text="{Binding MusicData.Title2}" FontSize="11"/>
                         </TextBlock>
                         <Grid Grid.Row="1" HorizontalAlignment="Left">
                             <Button BorderThickness="0"

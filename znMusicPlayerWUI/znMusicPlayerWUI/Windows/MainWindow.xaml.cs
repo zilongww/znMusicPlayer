@@ -134,13 +134,11 @@ namespace znMusicPlayerWUI
             // 第一次点击不会响应动画。。。
             App.LoadSettings();
             ReadLAE();
-            RegisterHotKeys();
         }
 
         bool isBackground = false;
         private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
-            return;
             args.Cancel = true;
             RemoveEvents();
             this.AppWindow.Hide();
@@ -1674,145 +1672,6 @@ namespace znMusicPlayerWUI
             {
                 App.audioPlayer.CurrentTime = TimeSpan.FromTicks((long)PlayTimeSlider.Value);
             }
-        }
-        #endregion
-
-        #region HotKeys
-        public void RegisterHotKeys()
-        {
-            Windows.Win32.Foundation.HWND hwnd = new Windows.Win32.Foundation.HWND(WinRT.Interop.WindowNative.GetWindowHandle(this));
-
-            // 需要注册热键的列表
-            var WillRegisterHotKeysList = new List<Tuple<Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS, uint>>()
-            {
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x25), // ctrl + left
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x27), // ctrl + right
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x28), // ctrl + down
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0x26), // ctrl + up
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0xBD), // ctrl + -
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL, (uint)0xBB), // ctrl + +
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB0), // ctrl + media next button
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB1), // ctrl + media previous button
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB2), // ctrl + media stop button
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_NOREPEAT, (uint)0xB3), // ctrl + media play or pause button
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x4F), // ctrl + shift + o
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x4C), // ctrl + shift + l
-                //Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x52), // ctrl + shift + r
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x49), // ctrl + shift + i
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x55), // ctrl + shift + u
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x24), // ctrl + shift + home
-                Tuple.Create(Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_CONTROL | Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS.MOD_SHIFT, (uint)0x4B), // ctrl + shift + k
-            };
-
-            var ErrorCantCreatHotKeysList = new List<uint>();
-
-            // 循环列表注册热键
-            foreach (Tuple<Windows.Win32.UI.Input.KeyboardAndMouse.HOT_KEY_MODIFIERS, uint> tuple in WillRegisterHotKeysList)
-            {
-                bool IsRegister = Windows.Win32.PInvoke.RegisterHotKey(
-                    hwnd, 0x9999,
-                    tuple.Item1,
-                    tuple.Item2);
-                if (!IsRegister) ErrorCantCreatHotKeysList.Add(tuple.Item2);
-            }
-
-            hotKeyPrc = HotKeyPrc;
-            var hotKeyPrcPointer = Marshal.GetFunctionPointerForDelegate(hotKeyPrc);
-            origPrc = Marshal.GetDelegateForFunctionPointer<Windows.Win32.UI.WindowsAndMessaging.WNDPROC>((IntPtr)Windows.Win32.PInvoke.SetWindowLongPtr(hwnd, Windows.Win32.UI.WindowsAndMessaging.WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, hotKeyPrcPointer));
-        }
-
-        private const uint WM_HOTKEY = 0x0312;
-        private Windows.Win32.UI.WindowsAndMessaging.WNDPROC origPrc;
-        private Windows.Win32.UI.WindowsAndMessaging.WNDPROC hotKeyPrc;
-
-        private Windows.Win32.Foundation.LRESULT HotKeyPrc(Windows.Win32.Foundation.HWND hwnd,
-            uint uMsg,
-            Windows.Win32.Foundation.WPARAM wParam,
-            Windows.Win32.Foundation.LPARAM lParam)
-        {
-            if (uMsg == WM_HOTKEY)
-            {
-                string code = lParam.Value.ToString();
-
-                if (code == "2424834" | code == "11599872")
-                {
-                    App.playingList.PlayPrevious();
-                }
-                else if (code == "2555906" || code == "11534336")
-                {
-                    App.playingList.PlayNext();
-                }
-                else if (code == "11665408" || code == "2490370")
-                {
-                    App.audioPlayer.CurrentTime = TimeSpan.Zero;
-                    App.audioPlayer.SetStop();
-                }
-                else if (code == "11730944" || code == "2621442")
-                {
-                    if (App.audioPlayer.PlaybackState == PlaybackState.Playing)
-                    {
-                        App.audioPlayer.SetPause();
-                    }
-                    else
-                    {
-                        App.audioPlayer.SetPlay();
-                    }
-                }
-                else if (code == "12255234")
-                {
-                    App.audioPlayer.Volume += 0.01f;
-                }
-                else if (code == "12386306")
-                {
-                    App.audioPlayer.Volume -= 0.01f;
-                }
-                else if (code == "4980742")
-                {
-                    OpenDesktopLyricWindow();
-                }
-                else if (code == "5373958" || code == "4784134")
-                {
-                    App.playingList.PlayBehaviour = App.playingList.PlayBehaviour == Background.PlayBehaviour.随机播放 ? Background.PlayBehaviour.顺序播放 : Background.PlayBehaviour.随机播放;
-                }
-                else if (code == "5177350")
-                {
-                    App.AppWindowLocalOverlappedPresenter.Restore();
-                }
-                else if (code == "5570566")
-                {
-                    if (IsDesktopLyricWindowOpen)
-                    {
-                        DesktopLyricWindow.Activate();
-                        DesktopLyricWindow.overlappedPresenter.Restore();
-                    }
-                }
-                else if (code == "2359302")
-                {
-                    if (App.playingList.NowPlayingList.Any())
-                    {
-                        App.playingList.Play(App.playingList.NowPlayingList.First());
-                    }
-                }
-                else if (code == "4915206")
-                {
-                    if (IsDesktopLyricWindowOpen)
-                    {
-                        if (!DesktopLyricWindow.IsLock)
-                        {
-                            DesktopLyricWindow.Lock();
-                        }
-                    }
-                }
-                else
-                {
-                    ShowDialog("未知热键", "未知的热键：\n" +
-                        $"●uMsg：{uMsg}\n" +
-                        $"●wParam.Value：{wParam.Value}\n" +
-                        $"●lParam.Value：{lParam.Value}");
-                }
-                return (Windows.Win32.Foundation.LRESULT)IntPtr.Zero;
-            }
-            return Windows.Win32.PInvoke.CallWindowProc(origPrc, hwnd, uMsg, wParam, lParam);
         }
         #endregion
     }

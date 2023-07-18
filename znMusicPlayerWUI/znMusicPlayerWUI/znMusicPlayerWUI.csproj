@@ -33,6 +33,7 @@
     <None Remove="Pages\DialogPages\AddPlayListPage.xaml" />
     <None Remove="Pages\DialogPages\AudioInfoPage.xaml" />
     <None Remove="Pages\DialogPages\EqualizerPage.xaml" />
+    <None Remove="Pages\DialogPages\HotKeyPage.xaml" />
     <None Remove="Pages\DownloadPage.xaml" />
     <None Remove="Pages\EmptyPage.xaml" />
     <None Remove="Pages\HistoryPage.xaml" />
@@ -88,8 +89,8 @@
 
   <ItemGroup>
     <None Include="Helpers\SDKs\NeteaseCloudMusicApi\NeteaseCloudMusicApi.csproj" />
-    <None Include="Media\NVorbis\NVorbis.csproj" />
-    <None Include="Media\TaglibSharp\TaglibSharp.csproj" />
+    <None Include="Media\Decoder\Ogg\NVorbis\NVorbis.csproj" />
+    <None Include="Media\AudioDataReader\TaglibSharp\TaglibSharp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -156,6 +157,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Pages\BrowsePage.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Pages\DialogPages\HotKeyPage.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

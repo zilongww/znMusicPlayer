@@ -70,9 +70,12 @@
                                             <RowDefinition/>
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
-                                        <TextBlock x:Name="AlbumTitle_Text" Text="{Binding NavToObj.Title}" TextWrapping="WrapWholeWords" Style="{ThemeResource SubTBHeader}"
-                                                       MaxHeight="70" TextTrimming="CharacterEllipsis"/>
-                                        <ScrollViewer x:Name="DescribeeTextRoot" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                        <TextBlock x:Name="AlbumTitle_Text" TextWrapping="WrapWholeWords" Style="{ThemeResource SubTBHeader}"
+                                                       MaxHeight="70" TextTrimming="CharacterEllipsis">
+                                            <Run Text="{Binding NavToObj.Title}"/>
+                                            <Run Text="{Binding NavToObj.Title2}" FontSize="14" Foreground="{ThemeResource ApplicationPressedForegroundThemeBrush}"/>
+                                        </TextBlock>
+                                        <ScrollViewer x:Name="DescribeeTextRoot" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Hidden" Margin="0,4,0,0">
                                             <TextBlock x:Name="DescribeeText" TextWrapping="WrapWholeWords" TextTrimming="CharacterEllipsis" Margin="0,0,0,0"
                                                        Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                                         </ScrollViewer>

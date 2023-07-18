@@ -51,6 +51,8 @@ namespace znMusicPlayerWUI.Pages
                 abcd.Source = App.playingList.NowPlayingList[new Random().Next(0, App.playingList.NowPlayingList.Count - 1)].Album.PicturePath;
             }
             catch { }
+
+            await MainWindow.ShowDialog("热键设置", new Controls.HotKeyPresenter(), defaultButton: ContentDialogButton.Close);
             return;
             //App.audioPlayerBass.LoadAudio();
             //System.Diagnostics.Debug.WriteLine(a[0].ListName);
