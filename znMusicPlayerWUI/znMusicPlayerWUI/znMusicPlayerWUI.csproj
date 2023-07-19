@@ -33,6 +33,7 @@
     <None Remove="Pages\DialogPages\AddPlayListPage.xaml" />
     <None Remove="Pages\DialogPages\AudioInfoPage.xaml" />
     <None Remove="Pages\DialogPages\EqualizerPage.xaml" />
+    <None Remove="Pages\DialogPages\HotKeyEditor.xaml" />
     <None Remove="Pages\DialogPages\HotKeyPage.xaml" />
     <None Remove="Pages\DownloadPage.xaml" />
     <None Remove="Pages\EmptyPage.xaml" />
@@ -97,6 +98,12 @@
     <Reference Include="Bass.Net">
       <HintPath>D:\UserData\Download\Bass.Net.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\DialogPages\HotKeyEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

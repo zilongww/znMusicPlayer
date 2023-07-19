@@ -27,6 +27,7 @@ using znMusicPlayerWUI.Helpers;
 using System.Diagnostics;
 using ATL.CatalogDataReaders;
 using znMusicPlayerWUI.DataEditor;
+using Windows.System.Profile;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -52,7 +53,6 @@ namespace znMusicPlayerWUI.Pages
             }
             catch { }
 
-            await MainWindow.ShowDialog("热键设置", new Controls.HotKeyPresenter(), defaultButton: ContentDialogButton.Close);
             return;
             //App.audioPlayerBass.LoadAudio();
             //System.Diagnostics.Debug.WriteLine(a[0].ListName);

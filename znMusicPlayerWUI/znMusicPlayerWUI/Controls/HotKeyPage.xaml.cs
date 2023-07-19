@@ -38,6 +38,8 @@ namespace znMusicPlayerWUI.Controls
         {
             var button = (Button)sender;
             nowChangedHotKey = button.DataContext as HotKey;
+            Pages.DialogPages.HotKeyEditor a = new();
+            a.ShowDialog(nowChangedHotKey);
         }
 
         private void HotKeyRoot_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
@@ -47,7 +49,6 @@ namespace znMusicPlayerWUI.Controls
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-
         }
     }
 
@@ -71,6 +72,34 @@ namespace znMusicPlayerWUI.Controls
         {
             HotKeyID c = (HotKeyID)value;
             return HotKey.GetHotKeyIDString(c);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class VKConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            Windows.System.VirtualKey c = (Windows.System.VirtualKey)value;
+            return $" + {c}";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class IsUsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            bool c = (bool)value;
+            return c ? "已被其它应用程序占用" : "";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

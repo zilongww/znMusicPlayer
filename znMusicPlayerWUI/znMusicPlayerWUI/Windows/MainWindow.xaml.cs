@@ -66,7 +66,7 @@ namespace znMusicPlayerWUI
         public static Frame SPlayContent;
         public static Flyout teachingTipVolume;
         public static Flyout teachingTipPlayingList;
-        static ContentDialog AsyncDialog = null;
+        public static ContentDialog AsyncDialog = null;
 
         public delegate void WindowViewStateChangedDelegate(bool isView);
         public static event WindowViewStateChangedDelegate WindowViewStateChanged;
@@ -1363,13 +1363,14 @@ namespace znMusicPlayerWUI
 
         #region Key Events
         bool isAltDown = false;
+        public static bool CanKeyDownBack = true;
         private void Grid_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             switch (e.Key)
             {
                 case Windows.System.VirtualKey.Back:
                 case Windows.System.VirtualKey.GoBack:
-                    TryGoBack();
+                    if (CanKeyDownBack) TryGoBack();
                     break;
                 case Windows.System.VirtualKey.GoForward:
                     TryGoForward();

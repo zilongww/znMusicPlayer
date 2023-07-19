@@ -69,5 +69,15 @@ namespace znMusicPlayerWUI.Pages
         {
             (sender as AutoSuggestBox).Focus(FocusState.Programmatic);
         }
+
+        private void AutoSuggestBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            MainWindow.CanKeyDownBack = false;
+        }
+
+        private void AutoSuggestBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            MainWindow.CanKeyDownBack = true;
+        }
     }
 }

@@ -304,7 +304,7 @@ namespace znMusicPlayerWUI.Controls
             };
 
             AnimateHelper.AnimateScalar(
-                ImageSource, 1f, 1.2,
+                ImageSource, 1f, 1.5,
                 0.2f, 1, 0.22f, 1f,
                 out var scaleVisual, out var compositor1, out var animation);
             scaleVisual.CenterPoint = new(scaleVisual.Size.X / 2, scaleVisual.Size.Y / 2, 1);

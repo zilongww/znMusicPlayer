@@ -10,11 +10,13 @@
     <Page.Resources>
         <local:MKConverter x:Key="MKConverter"/>
         <local:HMConverter x:Key="HMConverter"/>
+        <local:VKConverter x:Key="VKConverter"/>
+        <local:IsUsedConverter x:Key="IsUsedConverter"/>
     </Page.Resources>
     <ListView x:Name="HotKeyRoot" SelectionMode="None">
         <ListView.ItemTemplate>
             <DataTemplate x:DataType="data:HotKey">
-                <Grid Margin="0,8,4,0">
+                <Grid Margin="0,2,4,2">
                     <Grid Background="{ThemeResource LayerOnAcrylicFillColorDefaultBrush}"
                           BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                           BorderThickness="1" CornerRadius="8" Padding="12">
@@ -30,8 +32,11 @@
                             <TextBlock Text="{Binding HotKeyID,Converter={StaticResource HMConverter}}" FontSize="18" VerticalAlignment="center" Margin="0,0,0,6"/>
                             <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,0">
                                 <TextBlock Text="{Binding HotKeyModifiers,Converter={StaticResource MKConverter}}"/>
-                                <TextBlock Text="+" Margin="8,0"/>
-                                <TextBlock Text="{Binding VirtualKey}"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding VirtualKey, Converter={StaticResource VKConverter}}"/>
+                                    <TextBlock Text="{Binding IsUsed, Converter={StaticResource IsUsedConverter}}" Margin="12,0,0,0"
+                                               Foreground="#BBFF0000"/>
+                                </StackPanel>
                             </StackPanel>
                         </Grid>
                         

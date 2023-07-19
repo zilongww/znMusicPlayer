@@ -16,6 +16,8 @@
             <StackPanel Margin="{ThemeResource MPEdge}"
                         MaxWidth="{StaticResource MaxWidthControls}">
                 <AutoSuggestBox PlaceholderText="搜索"
+                                GotFocus="AutoSuggestBox_GotFocus"
+                                LostFocus="AutoSuggestBox_LostFocus"
                                 QuerySubmitted="AutoSuggestBox_QuerySubmitted"
                                 VerticalAlignment="Top"
                                 AccessKey="Q"

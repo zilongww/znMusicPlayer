@@ -30,11 +30,17 @@ namespace znMusicPlayerWUI.Background.HotKeys
         public User32.HotKeyModifiers HotKeyModifiers { get; set; }
         public Windows.System.VirtualKey VirtualKey { get; set; }
         public HotKeyID HotKeyID { get; set; }
+        public bool IsUsed { get; set; } = false;
         public HotKey(User32.HotKeyModifiers hotKeyModifiers, Windows.System.VirtualKey virtualKey, HotKeyID hotKeyID)
         {
             HotKeyModifiers = hotKeyModifiers;
             VirtualKey = virtualKey;
             HotKeyID = hotKeyID;
+        }
+
+        public override string ToString()
+        {
+            return $"{GetHKMString(HotKeyModifiers)} + {VirtualKey}";
         }
 
         public static string GetHKMString(User32.HotKeyModifiers hotKeyModifiers)
@@ -167,30 +173,30 @@ namespace znMusicPlayerWUI.Background.HotKeys
         {
             var r = User32.RegisterHotKey(
                 RegistedWindowHandle, (int)hotKey.HotKeyID, hotKey.HotKeyModifiers, (uint)hotKey.VirtualKey);
-            if (r) RegistedHotKeys.Add(hotKey);
+            if (!r) hotKey.IsUsed = true;
+            RegistedHotKeys.Add(hotKey);
+
             return r;
         }
 
         public bool UnregisterHotKey(HotKeyID hotKeyID)
         {
             var r = User32.UnregisterHotKey(RegistedWindowHandle, (int)hotKeyID);
-            if (r)
+            foreach (var item in RegistedHotKeys)
             {
-                foreach (var item in RegistedHotKeys)
+                if (item.HotKeyID == hotKeyID)
                 {
-                    if (item.HotKeyID == hotKeyID)
-                    {
-                        RegistedHotKeys.Remove(item);
-                        break;
-                    }
+                    RegistedHotKeys.Remove(item);
+                    break;
                 }
             }
+
             return r;
         }
 
         public bool ChangeHotKey(HotKey hotKey)
         {
-            if (!UnregisterHotKey(hotKey.HotKeyID)) return false;
+            UnregisterHotKey(hotKey.HotKeyID);
             return RegisterHotKey(hotKey);
         }
 

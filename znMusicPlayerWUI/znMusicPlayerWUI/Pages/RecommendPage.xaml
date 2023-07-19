@@ -41,7 +41,7 @@
                     Click="Button_Click"/>
             </StackPanel>
         </ScrollViewer>
-        <control:AutoScrollViewer Background="Black" RequestedTheme="Dark" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12">
+        <control:AutoScrollViewer Background="{ThemeResource SystemControlAltLowAcrylicElementBrush}" RequestedTheme="Dark" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12">
             <TextBlock Text="Auto Scroll To View Control Test" Width="200"/>
         </control:AutoScrollViewer>
     </Grid>
