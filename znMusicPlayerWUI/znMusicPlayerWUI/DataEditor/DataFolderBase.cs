@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using znMusicPlayerWUI.Background.HotKeys;
 
 namespace znMusicPlayerWUI.DataEditor
 {
@@ -82,7 +83,8 @@ namespace znMusicPlayerWUI.DataEditor
             { SettingParams.EqualizerCustomData.ToString(), "0,0,0,0,0,0,0,0,0,0" },
             { SettingParams.WasapiOnly.ToString(), false },
             { SettingParams.AudioLatency.ToString(), 200 },
-            { SettingParams.MusicPageShowLyricPage.ToString(), true }
+            { SettingParams.MusicPageShowLyricPage.ToString(), true },
+            { SettingParams.HotKeySettings.ToString(), JArray.FromObject(HotKeyManager.DefaultRegisterHotKeysList) }
         };
         
         /// <summary>
@@ -105,7 +107,8 @@ namespace znMusicPlayerWUI.DataEditor
             EqualizerCustomData,
             WasapiOnly,
             AudioLatency,
-            MusicPageShowLyricPage
+            MusicPageShowLyricPage,
+            HotKeySettings
         }
 
         public static void InitFiles()

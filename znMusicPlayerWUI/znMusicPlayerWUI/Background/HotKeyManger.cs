@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Vanara.PInvoke;
 using Microsoft.UI.Xaml;
 using System.Collections.ObjectModel;
+using Newtonsoft.Json;
 
 namespace znMusicPlayerWUI.Background.HotKeys
 {
@@ -29,7 +30,8 @@ namespace znMusicPlayerWUI.Background.HotKeys
     {
         public User32.HotKeyModifiers HotKeyModifiers { get; set; }
         public Windows.System.VirtualKey VirtualKey { get; set; }
-        public HotKeyID HotKeyID { get; set; }
+        public HotKeyID HotKeyID { get; set; } = default;
+        [JsonIgnore]
         public bool IsUsed { get; set; } = false;
         public HotKey(User32.HotKeyModifiers hotKeyModifiers, Windows.System.VirtualKey virtualKey, HotKeyID hotKeyID)
         {
@@ -140,6 +142,24 @@ namespace znMusicPlayerWUI.Background.HotKeys
         public nint RegistedWindowHandle { get; private set; }
         public ObservableCollection<HotKey> RegistedHotKeys { get; private set; } = new();
 
+        public static List<HotKey> DefaultRegisterHotKeysList { get; set; } = new()
+        {
+            new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Left, HotKeyID.PreviousSong),
+            new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Right, HotKeyID.NextSong),
+            new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Down, HotKeyID.Pause),
+            new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Up, HotKeyID.Stop),
+            new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Subtract, HotKeyID.VolumeRemove),
+            new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Add, HotKeyID.VolumeAdd),
+            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.O, HotKeyID.OpenMainWindow),
+            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.L, HotKeyID.OpenLyricWindow),
+            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.I, HotKeyID.RandomPlay),
+            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.U, HotKeyID.TryActivityLyricWindow),
+            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.Home, HotKeyID.ReturnToFirstSong),
+            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.K, HotKeyID.LockLyricWindow)
+        };
+
+        public static List<HotKey> WillRegisterHotKeysList = DefaultRegisterHotKeysList;
+
         public HotKeyManager()
         {
         }
@@ -149,23 +169,7 @@ namespace znMusicPlayerWUI.Background.HotKeys
             RegistedWindow = window;
             RegistedWindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(window);
 
-            List<HotKey> willRegisterHotKeysList = new()
-            {
-                new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Left, HotKeyID.PreviousSong),
-                new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Right, HotKeyID.NextSong),
-                new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Down, HotKeyID.Pause),
-                new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Up, HotKeyID.Stop),
-                new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Subtract, HotKeyID.VolumeRemove),
-                new(User32.HotKeyModifiers.MOD_CONTROL, Windows.System.VirtualKey.Add, HotKeyID.VolumeAdd),
-                new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.O, HotKeyID.OpenMainWindow),
-                new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.L, HotKeyID.OpenLyricWindow),
-                new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.I, HotKeyID.RandomPlay),
-                new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.U, HotKeyID.TryActivityLyricWindow),
-                new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.Home, HotKeyID.ReturnToFirstSong),
-                new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.K, HotKeyID.LockLyricWindow)
-            };
-
-            RegisterHotKeys(willRegisterHotKeysList);
+            RegisterHotKeys(WillRegisterHotKeysList);
             InitCallBack();
         }
 
@@ -174,6 +178,7 @@ namespace znMusicPlayerWUI.Background.HotKeys
             var r = User32.RegisterHotKey(
                 RegistedWindowHandle, (int)hotKey.HotKeyID, hotKey.HotKeyModifiers, (uint)hotKey.VirtualKey);
             if (!r) hotKey.IsUsed = true;
+            else hotKey.IsUsed = false;
             RegistedHotKeys.Add(hotKey);
 
             return r;
@@ -205,18 +210,27 @@ namespace znMusicPlayerWUI.Background.HotKeys
         /// </summary>
         /// <param name="willRegisterHotKeysList"></param>
         /// <returns></returns>
-        public List<HotKey> RegisterHotKeys(List<HotKey> willRegisterHotKeysList)
+        public void RegisterHotKeys(List<HotKey> willRegisterHotKeysList)
         {
-            var ErrorCantCreatHotKeysList = new List<HotKey>();
-
             // 循环列表注册热键
             foreach (HotKey key in willRegisterHotKeysList)
             {
                 bool IsRegister = RegisterHotKey(key);
-                if (!IsRegister) ErrorCantCreatHotKeysList.Add(key);
             }
-
-            return ErrorCantCreatHotKeysList;
+        }
+        
+        /// <summary>
+        /// 批量注销热键
+        /// </summary>
+        /// <param name="willRegisterHotKeysList"></param>
+        /// <returns></returns>
+        public void UnregisterHotKeys(List<HotKey> willunregisterHotKeysList)
+        {
+            // 循环列表注册热键
+            foreach (HotKey key in willunregisterHotKeysList)
+            {
+                bool IsRegister = UnregisterHotKey(key.HotKeyID);
+            }
         }
 
         private void InitCallBack()

@@ -35,6 +35,7 @@ using Windows.Media;
 using Windows.Storage.Streams;
 using Windows.Storage;
 using znMusicPlayerWUI.Background.HotKeys;
+using Newtonsoft.Json.Linq;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -178,9 +179,9 @@ namespace znMusicPlayerWUI
             
             m_window.Activate();
             m_window.Closed += M_window_Closed;
-            hotKeyManager.Init(m_window);
             //AppWindowLocal.SetPresenter(AppWindowLocalPresenter);
             NotifyIconWindow = new();
+            hotKeyManager.Init(App.WindowLocal);
         }
 
         private void M_window_Closed(object sender, WindowEventArgs args)
@@ -213,6 +214,10 @@ namespace znMusicPlayerWUI
             {
                 metingServices.NeteaseCookie = (string)b[nmc];
             }
+
+            JArray hkd = (JArray)b[SettingParams.HotKeySettings.ToString()];
+            HotKeyManager.WillRegisterHotKeysList = hkd.ToObject<List<HotKey>>();
+
             metingServices.InitMeting();
         }
 
@@ -225,6 +230,7 @@ namespace znMusicPlayerWUI
             a[SettingParams.WasapiOnly.ToString()] = audioPlayer.WasapiOnly;
             a[SettingParams.AudioLatency.ToString()] = audioPlayer.Latency < 50 ? 50 : audioPlayer.Latency;
             a[SettingParams.MusicPageShowLyricPage.ToString()] = MainWindow.SMusicPage.ShowLrcPage;
+            a[SettingParams.HotKeySettings.ToString()] = JArray.FromObject(App.hotKeyManager.RegistedHotKeys);
 
             List<float> c = new();
             foreach (var d in AudioEqualizerBands.CustomBands)

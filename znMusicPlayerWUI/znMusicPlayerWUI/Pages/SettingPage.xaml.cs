@@ -20,6 +20,7 @@ using znMusicPlayerWUI.DataEditor;
 using Windows.Networking.Connectivity;
 using znMusicPlayerWUI.Windowed;
 using znMusicPlayerWUI.Background;
+using znMusicPlayerWUI.Background.HotKeys;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -355,6 +356,22 @@ namespace znMusicPlayerWUI.Pages
                 "●Alt + 左键 或 退格键 或 鼠标4键：返回上一页\n" +
                 "●Alt + 右键 或 鼠标5键：返回下一页"
                 );
+        }
+
+        private async void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            var list = App.hotKeyManager.RegistedHotKeys.ToList();
+            App.hotKeyManager.UnregisterHotKeys(list);
+            await Task.Delay(200);
+            App.hotKeyManager.RegisterHotKeys(list);
+        }
+
+        private async void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            var list = App.hotKeyManager.RegistedHotKeys.ToList();
+            App.hotKeyManager.UnregisterHotKeys(list);
+            await Task.Delay(200);
+            App.hotKeyManager.RegisterHotKeys(HotKeyManager.DefaultRegisterHotKeysList);
         }
     }
 }

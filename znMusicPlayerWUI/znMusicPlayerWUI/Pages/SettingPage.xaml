@@ -46,7 +46,7 @@
         </ListView.Header>
         
         <StackPanel Margin="0,0,0,0">
-            <TextBlock Text="下载和缓存" Style="{ThemeResource HeaderTextBlock}"/>
+            <TextBlock Text="下载和缓存" Style="{ThemeResource HeaderTextBlock}" Visibility="Collapsed"/>
             <Expander>
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal">
@@ -282,7 +282,7 @@
                     </Grid>
                 </StackPanel>
             </Expander>
-            <Expander x:Name="HotKeySettings" Padding="0">
+            <Expander x:Name="HotKeySettings">
                 <Expander.Transitions>
                     <TransitionCollection>
                         <RepositionThemeTransition/>
@@ -296,7 +296,31 @@
                         </StackPanel>
                     </StackPanel>
                 </Expander.Header>
-                <control:HotKeyPresenter Margin="-4,8"/>
+                <StackPanel>
+                    <Grid Style="{StaticResource ItemGridStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="尝试重新注册热键"/>
+                            <TextBlock Text="如果之前被占用的热键被其它程序释放，重新注册可以使该热键恢复在此程序功能" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Click="Button_Click_5" Content="重新注册"/>
+                    </Grid>
+                    <Grid Style="{StaticResource ItemGridStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="重置热键键位"/>
+                            <TextBlock Text="将热键键位恢复到程序默认键位" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Click="Button_Click_6" Content="重置"/>
+                    </Grid>
+                    <control:HotKeyPresenter Margin="-18,0"/>
+                </StackPanel>
             </Expander>
         </StackPanel>
     </ListView>

@@ -138,7 +138,14 @@ namespace znMusicPlayerWUI.Pages.DialogPages
             }
             else if (r == ContentDialogResult.Secondary)
             {
-
+                foreach (var k in HotKeyManager.DefaultRegisterHotKeysList)
+                {
+                    if (k.HotKeyID == changedHotKey.HotKeyID)
+                    {
+                        App.hotKeyManager.ChangeHotKey(k);
+                        break;
+                    }
+                }
             }
             MainWindow.AsyncDialog.PreviewKeyDown -= HotKeyEditor_KeyDown;
             MainWindow.AsyncDialog.PreviewKeyUp -= AsyncDialog_PreviewKeyUp;
