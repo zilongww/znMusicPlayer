@@ -45,7 +45,7 @@ namespace znMusicPlayerWUI.Media
             return error;
         }
 
-        static Dictionary<string, ImageSource> localImageCache = new();
+        public static Dictionary<string, ImageSource> localImageCache = new();
         /// <summary>
         /// 返回musicData对应的图像对象和图像所在的本地路径
         /// </summary>
@@ -65,39 +65,19 @@ namespace znMusicPlayerWUI.Media
             string resultPath = null;
             if (musicData.From == DataEditor.MusicFrom.localMusic)
             {
-                string foundation = musicData.CUETrackData == null
-                    ? string.IsNullOrEmpty(musicData.Album.Title) ? musicData.InLocal : musicData.Album.Title
-                    : musicData.InLocal;
-                if (localImageCache.ContainsKey(foundation))
+                    source = await CodeHelper.GetCover(musicData.InLocal, decodePixelWidth, decodePixelHeight);
+                if (source == null)
                 {
-                    try
+                    string coverPath = await Task.Run(() =>
                     {
-                        while (localImageCache[foundation] == null) await Task.Delay(400);
-                        source = localImageCache[foundation];
-                    }
-                    catch { }
-                }
-                else
-                {
-                    localImageCache.Add(foundation, null);
-                    source = await CodeHelper.GetCover(musicData.InLocal);
-                    if (source != null) localImageCache[foundation] = source;
-                    else
+                        FileInfo fileInfo = new FileInfo(musicData.InLocal);
+                        string coverPath = $"{fileInfo.DirectoryName}\\Cover.jpg";
+                        if (File.Exists(coverPath)) return coverPath;
+                        else return null;
+                    });
+                    if (coverPath != null)
                     {
-                        string coverPath = await Task.Run(() =>
-                        {
-                            FileInfo fileInfo = new FileInfo(musicData.InLocal);
-                            string coverPath = $"{fileInfo.DirectoryName}\\Cover.jpg";
-                            if (File.Exists(coverPath)) return coverPath;
-                            else return null;
-                        });
-                        if (coverPath != null)
-                        {
-                            source = await FileHelper.GetImageSource(coverPath);//, decodePixelWidth, decodePixelHeight, useBitmapImage);
-                            localImageCache[foundation] = source;
-                        }
-                        else
-                            localImageCache.Remove(foundation);
+                        source = await FileHelper.GetImageSource(coverPath, decodePixelWidth, decodePixelHeight, useBitmapImage);
                     }
                 }
             }

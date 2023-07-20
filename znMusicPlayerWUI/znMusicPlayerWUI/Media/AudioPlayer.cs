@@ -653,27 +653,30 @@ namespace znMusicPlayerWUI.Media
                 }
 
 
-                // 检查文件是否没有下载完成
-                bool notDownloaded = await Task.Run(() =>
+                if (musicData.From != MusicFrom.localMusic)
                 {
-                    if (File.ReadAllBytes(resultPath).Length <= 10)
+                    // 检查文件是否没有下载完成
+                    bool notDownloaded = await Task.Run(() =>
                     {
-                        return true;
-                    }
-                    return false;
-                });
-
-                // 当文件没有下载完成
-                if (notDownloaded)
-                {
-                    LoadingMusicDatas.Remove(musicData);
-                    CacheLoadedChanged?.Invoke(this);
-                    await Task.Run(() =>
-                    {
-                        if (File.Exists(resultPath))
-                            File.Delete(resultPath);
+                        if (File.ReadAllBytes(resultPath).Length <= 10)
+                        {
+                            return true;
+                        }
+                        return false;
                     });
-                    throw new FileLoadException("缓存文件不完整，请重新加载。");
+
+                    // 当文件没有下载完成
+                    if (notDownloaded)
+                    {
+                        LoadingMusicDatas.Remove(musicData);
+                        CacheLoadedChanged?.Invoke(this);
+                        await Task.Run(() =>
+                        {
+                            if (File.Exists(resultPath))
+                                File.Delete(resultPath);
+                        });
+                        throw new FileLoadException("缓存文件不完整，请重新加载。");
+                    }
                 }
 
                 LoadingMusicDatas.Remove(musicData);

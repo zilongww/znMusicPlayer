@@ -74,6 +74,9 @@ namespace znMusicPlayerWUI.Background
 
         public async Task InitLyricList(MusicData musicData)
         {
+            if (musicData == null) return;
+            NowPlayingLyrics.Clear();
+
             string cachePath = await FileHelper.GetLyricCache(musicData);
             string resultPath = null;
 
@@ -83,6 +86,13 @@ namespace znMusicPlayerWUI.Background
             }
             else
             {
+                if (musicData.From == MusicFrom.localMusic)
+                {
+                    var tagfile = await Task.Run(() => TagLib.File.Create(musicData.InLocal));
+                    await InitLyricList(tagfile);
+                    return;
+                }
+
                 Tuple<string, string> lyricTuple;
                 if (musicData.From == MusicFrom.neteaseMusic)
                 {
@@ -115,6 +125,12 @@ namespace znMusicPlayerWUI.Background
             await InitLyricList(resultPath);
         }
 
+        public async Task InitLyricList(TagLib.File file)
+        {
+            if (string.IsNullOrEmpty(file.Tag.Lyrics)) return;
+            InitLyricList(await LyricHelper.LyricToLrcData(file.Tag.Lyrics));
+        }
+
         public async Task InitLyricList(string lyricPath)
         {
             if (lyricPath == null)
@@ -136,15 +152,17 @@ namespace znMusicPlayerWUI.Background
                 f = await System.IO.File.ReadAllTextAsync(lyricPath, lrcEncode);
             }
 
-            NowPlayingLyrics.Clear();
-
             if (f.Length < 10)
             {
                 System.IO.File.Delete(lyricPath);
                 return;
             }
 
-            var lyricDatas = await LyricHelper.LyricToLrcData(f);
+            InitLyricList(await LyricHelper.LyricToLrcData(f));
+        }
+
+        public void InitLyricList(LyricData[] lyricDatas)
+        {
             if (lyricDatas.Length > 1)
             {
                 foreach (var i in lyricDatas)

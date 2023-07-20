@@ -104,6 +104,7 @@ namespace znMusicPlayerWUI.Pages
             }
             NavToObj = obj;
             musicListData = NavToObj.Songs;
+            Title2_Text.Text = obj.Title2;
 
             if (musicListData != null)
             {

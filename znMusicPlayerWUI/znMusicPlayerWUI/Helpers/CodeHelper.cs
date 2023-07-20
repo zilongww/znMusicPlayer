@@ -205,52 +205,88 @@ namespace znMusicPlayerWUI.Helpers
             return str;
         }
         #endregion
-/*
-        public static async Task<ImageSource> GetCover(string path)
-        {
-            try
-            {
-                Track track = null;
-                IList<PictureInfo> embeddedPictures = null;
-                await Task.Run(() => { track = new(path); embeddedPictures = track.EmbeddedPictures; });
-
-                foreach (PictureInfo pic in embeddedPictures)
+        /*
+                public static async Task<ImageSource> GetCover(string path)
                 {
-                    var a = new MemoryStream(pic.PictureData);
-                    var b = await SaveToImageSource(a);
-                    await a.DisposeAsync();
-                    return b;
-                }
-            }
-            catch { }
-            return null;
-        }
+                    try
+                    {
+                        Track track = null;
+                        IList<PictureInfo> embeddedPictures = null;
+                        await Task.Run(() => { track = new(path); embeddedPictures = track.EmbeddedPictures; });
+                        if (track.EmbeddedPictures.Any())
+                        {
+                            await ImageFromBytes((track.EmbeddedPictures.First().PictureData));
+                        }
 
-        public static async Task<ImageSource> SaveToImageSource(this MemoryStream stream)
+                    }
+                    catch { }
+                    return null;
+                }
+
+                public async static System.Threading.Tasks.Task<BitmapImage> ImageFromBytes(byte[] bytes)
+                {
+                    var image = new BitmapImage();
+
+                    try
+                    {
+                        var stream = new Windows.Storage.Streams.InMemoryRandomAccessStream();
+                        await stream.WriteAsync(bytes.AsBuffer());
+                        stream.Seek(0);
+                        await image.SetSourceAsync(stream);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex.Message);
+                    }
+
+                    return image;
+                }
+                public static async Task<ImageSource> SaveToImageSource(this MemoryStream stream)
+                {
+                    ImageSource imageSource = null;
+                    try
+                    {
+                        var ras = stream.AsRandomAccessStream();
+                        BitmapDecoder decoder = await BitmapDecoder.CreateAsync(ras);
+                        var provider = await decoder.GetPixelDataAsync();
+                        byte[] buffer = provider.DetachPixelData();
+                        WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+                        await bitmap.PixelBuffer.AsStream().WriteAsync(buffer, 0, buffer.Length);
+                        imageSource = bitmap;
+                    }
+                    catch { }
+                    return imageSource;
+                }
+        */
+
+        public async static System.Threading.Tasks.Task<BitmapImage> ImageFromBytes(byte[] bytes, int width = 0, int height = 0)
         {
-            ImageSource imageSource = null;
+            var image = new BitmapImage();
+            image.DecodePixelWidth = width;
+            image.DecodePixelHeight = height;
+
             try
             {
-                var ras = stream.AsRandomAccessStream();
-                BitmapDecoder decoder = await BitmapDecoder.CreateAsync(BitmapDecoder.JpegDecoderId, ras);
-                var provider = await decoder.GetPixelDataAsync();
-                byte[] buffer = provider.DetachPixelData();
-                WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
-                await bitmap.PixelBuffer.AsStream().WriteAsync(buffer, 0, buffer.Length);
-                imageSource = bitmap;
+                var stream = new Windows.Storage.Streams.InMemoryRandomAccessStream();
+                await stream.WriteAsync(bytes.AsBuffer());
+                stream.Seek(0);
+                await image.SetSourceAsync(stream);
             }
-            catch { }
-            return imageSource;
-        }
-*/
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
 
-        public static async Task<ImageSource> GetCover(string filePath)
+            return image;
+        }
+
+        public static async Task<ImageSource> GetCover(string path, int width = 0, int height = 0)
         {
             ImageSource result = null;
             try
             {
                 TagLib.File f = null;
-                await Task.Run(() => f = TagLib.File.Create(filePath));
+                await Task.Run(() => f = TagLib.File.Create(path));
                 if (f == null) return null;
                 if (f.Tag.Pictures == null) return null;
                 if (f.Tag.Pictures.Length == 0) return null;
@@ -261,7 +297,7 @@ namespace znMusicPlayerWUI.Helpers
                     f.Dispose();
                     return bin;
                 });
-                result = await SaveToImageSource(a);
+                result = await ImageFromBytes(a, width, height);
             }
             catch { result = null; }
 
@@ -279,17 +315,21 @@ namespace znMusicPlayerWUI.Helpers
                 ras = stream.AsRandomAccessStream();
             });
 
-            BitmapDecoder decoder = await BitmapDecoder.CreateAsync(BitmapDecoder.JpegDecoderId, ras);
-            var provider = await decoder.GetPixelDataAsync();
-            byte[] buffer = await Task.Run(() => provider.DetachPixelData());
-            WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
-            await bitmap.PixelBuffer.AsStream().WriteAsync(buffer, 0, buffer.Length);
-            imageSource = bitmap;
-            await Task.Run(() => { stream.Dispose(); ras.Dispose(); });
+            try
+            {
+                BitmapDecoder decoder = await BitmapDecoder.CreateAsync(ras);
+                var provider = await decoder.GetPixelDataAsync();
+                byte[] buffer = await Task.Run(() => provider.DetachPixelData());
+                WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+                await bitmap.PixelBuffer.AsStream().WriteAsync(buffer, 0, buffer.Length);
+                imageSource = bitmap;
+                await Task.Run(() => { stream.Dispose(); ras.Dispose(); });
+            }
+            catch { }
 
             return imageSource;
         }
-
+       
         public static string ToMD5(string strs)
         {
             MD5 md5 = MD5.Create();

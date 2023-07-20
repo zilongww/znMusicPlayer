@@ -123,7 +123,7 @@ namespace znMusicPlayerWUI.Media
                         }
                         break;
                     case "7079":
-                        readerStream = new AiffFileReader(f);
+                        readerStream = new AiffFileReader(fileName);
                         DecodeName = $"NAudio Aiff Decoder";
                         System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Aiff 解码器");
                         break;

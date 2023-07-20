@@ -108,7 +108,7 @@ namespace znMusicPlayerWUI.DataEditor
         public MusicListData Songs { get; set; }
         public Album(string title = null, string ID = null, string picturePath = null, string describee = null, MusicListData songs = null)
         {
-            Title = title;
+            Title = string.IsNullOrEmpty(title) ? "未知" : title;
             this.ID = ID == "0" || string.IsNullOrEmpty(ID) ? null : ID;
             PicturePath = picturePath;
             Describee = describee;

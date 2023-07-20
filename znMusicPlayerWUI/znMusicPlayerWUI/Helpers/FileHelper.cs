@@ -113,10 +113,7 @@ namespace znMusicPlayerWUI.Helpers
                 {
                     var file = new FileInfo(musicData.InLocal);
                     string lrcPath = $"{file.FullName.Replace(file.Extension, "")}.lrc";
-                    if (File.Exists(lrcPath))
-                    {
-                        return lrcPath;
-                    }
+                    if (File.Exists(lrcPath)) return lrcPath;
                 }
                 else
                 {

@@ -105,7 +105,7 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 IsHitTestVisible="False" x:FieldModifier="Public"
-                                CornerRadius="8">
+                                CornerRadius="4">
                             <Grid>
                                 <local:Imagezn x:Name="AlbumImage" ShowMenuBehavior="None"/>
                                 <Grid Width="58" Height="58" x:Name="FileNotExistsRoot" Visibility="Collapsed">

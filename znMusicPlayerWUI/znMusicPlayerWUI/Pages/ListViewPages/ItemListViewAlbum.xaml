@@ -60,7 +60,7 @@
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <Border x:Name="AlbumLogoRoot" CornerRadius="8" Margin="0,0,12,0" HorizontalAlignment="Left">
+                                <Border x:Name="AlbumLogoRoot" CornerRadius="8" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" Margin="0,0,12,0" HorizontalAlignment="Left">
                                     <controlszn:Imagezn x:Name="AlbumLogo" Source="/Images/SugarAndSalt.jpg"/>
                                 </Border>
                                 <Border x:Name="InfoTextsRoot" HorizontalAlignment="Left">
@@ -73,7 +73,7 @@
                                         <TextBlock x:Name="AlbumTitle_Text" TextWrapping="WrapWholeWords" Style="{ThemeResource SubTBHeader}"
                                                        MaxHeight="70" TextTrimming="CharacterEllipsis">
                                             <Run Text="{Binding NavToObj.Title}"/>
-                                            <Run Text="{Binding NavToObj.Title2}" FontSize="14" Foreground="{ThemeResource ApplicationPressedForegroundThemeBrush}"/>
+                                            <Run x:Name="Title2_Text" FontSize="14" Foreground="{ThemeResource ApplicationPressedForegroundThemeBrush}"/>
                                         </TextBlock>
                                         <ScrollViewer x:Name="DescribeeTextRoot" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Hidden" Margin="0,4,0,0">
                                             <TextBlock x:Name="DescribeeText" TextWrapping="WrapWholeWords" TextTrimming="CharacterEllipsis" Margin="0,0,0,0"

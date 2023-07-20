@@ -7,6 +7,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Windows.Media.Protection.PlayReady;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Helpers;
@@ -130,10 +131,11 @@ namespace znMusicPlayerWUI.Background
             /*
             System.Diagnostics.Debug.WriteLine(addressPath);
             System.Diagnostics.Debug.WriteLine(lastName);
-            System.Diagnostics.Debug.WriteLine(downloadPath);*/
+            System.Diagnostics.Debug.WriteLine(downloadPath);*//*
             var downloader = new DownloadService();
             await downloader.DownloadFileTaskAsync(addressPath, downloadPath);
-            downloader.Dispose();
+            downloader.Dispose();*/
+            await WebHelper.DownloadFileAsync(addressPath, downloadPath);
 /*
             System.Net.WebClient TheDownloader = new System.Net.WebClient();
             await TheDownloader.DownloadFileTaskAsync(new Uri(addressPath), downloadPath);*/
@@ -152,46 +154,32 @@ namespace znMusicPlayerWUI.Background
             };*/
 
             OnDownloadedPreview?.Invoke(dm);
+            byte[] picDatas = null;
 
-            bool picDownloaded = false;
             try
             {
-                await Task.Run(() => File.Create(picPath).Dispose());
-                await WebHelper.DownloadFileAsync(await WebHelper.GetPicturePathAsync(dm.MusicData), picPath);
-                await Task.Run(() =>
-                {
-                    System.Drawing.Image image = System.Drawing.Image.FromFile(picPath);
-                    System.Drawing.Bitmap bitmap = new(image, new(500, 500));
-                    image.Dispose();
-                    bitmap.Save(picPath);
-                    bitmap.Dispose();
-                });
-                picDownloaded = true;
+                picDatas = await WebHelper.Client.GetByteArrayAsync(await WebHelper.GetPicturePathAsync(dm.MusicData));
             }
             catch (Exception err)
             {
                 System.Diagnostics.Debug.WriteLine(err.ToString());
             }
 
-            TagLib.File tagFile = TagLib.File.Create(downloadPath);
-            TagLib.Tag tag = tagFile.Tag;
-
+            TagLib.File tagFile = null;
+            TagLib.Tag tag = null;
             await Task.Run(() =>
             {
-                if (picDownloaded)
+                tagFile = TagLib.File.Create(downloadPath);
+                tag = tagFile.Tag;
+/*
+                TagLib.Id3v2.AttachmentFrame cover = new()
                 {
-                    try
-                    {
-                        tag.Pictures = new[] { new TagLib.Picture(picPath) };
-                    }
-                    finally
-                    {
-                        if (File.Exists(picPath))
-                        {
-                            File.Delete(picPath);
-                        }
-                    }
-                }
+                    Type = TagLib.PictureType.FrontCover,
+                    Description = "Cover",
+                    Data = new TagLib.ByteVector(picDatas),
+                    TextEncoding = TagLib.StringType.UTF16
+                };*/
+                tag.Pictures = new[] { new TagLib.Picture(new TagLib.ByteVector(picDatas)) };
 
                 tag.Title = dm.MusicData.Title;
                 tag.Album = dm.MusicData.Album.Title;
@@ -210,7 +198,7 @@ namespace znMusicPlayerWUI.Background
             var lyric = await App.metingServices.NeteaseServices.GetLyric(dm.MusicData.ID);
             if (!lyric.Item1.Contains("纯音乐，请欣赏"))
             {
-                if (true)
+                if (lyric.Item1.Length >= 10)
                 {
                     await Task.Run(() =>
                     {

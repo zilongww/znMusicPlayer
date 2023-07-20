@@ -260,7 +260,7 @@ namespace znMusicPlayerWUI
             // SAMI
             ".sami", ".smi",
             // other
-            ".wav", ".ogg", ".flac", ".aiff", ".aif", ".mid", ".cue"
+            ".wav", ".ogg", ".flac", ".aiff", ".aif", ".mid", ".cue", ".dts"
         };
     }
 }

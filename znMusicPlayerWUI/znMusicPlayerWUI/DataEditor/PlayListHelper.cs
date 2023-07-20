@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using ATL.CatalogDataReaders;
 using System.Formats.Tar;
 using Newtonsoft.Json;
+using ATL;
 
 namespace znMusicPlayerWUI.DataEditor
 {
@@ -124,15 +125,15 @@ namespace znMusicPlayerWUI.DataEditor
             });
         }
 
-        public static async Task<JObject> AddLocalMusicDataToPlayList(string listName, FileInfo localFlie, JObject jdata)
+        public static async Task<JObject> AddLocalMusicDataToPlayList(string listName, FileInfo localFile, JObject jdata)
         {
-            if (localFlie.Extension == ".cue")
+            if (localFile.Extension == ".cue")
             {
                 await Task.Run(() =>
                 {
-                    CueSharp.CueSheet cueSheet = new CueSharp.CueSheet(localFlie.FullName);
-                    string path = $"{localFlie.DirectoryName}\\{cueSheet.Tracks.First().DataFile.Filename}";
-                    TimeSpan duration = default;
+                    CueSharp.CueSheet cueSheet = new CueSharp.CueSheet(localFile.FullName);
+                    string path = $"{localFile.DirectoryName}\\{cueSheet.Tracks.First().DataFile.Filename}";
+                    TimeSpan duration = default;/*
                     try
                     {
                         var tagFile = TagLib.File.Create(path);
@@ -140,10 +141,10 @@ namespace znMusicPlayerWUI.DataEditor
                         tagFile.Dispose();
                     }
                     catch
-                    {
+                    {*/
                         var track = new ATL.Track(path);
                         duration = TimeSpan.FromMilliseconds(track.DurationMs);
-                    }
+                    //}
 
                     List<MusicData> data = new List<MusicData>();
                     foreach (var t in cueSheet.Tracks)
@@ -178,7 +179,7 @@ namespace znMusicPlayerWUI.DataEditor
                                 Index = t.TrackNumber,
                                 StartDuration = startTime,
                                 EndDuration = endTime,
-                                Path = localFlie.FullName
+                                Path = localFile.FullName
                             },
                             Index = t.TrackNumber
                         };
@@ -198,13 +199,19 @@ namespace znMusicPlayerWUI.DataEditor
                 MusicData localAudioData;
                 TagLib.File tagFile = null;
                 TagLib.Tag tag = null;
+                //Track track = null;
                 bool isError = false;
 
                 try
-                {
+                {/*
                     await Task.Run(() =>
                     {
-                        tagFile = TagLib.File.Create(localFlie.FullName);
+                        track = new(localFile.FullName);
+                    });*/
+                    
+                    await Task.Run(() =>
+                    {
+                        tagFile = TagLib.File.Create(localFile.FullName);
                         tag = tagFile.Tag;
                         if (tag.IsEmpty) isError = true;
                         if (tag.Performers == null) isError = true;
@@ -217,32 +224,27 @@ namespace znMusicPlayerWUI.DataEditor
 
                 if (!isError)
                 {
-                    List<Artist> artists = null;
-                    if (tag.Performers.Any())
+                    List<Artist> artists = new();
+                    foreach (var art in tag.Performers)
                     {
-                        artists = new();
-                        foreach (var a in tag.Performers)
-                        {
-                            artists.Add(new(a, null, null));
-                        }
+                        artists.Add(new(art));
                     }
 
-
                     localAudioData = new MusicData(
-                        tag.Title == null ? localFlie.Name : tag.Title, null, artists, new(tag.Album),
-                        inLocal: localFlie.FullName, from: MusicFrom.localMusic
+                        tag.Title, null, artists, new(tag.Album),
+                        inLocal: localFile.FullName, from: MusicFrom.localMusic
                         )
-                    { Index = (int)tag.Track };
+                    { Index = (int)tag.Track};
                 }
                 else
                 {
                     localAudioData = new MusicData(
-                        localFlie.Name, null, null, new(null),
-                        inLocal: localFlie.FullName, from: MusicFrom.localMusic
+                        localFile.Name, null, null, new(null),
+                        inLocal: localFile.FullName, from: MusicFrom.localMusic
                         );
                 }
 
-                localAudioData.RelaseTime = localFlie.CreationTime.Ticks.ToString();
+                localAudioData.RelaseTime = localFile.CreationTime.Ticks.ToString();
                 return AddMusicDataToPlayList(listName, localAudioData, jdata);
             }
         }

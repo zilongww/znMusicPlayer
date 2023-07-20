@@ -101,28 +101,10 @@ namespace znMusicPlayerWUI.Helpers
                 switch (musicData.From)
                 {
                     case MusicFrom.neteaseMusic:
-
-                        //string address = MetingService.NeteaseMeting.PicObj(musicData.AlbumID).url;
-
-                        string address = $"http://music.163.com/api/song/detail/?id={musicData.ID}&ids=%5B{musicData.ID}%5D";
-                        string result = null;
-
-                        await Task.Run(async () =>
-                        {
-                            try
-                            {
-                                result = await Client.GetStringAsync(address);
-                            }
-                            catch(Exception err) { System.Diagnostics.Debug.WriteLine(err); return; }
-                            if (!string.IsNullOrEmpty(result))
-                            {
-                                if (!result.Contains("操作频繁"))
-                                {
-                                    result = JObject.Parse(result)["songs"][0]["album"]["picUrl"].ToString();
-                                    addressResult = result;
-                                }
-                            }
-                        });
+                        var album = await App.metingServices.NeteaseServices.GetAlbum(musicData.Album.ID);
+                        addressResult = album.PicturePath;
+                        /*var album = await App.metingServices.NeteaseServices.GetMusicData(musicData.ID);
+                        addressResult = album.Album.PicturePath;*/
                         break;
                     default:
                         addressResult = musicData.Album.PicturePath;

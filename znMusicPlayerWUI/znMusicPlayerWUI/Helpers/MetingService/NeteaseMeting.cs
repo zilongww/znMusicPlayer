@@ -422,5 +422,49 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                 return null;
             });
         }
+
+        public async Task<MusicData> GetMusicData(string songid)
+        {
+            return await Task.Run(() =>
+            {
+                var getSongAction = MusicData () =>
+                {
+                    var data = JObject.Parse(Services.FormatMethod(false).Song(songid));
+
+                    //System.Diagnostics.Debug.WriteLine(data);
+                    MusicData musicData = null;
+                    try
+                    {
+                        if (data["code"].ToString() == "200")
+                        {
+
+                        }
+                    }
+                    catch(Exception err)
+                    {
+                        System.Diagnostics.Debug.WriteLine(err);
+                    }
+
+                    return musicData;
+                };
+
+                for (int i = 0; i <= App.metingServices.RetryCount; i++)
+                {
+                    MusicData a = null;
+                    try
+                    {
+                        a = getSongAction();
+                    }
+                    catch(Exception err) { a = null; }
+
+                    if (a != null)
+                    {
+                        return a;
+                    }
+                }
+
+                return null;
+            });
+        }
     }
 }

@@ -44,6 +44,7 @@ namespace znMusicPlayerWUI.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            ImageManage.localImageCache.Clear();
             ConnectedAnimation animation =
                 ConnectedAnimationService.GetForCurrentView().GetAnimation("forwardAnimation");
             if (animation != null)
@@ -62,6 +63,7 @@ namespace znMusicPlayerWUI.Pages
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            ImageManage.localImageCache.Clear();
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
             App.playListReader.Updataed -= PlayListReader_Updataed;
 
