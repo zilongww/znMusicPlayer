@@ -115,6 +115,7 @@ namespace znMusicPlayerWUI.Pages
                 }
                 catch (Exception ex)
                 {
+                    LogHelper.WriteLog("SearchError", ex.ToString(), false);
                     string errString = $"搜索时出现错误：\n{ex.Message}";
                     var d = await MainWindow.ShowDialog("搜索失败", errString, "重试", "确定");
                     if (d == ContentDialogResult.Primary)

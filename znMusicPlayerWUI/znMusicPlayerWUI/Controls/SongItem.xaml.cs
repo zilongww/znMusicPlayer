@@ -145,15 +145,19 @@ namespace znMusicPlayerWUI.Controls
                 return;
             }
 
+            MusicData data = musicData;
             ImageSource a = (await Media.ImageManage.GetImageSource(musicData, (int)(58 * ImageScaleDPI), (int)(58 * ImageScaleDPI), true)).Item1;
-            if (a != null)
+            if (musicData == MusicData)
             {
-                ShowImage = true;
-                AlbumImage.Source = a;
-            }
-            else
-            {
-                ShowImage = false;
+                if (a != null)
+                {
+                    ShowImage = true;
+                    AlbumImage.Source = a;
+                }
+                else
+                {
+                    ShowImage = false;
+                }
             }
             MainWindow_DriveInTypeEvent(MainWindow.DriveInType);
         }

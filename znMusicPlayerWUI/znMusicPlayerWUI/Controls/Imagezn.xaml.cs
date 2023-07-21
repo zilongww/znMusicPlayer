@@ -248,6 +248,7 @@ namespace znMusicPlayerWUI.Controls
                     }
                     catch (Exception err)
                     {
+                        LogHelper.WriteLog("Imagezn MenuFlyoutItem_Click", err.ToString(), false);
                         await MainWindow.ShowDialog("保存图片失败", $"保存图片时出现错误：\n{err.Message}");
                     }
                 }

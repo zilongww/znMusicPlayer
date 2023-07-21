@@ -153,10 +153,12 @@ namespace znMusicPlayerWUI.Background
             }
             catch (NotEnoughBytesException err)
             {
+                LogHelper.WriteLog("PlayingList Play Midi Error", err.ToString(), false);
                 await MainWindow.ShowDialog("播放Midi音频时出现错误", $"似乎不支持此Midi音频文件。\n错误信息：{err.Message}");
             }
             catch (Exception e)
             {
+                LogHelper.WriteLog("PlayingList Play Error", e.ToString(), false);
                 a = false;
 #if DEBUG
                 await MainWindow.ShowDialog("播放音频时出现错误", e.ToString());

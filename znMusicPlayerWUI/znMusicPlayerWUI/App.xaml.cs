@@ -36,6 +36,7 @@ using Windows.Storage.Streams;
 using Windows.Storage;
 using znMusicPlayerWUI.Background.HotKeys;
 using Newtonsoft.Json.Linq;
+using Windows.UI.Popups;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -68,7 +69,7 @@ namespace znMusicPlayerWUI
         public static NotifyIconWindow NotifyIconWindow;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.2.48 Preview";
+        public static readonly string AppVersion = "0.2.49 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -122,7 +123,6 @@ namespace znMusicPlayerWUI
             playingList.NowPlayingImageLoaded += async (_, __) =>
             {
                 if (__ == null) return;
-                Debug.WriteLine(__);
                 SMTC.DisplayUpdater.Thumbnail = RandomAccessStreamReference.CreateFromFile(await StorageFile.GetFileFromPathAsync(__));
                 SMTC.DisplayUpdater.Update();
             };
@@ -130,8 +130,9 @@ namespace znMusicPlayerWUI
             TaskScheduler.UnobservedTaskException +=
             (object sender, UnobservedTaskExceptionEventArgs excArgs) =>
             {
+                LogHelper.WriteLog("UnobservedTaskError", excArgs.Exception.ToString(), false);
 #if DEBUG
-                Debug.WriteLine(excArgs.Exception.ToString());
+                Debug.WriteLine("UnobservedTaskError: " + excArgs.Exception.ToString());
 #endif
             };
         }
@@ -139,8 +140,9 @@ namespace znMusicPlayerWUI
         private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
         {
             e.Handled = true;
+            LogHelper.WriteLog("UnhandledError", e.Exception.ToString(), false);
 #if DEBUG
-            Debug.WriteLine(e.ToString());
+            Debug.WriteLine("UnhandledError: " + e.ToString());
 #endif
         }
 
@@ -176,7 +178,13 @@ namespace znMusicPlayerWUI
                 1140 * (int)dpi, 640 * (int)dpi,
                 false
                 );
-            
+
+            if (loadFailed)
+            {
+                ShowErrorDialog();
+                return;
+            }
+
             m_window.Activate();
             m_window.Closed += M_window_Closed;
             //AppWindowLocal.SetPresenter(AppWindowLocalPresenter);
@@ -193,32 +201,60 @@ namespace znMusicPlayerWUI
             Exit();
         }
 
+        static bool loadFailed = false;
+        static int retryCount = 0;
         public static void LoadSettings()
         {
-            var b = JSettingData;
-
-            var bdata = ((string)b[SettingParams.EqualizerCustomData.ToString()]).Split(',');
-            for (int i = 0; i < 10; i++)
+            try
             {
-                AudioEqualizerBands.CustomBands[i][2] = float.Parse(bdata[i]);
-            }
+                var b = JSettingData;
 
-            audioPlayer.Volume = (float)b[SettingParams.Volume.ToString()];
-            audioPlayer.EqEnabled = (bool)b[SettingParams.EqualizerEnable.ToString()];
-            audioPlayer.EqualizerBand = AudioEqualizerBands.GetBandFromString((string)b[SettingParams.EqualizerString.ToString()]);
-            audioPlayer.WasapiOnly = (bool)b[SettingParams.WasapiOnly.ToString()];
-            audioPlayer.Latency = (int)b[SettingParams.AudioLatency.ToString()];
-            MainWindow.SMusicPage.ShowLrcPage = (bool)b[SettingParams.MusicPageShowLyricPage.ToString()];
-            string nmc = "NeteaseMusicCookie";
-            if (b.ContainsKey(nmc))
+                var bdata = ((string)b[SettingParams.EqualizerCustomData.ToString()]).Split(',');
+                for (int i = 0; i < 10; i++)
+                {
+                    AudioEqualizerBands.CustomBands[i][2] = float.Parse(bdata[i]);
+                }
+
+                audioPlayer.Volume = (float)b[SettingParams.Volume.ToString()];
+                audioPlayer.EqEnabled = (bool)b[SettingParams.EqualizerEnable.ToString()];
+                audioPlayer.EqualizerBand = AudioEqualizerBands.GetBandFromString((string)b[SettingParams.EqualizerString.ToString()]);
+                audioPlayer.WasapiOnly = (bool)b[SettingParams.WasapiOnly.ToString()];
+                audioPlayer.Latency = (int)b[SettingParams.AudioLatency.ToString()];
+                MainWindow.SMusicPage.ShowLrcPage = (bool)b[SettingParams.MusicPageShowLyricPage.ToString()];
+                string nmc = "NeteaseMusicCookie";
+                if (b.ContainsKey(nmc))
+                {
+                    metingServices.NeteaseCookie = (string)b[nmc];
+                }
+
+                JArray hkd = (JArray)b[SettingParams.HotKeySettings.ToString()];
+                HotKeyManager.WillRegisterHotKeysList = hkd.ToObject<List<HotKey>>();
+
+                metingServices.InitMeting();
+            }
+            catch (Exception e)
             {
-                metingServices.NeteaseCookie = (string)b[nmc];
+                LogHelper.WriteLog("SettingError", e.ToString(), false);
+                if (retryCount >= 5)
+                {
+                    loadFailed = true;
+                    return;
+                }
+                retryCount++;
+                JSettingData = DataFolderBase.SettingDefault;
+                LoadSettings();
             }
+        }
 
-            JArray hkd = (JArray)b[SettingParams.HotKeySettings.ToString()];
-            HotKeyManager.WillRegisterHotKeysList = hkd.ToObject<List<HotKey>>();
-
-            metingServices.InitMeting();
+        public static async void ShowErrorDialog()
+        {
+            MessageDialog messageDialog = new("设置文件出现了一些错误，且程序尝试 5 次后也无法恢复默认配置。\n" +
+                "请尝试删除 文档->znMusicPlayerDatas->UserData 里的 Setting 文件。\n" +
+                "如果仍然出现问题，请到 GitHub 里向项目提出 Issues。", "读取设置时出错");
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(WindowLocal);
+            WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, hwnd);
+            await messageDialog.ShowAsync();
+            App.Current.Exit();
         }
 
         public static void SaveSettings()

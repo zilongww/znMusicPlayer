@@ -37,6 +37,11 @@ namespace znMusicPlayerWUI.DataEditor
         /// 历史记录数据文件路径
         /// </summary>
         public static string HistoryDataPath { get; } = UserDataFolder + @"\History";
+        
+        /// <summary>
+        /// 日志文件路径
+        /// </summary>
+        public static string LogDataPath { get; } = UserDataFolder + @"\Log";
 
         /// <summary>
         /// 缓存文件夹路径
@@ -96,6 +101,9 @@ namespace znMusicPlayerWUI.DataEditor
             { "Search", new JObject() }
         };
 
+        /// <summary>
+        /// 设置标志
+        /// </summary>
         public enum SettingParams { 
             Volume,
             AudioCacheFolderPath,
@@ -111,6 +119,9 @@ namespace znMusicPlayerWUI.DataEditor
             HotKeySettings
         }
 
+        /// <summary>
+        /// 初始化所有文件夹和文件
+        /// </summary>
         public static void InitFiles()
         {
             Directory.CreateDirectory(BaseFolder);
@@ -138,8 +149,19 @@ namespace znMusicPlayerWUI.DataEditor
                 File.Create(HistoryDataPath).Close();
                 File.WriteAllText(HistoryDataPath, HistoryDefault.ToString());
             }
+
+            if (!File.Exists(LogDataPath))
+            {
+                File.Create(LogDataPath).Close();
+            }
         }
 
+        /// <summary>
+        /// <list type="table">
+        ///     <item>数据文件的抽象。</item>
+        ///     <item>使用时会读取设置文件，设置时会写入数据文件</item>
+        /// </list>
+        /// </summary>
         public static JObject JSettingData
         {
             get => JObject.Parse(File.ReadAllText(SettingDataPath));

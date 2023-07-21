@@ -250,6 +250,7 @@ namespace znMusicPlayerWUI.Controls
             }
             catch (Exception ex)
             {
+                LogHelper.WriteLog("PlayingList Updata Error", ex.ToString(), false);
                 MainWindow.HideDialog();
                 await MainWindow.ShowDialog("更新歌单失败", $"更新歌单时遇到错误，请重试。\n错误信息：{ex}");
             }
