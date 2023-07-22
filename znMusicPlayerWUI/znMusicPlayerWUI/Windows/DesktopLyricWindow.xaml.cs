@@ -129,7 +129,7 @@ namespace znMusicPlayerWUI.Windowed
         private void AudioPlayer_VolumeChanged(Media.AudioPlayer audioPlayer, object data)
         {
 
-            ShowInfomation($"音量：{Math.Round(audioPlayer.Volume * 100)}");
+            ShowInfomation($"音量：{Math.Round(audioPlayer.Volume)}");
         }
 
         private void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)

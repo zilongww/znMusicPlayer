@@ -107,8 +107,14 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 a.ValueChanged += A_ValueChanged;
             }
             AudioPlayer = App.audioPlayer;
+            AudioPlayer.SourceChanged += AudioPlayer_SourceChanged;
             AudioPlayer.EqualizerBandChanged += AudioPlayer_EqualizerBandChanged;
             AudioPlayer.PreviewSourceChanged += AudioPlayer_PreviewSourceChanged;
+        }
+
+        private void AudioPlayer_SourceChanged(Media.AudioPlayer audioPlayer)
+        {
+            OutDevicesTextBlock.Text = audioPlayer.NowOutDevice.ToString();
         }
 
         bool inComboxChange = false;
@@ -222,7 +228,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
 
         private async void AddOutDeviceToFlyOut()
         {
-            var a = await Media.OutDevice.GetOutDevices();
+            var a = await Media.OutDevice.GetOutDevicesAsync();
             OutDevicesFlyout.Items.Clear();
             foreach (var b in a)
             {
@@ -237,6 +243,11 @@ namespace znMusicPlayerWUI.Pages.DialogPages
             (sender as Button).IsEnabled = false;
             await App.audioPlayer.Reload();
             (sender as Button).IsEnabled = true;
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            AudioPlayer_SourceChanged(App.audioPlayer);
         }
     }
 

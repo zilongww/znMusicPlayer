@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
-    mc:Ignorable="d">
+    mc:Ignorable="d" Loaded="Page_Loaded">
     <Page.Resources>
         <local:ThumbToolTipValueConverter x:Key="thumbToolTipValueC"/>
     </Page.Resources>
@@ -157,7 +157,7 @@
                             <DropDownButton.Flyout>
                                 <MenuFlyout x:Name="OutDevicesFlyout"/>
                             </DropDownButton.Flyout>
-                            <TextBlock x:Name="OutDevicesTextBlock" Text="{Binding AudioPlayer.NowOutDevice}"/>
+                            <TextBlock x:Name="OutDevicesTextBlock"/>
                         </DropDownButton>
                     </StackPanel>
                     <NumberBox x:Name="LatencyNumberBox" Header="音频缓冲时间" AccessKey="L" Width="140" Value="{Binding Latency,Mode=TwoWay}" PlaceholderText="整数（ms）" Maximum="1000" Minimum="50" SpinButtonPlacementMode="Compact"/>

@@ -50,12 +50,16 @@ namespace znMusicPlayerWUI.Media
 
         public override string ToString()
         {
+            if (DeviceType == OutApi.None)
+            {
+                return "无音频输出设备";
+            }
             return $"{DeviceType} - {(IsDefaultDevice ? defaultName : DeviceName)}";
         }
 
         public override string GetMD5()
         {
-            return $"{DeviceType}{Device}{DeviceName}";
+            return ToString();
         }
 
         public static OutDevice GetWasapiDefaultDevice(MMDeviceEnumerator enumerator)
@@ -80,30 +84,12 @@ namespace znMusicPlayerWUI.Media
         /// 获取可以播放的音频输出设备列表
         /// </summary>
         /// <returns>OutDevice集合</returns>
-        public static async Task<List<OutDevice>> GetOutDevices()
+        public static async Task<List<OutDevice>> GetOutDevicesAsync()
         {
             List<OutDevice> outDevices = new List<OutDevice>();
 
             await Task.Run(() =>
             {
-                // Wasapi
-                var enumerator = new MMDeviceEnumerator();
-                try
-                {
-                    // 添加默认设备
-                    outDevices.Add(GetWasapiDefaultDevice(enumerator));
-                }
-                catch { }
-
-                foreach (var wasapi in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
-                {
-                    OutDevice outDevice = new OutDevice(OutApi.Wasapi, wasapi.ID, wasapi.FriendlyName);
-                    outDevice.SampleRate = wasapi.AudioClient.MixFormat.SampleRate;
-                    outDevice.Channels = wasapi.AudioClient.MixFormat.Channels;
-                    outDevices.Add(outDevice);
-                }
-                enumerator.Dispose();
-
                 // WaveOut
                 for (int n = -1; n < WaveOut.DeviceCount; n++)
                 {
@@ -119,17 +105,47 @@ namespace znMusicPlayerWUI.Media
                 {
                     string name = dev.Description;
                     OutDevice outDevice = new OutDevice(OutApi.DirectSound, dev, name) { IsDefaultDevice = name == "主声音驱动程序" ? true : false };
-                    outDevices.Add(outDevice);
+
+                    if (dev != null)
+                        foreach (var device in outDevices)
+                        {
+                            if (device != outDevice)
+                            {
+                                outDevices.Add(outDevice);
+                                break;
+                            }
+                        }
                 }
                 if (outDevices.Count < 2) outDevices.Clear();
 
-                // Asio
-                foreach (var asio in AsioOut.GetDriverNames())
+                if (outDevices.Any())
                 {
-                    OutDevice outDevice = new OutDevice(OutApi.Asio, asio, asio);
-                    outDevices.Add(outDevice);
-                }
+                    // Wasapi
+                    var enumerator = new MMDeviceEnumerator();
+                    try
+                    {
+                        // 添加默认设备
+                        outDevices.Add(GetWasapiDefaultDevice(enumerator));
+                    }
+                    catch { }
 
+                    foreach (var wasapi in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
+                    {
+                        OutDevice outDevice = new OutDevice(OutApi.Wasapi, wasapi.ID, wasapi.FriendlyName);
+                        outDevice.SampleRate = wasapi.AudioClient.MixFormat.SampleRate;
+                        outDevice.Channels = wasapi.AudioClient.MixFormat.Channels;
+                        outDevices.Add(outDevice);
+                    }
+                    enumerator.Dispose();
+
+                    // Asio
+                    foreach (var asio in AsioOut.GetDriverNames())
+                    {
+                        OutDevice outDevice = new OutDevice(OutApi.Asio, asio, asio);
+                        outDevices.Add(outDevice);
+                    }
+
+                }
                 if (!outDevices.Any())
                 {
                     outDevices.Add(new(OutApi.None, null, "无音频输出设备"));
@@ -143,7 +159,7 @@ namespace znMusicPlayerWUI.Media
         {
             if (outDevice.DeviceType == OutApi.Wasapi) return outDevice;
             if (outDevice.DeviceType == OutApi.Asio) return null;
-            var outDevices = await GetOutDevices();
+            var outDevices = await GetOutDevicesAsync();
             int audioOutDeviceCount = 0;
             foreach (var device in outDevices)
             {
@@ -154,10 +170,10 @@ namespace znMusicPlayerWUI.Media
             switch (outDevice.DeviceType)
             {
                 case OutApi.WaveOut:
-                    result = outDevices[outDevices.IndexOf(App.audioPlayer.NowOutDevice) - audioOutDeviceCount];
+                    result = outDevices[outDevices.IndexOf(App.audioPlayer.NowOutDevice) + audioOutDeviceCount * 2];
                     break;
                 case OutApi.DirectSound:
-                    result = outDevices[outDevices.IndexOf(App.audioPlayer.NowOutDevice) - audioOutDeviceCount * 2];
+                    result = outDevices[outDevices.IndexOf(App.audioPlayer.NowOutDevice) + audioOutDeviceCount];
                     break;
             }
             return result;
@@ -435,7 +451,7 @@ namespace znMusicPlayerWUI.Media
             }
         }
 
-        private OutDevice _nowOutDevice = OutDevice.GetWasapiDefaultDevice();
+        private OutDevice _nowOutDevice = new(OutApi.None);
         public OutDevice NowOutDevice
         {
             get => _nowOutDevice;
@@ -450,7 +466,6 @@ namespace znMusicPlayerWUI.Media
         {
             get
             {
-                Debug.WriteLine(_volume);
                 return _volume;
             }
             set
@@ -464,7 +479,6 @@ namespace znMusicPlayerWUI.Media
                     if (!FileReader.isMidi)
                     {
                         FileReader.Volume = value / 100;
-                        Debug.WriteLine(FileReader.Volume);
                     }
                 }
             }
@@ -527,14 +541,30 @@ namespace znMusicPlayerWUI.Media
             ClientDeviceEvents.notificationClient.OnDeviceRemovedEvent += NotificationClient_OnDeviceRemovedEvent;
         }
 
+        bool isInErrorDialog = false;
         bool isInReloadDefaultDeviceChanged = false;
         private async void NotificationClient_OnDefaultDeviceChangedEvent(DataFlow dataFlow, Role deviceRole, string defaultDeviceId)
         {
+            var devices = await OutDevice.GetOutDevicesAsync();
             if (NowOutObj == null)
             {
-                NowOutDevice = OutDevice.GetWasapiDefaultDevice();
+                NowOutDevice = devices.First();
                 return;
             }
+            if (devices.First().DeviceType == OutApi.None)
+            {
+                if (isInErrorDialog) return;
+                isInErrorDialog = true;
+                MainWindow.Invoke(async () =>
+                {
+                    await MainWindow.ShowDialog("无音频输出设备", "似乎所有音频输出设备都已被拔出，程序找不到音频输出设备。\n" +
+                        "请检查音频驱动是否正常工作，或检查音频输出设备的接口是否松动或拔出。\n" +
+                        "如果检查完毕后仍然无法正常播放，请到 GitHub 里向项目提出 Issues。");
+                    isInErrorDialog = false;
+                });
+                return;
+            }
+            MainWindow.Invoke(() => SetPlay());
             if (isInReloadDefaultDeviceChanged) return;
             if (NowOutObj.GetType() != typeof(DirectSoundOut) && NowOutObj.GetType() != typeof(WasapiOut)) return;
             if (!NowOutDevice.IsDefaultDevice) return;
@@ -543,8 +573,7 @@ namespace znMusicPlayerWUI.Media
             if (NowOutObj.GetType() == typeof(WasapiOut)) NowOutDevice = OutDevice.GetWasapiDefaultDevice();
             MainWindow.Invoke(() =>
             {
-                SetPause();
-                SetReloadAsync();
+                SetReloadAsync(true);
             });
             await Task.Delay(1);
             isInReloadDefaultDeviceChanged = false;
@@ -750,13 +779,14 @@ namespace znMusicPlayerWUI.Media
                 }
             }
 
+            var devices = await OutDevice.GetOutDevicesAsync();
+            if (devices.First().DeviceType == OutApi.None)
+            {
+                throw new Exception("当前没有音频输出设备。\n请检查音频设置是否正确、输出设备是否插入和音频设备驱动是否正常工作。");
+            }
             if (NowOutDevice.DeviceType == OutApi.None)
             {
-                NowOutDevice = (await OutDevice.GetOutDevices()).First();
-                if (NowOutDevice.DeviceType == OutApi.None)
-                {
-                    throw new Exception("当前没有音频输出设备，请检查音频设置是否正确、输出设备是否插入和音频设备驱动是否正常工作。");
-                }
+                NowOutDevice = devices.First();
             }
 
             AudioFileReader fileReader = null;
@@ -891,11 +921,16 @@ namespace znMusicPlayerWUI.Media
             }
         }
 
-        public async void SetReloadAsync()
+        public async void SetReloadAsync(bool autoPlay = false)
         {
             try
             {
                 await Reload();
+                if (autoPlay)
+                {
+                    await Task.Delay(10);
+                    SetPlay();
+                }
             }
             catch (Exception err) { Debug.WriteLine(err.ToString()); }
         }

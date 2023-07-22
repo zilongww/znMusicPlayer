@@ -166,7 +166,7 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
                 <Button Height="40" Width="40" Background="Transparent" BorderThickness="0" Click="Button_Click_2">
-                    <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xe995;" FontSize="16"/>
+                    <FontIcon x:Name="VolumeIconBase" Glyph="&#xe995;" FontSize="16"/>
                 </Button>
                 <Slider x:Name="VolumeSD" Grid.Column="1" VerticalAlignment="Center" Margin="12,0,12,0"
                         ValueChanged="VolumeSD_ValueChanged" IsThumbToolTipEnabled="False"/>

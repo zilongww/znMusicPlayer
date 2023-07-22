@@ -135,6 +135,21 @@ namespace znMusicPlayerWUI.Pages.DialogPages
             }
             else
             {
+                var devices = await OutDevice.GetOutDevicesAsync();
+                if (devices.First().DeviceType == AudioPlayer.OutApi.None)
+                {
+                    ((TextBlock)OutInfoSp.Children[2]).Text = "当前无输出设备";
+                    ((TextBlock)OutInfoSp.Children[3]).Visibility = Visibility.Collapsed;
+                    ((TextBlock)OutInfoSp.Children[4]).Visibility = Visibility.Collapsed;
+                    ((TextBlock)OutInfoSp.Children[5]).Visibility = Visibility.Collapsed;
+                    ((TextBlock)OutInfoSp.Children[6]).Visibility = Visibility.Collapsed;
+                    ((TextBlock)OutInfoSp.Children[7]).Visibility = Visibility.Collapsed;
+                    ((TextBlock)OutInfoSp.Children[8]).Visibility = Visibility.Collapsed;
+                    ((TextBlock)OutInfoSp.Children[9]).Visibility = Visibility.Collapsed;
+                    ((TextBlock)OutInfoSp.Children[10]).Visibility = Visibility.Collapsed;
+                    return;
+                }
+
                 string outInfo = $"未知";
                 if (App.audioPlayer.WasapiOnly && App.audioPlayer.NowOutDevice.DeviceType == AudioPlayer.OutApi.Wasapi)
                     outInfo = $"{App.audioPlayer.NowOutDevice.DeviceType} -> {App.audioPlayer.NowOutDevice.DeviceName}";

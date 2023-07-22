@@ -156,8 +156,23 @@ namespace znMusicPlayerWUI.Windowed
         private void AudioPlayer_VolumeChanged(AudioPlayer audioPlayer, object data)
         {
             isCodeChangedVolumeValue = true;
-            VolumeSD.Value = (int)((float)data * 100);
+            float volume = (float)data;
+            VolumeSD.Value = (int)volume;
             isCodeChangedVolumeValue = false;
+            
+            if (volume == 0)
+            {
+                VolumeIconBase.Glyph = "\xE198";
+            }
+            else
+            {
+                if (volume <= 100 && volume > 67)
+                    VolumeIconBase.Glyph = "\xE995";
+                else if (volume <= 67 && volume > 33)
+                    VolumeIconBase.Glyph = "\xE994";
+                else if (volume <= 33)
+                    VolumeIconBase.Glyph = "\xE993";
+            }
         }
 
         bool isCodeChangedSliderValue = false;
@@ -475,7 +490,7 @@ namespace znMusicPlayerWUI.Windowed
         private void VolumeSD_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
             if (!isCodeChangedVolumeValue)
-                App.audioPlayer.Volume = (float)VolumeSD.Value / 100;
+                App.audioPlayer.Volume = (float)VolumeSD.Value;
         }
 
         private void TimeSD_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)

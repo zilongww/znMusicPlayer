@@ -49,7 +49,8 @@ namespace znMusicPlayerWUI.DataEditor
         public static bool operator !=(OnlyClass left, OnlyClass right)
         {
             if (left is null && right is null) return false;
-            return !(left == right);
+            if (left is null || right is null) return true;
+            return !(left.MD5 == right.MD5);
         }
 
         public override bool Equals(object other)
