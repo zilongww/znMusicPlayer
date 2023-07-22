@@ -571,11 +571,16 @@ namespace znMusicPlayerWUI.Pages
                 {
                     var jdata = await PlayListHelper.ReadData();
                     MainWindow.HideDialog();
+                    MainWindow.ShowLoadingDialog("正在添加...");
+                    int count = 0;
                     foreach (var i in files)
                     {
+                        MainWindow.SetLoadingText(i.Name);
                         FileInfo fi = null;
                         await Task.Run(() => fi = new FileInfo(i.Path));
                         jdata = await PlayListHelper.AddLocalMusicDataToPlayList(NavToObj.ListName, fi, jdata);
+                        count++;
+                        MainWindow.SetLoadingProgressRingValue(files.Count, count);
                     }
                     await PlayListHelper.SaveData(jdata);
                     await App.playListReader.Refresh();
@@ -588,6 +593,8 @@ namespace znMusicPlayerWUI.Pages
                         }
                     }
                     InitData();
+                    await Task.Delay(500);
+                    MainWindow.HideDialog();
                     await MainWindow.ShowDialog("添加本地歌曲", "添加完成。");
                 }
             };
@@ -714,7 +721,11 @@ namespace znMusicPlayerWUI.Pages
                 if (searchNum > searchMusicDatas.Count - 1) searchNum = 0;
                 var item = searchMusicDatas[searchNum];
                 await Children.SmoothScrollIntoViewWithItemAsync(item, ScrollItemPlacement.Center);
-                System.Diagnostics.Debug.WriteLine(((VisualTreeHelper.GetChild(Children.ContainerFromItem(item) as UIElement, 0) as ListViewItemPresenter).Content as SongItem));
+
+                foreach (var s in SongItem.StaticSongItems)
+                {
+                    if (s.MusicData == item.MusicData) s.AnimateMouseLeavingBackground(true);
+                }
             }
         }
 
@@ -753,6 +764,16 @@ namespace znMusicPlayerWUI.Pages
                     }
                     break;
             }
+        }
+
+        private void SearchBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            MainWindow.CanKeyDownBack = false;
+        }
+
+        private void SearchBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            MainWindow.CanKeyDownBack = true;
         }
     }
 }

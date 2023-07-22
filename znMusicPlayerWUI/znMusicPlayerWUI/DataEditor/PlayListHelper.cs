@@ -239,7 +239,7 @@ namespace znMusicPlayerWUI.DataEditor
                 else
                 {
                     localAudioData = new MusicData(
-                        localFile.Name, null, null, new(null),
+                        localFile.Name, null, new(), new(null),
                         inLocal: localFile.FullName, from: MusicFrom.localMusic
                         );
                 }

@@ -108,7 +108,7 @@
                         <ListView x:Name="LrcSecondListView"
                                   ItemsSource="{Binding ElementName=LrcBaseListView,Path=ItemsSource}"
                                   ItemTemplate="{ThemeResource LyricTemplate}"
-                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                   SelectionChanged="LrcBaseListView_SelectionChanged"
                                   SizeChanged="LrcBaseListView_SizeChanged"
                                   IsFocusEngagementEnabled="True"/>
@@ -182,7 +182,7 @@
                                   Loaded="LrcBaseListView_Loaded"
                                   Background="Transparent"
                                   SelectionChanged="LrcBaseListView_SelectionChanged"
-                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                   IsFocusEngagementEnabled="True"
                                   SizeChanged="LrcBaseListView_SizeChanged"
                                   HorizontalContentAlignment="Stretch"
@@ -258,19 +258,23 @@
                                     <RepositionThemeTransition/>
                                 </TransitionCollection>
                             </Grid.Transitions>
-                            <Grid.Resources>
-                                <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
-                                    <Setter Property="CornerRadius" Value="100"/>
-                                    <Setter Property="Height" Value="44"/>
-                                    <Setter Property="Width" Value="44"/>
-                                    <Setter Property="Margin" Value="0,0,4,0"/>
-                                    <Setter Property="BorderThickness" Value="2"/>
-                                </Style>
-                            </Grid.Resources>
                             <ScrollViewer  VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled"
                                            HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"
                                            HorizontalAlignment="Stretch">
                                 <StackPanel Orientation="Horizontal">
+                                    <StackPanel.Resources>
+                                        <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                                            <Setter Property="CornerRadius" Value="100"/>
+                                            <Setter Property="Height" Value="44"/>
+                                            <Setter Property="Width" Value="44"/>
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="Margin" Value="0,0,4,0"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+                                        </Style>
+                                        <Style TargetType="FontIcon">
+                                            <Setter Property="FontSize" Value="16"/>
+                                        </Style>
+                                    </StackPanel.Resources>
                                     <Button x:Name="BeforeButton" Padding="12"
                                             IsEnabled="{Binding ElementName=PlayButton, Path=IsEnabled}"
                                             FontWeight="Normal" Click="BeforeButton_Click"
@@ -279,11 +283,11 @@
                                               Fill="{ThemeResource ButtonForegroundThemeBrush}"
                                               Stretch="UniformToFill" Margin="2"/>
                                     </Button>
-                                    <Button x:Name="PlayButton" Width="50" Height="50" Padding="0"
+                                    <Button x:Name="PlayButton" Width="50" Height="50" Padding="14"
                                             FontWeight="Normal" Click="PlayButton_Click"
                                             ToolTipService.ToolTip="播放/暂停">
                                         <Grid>
-                                            <controls:MediaPlayStateViewer x:Name="MediaPlayStateViewer1" PlaybackState="Paused" Margin="15"/>
+                                            <controls:MediaPlayStateViewer x:Name="MediaPlayStateViewer1" PlaybackState="Paused"/>
                                             <ProgressRing x:Name="AudioLoadingProressRing" Width="48" Height="48" IsIndeterminate="True"/>
                                         </Grid>
                                     </Button>
@@ -295,20 +299,17 @@
                                               Fill="{ThemeResource ButtonForegroundThemeBrush}"
                                               Stretch="UniformToFill" Margin="2"/>
                                     </Button>
-                                    <Button x:Name="VloumeButton" AccessKey="V" Click="VloumeButton_Click" Padding="13" ToolTipService.ToolTip="音频">
-                                        <Path Data="{StaticResource 音量2}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform"/>
+                                    <Button x:Name="VloumeButton" AccessKey="V" Click="VloumeButton_Click" ToolTipService.ToolTip="音频">
+                                        <FontIcon x:Name="VolumeIcon" Glyph=""/>
                                     </Button>
-                                    <Button x:Name="PlayListButton" AccessKey="L" Click="PlayListButton_Click" Padding="13" ToolTipService.ToolTip="正在播放列表">
-                                        <Path Data="{StaticResource 播放列表}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform"/>
+                                    <Button x:Name="PlayListButton" AccessKey="L" Click="PlayListButton_Click" ToolTipService.ToolTip="正在播放列表">
+                                        <FontIcon Glyph=""/>
                                     </Button>
-                                    <Button x:Name="EqButton" AccessKey="E" Click="EqButton_Click" Padding="13" ToolTipService.ToolTip="音频设置">
-                                        <Path Data="{StaticResource 均衡器}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform"/>
+                                    <Button x:Name="EqButton" AccessKey="E" Click="EqButton_Click" ToolTipService.ToolTip="音频设置">
+                                        <FontIcon Glyph=""/>
                                     </Button>
-                                    <Button x:Name="FullScreenButton" AccessKey="F" Click="FullScreenButton_Click" Padding="14" ToolTipService.ToolTip="全屏/退出全屏">
-                                        <Grid>
-                                            <Path x:Name="FullScreenIcon" Data="{StaticResource 全屏}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform"/>
-                                            <Path x:Name="UnFullScreenIcon" Data="{StaticResource 退出全屏}" Fill="{ThemeResource ButtonForegroundThemeBrush}" Stretch="Uniform" Visibility="Collapsed"/>
-                                        </Grid>
+                                    <Button x:Name="FullScreenButton" AccessKey="F" Click="FullScreenButton_Click" ToolTipService.ToolTip="全屏/退出全屏">
+                                        <FontIcon x:Name="FullScreenIcon" Glyph=""/>
                                     </Button>
                                 </StackPanel>
                             </ScrollViewer>

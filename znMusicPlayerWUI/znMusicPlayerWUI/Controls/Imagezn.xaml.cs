@@ -340,5 +340,10 @@ namespace znMusicPlayerWUI.Controls
             //ImageSource.CenterPoint = new(5, 5, 1);
             RGClip.Rect = new(0, 0, ActualWidth, ActualHeight);
         }
+
+        private void RootGrid_ActualThemeChanged(FrameworkElement sender, object args)
+        {
+            UpdataTheme();
+        }
     }
 }

@@ -11,7 +11,7 @@
     Tapped="Grid_Tapped" RightTapped="Grid_RightTapped"
     PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
     PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited"
-    MinWidth="0" MinHeight="0" SizeChanged="RootGrid_SizeChanged">
+    MinWidth="0" MinHeight="0" SizeChanged="RootGrid_SizeChanged" ActualThemeChanged="RootGrid_ActualThemeChanged">
     <Grid.Clip>
         <RectangleGeometry x:Name="RGClip"/>
     </Grid.Clip>

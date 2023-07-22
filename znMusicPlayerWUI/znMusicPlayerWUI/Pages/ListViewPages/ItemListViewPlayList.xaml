@@ -92,7 +92,7 @@
                                                                         Margin="12, 4"
                                                                         AccessKey="C"
                                                                         AccessKeyInvoked="SearchBox_AccessKeyInvoked"
-                                                                        x:Name="SearchBox">
+                                                                        x:Name="SearchBox" GotFocus="SearchBox_GotFocus" LostFocus="SearchBox_LostFocus">
                                                             <AutoSuggestBox.QueryIcon>
                                                                 <AnimatedIcon x:Name='SearchAnimatedIcon'>
                                                                     <AnimatedIcon.Source>
@@ -107,11 +107,11 @@
                                                     </AppBarElementContainer>
                                                 </CommandBar.SecondaryCommands>
                                                 <AppBarButton x:Name="SelectAllButton"
-                                                  Click="SelectAllButton_Click"
-                                                  Label="选中全部"
-                                                  ToolTipService.ToolTip="选中全部">
+                                                              Click="SelectAllButton_Click"
+                                                              Label="选中全部"
+                                                              ToolTipService.ToolTip="选中全部">
                                                     <AppBarButton.Icon>
-                                                        <PathIcon Data="{StaticResource 全选}"/>
+                                                        <FontIcon Glyph="&#xE14E;"/>
                                                     </AppBarButton.Icon>
                                                 </AppBarButton>
                                                 <AppBarButton x:Name="SelectReverseButton"
@@ -127,7 +127,7 @@
                                                   Label="删除选中歌曲"
                                                   ToolTipService.ToolTip="删除选中歌曲">
                                                     <AppBarButton.Icon>
-                                                        <PathIcon Data="{StaticResource 删除}"/>
+                                                        <FontIcon Glyph="&#xE74D;"/>
                                                     </AppBarButton.Icon>
                                                 </AppBarButton>
                                                 <AppBarButton x:Name="DownloadSelectedButton"
@@ -135,7 +135,7 @@
                                                   Label="下载选中歌曲"
                                                   ToolTipService.ToolTip="下载选中歌曲">
                                                     <AppBarButton.Icon>
-                                                        <PathIcon Data="{StaticResource 下载}"/>
+                                                        <FontIcon Glyph="&#xE896;"/>
                                                     </AppBarButton.Icon>
                                                 </AppBarButton>
                                                 <AppBarButton x:Name="AddSelectedToPlayListButton"
@@ -144,11 +144,11 @@
                                                     <AppBarButton.Flyout>
                                                         <MenuFlyout x:Name="AddToPlayListFlyout" Opened="AddToPlayListFlyout_Opened" Closed="AddToPlayListFlyout_Closed"/>
                                                     </AppBarButton.Flyout>
-                                                    <Viewbox Width="16" Margin="2,0,0,0">
+                                                    <Viewbox Width="9" Margin="2,0,0,0">
                                                         <Grid>
-                                                            <SymbolIcon Symbol="Add" Scale="0.47,0.47,1" Margin="-10,-2,0,0"
+                                                            <FontIcon Glyph="&#xE109;" Scale="0.47,0.47,1" Margin="-10,-2,0,0"
                                                             VerticalAlignment="Top"/>
-                                                            <SymbolIcon Symbol="MusicInfo"
+                                                            <FontIcon Glyph="&#xE90B;"
                                                             VerticalAlignment="Bottom"/>
                                                         </Grid>
                                                     </Viewbox>
@@ -157,11 +157,11 @@
                                                   Label="添加选中歌曲到正在播放的列表中"
                                                   ToolTipService.ToolTip="添加选中歌曲到正在播放的列表中"
                                                   Click="AddSelectedToPlayingListButton_Click">
-                                                    <Viewbox Width="16" Margin="2,0,0,0" VerticalAlignment="Center">
+                                                    <Viewbox Width="9" Margin="2,0,0,0" VerticalAlignment="Center">
                                                         <Grid>
-                                                            <SymbolIcon Symbol="Add" Scale="0.47,0.47,1" Margin="-10,-2,0,0"
+                                                            <FontIcon Glyph="&#xE109;" Scale="0.47,0.47,1" Margin="-10,-2,0,0"
                                                             VerticalAlignment="Top"/>
-                                                            <SymbolIcon Symbol="Play"
+                                                            <FontIcon Glyph="&#xEE4A;"
                                                             VerticalAlignment="Bottom"/>
                                                         </Grid>
                                                     </Viewbox>
@@ -176,7 +176,7 @@
                                                               ToolTipService.ToolTip="播放全部"
                                                               x:Name="PlayAllButton">
                                                     <AppBarButton.Icon>
-                                                        <PathIcon Data="{StaticResource 播放ol}"/>
+                                                        <FontIcon Glyph="&#xEE4A;"/>
                                                     </AppBarButton.Icon>
                                                 </AppBarButton>
                                                 <AppBarButton x:Name="AddLocalFilesButton"
@@ -185,7 +185,7 @@
                                                               Label="添加本地文件"
                                                               ToolTipService.ToolTip="添加本地文件">
                                                     <AppBarButton.Icon>
-                                                        <PathIcon Data="{StaticResource 添加文件}"/>
+                                                        <FontIcon Glyph=""/>
                                                     </AppBarButton.Icon>
                                                 </AppBarButton>
                                                 <AppBarButton Click="Button_Click_1"
@@ -193,7 +193,7 @@
                                                               Label="刷新"
                                                               ToolTipService.ToolTip="刷新">
                                                     <AppBarButton.Icon>
-                                                        <PathIcon Data="{StaticResource 刷新}"/>
+                                                        <FontIcon Glyph=""/>
                                                     </AppBarButton.Icon>
                                                 </AppBarButton>
                                                 <AppBarButton Click="Button_Click_2"
@@ -202,7 +202,7 @@
                                                               ToolTipService.ToolTip="多选"
                                                               x:Name="SelectItemButton">
                                                     <AppBarButton.Icon>
-                                                        <PathIcon Data="{StaticResource 全选}"/>
+                                                        <FontIcon Glyph=""/>
                                                     </AppBarButton.Icon>
                                                 </AppBarButton>
                                             </CommandBar>
@@ -265,7 +265,7 @@
                     Background="{ThemeResource AcrylicNormal}">
                 <Button Click="Button_Click_3" Tag="2" AccessKey="N"
                         ToolTipService.ToolTip="滚动到当前正在播放的歌曲">
-                    <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xe7c8;" FontSize="16"/>
+                    <FontIcon Glyph="&#xe7c8;" FontSize="16"/>
                 </Button>
             </Border>
         </Grid>

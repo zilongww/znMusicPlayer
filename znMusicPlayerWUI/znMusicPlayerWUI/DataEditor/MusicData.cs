@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Meting4Net.Core.Models.Tencent;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using znMusicPlayerWUI.Background;
 using znMusicPlayerWUI.Helpers;
@@ -25,6 +26,7 @@ namespace znMusicPlayerWUI.DataEditor
     public abstract class OnlyClass
     {
         string md5;
+        [JsonIgnore]
         public string MD5
         {
             get
@@ -145,8 +147,11 @@ namespace znMusicPlayerWUI.DataEditor
         {
             get
             {
-                if (_artistName == null)
-                    SetABName();
+                if (Artists.Any())
+                {
+                    if (_artistName == null)
+                        SetABName();
+                }
                 return _artistName;
             }
         }
@@ -174,7 +179,7 @@ namespace znMusicPlayerWUI.DataEditor
         {
             this.Title = title;
             this.ID = ID;
-            this.Artists = artists == null ? new List<Artist>() { new Artist() { Name = "未知" } } : artists;
+            this.Artists = artists;
             this.Album = album;
             this.RelaseTime = relaseTime;
             this.From = from;
@@ -184,17 +189,17 @@ namespace znMusicPlayerWUI.DataEditor
 
         private void SetABName()
         {
-            for (int i = 0; i < (Artists.Count); i++)
+            for (int i = 0; i < Artists.Count; i++)
             {
                 _artistName += $"{Artists[i].ToString()}{(i < (Artists.Count - 1) ? (i < Artists.Count - 2 ? ", " : " & ") : "")}";
             }
 
-            _buttonName = $"{ArtistName} · {Album}";
+            _buttonName = $"{(ArtistName == null ? "未知" : ArtistName)} · {Album}";
         }
 
         public override string GetMD5()
         {
-            return CodeHelper.ToMD5($"{Title}{Artists[0].Name}{Artists[0].ID}{Artists.Count}{Album?.Title}{ID}{Album?.ID}{From}{InLocal}{(CUETrackData != null ? $"{CUETrackData.StartDuration}{CUETrackData.EndDuration}" : "")}");
+            return CodeHelper.ToMD5($"{Title}{(Artists.Any() ? $"{Artists[0]?.Name}{Artists[0]?.ID}" : "")}{Artists.Count}{Album?.Title}{ID}{Album?.ID}{From}{InLocal}{(CUETrackData != null ? $"{CUETrackData.StartDuration}{CUETrackData.EndDuration}" : "")}");
         }
 
         public override string ToString()

@@ -78,7 +78,7 @@ namespace znMusicPlayerWUI.DataEditor
         /// </summary>
         public static JObject SettingDefault = new JObject()
         {
-            { SettingParams.Volume.ToString(), 0.5 },
+            { SettingParams.Volume.ToString(), 0.5f },
             { SettingParams.DownloadFolderPath.ToString(), DownloadFolder },
             { SettingParams.AudioCacheFolderPath.ToString(), AudioCacheFolder },
             { SettingParams.ImageCacheFolderPath.ToString(), ImageCacheFolder },

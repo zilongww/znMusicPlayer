@@ -282,10 +282,10 @@ namespace znMusicPlayerWUI.Background.HotKeys
                         App.audioPlayer.SetStop();
                         break;
                     case HotKeyID.VolumeAdd:
-                        App.audioPlayer.Volume += 0.01f;
+                        App.audioPlayer.Volume += 1f;
                         break;
                     case HotKeyID.VolumeRemove:
-                        App.audioPlayer.Volume -= 0.01f;
+                        App.audioPlayer.Volume -= 1f;
                         break;
                     case HotKeyID.OpenLyricWindow:
                         MainWindow.OpenDesktopLyricWindow();

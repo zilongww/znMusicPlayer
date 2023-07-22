@@ -448,18 +448,23 @@ namespace znMusicPlayerWUI.Media
         private float _volume = 0f;
         public float Volume
         {
-            get => _volume;
+            get
+            {
+                Debug.WriteLine(_volume);
+                return _volume;
+            }
             set
             {
                 if (value < 0f) value = 0;
-                else if (value > 1f) value = 1f;
+                else if (value > 100f) value = 100f;
                 _volume = value;
                 VolumeChanged?.Invoke(this, value);
                 if (FileReader != null)
                 {
                     if (!FileReader.isMidi)
                     {
-                        FileReader.Volume = value;
+                        FileReader.Volume = value / 100;
+                        Debug.WriteLine(FileReader.Volume);
                     }
                 }
             }
@@ -771,7 +776,7 @@ namespace znMusicPlayerWUI.Media
 
                 fileProvider = new AudioEffects.SoundTouchWaveProvider(fileReader);
                 fileReader.EqEnabled = EqEnabled;
-                fileReader.Volume = Volume;
+                fileReader.Volume = Volume / 100;
                 fileProvider.Pitch = Pitch;
                 fileProvider.Tempo = Tempo;
                 fileProvider.Rate = Rate;

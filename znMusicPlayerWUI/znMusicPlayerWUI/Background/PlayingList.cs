@@ -26,9 +26,21 @@ namespace znMusicPlayerWUI.Background
         public event NowPlayingImageChangeDelegate NowPlayingImageLoading;
         public event NowPlayingImageChangeDelegate NowPlayingImageLoaded;
 
+        public delegate void PlayBehaviourDelegate(PlayBehaviour playBehaviour);
+        public event PlayBehaviourDelegate PlayBehaviourChanged;
+
         public ObservableCollection<MusicData> NowPlayingList = new();
-        public PlayBehaviour PlayBehaviour { get; set; } = PlayBehaviour.顺序播放;
-        //public BitmapImage DefaultPlayingImage { get; set; } = new BitmapImage("")
+
+        private PlayBehaviour _playBehaviour = PlayBehaviour.顺序播放;
+        public PlayBehaviour PlayBehaviour
+        {
+            get => _playBehaviour;
+            set
+            {
+                _playBehaviour = value;
+                PlayBehaviourChanged?.Invoke(value);
+            }
+        }
 
         ImageSource _nowPlayingImage;
         public ImageSource NowPlayingImage

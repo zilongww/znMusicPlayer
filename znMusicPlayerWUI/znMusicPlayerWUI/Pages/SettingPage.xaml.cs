@@ -21,6 +21,7 @@ using Windows.Networking.Connectivity;
 using znMusicPlayerWUI.Windowed;
 using znMusicPlayerWUI.Background;
 using znMusicPlayerWUI.Background.HotKeys;
+using CommunityToolkit.WinUI.UI;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -372,6 +373,22 @@ namespace znMusicPlayerWUI.Pages
             App.hotKeyManager.UnregisterHotKeys(list);
             await Task.Delay(200);
             App.hotKeyManager.RegisterHotKeys(HotKeyManager.DefaultRegisterHotKeysList);
+        }
+
+        private void Expander_Expanding(Expander sender, ExpanderExpandingEventArgs args)
+        {
+            foreach (var expander in ListViewBase.Items)
+            {
+                if (expander.GetType() == typeof(Expander))
+                {
+                    if ((Expander)expander != sender)
+                    {
+                        (expander as Expander).IsExpanded = false;
+                    }
+                }
+            }
+            //if (sender.IsExpanded)
+             //   ListViewBase.SmoothScrollIntoViewWithItemAsync(sender, ScrollItemPlacement.Default, true);
         }
     }
 }

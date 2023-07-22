@@ -583,17 +583,21 @@ namespace znMusicPlayerWUI
 
         private void AudioPlayer_VolumeChanged(Media.AudioPlayer audioPlayer, object data)
         {
-            VolumeSlider.Value = (int)((float)data * 100);
+            float volume = (float)data;
+            VolumeSlider.Value = (int)volume;
             
-            if ((float)data == 0)
+            if (volume == 0)
             {
-                VolumeIconBase.Symbol = Symbol.Mute;
-                VolumeAppButton.Icon = new SymbolIcon(Symbol.Mute);
+                VolumeIconBase.Glyph = "\xE198";
             }
             else
             {
-                VolumeIconBase.Symbol = Symbol.Volume;
-                VolumeAppButton.Icon = new SymbolIcon(Symbol.Volume);
+                if (volume <= 100 && volume > 67)
+                    VolumeIconBase.Glyph = "\xE995";
+                else if (volume <= 67 && volume > 33)
+                    VolumeIconBase.Glyph = "\xE994";
+                else if (volume <= 33)
+                    VolumeIconBase.Glyph = "\xE993";
             }
         }
 
@@ -1450,16 +1454,17 @@ namespace znMusicPlayerWUI
         private void VolumeSlider_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
         {
             if (e.GetCurrentPoint(sender as UIElement).Properties.MouseWheelDelta > 0)
-                VolumeSlider.Value++;
+                //VolumeSlider.Value += 1.1f;
+                App.audioPlayer.Volume += 1f;
             else
-                VolumeSlider.Value--;
+                App.audioPlayer.Volume -= 1f;
         }
 
         private void VolumeSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
             if (willChangeVolume)
             {
-                App.audioPlayer.Volume = (float)(sender as Slider).Value / (float)100.0;
+                App.audioPlayer.Volume = (float)(sender as Slider).Value;
             }
         }
         #endregion

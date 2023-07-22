@@ -47,7 +47,7 @@
         
         <StackPanel Margin="0,0,0,0">
             <TextBlock Text="下载和缓存" Style="{ThemeResource HeaderTextBlock}" Visibility="Collapsed"/>
-            <Expander>
+            <Expander Expanding="Expander_Expanding">
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal">
                         <FontIcon Glyph="&#xe8b7;"/>
@@ -132,7 +132,7 @@
                     </Grid>
                 </StackPanel>
             </Expander>
-            <Expander x:Name="DownloadEpd">
+            <Expander x:Name="DownloadEpd" Expanding="Expander_Expanding">
                 <Expander.Transitions>
                     <TransitionCollection>
                         <RepositionThemeTransition/>
@@ -194,7 +194,7 @@
                     </Grid>
                 </StackPanel>
             </Expander>
-            <Expander x:Name="FutureEpd">
+            <Expander x:Name="FutureEpd" Expanding="Expander_Expanding">
                 <Expander.Transitions>
                     <TransitionCollection>
                         <RepositionThemeTransition/>
@@ -247,7 +247,7 @@
                     </Grid>
                 </StackPanel>
             </Expander>
-            <Expander x:Name="ThemeEpd">
+            <Expander x:Name="ThemeEpd" Expanding="Expander_Expanding">
                 <Expander.Transitions>
                     <TransitionCollection>
                         <RepositionThemeTransition/>
@@ -282,7 +282,7 @@
                     </Grid>
                 </StackPanel>
             </Expander>
-            <Expander x:Name="HotKeySettings">
+            <Expander x:Name="HotKeySettings" Expanding="Expander_Expanding">
                 <Expander.Transitions>
                     <TransitionCollection>
                         <RepositionThemeTransition/>
@@ -304,7 +304,7 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel>
                             <TextBlock Text="尝试重新注册热键"/>
-                            <TextBlock Text="如果之前被占用的热键被其它程序释放，重新注册可以使该热键恢复在此程序功能" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
+                            <TextBlock Text="如果之前被其它程序占用的热键被释放，重新注册可以使之前被占用的热键恢复在此程序的功能" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
                         </StackPanel>
                         <Button Grid.Column="1" Click="Button_Click_5" Content="重新注册"/>
                     </Grid>

@@ -57,44 +57,40 @@
                                 <AnimatedIcon.Source>
                                     <m:AnimatedFindVisualSource/>
                                 </AnimatedIcon.Source>
-                                <AnimatedIcon.FallbackIconSource>
-                                    <SymbolIconSource Symbol='Find'/>
-                                </AnimatedIcon.FallbackIconSource>
                             </AnimatedIcon>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
                     <NavigationViewItem Content="推荐" AccessKey="MR">
                         <NavigationViewItem.Icon>
-                            <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 推荐}"/>
+                            <FontIcon Glyph="&#xE1CE;"/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
                     <NavigationViewItem Content="浏览" AccessKey="MB">
                         <NavigationViewItem.Icon>
-                            <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 浏览}"/>
+                            <FontIcon Glyph=""/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
                     <NavigationViewItemHeader Content="本地" Margin="0,16,0,0"/>
                     <NavigationViewItem Content="播放列表" AccessKey="ML" x:Name="MusicPlayListButton">
                         <NavigationViewItem.Icon>
-                            <PathIcon Scale="1.05,1.05,1" Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 播放列表}"/>
+                            <FontIcon Glyph="&#xE142;"/>
                         </NavigationViewItem.Icon>
                         <NavigationViewItem.MenuItems>
-                            <NavigationViewItem Content="asdasdadsa"/>
                         </NavigationViewItem.MenuItems>
                     </NavigationViewItem>
                     <NavigationViewItem Content="下载" AccessKey="MD">
                         <NavigationViewItem.Icon>
-                            <PathIcon Scale="1.05,1.05,1" Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 下载}"/>
+                            <FontIcon Glyph="&#xE896;"/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
                     <NavigationViewItem Content="历史" AccessKey="MH">
                         <NavigationViewItem.Icon>
-                            <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 历史}"/>
+                            <FontIcon Glyph="&#xE81C;"/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
                     <NavigationViewItem Content="本地音频" AccessKey="MF">
                         <NavigationViewItem.Icon>
-                            <SymbolIcon Symbol="Audio"/>
+                            <FontIcon Glyph="&#xE838;"/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
                 </NavigationView.MenuItems>
@@ -179,11 +175,10 @@
                                 <Button x:Name="PlayBeforeButton"
                                         Height="40"
                                         Width="40"
-                                        BorderThickness="0"
+                                        BorderThickness="0" Padding="12"
                                         Click="PlayBeforeButton_Click"
                                         Background="Transparent">
                                     <Path Stretch="Uniform"
-                                          Width="14"
                                           Fill="{ThemeResource ButtonForegroundThemeBrush}"
                                           Data="{StaticResource 上一首}"/>
                                 </Button>
@@ -191,13 +186,12 @@
                                     <Button x:Name="PlayButton"
                                             Height="56"
                                             Width="56"
-                                            CornerRadius="28"
-                                            BorderThickness="6"
-                                            Margin="4,0,4,0"
+                                            CornerRadius="28" BorderBrush="{ThemeResource LayerOnMicaBaseAltFillColorSecondaryBrush}"
+                                            BorderThickness="6" Padding="8"
+                                            Margin="4,0,4,0" Background="Transparent"
                                             Click="PlayButton_Click"
                                             IsHoldingEnabled="True" Holding="PlayButton_Holding"
-                                            IsRightTapEnabled="True" RightTapped="PlayButton_RightTapped"
-                                            Background="Transparent">
+                                            IsRightTapEnabled="True" RightTapped="PlayButton_RightTapped">
                                         <Button.Resources>
                                             <TeachingTip x:Name="PlayTimeSliderBasePopup"
                                                          Target="{x:Bind PlayButton}">
@@ -214,11 +208,10 @@
                                 <Button x:Name="PlayNextButton"
                                         Height="40"
                                         Width="40"
-                                        BorderThickness="0"
+                                        BorderThickness="0" Padding="12"
                                         Click="PlayNextButton_Click"
                                         Background="Transparent">
                                     <Path Stretch="Uniform"
-                                          Width="14"
                                           Fill="{ThemeResource ButtonForegroundThemeBrush}"
                                           Data="{StaticResource 下一首}"/>
                                 </Button>
@@ -243,14 +236,14 @@
                                               Label="音量"
                                               AccessKey="BV">
                                     <AppBarButton.Icon>
-                                        <PathIcon Data="{StaticResource 音量0}"/>
+                                        <FontIcon Glyph="{Binding ElementName=VolumeIconBase,Path=Glyph}"/>
                                     </AppBarButton.Icon>
                                 </AppBarButton>
                                 <AppBarButton Click="Button_Click_4"
                                               Label="播放列表"
                                               AccessKey="BL">
                                     <AppBarButton.Icon>
-                                        <PathIcon Data="{StaticResource 播放列表}"/>
+                                        <FontIcon Glyph="&#xE142;"/>
                                     </AppBarButton.Icon>
                                 </AppBarButton>
                             </CommandBar>
@@ -306,11 +299,9 @@
                                         Visibility="Visible">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding ElementName=PlayingListBaseView,Path=ItemsSource.Count}"
-                                                   FontSize="12" Margin="0,0,2,0"
+                                                   FontSize="12" Margin="0,0,4,0"
                                                    VerticalAlignment="Center"/>
-                                        <Viewbox Width="13">
-                                            <SymbolIcon Symbol="Clear"/>
-                                        </Viewbox>
+                                        <FontIcon Glyph="&#xE106;" FontSize="14" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -335,8 +326,8 @@
                                                 <TextBlock Text="{x:Bind ButtonName}" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource SystemChromeDisabledLowColor}" FontSize="12"/>
                                             </StackPanel>
                                             <Button Grid.Column="1" Background="Transparent" BorderThickness="0"
-                                                    Click="Button_Click_7">
-                                                <SymbolIcon Symbol="Cancel"/>
+                                                    Click="Button_Click_7" Height="36">
+                                                <FontIcon Glyph="&#xE106;" FontSize="14" VerticalAlignment="Center"/>
                                             </Button>
                                         </Grid>
                                     </DataTemplate>
@@ -358,7 +349,7 @@
                                     HorizontalAlignment="Center"
                                     Click="Button_Click_2"
                                     AccessKey="E">
-                                <Path Width="14" Height="14" Stretch="Uniform" Fill="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 均衡器}"/>
+                                <FontIcon Glyph="&#xE9E9;" FontSize="16"/>
                             </Button>
                             <Button Padding="12"
                                     BorderThickness="0"
@@ -370,9 +361,7 @@
                                     HorizontalAlignment="Center"
                                     Click="Button_Click_3"
                                     AccessKey="X">
-                                <Viewbox Width="16">
-                                    <SymbolIcon x:Name="VolumeIconBase" Symbol="Volume"/>
-                                </Viewbox>
+                                <FontIcon Glyph="&#xE995;" FontSize="16" x:Name="VolumeIconBase"/>
                             </Button>
                             <AppBarSeparator/>
                             <StackPanel Orientation="Horizontal"

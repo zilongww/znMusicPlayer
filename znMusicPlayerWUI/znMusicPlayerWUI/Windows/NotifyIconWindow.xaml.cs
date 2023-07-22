@@ -47,12 +47,14 @@ namespace znMusicPlayerWUI.Windowed
         {
             InitializeComponent();
             #region others
-            hwnd = WindowHelperzn.WindowHelper.GetWindowHandle(this);
-            var preference = DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
-            RoundWindow.DwmSetWindowAttribute(hwnd,
-                RoundWindow.DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, ref preference,
-                sizeof(uint));
-
+            if (MicaController.IsSupported())
+            {
+                hwnd = WindowHelperzn.WindowHelper.GetWindowHandle(this);
+                var preference = DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_ROUND;
+                RoundWindow.DwmSetWindowAttribute(hwnd,
+                    RoundWindow.DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, ref preference,
+                    sizeof(uint));
+            }
             presenter = OverlappedPresenter.Create();
             this.AppWindow.SetPresenter(presenter);
             this.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
@@ -77,6 +79,7 @@ namespace znMusicPlayerWUI.Windowed
 
             SetBackdrop(BackdropType.DesktopAcrylic);
             MoveToPosition();
+
             #endregion
         }
 
@@ -508,6 +511,14 @@ namespace znMusicPlayerWUI.Windowed
             if (!isCodeChangedDesktopLyricWindow)
             {
                 MainWindow.OpenDesktopLyricWindow();
+            }
+        }
+
+        private void root_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!MicaController.IsSupported())
+            {
+                root.BorderThickness = new(1);
             }
         }
     }

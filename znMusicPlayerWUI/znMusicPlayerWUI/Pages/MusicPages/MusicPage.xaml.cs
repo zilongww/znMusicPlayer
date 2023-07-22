@@ -24,6 +24,7 @@ using System.Xml.Linq;
 using CommunityToolkit.WinUI.UI;
 using System.Runtime.Intrinsics.Arm;
 using CommunityToolkit.WinUI.UI.Animations;
+using NAudio.Gui;
 
 namespace znMusicPlayerWUI.Pages.MusicPages
 {
@@ -98,6 +99,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             AudioPlayer_PlayStateChanged(App.audioPlayer);
             AudioPlayer_CacheLoadedChanged(App.audioPlayer);
             AudioPlayer_TimingChanged(App.audioPlayer);
+            AudioPlayer_VolumeChanged(App.audioPlayer, App.audioPlayer.Volume);
             PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
             isCodeChangedLrcItem = true;
             LyricManager_PlayingLyricSelectedChange1(App.lyricManager.NowLyricsData);
@@ -114,6 +116,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
             App.audioPlayer.TimingChanged += AudioPlayer_TimingChanged;
             App.audioPlayer.PlayEnd += AudioPlayer_PlayEnd;
+            App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
             App.audioPlayer.CacheLoadingChanged += AudioPlayer_CacheLoadingChanged;
             App.audioPlayer.CacheLoadedChanged += AudioPlayer_CacheLoadedChanged;
             App.playingList.NowPlayingImageLoading += PlayingList_NowPlayingImageLoading;
@@ -129,6 +132,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
             App.audioPlayer.TimingChanged -= AudioPlayer_TimingChanged;
             App.audioPlayer.PlayEnd -= AudioPlayer_PlayEnd;
+            App.audioPlayer.VolumeChanged -= AudioPlayer_VolumeChanged;
             App.audioPlayer.CacheLoadingChanged -= AudioPlayer_CacheLoadingChanged;
             App.audioPlayer.CacheLoadedChanged -= AudioPlayer_CacheLoadedChanged;
             App.playingList.NowPlayingImageLoading -= PlayingList_NowPlayingImageLoading;
@@ -405,6 +409,25 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             }
         }
 
+        private void AudioPlayer_VolumeChanged(Media.AudioPlayer audioPlayer, object data)
+        {
+            float volume = (float)data;
+
+            if (volume == 0)
+            {
+                VolumeIcon.Glyph = "\xE198";
+            }
+            else
+            {
+                if (volume <= 100 && volume > 67)
+                    VolumeIcon.Glyph = "\xE995";
+                else if (volume <= 67 && volume > 33)
+                    VolumeIcon.Glyph = "\xE994";
+                else if (volume <= 33)
+                    VolumeIcon.Glyph = "\xE993";
+            }
+        }
+
         private void AudioPlayer_TimingChanged(Media.AudioPlayer audioPlayer)
         {
             if (audioPlayer.FileReader != null)
@@ -614,14 +637,12 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         {
             if (App.AppWindowLocal.Presenter.Kind == AppWindowPresenterKind.FullScreen)
             {
-                FullScreenIcon.Visibility = Visibility.Visible;
-                UnFullScreenIcon.Visibility = Visibility.Collapsed;
+                FullScreenIcon.Glyph = "\xE1D9";
                 App.AppWindowLocal.SetPresenter(AppWindowPresenterKind.Default);
             }
             else
             {
-                FullScreenIcon.Visibility = Visibility.Collapsed;
-                UnFullScreenIcon.Visibility = Visibility.Visible;
+                FullScreenIcon.Glyph = "\xE1D8";
                 App.AppWindowLocal.SetPresenter(AppWindowPresenterKind.FullScreen);
             }
         }

@@ -17,44 +17,44 @@
             <MenuFlyoutItem Text="{x:Bind MusicData.Title, Mode=OneWay}" IsEnabled="False"/>
             <MenuFlyoutItem Text="播放" Click="Play_Click">
                 <MenuFlyoutItem.Icon>
-                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 播放ol}"/>
+                    <FontIcon Glyph=""/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutItem Text="添加到播放中列表" Click="AddPlay_Click">
                 <MenuFlyoutItem.Icon>
-                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 添加}"/>
+                    <FontIcon Glyph=""/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutItem Text="下一首播放" Click="NextPlay_Click">
                 <MenuFlyoutItem.Icon>
-                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 下一首ol}"/>
+                    <FontIcon Glyph=""/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutItem x:Name="DeleteFlyoutBtn" Text="从列表中删除" Click="DeleteFlyoutBtn_Click">
                 <MenuFlyoutItem.Icon>
-                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 删除}"/>
+                    <FontIcon Glyph=""/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutSeparator/>
             <MenuFlyoutSubItem x:Name="AddToPlayListSubItems" Text="添加到播放列表" Loaded="AddToPlayListSubItems_Loaded">
                 <MenuFlyoutSubItem.Icon>
-                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 添加}"/>
+                    <FontIcon Glyph=""/>
                 </MenuFlyoutSubItem.Icon>
                 </MenuFlyoutSubItem>
             <MenuFlyoutItem Text="下载" Click="Download_Click">
                 <MenuFlyoutItem.Icon>
-                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 下载}"/>
+                    <FontIcon Glyph=""/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutSeparator/>
             <MenuFlyoutSubItem x:Name="rmfs" Text="艺术家">
                 <MenuFlyoutSubItem.Icon>
-                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 用户}"/>
+                    <FontIcon Glyph=""/>
                 </MenuFlyoutSubItem.Icon>
             </MenuFlyoutSubItem>
             <MenuFlyoutItem x:Name="rmfi" Text="专辑" Click="mfi_Click">
                 <MenuFlyoutItem.Icon>
-                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 专辑}"/>
+                    <FontIcon Glyph=""/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutSeparator/>
@@ -64,12 +64,12 @@
         <MenuFlyout x:Name="mf" Opening="mf_Opening">
             <MenuFlyoutSubItem x:Name="mfs" Text="艺术家">
                 <MenuFlyoutSubItem.Icon>
-                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 用户}"/>
+                    <FontIcon Glyph=""/>
                 </MenuFlyoutSubItem.Icon>
             </MenuFlyoutSubItem>
             <MenuFlyoutItem x:Name="mfi" Text="专辑" Click="mfi_Click">
                 <MenuFlyoutItem.Icon>
-                    <PathIcon Foreground="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 专辑}"/>
+                    <FontIcon Glyph=""/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
         </MenuFlyout>
@@ -155,15 +155,11 @@
                 </Grid>
 
                 <StackPanel x:Name="RightToolBar" Grid.Column="1" Opacity="0" Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="LeftToRight">
-                    <Button Width="36" Height="36" CornerRadius="18" ToolTipService.ToolTip="播放" Click="Play_Click">
-                        <Viewbox Width="12">
-                            <SymbolIcon Symbol="Play"/>
-                        </Viewbox>
+                    <Button Width="36" Height="36" CornerRadius="18" ToolTipService.ToolTip="播放" Click="Play_Click" Padding="0">
+                        <FontIcon Glyph="" FontSize="14"/>
                     </Button>
-                    <Button Width="36" Height="36" CornerRadius="18" Margin="2,0,0,0" ToolTipService.ToolTip="更多选项" Click="Button_Click">
-                        <Viewbox Width="12">
-                            <SymbolIcon Symbol="More"/>
-                        </Viewbox>
+                    <Button Width="36" Height="36" CornerRadius="18" Margin="2,0,0,0" ToolTipService.ToolTip="更多选项" Click="Button_Click" Padding="0">
+                        <FontIcon Glyph="" FontSize="14"/>
                     </Button>
                 </StackPanel>
 
