@@ -29,6 +29,7 @@ using static znMusicPlayerWUI.DataEditor.DataFolderBase;
 using Vanara.Extensions.Reflection;
 using NAudio.CoreAudioApi.Interfaces;
 using static NeteaseCloudMusicApi.Utils.QuickHttp;
+using System.Runtime.InteropServices;
 
 namespace znMusicPlayerWUI.Media
 {
@@ -719,11 +720,11 @@ namespace znMusicPlayerWUI.Media
                     var m = MusicData;
                     MusicData = musicData;
                     Exception exception = null;
-                    try
-                    {
                         _filePath = resultPath;
                         Debug.WriteLine($"AudioPlayer：正在加载 \"{resultPath}\".");
                         await SetSource(resultPath);
+                    try
+                    {
                     }
                     catch (Exception err)
                     {
@@ -877,7 +878,17 @@ namespace znMusicPlayerWUI.Media
                             device,
                             WasapiOnly ? AudioClientShareMode.Exclusive : AudioClientShareMode.Shared, false,
                             Latency);
-                        NowOutObj.Init(FileProvider);
+                        try
+                        {
+                            NowOutObj.Init(FileProvider);
+                        }
+                        catch (COMException)
+                        {
+                            if (WasapiOnly)
+                                throw new Exception("当前输出设备似乎不支持独占模式。\n" +
+                                    "请尝试到音频输出设备的 属性 页面的 高级 选项卡打开 允许应用程序独占控制该设备。");
+                            throw new Exception("无法初始化音频输出，请重试。");
+                        }
                         NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
                         device.Dispose();
                         break;

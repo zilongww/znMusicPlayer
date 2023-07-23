@@ -20,7 +20,7 @@ namespace znMusicPlayerWUI.Controls
 {
     public partial class SongItem : Grid, IDisposable
     {
-        private bool _ShowImage = true;
+        bool _ShowImage = true;
 
         public bool AutoLoadImage = false;
         public bool CanClickPlay { get; set; } = true;
@@ -35,7 +35,7 @@ namespace znMusicPlayerWUI.Controls
         public MusicData MusicData
         {
             get => (MusicData)GetValue(MusicDataProperty);
-            set
+            private set
             {
                 SetValue(MusicDataProperty, value);
             }
@@ -66,6 +66,7 @@ namespace znMusicPlayerWUI.Controls
         public SongItem()
         {
             InitializeComponent();
+            AddUnloadedEvent();
             DataContextChanged += SongItem_DataContextChanged;
             //ShowImage = false;
         }
@@ -91,13 +92,16 @@ namespace znMusicPlayerWUI.Controls
         private void SongItem_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             if (DataContext == null) return;
-            musicItemBindBase = DataContext as SongItemBindBase;
+            var d = DataContext as SongItemBindBase;
+            if (d == null) return;
+            if (d.MusicData == null) return;
+            if (musicItemBindBase?.MusicData == d.MusicData) return;
+            musicItemBindBase = d;
             Init(musicItemBindBase);
         }
 
         public void Init(SongItemBindBase bindBase)
         {
-            if (bindBase == null) return;
             MusicData = bindBase.MusicData;
             musicListData = bindBase.MusicListData;
             ImageScaleDPI = bindBase.ImageScaleDPI;
@@ -189,6 +193,7 @@ namespace znMusicPlayerWUI.Controls
                 AlbumImage?.Dispose();
                 MusicData = null;
                 UnloadObject(this);
+                Debug.WriteLine("Disposed");
             }
             catch (Exception err)
             {
@@ -410,6 +415,19 @@ namespace znMusicPlayerWUI.Controls
             StaticSongItems.Remove(this);
             Dispose();
         }
+
+        public void AddUnloadedEvent()
+        {
+            MoveSymbol.Visibility = Visibility.Collapsed;
+            Unloaded += Grid_Unloaded;
+        }
+
+        public void RemoveUnloadedEvent()
+        {
+            MoveSymbol.Visibility = Visibility.Visible;
+            Unloaded -= Grid_Unloaded;
+        }
+
 
         private void ViewportBehavior_EnteringViewport(object sender, EventArgs e)
         {

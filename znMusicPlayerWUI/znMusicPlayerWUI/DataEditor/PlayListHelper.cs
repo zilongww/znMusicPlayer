@@ -104,7 +104,7 @@ namespace znMusicPlayerWUI.DataEditor
             await SaveData(DeleteMusicDataFromPlayList(listName, musicData, await ReadData()));
         }
 
-        public static JObject MackJsPlayListData(MusicListData musicListData)
+        public static JObject MakeJsPlayListData(MusicListData musicListData)
         {
             return new JObject() { { musicListData.ListName, JObject.FromObject(musicListData) } };
         }

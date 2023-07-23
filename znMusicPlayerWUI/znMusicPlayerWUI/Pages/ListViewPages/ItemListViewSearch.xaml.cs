@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.VisualBasic.Devices;
 using System.Collections.ObjectModel;
 using CommunityToolkit.WinUI.UI;
+using znMusicPlayerWUI.Controls;
 
 namespace znMusicPlayerWUI.Pages
 {

@@ -24,12 +24,12 @@
                             OverflowButtonVisibility="Auto" DefaultLabelPosition="Right">
                     <AppBarButton Label="刷新" AccessKey="R" Click="AppBarButton_Click">
                         <AppBarButton.Icon>
-                            <FontIcon Glyph="&#xE149;"/>
+                            <FontIcon Glyph="&#xE72C;"/>
                         </AppBarButton.Icon>
                     </AppBarButton>
                     <AppBarButton Label="添加" AccessKey="A" Click="AppBarButton_Click_1">
                         <AppBarButton.Icon>
-                            <FontIcon Glyph="&#xE109;"/>
+                            <FontIcon Glyph="&#xE710;"/>
                         </AppBarButton.Icon>
                     </AppBarButton>
                 </CommandBar>

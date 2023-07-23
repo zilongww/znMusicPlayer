@@ -26,7 +26,8 @@
                   SelectionMode="None"
                   SelectionChanged="Children_SelectionChanged"
                   ItemsSource="{x:Bind MusicDataList}"
-                  ui:ScrollViewerExtensions.EnableMiddleClickScrolling="True">
+                  ui:ScrollViewerExtensions.EnableMiddleClickScrolling="True"
+                  DropCompleted="Children_DropCompleted">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="helper:SongItemBindBase">
                     <controlszn:SongItem Margin="0,0,4,0"/>
@@ -111,7 +112,7 @@
                                                               Label="选中全部"
                                                               ToolTipService.ToolTip="选中全部">
                                                     <AppBarButton.Icon>
-                                                        <FontIcon Glyph="&#xE14E;"/>
+                                                        <FontIcon Glyph="&#xE8B3;"/>
                                                     </AppBarButton.Icon>
                                                 </AppBarButton>
                                                 <AppBarButton x:Name="SelectReverseButton"
@@ -146,7 +147,7 @@
                                                     </AppBarButton.Flyout>
                                                     <Viewbox Width="9" Margin="2,0,0,0">
                                                         <Grid>
-                                                            <FontIcon Glyph="&#xE109;" Scale="0.47,0.47,1" Margin="-10,-2,0,0"
+                                                            <FontIcon Glyph="&#xE710;" Scale="0.47,0.47,1" Margin="-10,-2,0,0"
                                                             VerticalAlignment="Top"/>
                                                             <FontIcon Glyph="&#xE90B;"
                                                             VerticalAlignment="Bottom"/>
@@ -159,7 +160,7 @@
                                                   Click="AddSelectedToPlayingListButton_Click">
                                                     <Viewbox Width="9" Margin="2,0,0,0" VerticalAlignment="Center">
                                                         <Grid>
-                                                            <FontIcon Glyph="&#xE109;" Scale="0.47,0.47,1" Margin="-10,-2,0,0"
+                                                            <FontIcon Glyph="&#xE710;" Scale="0.47,0.47,1" Margin="-10,-2,0,0"
                                                             VerticalAlignment="Top"/>
                                                             <FontIcon Glyph="&#xEE4A;"
                                                             VerticalAlignment="Bottom"/>
@@ -185,7 +186,7 @@
                                                               Label="添加本地文件"
                                                               ToolTipService.ToolTip="添加本地文件">
                                                     <AppBarButton.Icon>
-                                                        <FontIcon Glyph=""/>
+                                                        <FontIcon Glyph="&#xE8E5;"/>
                                                     </AppBarButton.Icon>
                                                 </AppBarButton>
                                                 <AppBarButton Click="Button_Click_1"
@@ -193,18 +194,27 @@
                                                               Label="刷新"
                                                               ToolTipService.ToolTip="刷新">
                                                     <AppBarButton.Icon>
-                                                        <FontIcon Glyph=""/>
+                                                        <FontIcon Glyph="&#xE72C;"/>
                                                     </AppBarButton.Icon>
                                                 </AppBarButton>
-                                                <AppBarButton Click="Button_Click_2"
+                                                <AppBarToggleButton Click="Button_Click_2"
                                                               Label="多选"
                                                               AccessKey="S"
                                                               ToolTipService.ToolTip="多选"
                                                               x:Name="SelectItemButton">
-                                                    <AppBarButton.Icon>
-                                                        <FontIcon Glyph=""/>
-                                                    </AppBarButton.Icon>
-                                                </AppBarButton>
+                                                    <AppBarToggleButton.Icon>
+                                                        <FontIcon Glyph="&#xE762;"/>
+                                                    </AppBarToggleButton.Icon>
+                                                </AppBarToggleButton>
+                                                <AppBarToggleButton Click="MoveItemButton_Click"
+                                                                    Label="排序"
+                                                                    AccessKey="S"
+                                                                    ToolTipService.ToolTip="拖动音乐控件以重新排序"
+                                                                    x:Name="MoveItemButton">
+                                                    <AppBarToggleButton.Icon>
+                                                        <FontIcon Glyph="&#xEA37;"/>
+                                                    </AppBarToggleButton.Icon>
+                                                </AppBarToggleButton>
                                             </CommandBar>
                                         </Grid>
                                     </Grid>
@@ -265,7 +275,7 @@
                     Background="{ThemeResource AcrylicNormal}">
                 <Button Click="Button_Click_3" Tag="2" AccessKey="N"
                         ToolTipService.ToolTip="滚动到当前正在播放的歌曲">
-                    <FontIcon Glyph="&#xe7c8;" FontSize="16"/>
+                    <FontIcon Glyph="&#xE759;" FontSize="16"/>
                 </Button>
             </Border>
         </Grid>

@@ -62,7 +62,7 @@
                     </NavigationViewItem>
                     <NavigationViewItem Content="推荐" AccessKey="MR">
                         <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE1CE;"/>
+                            <FontIcon Glyph=""/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
                     <NavigationViewItem Content="浏览" AccessKey="MB">
@@ -73,7 +73,7 @@
                     <NavigationViewItemHeader Content="本地" Margin="0,16,0,0"/>
                     <NavigationViewItem Content="播放列表" AccessKey="ML" x:Name="MusicPlayListButton">
                         <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE142;"/>
+                            <FontIcon Glyph="&#xE90B;"/>
                         </NavigationViewItem.Icon>
                         <NavigationViewItem.MenuItems>
                         </NavigationViewItem.MenuItems>
@@ -173,9 +173,9 @@
                                         Grid.Column="1"
                                         Background="Transparent">
                                 <Button x:Name="PlayBeforeButton"
-                                        Height="40"
-                                        Width="40"
-                                        BorderThickness="0" Padding="12"
+                                        Height="44"
+                                        Width="44"
+                                        BorderThickness="0" Padding="14"
                                         Click="PlayBeforeButton_Click"
                                         Background="Transparent">
                                     <Path Stretch="Uniform"
@@ -184,11 +184,11 @@
                                 </Button>
                                 <Grid>
                                     <Button x:Name="PlayButton"
-                                            Height="56"
-                                            Width="56"
+                                            Height="60"
+                                            Width="60"
                                             CornerRadius="28" BorderBrush="{ThemeResource LayerOnMicaBaseAltFillColorSecondaryBrush}"
-                                            BorderThickness="6" Padding="8"
-                                            Margin="4,0,4,0" Background="Transparent"
+                                            BorderThickness="6" Padding="10"
+                                            Margin="8,0,8,0" Background="Transparent"
                                             Click="PlayButton_Click"
                                             IsHoldingEnabled="True" Holding="PlayButton_Holding"
                                             IsRightTapEnabled="True" RightTapped="PlayButton_RightTapped">
@@ -206,9 +206,9 @@
                                     <ProgressRing x:Name="PlayRing" Width="56" Height="56" IsIndeterminate="False"/>
                                 </Grid>
                                 <Button x:Name="PlayNextButton"
-                                        Height="40"
-                                        Width="40"
-                                        BorderThickness="0" Padding="12"
+                                        Height="44"
+                                        Width="44"
+                                        BorderThickness="0" Padding="14"
                                         Click="PlayNextButton_Click"
                                         Background="Transparent">
                                     <Path Stretch="Uniform"
@@ -221,7 +221,8 @@
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Right"
                                         DefaultLabelPosition="Collapsed"
-                                        Grid.Column="2">
+                                        Grid.Column="2"
+                                        AccessKey="BT">
                                 <AppBarButton Background="Transparent"
                                               Label="打开桌面歌词"
                                               Click="Button_Click_6"
@@ -243,7 +244,7 @@
                                               Label="播放列表"
                                               AccessKey="BL">
                                     <AppBarButton.Icon>
-                                        <FontIcon Glyph="&#xE142;"/>
+                                        <FontIcon Glyph="&#xE90B;"/>
                                     </AppBarButton.Icon>
                                 </AppBarButton>
                             </CommandBar>
@@ -301,7 +302,7 @@
                                         <TextBlock Text="{Binding ElementName=PlayingListBaseView,Path=ItemsSource.Count}"
                                                    FontSize="12" Margin="0,0,4,0"
                                                    VerticalAlignment="Center"/>
-                                        <FontIcon Glyph="&#xE106;" FontSize="14" VerticalAlignment="Center"/>
+                                        <FontIcon Glyph="&#xE711;" FontSize="14" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
@@ -327,7 +328,7 @@
                                             </StackPanel>
                                             <Button Grid.Column="1" Background="Transparent" BorderThickness="0"
                                                     Click="Button_Click_7" Height="36">
-                                                <FontIcon Glyph="&#xE106;" FontSize="14" VerticalAlignment="Center"/>
+                                                <FontIcon Glyph="&#xE711;" FontSize="14" VerticalAlignment="Center"/>
                                             </Button>
                                         </Grid>
                                     </DataTemplate>

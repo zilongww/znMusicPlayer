@@ -62,6 +62,8 @@ namespace znMusicPlayerWUI.Pages
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
+            if (MoveItemButton.IsChecked == true)
+                foreach (var i in SongItem.StaticSongItems) i.AddUnloadedEvent();
             base.OnNavigatedFrom(e);
             ImageManage.localImageCache.Clear();
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
@@ -132,6 +134,8 @@ namespace znMusicPlayerWUI.Pages
 
             PlayList_BaseGrid.Visibility = Visibility.Visible;
             AddLocalFilesButton.Visibility = Visibility.Visible;
+            if (Children.SelectionMode != ListViewSelectionMode.None)
+                Button_Click_2(null, null);
             #endregion
             PlayList_TitleTextBlock.Text = NavToObj.ListShowName;
             PlayList_OtherTextBlock.Text = $"共{NavToObj.Songs.Count}首歌曲";
@@ -204,6 +208,7 @@ namespace znMusicPlayerWUI.Pages
             }
             LoadingRing.IsIndeterminate = false; isLoading = false;
             LoadingRing.Visibility = Visibility.Collapsed;
+            UpdataShyHeader();
         }
 
         private void PlayListReader_Updataed()
@@ -212,7 +217,7 @@ namespace znMusicPlayerWUI.Pages
             {
                 if (data == NavToObj)
                 {
-                    NavToObj = data;
+                    NavToObj.Songs = data.Songs;
                     InitData();
                     break;
                 }
@@ -354,7 +359,7 @@ namespace znMusicPlayerWUI.Pages
         private async void UpdataCommandToolBarWidth()
         {
             ToolsCommandBar.Width = 0;
-            await Task.Delay(1);
+            await Task.Delay(10);
             ToolsCommandBar.Width = double.NaN;
         }
 
@@ -383,12 +388,11 @@ namespace znMusicPlayerWUI.Pages
                 Canvas.SetZIndex(headerContainer, 1);
             }
 
-            UpdataCommandToolBarWidth();
-
             UpdataShyHeader();
             await Task.Delay(1);
             UpdataShyHeader();
             CreatShadow();
+            UpdataInfoWidth();
         }
 
         bool isFirstScroll = true;
@@ -436,11 +440,10 @@ namespace znMusicPlayerWUI.Pages
         }
 
         DropShadow dropShadow;
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
             if (Children.SelectionMode == ListViewSelectionMode.None)
             {
-                SelectItemButton.Background = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as Brush;
                 Children.SelectionMode = ListViewSelectionMode.Multiple;
 
                 SelectorSeparator.Visibility = Visibility.Visible;
@@ -451,17 +454,13 @@ namespace znMusicPlayerWUI.Pages
                 SelectReverseButton.Visibility = Visibility.Visible;
                 SelectAllButton.Visibility = Visibility.Visible;
 
-                Children.AllowDrop = true;
-                Children.CanReorderItems = true;
-/*
-                foreach (SongItem songItem in Children.Items)
+                foreach (SongItem songItem in SongItem.StaticSongItems)
                 {
                     songItem.CanClickPlay = false;
-                }*/
+                }
             }
             else
             {
-                SelectItemButton.Background = new SolidColorBrush(Colors.Transparent);
                 Children.SelectionMode = ListViewSelectionMode.None;
 
                 SelectorSeparator.Visibility = Visibility.Collapsed;
@@ -472,13 +471,10 @@ namespace znMusicPlayerWUI.Pages
                 SelectReverseButton.Visibility = Visibility.Collapsed;
                 SelectAllButton.Visibility = Visibility.Collapsed;
 
-                Children.AllowDrop = false;
-                Children.CanReorderItems = false;
-/*
-                foreach (SongItem songItem in Children.Items)
+                foreach (SongItem songItem in SongItem.StaticSongItems)
                 {
                     songItem.CanClickPlay = true;
-                }*/
+                }
             }
             UpdataCommandToolBarWidth();
         }
@@ -774,6 +770,39 @@ namespace znMusicPlayerWUI.Pages
         private void SearchBox_LostFocus(object sender, RoutedEventArgs e)
         {
             MainWindow.CanKeyDownBack = true;
+        }
+
+        private void Children_DropCompleted(UIElement sender, DropCompletedEventArgs args)
+        {
+            System.Diagnostics.Debug.WriteLine("droped");
+        }
+
+        private async void MoveItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            if ((bool)MoveItemButton.IsChecked)
+            {
+                foreach (var i in SongItem.StaticSongItems) i.RemoveUnloadedEvent();
+                Children.AllowDrop = true;
+                Children.CanDragItems = true;
+                Children.CanReorderItems = true;
+            }
+            else
+            {
+                Children.AllowDrop = false;
+                Children.CanDragItems = false;
+                Children.CanReorderItems = false;
+                foreach (var i in SongItem.StaticSongItems) i.AddUnloadedEvent();
+
+                var data = await PlayListHelper.ReadData();
+                NavToObj.Songs.Clear();
+                foreach (var i in MusicDataList)
+                {
+                    NavToObj.Songs.Add(i.MusicData);
+                }
+                data[NavToObj.ListName] = JObject.FromObject(NavToObj);
+                await PlayListHelper.SaveData(data);
+                await App.playListReader.Refresh();
+            }
         }
     }
 }

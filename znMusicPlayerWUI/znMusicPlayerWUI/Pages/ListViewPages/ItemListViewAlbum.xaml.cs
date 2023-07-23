@@ -24,6 +24,7 @@ using System.Collections.ObjectModel;
 using znMusicPlayerWUI.Pages.ListViewPages;
 using System.Diagnostics;
 using CommunityToolkit.WinUI.UI;
+using znMusicPlayerWUI.Controls;
 
 namespace znMusicPlayerWUI.Pages
 {
