@@ -31,8 +31,10 @@ namespace FlakeNAudioAdapter
 
         public override long Position
         {
-            get => _flakeFileReader.Position * _waveFormat.BlockAlign;
-
+            get
+            {
+                return _flakeFileReader.Position * _waveFormat.BlockAlign;
+            }
             set
             {
                 lock (_repositionLock)
@@ -63,6 +65,7 @@ namespace FlakeNAudioAdapter
         {
             if (buffer == null) throw new ArgumentNullException(nameof(buffer));
             int bytesRead = 0;
+            int br = 0;
             lock (_repositionLock)
             {
                 while (bytesRead < count)
@@ -90,7 +93,7 @@ namespace FlakeNAudioAdapter
                     _decompressBufferOffset = 0;
 
                     // at this point our buffer will be empty
-                    int br = _flakeFileReader.Read(_audioBuffer, count);
+                    br = _flakeFileReader.Read(_audioBuffer, count);
                     if (br == 0) break;
 
                     _decompressLeftovers = _audioBuffer.ByteLength;

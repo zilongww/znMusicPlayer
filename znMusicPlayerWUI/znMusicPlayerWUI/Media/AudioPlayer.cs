@@ -838,36 +838,30 @@ namespace znMusicPlayerWUI.Media
                 MidiPlayback.Speed = Tempo;
             }
             else
-            {
+            {/*
                 bool notDefaultLatency = false;
                 if (Latency != (int)SettingDefault[SettingParams.AudioLatency.ToString()])
                 {
                     notDefaultLatency = true;
-                }
+                }*/
 
                 switch (NowOutDevice.DeviceType)
                 {
                     case OutApi.WaveOut:
                         NowOutObj = new WaveOutEvent();
                         (NowOutObj as WaveOutEvent).DeviceNumber = NowOutDevice.Device == null ? -1 : (int)NowOutDevice.Device;
-                        if (notDefaultLatency) (NowOutObj as WaveOutEvent).NumberOfBuffers = Latency;
+                        (NowOutObj as WaveOutEvent).NumberOfBuffers = Latency;
                         NowOutObj.Init(FileProvider);
                         NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
                         break;
                     case OutApi.DirectSound:
                         if (NowOutDevice.Device == null)
                         {
-                            if (notDefaultLatency)
-                                NowOutObj = new DirectSoundOut(Latency);
-                            else
-                                NowOutObj = new DirectSoundOut();
+                            NowOutObj = new DirectSoundOut(Latency);
                         }
                         else
                         {
-                            if (notDefaultLatency)
-                                NowOutObj = new DirectSoundOut((NowOutDevice.Device as DirectSoundDeviceInfo).Guid, Latency);
-                            else
-                                NowOutObj = new DirectSoundOut((NowOutDevice.Device as DirectSoundDeviceInfo).Guid);
+                            NowOutObj = new DirectSoundOut((NowOutDevice.Device as DirectSoundDeviceInfo).Guid, Latency);
                         }
                         NowOutObj.Init(FileProvider);
                         NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;

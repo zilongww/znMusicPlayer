@@ -140,7 +140,8 @@ namespace znMusicPlayerWUI
         private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
             args.Cancel = true;
-            RemoveEvents();
+            if (InOpenMusicPage) SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
+            else RemoveEvents();
             this.AppWindow.Hide();
             isBackground = true;
         }

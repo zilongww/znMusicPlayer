@@ -107,13 +107,19 @@ namespace znMusicPlayerWUI
                 if (_.MusicData == null)
                 {
                     SMTC.DisplayUpdater.MusicProperties.Title = _.FileReader?.FileName;
+                    notifyIcon.Text = AppName;
                 }
                 else
                 {
                     SMTC.DisplayUpdater.MusicProperties.Title = _.MusicData.Title;
                     SMTC.DisplayUpdater.MusicProperties.Artist = _.MusicData.ButtonName;
+                    try
+                    {
+                        notifyIcon.Text = $"{AppName}\n正在播放：{_.MusicData.Title}\n · 艺术家：{_.MusicData.ArtistName}\n · 专辑：{_.MusicData.Album.Title}";
+                    }
+                    catch { }
                 }
-                    SMTC.DisplayUpdater.Update();
+                SMTC.DisplayUpdater.Update();
             };
             playingList.NowPlayingImageLoading += (_, __) =>
             {

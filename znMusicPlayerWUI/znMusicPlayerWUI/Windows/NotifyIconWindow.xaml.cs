@@ -213,7 +213,8 @@ namespace znMusicPlayerWUI.Windowed
             if (audioPlayer.MusicData == MusicData) return;
             PlayingBarRoot.Visibility = Visibility.Visible;
             MusicData = audioPlayer.MusicData;
-            TitleTB.Text = audioPlayer.MusicData.Title;
+            TitleTB.Text = string.IsNullOrEmpty(audioPlayer.MusicData.Title2) ? audioPlayer.MusicData.Title :
+                $"{audioPlayer.MusicData.Title}（{audioPlayer.MusicData.Title2}）";
             ButtonNameTB.Text = audioPlayer.MusicData.ButtonName;
 
             MoveToPosition();

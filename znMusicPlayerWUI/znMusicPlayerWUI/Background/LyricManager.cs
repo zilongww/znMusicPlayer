@@ -177,11 +177,14 @@ namespace znMusicPlayerWUI.Background
         public void ReCallUpdata()
         {
             //System.Diagnostics.Debug.WriteLine($"Lyric Lasted Count {PlayingLyricSelectedChange?.GetInvocationList().Length}");
-            timer.Start();
+            timer.Start();/*
             if (PlayingLyricSelectedChange == null) timer.Stop();
             if (!NowPlayingLyrics.Any()) timer.Stop();
+            if (NowPlayingLyrics.Count <= 3) timer.Stop();*/
 
-            //System.Diagnostics.Debug.WriteLine($"Lyric Timing Changed: {timer.Interval.TotalMilliseconds}.");
+            //System.Diagnostics.Debug.WriteLine($"Lyric Timing Changed: {App.audioPlayer.FileReader?.Position}.");
+            //System.Diagnostics.Debug.WriteLine($"Lyric Timing Changed: {App.audioPlayer.FileReader?.WaveFormat.AverageBytesPerSecond}.");
+            //System.Diagnostics.Debug.WriteLine($"Lyric Timing Changed: {(decimal)App.audioPlayer.FileReader?.Position / (decimal)App.audioPlayer.FileReader?.WaveFormat.AverageBytesPerSecond}.");
 
             foreach (var data in NowPlayingLyrics)
             {

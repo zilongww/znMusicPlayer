@@ -93,12 +93,14 @@ namespace CUETools.Codecs.FLAKE
 		public long Position
 		{
 			get
-			{
+			{/*
+				System.Diagnostics.Debug.WriteLine(_sampleOffset);
+				System.Diagnostics.Debug.WriteLine(_samplesInBuffer);*/
 				return _sampleOffset - _samplesInBuffer;
 			}
 			set
-			{
-				if (value > Length)
+            {
+                if (value > Length)
 					throw new Exception("seeking past end of stream");
 				if (value < Position || value > _sampleOffset)
 				{
@@ -117,7 +119,8 @@ namespace CUETools.Codecs.FLAKE
 							_samplesInBuffer = 0;
                             _samplesBufferOffset = 0;
 							_IO.Position = (long)seek_table[best_st].offset + first_frame_offset;
-							_sampleOffset = seek_table[best_st].number;
+
+                            _sampleOffset = seek_table[best_st].number;
 						}
 					}
 					if (value < Position)
@@ -168,8 +171,8 @@ namespace CUETools.Codecs.FLAKE
 		}
 
 		public int Read(AudioBuffer buff, int maxLength)
-		{
-			buff.Prepare(this, maxLength);
+        {
+            buff.Prepare(this, maxLength);
 
 			int offset = 0;
 			int sampleCount = buff.Length;
@@ -197,9 +200,13 @@ namespace CUETools.Codecs.FLAKE
 				_framesBufferLength -= bytesDecoded;
 				_framesBufferOffset += bytesDecoded;
 
-				_samplesInBuffer -= _samplesBufferOffset; // can be set by Seek, otherwise zero
-				_sampleOffset += _samplesInBuffer;
-			}
+                //System.Diagnostics.Debug.WriteLine(_sampleOffset);
+                //System.Diagnostics.Debug.WriteLine(_samplesInBuffer);
+                _samplesInBuffer -= _samplesBufferOffset; // can be set by Seek, otherwise zero
+                _sampleOffset += _samplesInBuffer;
+                //System.Diagnostics.Debug.WriteLine("   " + _sampleOffset);
+                //System.Diagnostics.Debug.WriteLine(_samplesInBuffer);
+            }
 
 			Interlace(buff, offset, sampleCount);
 			_samplesInBuffer -= sampleCount;
