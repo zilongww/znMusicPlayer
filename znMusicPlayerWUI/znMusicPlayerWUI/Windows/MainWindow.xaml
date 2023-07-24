@@ -60,14 +60,9 @@
                             </AnimatedIcon>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
-                    <NavigationViewItem Content="推荐" AccessKey="MR">
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph=""/>
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
                     <NavigationViewItem Content="浏览" AccessKey="MB">
                         <NavigationViewItem.Icon>
-                            <FontIcon Glyph=""/>
+                            <FontIcon Glyph="&#xE704;"/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
                     <NavigationViewItemHeader Content="本地" Margin="0,16,0,0"/>
@@ -93,6 +88,11 @@
                             <FontIcon Glyph="&#xE838;"/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
+                    <NavigationViewItem Content="关于" AccessKey="MR">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE946;"/>
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
                 </NavigationView.MenuItems>
 
                 <Grid x:Name="NavViewContentBase" SizeChanged="NavViewContentBase_SizeChanged">
@@ -107,6 +107,8 @@
                     <Grid VerticalAlignment="Bottom"
                           Height="86"
                           Background="{ThemeResource AcrylicNormal}"
+                          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                          BorderThickness="0,1,0,0"
                           x:Name="BottomPlayGrid">
                         <Button Background="Transparent"
                                 CornerRadius="0"
@@ -186,7 +188,7 @@
                                     <Button x:Name="PlayButton"
                                             Height="60"
                                             Width="60"
-                                            CornerRadius="28" BorderBrush="{ThemeResource LayerOnMicaBaseAltFillColorSecondaryBrush}"
+                                            CornerRadius="28" BorderBrush="{ThemeResource CircleElevationBorderBrush}"
                                             BorderThickness="6" Padding="10"
                                             Margin="8,0,8,0" Background="Transparent"
                                             Click="PlayButton_Click"
@@ -203,7 +205,7 @@
                                         </Button.Resources>
                                         <controls:MediaPlayStateViewer x:Name="MediaPlayStateViewer" PlaybackState="Paused" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4"/>
                                     </Button>
-                                    <ProgressRing x:Name="PlayRing" Width="56" Height="56" IsIndeterminate="False"/>
+                                    <ProgressRing x:Name="PlayRing" Width="60" Height="60" IsIndeterminate="False"/>
                                 </Grid>
                                 <Button x:Name="PlayNextButton"
                                         Height="44"

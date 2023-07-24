@@ -12,7 +12,9 @@
 
         <ListView.Header>
             <Grid x:Name="HeaderBaseGrid">
-                <Rectangle x:Name="HeaderBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
+                <Border x:Name="HeaderBaseRectangle" Background="{ThemeResource AcrylicNormal}"    
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="0,0,0,1"/>
                 <TextBlock x:Name="HeaderBaseTextBlock" Text="下载" Style="{ThemeResource TBHeader}"/>
                 <Button x:Name="ToSettingBtn" Click="ToSettingBtn_Click"
                         Content="选项" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,14,2"

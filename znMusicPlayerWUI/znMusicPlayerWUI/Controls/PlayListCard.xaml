@@ -20,7 +20,7 @@
     </Grid.Resources>
     
     <Rectangle x:Name="ShadowBaseRectangle" Margin="4,2,0,0"/>
-    <Border CornerRadius="6"
+    <Border CornerRadius="8"
             BorderThickness="1"
             BorderBrush="{ThemeResource CardStrokeColorDefaultSolid}">
         <Grid>

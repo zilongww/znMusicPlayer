@@ -18,7 +18,9 @@
               animations:ItemsReorderAnimation.Duration="00:00:00.2000000">
         <GridView.Header>
             <Grid x:Name="BaseGridView_HeaderGrid">
-                <Rectangle x:Name="BaseGridView_HeaderRectangle" Fill="{ThemeResource AcrylicNormal}"/>
+                <Border x:Name="BaseGridView_HeaderRectangle" Background="{ThemeResource AcrylicNormal}"    
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="0,0,0,1"/>
                 <TextBlock x:Name="BaseGridView_HeaderTextBlock" Text="播放列表" Style="{ThemeResource TBHeader}"/>
                 <CommandBar VerticalAlignment="Bottom" Margin="0,0,10,-6" Background="Transparent"
                             OverflowButtonVisibility="Auto" DefaultLabelPosition="Right">

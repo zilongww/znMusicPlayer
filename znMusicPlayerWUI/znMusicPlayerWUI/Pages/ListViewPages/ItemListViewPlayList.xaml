@@ -36,10 +36,11 @@
             <ListView.Header>
                 <Border VerticalAlignment="Top"
                         x:Name="menu_border"
-                        Margin="0,0,0,6"
-                        BorderBrush="{ThemeResource BorderNormal}">
+                        Margin="0,0,0,24">
                     <Grid x:Name="headerRootGrid">
-                        <Rectangle x:Name="BackColorBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
+                        <Border x:Name="BackColorBaseRectangle" Background="{ThemeResource AcrylicNormal}"    
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="0,0,0,1"/>
                         <Grid x:Name="HeaderBaseGrid">
                             <Grid x:Name="PlayList_BaseGrid">
                                 <Grid x:Name="PlayList_Image_BaseGrid" Margin="24,24,0,0">
@@ -47,7 +48,6 @@
                                     <Border Width="210"
                                             Height="210"
                                             CornerRadius="8"
-                                            BorderThickness="0"
                                             HorizontalAlignment="Left"
                                             x:Name="PlayList_ImageBaseBorder">
                                         <controlszn:Imagezn x:Name="PlayList_Image"/>

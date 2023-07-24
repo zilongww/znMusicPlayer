@@ -95,13 +95,13 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void UpdataWhenDataLated()
         {
+            isCodeChangedLrcItem = true;
             AudioPlayer_SourceChanged(App.audioPlayer);
             AudioPlayer_PlayStateChanged(App.audioPlayer);
             AudioPlayer_CacheLoadedChanged(App.audioPlayer);
             AudioPlayer_TimingChanged(App.audioPlayer);
             AudioPlayer_VolumeChanged(App.audioPlayer, App.audioPlayer.Volume);
             PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
-            isCodeChangedLrcItem = true;
             LyricManager_PlayingLyricSelectedChange1(App.lyricManager.NowLyricsData);
             isCodeChangedLrcItem = false;
             App.audioPlayer.ReCallTiming();
@@ -569,9 +569,10 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 changeCount++;
                 return;
             }
+            if (isCodeChangedLrcItem) return;
 
             var lrcItem = (sender as ListView).SelectedItem as LyricData;
-            if (lrcItem != null && !isCodeChangedLrcItem)
+            if (lrcItem != null )
             {
                 if (lrcItem.Lyric == null) return;
                 // 加1ms，否则会短时间判定到上一句歌词

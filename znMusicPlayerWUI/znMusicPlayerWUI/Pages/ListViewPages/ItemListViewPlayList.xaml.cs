@@ -442,7 +442,7 @@ namespace znMusicPlayerWUI.Pages
         DropShadow dropShadow;
         private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            if (Children.SelectionMode == ListViewSelectionMode.None)
+            if (SelectItemButton.IsChecked == true)
             {
                 Children.SelectionMode = ListViewSelectionMode.Multiple;
 

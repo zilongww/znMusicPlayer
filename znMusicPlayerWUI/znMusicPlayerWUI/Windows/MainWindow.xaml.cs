@@ -623,7 +623,7 @@ namespace znMusicPlayerWUI
             isCodeChangedSilderValue = true;
 
             PlayRing.IsIndeterminate = true;
-            PlayRing.Foreground = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
+            PlayRing.Foreground = App.Current.Resources["SystemFillColorCautionBrush"] as SolidColorBrush;
         }
 
         static bool isDeleteImage = true;
@@ -705,7 +705,7 @@ namespace znMusicPlayerWUI
             }
             else
             {
-                PlayRing.Foreground = new SolidColorBrush(Color.FromArgb(255, 225, 225, 0));
+                PlayRing.Foreground = App.Current.Resources["SystemFillColorCautionBrush"] as SolidColorBrush;
                 App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange;
             }
 
@@ -993,8 +993,8 @@ namespace znMusicPlayerWUI
                 case "搜索":
                     SetNavViewContent(typeof(SearchPage));
                     break;
-                case "推荐":
-                    SetNavViewContent(typeof(RecommendPage));
+                case "关于":
+                    SetNavViewContent(typeof(AboutPage));
                     break;
                 case "浏览":
                     SetNavViewContent(typeof(BrowsePage));
@@ -1040,27 +1040,27 @@ namespace znMusicPlayerWUI
                     SNavView.SelectedItem = SNavView.MenuItems[1];
                     break;
 
-                case "RecommendPage":
+                case "BrowsePage":
                     SNavView.SelectedItem = SNavView.MenuItems[2];
                     break;
 
-                case "BrowsePage":
-                    SNavView.SelectedItem = SNavView.MenuItems[3];
-                    break;
-
                 case "PlayListPage":
-                    SNavView.SelectedItem = SNavView.MenuItems[5];
+                    SNavView.SelectedItem = SNavView.MenuItems[4];
                     break;
 
                 case "DownloadPage":
-                    SNavView.SelectedItem = SNavView.MenuItems[6];
+                    SNavView.SelectedItem = SNavView.MenuItems[5];
                     break;
 
                 case "HistoryPage":
-                    SNavView.SelectedItem = SNavView.MenuItems[7];
+                    SNavView.SelectedItem = SNavView.MenuItems[6];
                     break;
                     
                 case "LocalAudioPage":
+                    SNavView.SelectedItem = SNavView.MenuItems[7];
+                    break;
+
+                case "AboutPage":
                     SNavView.SelectedItem = SNavView.MenuItems[8];
                     break;
 
@@ -1076,7 +1076,7 @@ namespace znMusicPlayerWUI
 
                 case "ItemListViewPlayList":
                     //TODO:优化写法
-                    foreach (NavigationViewItem item in (SNavView.MenuItems[5] as NavigationViewItem).MenuItems)
+                    foreach (NavigationViewItem item in (SNavView.MenuItems[4] as NavigationViewItem).MenuItems)
                     {
                         if ((SContentFrame.Content as ItemListViewPlayList).NavToObj == item.Tag as MusicListData)
                         {

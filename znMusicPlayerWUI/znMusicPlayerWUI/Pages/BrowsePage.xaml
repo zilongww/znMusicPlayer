@@ -13,7 +13,9 @@
 
         <ListView.Header>
             <Grid x:Name="HeaderBaseGrid">
-                <Rectangle x:Name="HeaderBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
+                <Border x:Name="HeaderBaseRectangle" Background="{ThemeResource AcrylicNormal}"    
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="0,0,0,1"/>
                 <TextBlock x:Name="HeaderBaseTextBlock" Text="浏览歌曲" Style="{ThemeResource TBHeader}"/>
                 <ComboBox x:Name="HearderBaseSelectFromCB" Header="选择目标平台" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,16,2" Visibility="Collapsed"/>
             </Grid>

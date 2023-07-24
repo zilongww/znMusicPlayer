@@ -31,9 +31,9 @@ using Windows.System.Profile;
 
 namespace znMusicPlayerWUI.Pages
 {
-    public partial class RecommendPage : Page
+    public partial class AboutPage : Page
     {
-        public RecommendPage()
+        public AboutPage()
         {
             InitializeComponent();
             VersionRun.Text = App.AppVersion;

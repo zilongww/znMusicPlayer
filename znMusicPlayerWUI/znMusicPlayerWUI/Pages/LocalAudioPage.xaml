@@ -10,7 +10,9 @@
         <ListView x:Name="ListViewBase" HorizontalContentAlignment="Center" SelectionMode="None">
             <ListView.Header>
                 <Grid x:Name="HeaderBaseGrid">
-                    <Rectangle x:Name="HeaderBaseRectangle" Fill="{ThemeResource AcrylicNormal}"/>
+                    <Border x:Name="HeaderBaseRectangle" Background="{ThemeResource AcrylicNormal}"    
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="0,0,0,1"/>
                     <TextBlock x:Name="HeaderBaseTextBlock" Text="本地音频" Style="{ThemeResource TBHeader}"/>
                 </Grid>
             </ListView.Header>

@@ -193,7 +193,6 @@ namespace znMusicPlayerWUI.Controls
                 AlbumImage?.Dispose();
                 MusicData = null;
                 UnloadObject(this);
-                Debug.WriteLine("Disposed");
             }
             catch (Exception err)
             {
