@@ -629,9 +629,9 @@ namespace znMusicPlayerWUI
         static bool isDeleteImage = true;
         private static void PlayingList_NowPlayingImageLoading(ImageSource imageSource, string _)
         {
-            if (!(SPlayContent.Content is Imagezn))
+            if (SPlayContent.Content is not Imagezn)
             {
-                SPlayContent.Content = new Imagezn() { MinWidth = 0 };
+                SPlayContent.Content = new Imagezn() { MinWidth = 0, CornerRadius = new(4) };
             }
         }
 

@@ -47,9 +47,14 @@ namespace znMusicPlayerWUI.Pages
             //CueSharp.CueSheet cueSheet = new CueSharp.CueSheet("E:\\vedio\\anime\\[170816] TVアニメ「Fate／Apocrypha」OPテーマ「英雄 運命の詩」／EGOIST [通常盤] [FLAC+CUE]\\VVCL-1080.cue");
 
             //GC.Collect();
+            var d = new Media.Decoder.FFmpeg.FFmpegDecoder();
+            var a = d.InitDecodecAudio("C:\\Users\\zilong\\Music\\Rabbit in The Black Room - Rabbit House · Rabbit in The Black Room.mp3");
+            Debug.WriteLine(a);
+
             try
             {
-                abcd.Source = App.playingList.NowPlayingList[new Random().Next(0, App.playingList.NowPlayingList.Count - 1)].Album.PicturePath;
+                if (App.playingList.NowPlayingList.Any())
+                    abcd.Source = App.playingList.NowPlayingList[new Random().Next(0, App.playingList.NowPlayingList.Count - 1)].Album.PicturePath;
             }
             catch { }
 

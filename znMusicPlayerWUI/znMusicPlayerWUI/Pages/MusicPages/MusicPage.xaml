@@ -100,9 +100,7 @@
                                 <RepositionThemeTransition/>
                             </TransitionCollection>
                         </ui:DropShadowPanel.Transitions>
-                        <Border CornerRadius="8">
-                            <controls:Imagezn x:Name="AlbumImageBase" IsMassImage="False"/>
-                        </Border>
+                        <controls:Imagezn x:Name="AlbumImageBase" IsMassImage="False" CornerRadius="8"/>
                     </ui:DropShadowPanel>
                     <Grid x:Name="LyricSecondPlaceGrid" Margin="0,8,0,0" Grid.Row="1" SizeChanged="MusicPage_SizeChanged" PointerWheelChanged="LrcBaseListView_PointerWheelChanged">
                         <ListView x:Name="LrcSecondListView"

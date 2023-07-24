@@ -274,7 +274,7 @@ namespace znMusicPlayerWUI.Controls
             visual.StartAnimation(nameof(ImageMassAlpha.Opacity), scalarKeyFrameAnimation);
 
             AnimateHelper.AnimateScalar(
-                ImageSource, 1.07f, 0.2,
+                ImageSourceRoot, 1.07f, 0.2,
                 0.2f, 1, 0.22f, 1f,
                 out var scaleVisual, out var compositor1, out var animation);
             scaleVisual.CenterPoint = new(scaleVisual.Size.X / 2, scaleVisual.Size.Y / 2, 1);
@@ -294,7 +294,7 @@ namespace znMusicPlayerWUI.Controls
             if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
             isPointEnter = false;
             AnimateHelper.AnimateScalar(
-                ImageMassAlpha, 0, 1.2,
+                ImageMassAlpha, 0, 1.3,
                 0, 0, 0, 0,
                 out var visual, out var compositor, out var scalarKeyFrameAnimation);
             visual.StartAnimation(nameof(ImageMassAlpha.Opacity), scalarKeyFrameAnimation);
@@ -305,7 +305,7 @@ namespace znMusicPlayerWUI.Controls
             };
 
             AnimateHelper.AnimateScalar(
-                ImageSource, 1f, 1.5,
+                ImageSourceRoot, 1f, 1.5,
                 0.2f, 1, 0.22f, 1f,
                 out var scaleVisual, out var compositor1, out var animation);
             scaleVisual.CenterPoint = new(scaleVisual.Size.X / 2, scaleVisual.Size.Y / 2, 1);
@@ -320,10 +320,26 @@ namespace znMusicPlayerWUI.Controls
             {
                 IsMouse4Click = true;
             }
+
+            AnimateHelper.AnimateScalar(
+                ImageSourceRoot, 0.93f, 0.5,
+                0.2f, 1, 0.22f, 1f,
+                out var scaleVisual, out var compositor1, out var animation);
+            scaleVisual.CenterPoint = new(scaleVisual.Size.X / 2, scaleVisual.Size.Y / 2, 1);
+            scaleVisual.StartAnimation("Scale.X", animation);
+            scaleVisual.StartAnimation("Scale.Y", animation);
         }
 
         private void Grid_PointerReleased(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
+            AnimateHelper.AnimateScalar(
+                ImageSourceRoot, 1.07f, 1.5,
+                0.2f, 1, 0.22f, 1f,
+                out var scaleVisual, out var compositor1, out var animation);
+            scaleVisual.CenterPoint = new(scaleVisual.Size.X / 2, scaleVisual.Size.Y / 2, 1);
+            scaleVisual.StartAnimation("Scale.X", animation);
+            scaleVisual.StartAnimation("Scale.Y", animation);
+            System.Diagnostics.Debug.WriteLine("released");
         }
 
         private void Grid_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)

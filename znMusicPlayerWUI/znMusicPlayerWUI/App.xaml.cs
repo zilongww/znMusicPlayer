@@ -78,6 +78,7 @@ namespace znMusicPlayerWUI
         public App()
         {
             DataFolderBase.InitFiles();
+            Media.Decoder.FFmpeg.FFmpegBinariesHelper.InitFFmpeg();
             this.InitializeComponent();
             UnhandledException += App_UnhandledException;
 

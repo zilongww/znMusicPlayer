@@ -64,7 +64,7 @@
                                         CornerRadius="8" BorderThickness="0"
                                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                         Margin="0,0,12,0" HorizontalAlignment="Left">
-                                    <controlszn:Imagezn x:Name="AlbumLogo" Source="/Images/SugarAndSalt.jpg"/>
+                                    <controlszn:Imagezn x:Name="AlbumLogo" CornerRadius="8" Source="/Images/SugarAndSalt.jpg"/>
                                 </Border>
                                 <Border x:Name="InfoTextsRoot" HorizontalAlignment="Left">
                                     <Grid x:Name="ChangeWidthTextsRoot">

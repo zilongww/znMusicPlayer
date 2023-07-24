@@ -78,6 +78,8 @@ namespace CUETools.Codecs.FLAKE
 		public void Close()
 		{
 			_IO.Close();
+			_IO.Dispose();
+			_IO = null;
 		}
 
         public long Length { get; private set; } = 0;

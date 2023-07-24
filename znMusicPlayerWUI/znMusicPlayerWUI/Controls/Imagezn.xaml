@@ -18,14 +18,16 @@
     <Image x:Name="ImageSourceBefore" Stretch="{Binding ElementName=ImageSource, Path=Stretch}"
            HorizontalAlignment="{Binding ElementName=RootGrid,Path=HorizontalAlignment}"
            VerticalAlignment="{Binding ElementName=RootGrid,Path=VerticalAlignment}"/>
-    <Image x:Name="ImageSource" Stretch="Uniform"
-           HorizontalAlignment="{Binding ElementName=RootGrid,Path=HorizontalAlignment}"
-           VerticalAlignment="{Binding ElementName=RootGrid,Path=VerticalAlignment}"/>
-    <Rectangle x:Name="ImageMassAlpha" Opacity="0">
-        <Rectangle.Fill>
-            <brushs:BackdropGammaTransferBrush BlueDisable="True" RedDisable="True" GreenDisable="True"
-                                               AlphaAmplitude="0.2" AlphaExponent="1" AlphaOffset="1"/>
-        </Rectangle.Fill>
-    </Rectangle>
+    <Grid x:Name="ImageSourceRoot" CornerRadius="{Binding ElementName=RootGrid,Path=CornerRadius}">
+        <Image x:Name="ImageSource" Stretch="Uniform"
+               HorizontalAlignment="{Binding ElementName=RootGrid,Path=HorizontalAlignment}"
+                   VerticalAlignment="{Binding ElementName=RootGrid,Path=VerticalAlignment}"/>
+        <Rectangle x:Name="ImageMassAlpha" Opacity="0">
+            <Rectangle.Fill>
+                <brushs:BackdropGammaTransferBrush BlueDisable="True" RedDisable="True" GreenDisable="True"
+                                                   AlphaAmplitude="0.2" AlphaExponent="1" AlphaOffset="1"/>
+            </Rectangle.Fill>
+        </Rectangle>
+    </Grid>
     <Rectangle x:Name="ImageMass" Fill="#3F000000" Opacity="1"/>
 </Grid>

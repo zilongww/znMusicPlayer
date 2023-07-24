@@ -108,7 +108,7 @@ namespace FlakeNAudioAdapter
 
         protected override void Dispose(bool disposing)
         {
-            _flakeFileReader?.Close();
+            _flakeFileReader?.Dispose();
             _canRead = false;
             _canSeek = false;
         }

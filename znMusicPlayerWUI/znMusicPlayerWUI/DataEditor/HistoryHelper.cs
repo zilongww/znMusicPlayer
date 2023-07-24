@@ -23,6 +23,7 @@ namespace znMusicPlayerWUI.DataEditor
 
     public static class HistoryHelper
     {
+        static object syncLock = new();
         public delegate void HistoryDataChangedDelegate();
         public static event HistoryDataChangedDelegate HistoryDataChanged;
         public static async Task<JObject> GetHistoriesJObject()
@@ -40,7 +41,8 @@ namespace znMusicPlayerWUI.DataEditor
         {
             await Task.Run(() =>
             {
-                System.IO.File.WriteAllText(DataFolderBase.HistoryDataPath, keyValuePairs.ToString());
+                lock (syncLock)
+                    System.IO.File.WriteAllText(DataFolderBase.HistoryDataPath, keyValuePairs.ToString());
             });
             HistoryDataChanged?.Invoke();
         }

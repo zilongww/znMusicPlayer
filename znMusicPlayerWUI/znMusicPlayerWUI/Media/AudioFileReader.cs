@@ -10,6 +10,7 @@ using System.Linq;
 using znMusicPlayerWUI.Helpers;
 using NAudio.Midi;
 using System.Threading.Tasks;
+using znMusicPlayerWUI.Media.Decoder.FFmpeg;
 
 namespace znMusicPlayerWUI.Media
 {
