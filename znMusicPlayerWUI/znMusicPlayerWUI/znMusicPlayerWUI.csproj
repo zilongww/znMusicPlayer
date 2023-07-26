@@ -27,6 +27,7 @@
     <None Remove="Controls\MediaPlayStateViewer.xaml" />
     <None Remove="Controls\PlayListCard.xaml" />
     <None Remove="Controls\SongHistoryCard.xaml" />
+    <None Remove="Controls\SongHistoryInfo.xaml" />
     <None Remove="Controls\SongItem.xaml" />
     <None Remove="DesktopLyricWindow.xaml" />
     <None Remove="Pages\AboutPage.xaml" />
@@ -54,6 +55,8 @@
 
   <ItemGroup>
     <PackageReference Include="CoelWu.Music.SDK" Version="1.0.7" />
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.SegmentedControl" Version="0.0.3" />
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.SettingsControls" Version="0.0.18" />
     <PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.Notifications" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.UI" Version="7.1.2" />
@@ -92,6 +95,12 @@
 
   <ItemGroup>
     <None Include="Helpers\SDKs\NeteaseCloudMusicApi\NeteaseCloudMusicApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Controls\SongHistoryInfo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

@@ -5,9 +5,16 @@
     xmlns:local="using:znMusicPlayerWUI"
     xmlns:controls="using:znMusicPlayerWUI.Controls"
     xmlns:data="using:znMusicPlayerWUI.DataEditor"
+    xmlns:labs="using:CommunityToolkit.Labs.WinUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" SizeChanged="Page_SizeChanged" Loaded="Page_Loaded">
+    <Page.Resources>
+        <DataTemplate x:Key="HistoryDataTemplate" x:DataType="data:SongHistoryData">
+            <controls:SongHistoryCard HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="0,0,4,0"/>
+        </DataTemplate>
+    </Page.Resources>
+    
     <ListView x:Name="ListViewBase" HorizontalContentAlignment="Center" SelectionMode="None"
               Padding="0,0,0,14">
 
@@ -16,36 +23,42 @@
                 <Border x:Name="HeaderBaseRectangle" Background="{ThemeResource AcrylicNormal}"    
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         BorderThickness="0,0,0,1"/>
-                <TextBlock x:Name="HeaderBaseTextBlock" Text="历史" Style="{ThemeResource TBHeader}"/>
-                <Grid VerticalAlignment="Bottom" Margin="29,84,157,4">
-                    <Grid.Resources>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                        </Style>
-                    </Grid.Resources>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Border Width="38" Margin="0,0,12,0">
-                        <TextBlock Text="#" HorizontalAlignment="Center"/>
-                    </Border>
-                    <TextBlock Text="标题" Grid.Column="1" Margin="0,0,12,0"/>
-                    <TextBlock Text="艺术家" Grid.Column="2" Margin="8,0,12,0"/>
-                    <TextBlock Text="专辑" Grid.Column="3" Margin="8,0,12,0"/>
-                    <TextBlock Text="时间" Grid.Column="4"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock x:Name="HeaderBaseTextBlock" Text="历史" Style="{ThemeResource TBHeader}"/>
+                    <labs:Segmented x:Name="HeaderSelectBase"
+                                    SelectedIndex="0" SelectionChanged="Segmented_SelectionChanged"
+                                    Loaded="HeaderSelectBase_Loaded">
+                        <labs:SegmentedItem Content="播放历史"/>
+                        <labs:SegmentedItem Content="统计"/>
+                    </labs:Segmented>
+                    <Grid x:Name="HeaderText" VerticalAlignment="Bottom" Margin="29,0,157,4"
+                          Grid.Row="1">
+                        <Grid.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                            </Style>
+                        </Grid.Resources>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Width="38" Margin="0,0,12,0">
+                            <TextBlock Text="#" HorizontalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="标题" Grid.Column="1" Margin="0,0,12,0"/>
+                        <TextBlock Text="艺术家" Grid.Column="2" Margin="8,0,12,0"/>
+                        <TextBlock Text="专辑" Grid.Column="3" Margin="8,0,12,0"/>
+                        <TextBlock Text="时间" Grid.Column="4"/>
+                    </Grid>
                 </Grid>
             </Grid>
         </ListView.Header>
-
-        <ListView.ItemTemplate>
-            <DataTemplate x:DataType="data:SongHistoryData">
-                <controls:SongHistoryCard HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="0,0,4,0"/>
-            </DataTemplate>
-        </ListView.ItemTemplate>
-        
     </ListView>
 </Page>

@@ -77,7 +77,7 @@ namespace znMusicPlayerWUI.DataEditor
         public TimeSpan EndDuration { get; set; } = default;
     }
 
-    public class Artist
+    public class Artist : OnlyClass
     {
         public string Name { get; set; }
         public string Name2 { get; set; }
@@ -85,6 +85,7 @@ namespace znMusicPlayerWUI.DataEditor
         public string PicturePath { get; set; }
         public string Describee { get; set; }
         public MusicListData HotSongs { get; set; }
+        public int Count { get; set; }
 
         public Artist(string name = null, string ID = null, string picturePath = null)
         {
@@ -93,13 +94,18 @@ namespace znMusicPlayerWUI.DataEditor
             PicturePath = picturePath;
         }
 
+        public override string GetMD5()
+        {
+            return $"{Name}{Name2}{ID}{PicturePath}";
+        }
+
         public new string ToString()
         {
             return Name;
         }
     }
 
-    public class Album
+    public class Album : OnlyClass
     {
         public string Title { get; set; }
         public string Title2 { get; set; }
@@ -107,6 +113,7 @@ namespace znMusicPlayerWUI.DataEditor
         public string PicturePath { get; set; }
         public string Describee { get; set; }
         public string RelaseTime { get; set; }
+        public int Count { get; set; }
         public List<Artist> Artists { get; set; }
         public MusicListData Songs { get; set; }
         public Album(string title = null, string ID = null, string picturePath = null, string describee = null, MusicListData songs = null)
@@ -121,6 +128,11 @@ namespace znMusicPlayerWUI.DataEditor
         public bool IsNull()
         {
             return string.IsNullOrEmpty(Title) && string.IsNullOrEmpty(ID);
+        }
+
+        public override string GetMD5()
+        {
+            return $"{Title}{Title2}{ID}{PicturePath}{RelaseTime}";
         }
 
         public override string ToString()

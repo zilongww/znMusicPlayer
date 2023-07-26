@@ -28,15 +28,58 @@ using System.Diagnostics;
 using ATL.CatalogDataReaders;
 using znMusicPlayerWUI.DataEditor;
 using Windows.System.Profile;
+using System.Threading.Tasks;
+using Melanchall.DryWetMidi.Multimedia;
+using Microsoft.VisualBasic.Devices;
+using NAudio.Wave;
 
 namespace znMusicPlayerWUI.Pages
 {
     public partial class AboutPage : Page
     {
+        private WaveOut waveOut;
+        private BufferedWaveProvider bufferedWaveProvider;
         public AboutPage()
         {
             InitializeComponent();
             VersionRun.Text = App.AppVersion;
+            waveOut = new WaveOut();
+            bufferedWaveProvider = new BufferedWaveProvider(new WaveFormat());
+            waveOut.Init(bufferedWaveProvider);
+            waveOut.Play();
+        }
+
+        unsafe void Play(string file)
+        {
+
+            var audio = new Media.Decoder.FFmpeg.FFmpegDecoder();
+            audio.InitDecodecAudio(file);
+            audio.Play();
+
+            var PlayTask = new Task(() =>
+            {
+                while (true)
+                {
+                    //播放中
+                    if (audio.IsPlaying)
+                    {
+                        //获取下一帧视频
+                        if (audio.TryReadNextFrame(out var frame))
+                        {
+                            var bytes = audio.FrameConvertBytes(&frame);
+                            if (bytes == null)
+                                continue;
+                            if (bufferedWaveProvider.BufferLength <= bufferedWaveProvider.BufferedBytes + bytes.Length)
+                            {
+                                bufferedWaveProvider.ClearBuffer();
+                            }
+                            bufferedWaveProvider.AddSamples(bytes, 0, bytes.Length);//向缓存中添加音频样本
+                        }
+                    }
+                }
+            });
+            PlayTask.Start();
+
         }
 
         //int a = 0;
@@ -47,10 +90,8 @@ namespace znMusicPlayerWUI.Pages
             //CueSharp.CueSheet cueSheet = new CueSharp.CueSheet("E:\\vedio\\anime\\[170816] TVアニメ「Fate／Apocrypha」OPテーマ「英雄 運命の詩」／EGOIST [通常盤] [FLAC+CUE]\\VVCL-1080.cue");
 
             //GC.Collect();
-            var d = new Media.Decoder.FFmpeg.FFmpegDecoder();
-            var a = d.InitDecodecAudio("C:\\Users\\zilong\\Music\\Rabbit in The Black Room - Rabbit House · Rabbit in The Black Room.mp3");
-            Debug.WriteLine(a);
-
+            var f = await FileHelper.UserSelectFile();
+            Play(f.Path);
             try
             {
                 if (App.playingList.NowPlayingList.Any())

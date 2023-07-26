@@ -55,7 +55,7 @@ namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
             FileName = filename;
             Decoder = new FFmpegDecoder();
             Decoder.InitDecodecAudio(filename);
-            _waveFormat = new(Decoder.SampleRate, Decoder.Channels);
+            //_waveFormat = new(Decoder.SampleRate, Decoder.Channels);
             _provider = new(WaveFormat);
         }
 

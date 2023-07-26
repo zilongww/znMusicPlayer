@@ -339,7 +339,6 @@ namespace znMusicPlayerWUI.Controls
             scaleVisual.CenterPoint = new(scaleVisual.Size.X / 2, scaleVisual.Size.Y / 2, 1);
             scaleVisual.StartAnimation("Scale.X", animation);
             scaleVisual.StartAnimation("Scale.Y", animation);
-            System.Diagnostics.Debug.WriteLine("released");
         }
 
         private void Grid_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)

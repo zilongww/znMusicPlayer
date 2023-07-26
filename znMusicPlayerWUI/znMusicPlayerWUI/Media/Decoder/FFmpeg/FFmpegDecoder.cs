@@ -1,4 +1,6 @@
 ﻿using FFmpeg.AutoGen;
+using Microsoft.VisualBasic.Devices;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,97 +8,150 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Vanara.PInvoke;
 
 namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
 {
+    public enum MediaState { Play, Pause, Stop, None, Read }
     public unsafe class FFmpegDecoder
     {
-        public enum MediaState { Play, Pause, Stop, None }
-        public MediaState State { get; protected set; }
-        public TimeSpan Duration { get; set; }
-        public TimeSpan frameDuration { get; protected set; }
-        public TimeSpan Position { get => OffsetClock + clock.Elapsed; }
-        public AVCodecID CodecId { get; set; }
-        public string CodecName { get; set; }
-        public long Bitrate { get; set; }
-        public int Channels { get; set; }
-        public AVChannelLayout* ChannelLayout { get; set; }
-        public int SampleRate { get; set; }
-        public AVSampleFormat SampleFormat { get; set; }
-        public int BitsPerSample { get; set; }
-        public bool IsPlaying { get; protected set; }
-
-        object SyncLock = new object();
+        //媒体格式容器
+        AVFormatContext* format;
+        //解码上下文
+        AVCodecContext* codecContext;
+        AVStream* audioStream;
+        //媒体数据包
+        AVPacket* packet;
+        AVFrame* frame;
+        SwrContext* convert;
+        int audioStreamIndex;
         bool isNextFrame = true;
         //播放上一帧的时间
         TimeSpan lastTime;
         TimeSpan OffsetClock;
+        object SyncLock = new object();
         Stopwatch clock = new Stopwatch();
         bool isNexFrame = true;
-        public delegate void MediaHandler(TimeSpan duration);
+        public delegate void MediaHandler(TimeSpan s);
         public event MediaHandler MediaCompleted;
-
-        AVFormatContext* format;
-        AVStream* stream;
-        AVCodecContext* codec_ctx;
-        int streamIndex;
-        nint buffer;
-        byte* buffer_ptr;
-        AVPacket* packet;
-        AVFrame* frame;
-        public unsafe int InitDecodecAudio(string path)
+        //是否是正在播放中
+        public bool IsPlaying { get; protected set; }
+        /// <summary>
+        /// 媒体状态
+        /// </summary>
+        public MediaState State { get; protected set; }
+        /// <summary>
+        /// 帧播放时长
+        /// </summary>
+        public TimeSpan frameDuration { get; protected set; }
+        /// <summary>
+        /// 媒体时长
+        /// </summary>
+        public TimeSpan Duration { get; protected set; }
+        /// <summary>
+        /// 播放位置
+        /// </summary>
+        public TimeSpan Position { get => OffsetClock + clock.Elapsed; }
+        /// <summary>
+        /// 解码器名字
+        /// </summary>
+        public string CodecName { get; protected set; }
+        /// <summary>
+        /// 解码器Id
+        /// </summary>
+        public string CodecId { get; protected set; }
+        /// <summary>
+        /// 比特率
+        /// </summary>
+        public long Bitrate { get; protected set; }
+        //通道数
+        public int Channels { get; protected set; }
+        //采样率
+        public long SampleRate { get; protected set; }
+        //采样次数
+        public long BitsPerSample { get; protected set; }
+        //通道布局
+        public ulong ChannelLyaout { get; protected set; }
+        /// <summary>
+        /// 采样格式
+        /// </summary>
+        public AVSampleFormat SampleFormat { get; protected set; }
+        public void InitDecodecAudio(string path)
         {
-            // 寻找音频流
+            int error = 0;
+            //创建一个 媒体格式上下文
             format = ffmpeg.avformat_alloc_context();
             var tempFormat = format;
-            ffmpeg.avformat_open_input(&tempFormat, path, null, null);
+            //打开媒体文件
+            error = ffmpeg.avformat_open_input(&tempFormat, path, null, null);
+            if (error < 0)
+            {
+                Debug.WriteLine("打开媒体文件失败");
+                return;
+            }
+            //嗅探媒体信息
             ffmpeg.avformat_find_stream_info(format, null);
-
-            // 获取音频流索引
             AVCodec* codec;
-            int streamIndex = ffmpeg.av_find_best_stream(format, AVMediaType.AVMEDIA_TYPE_AUDIO, -1, -1, &codec, 0);
-            if (streamIndex < 0)
-                return -1;
-
-            // 获取音频流
-            stream = format->streams[streamIndex];
-
-            // 创建解码上下文
-            codec_ctx = ffmpeg.avcodec_alloc_context3(codec);
-
-            if (ffmpeg.avcodec_parameters_to_context(codec_ctx, stream->codecpar) < 0)
-                return -2;
-
-            if (ffmpeg.avcodec_open2(codec_ctx, codec, null) < 0)
-                return -3;
-
-            Duration = TimeSpan.FromMilliseconds(format->duration / 100);
-            CodecId = codec->id;
-            CodecName = ffmpeg.avcodec_get_name(CodecId);
-            Bitrate = codec_ctx->bit_rate;
-            Channels = codec_ctx->channels;
-            ChannelLayout = codec->ch_layouts;
-            SampleRate = codec_ctx->sample_rate;
-            SampleFormat = codec_ctx->sample_fmt;
-            BitsPerSample = ffmpeg.av_samples_get_buffer_size(null, Channels, codec_ctx->frame_size, SampleFormat, codec_ctx->block_align);
-
-            buffer = Marshal.AllocHGlobal(BitsPerSample);
-            buffer_ptr = (byte*)buffer;
-            InitConvert(
-                (int)ChannelLayout,
-                SampleFormat,
-                SampleRate,
-                (int)ChannelLayout,
-                SampleFormat,
-                SampleRate);
-
+            //获取音频流索引
+            audioStreamIndex = ffmpeg.av_find_best_stream(format, AVMediaType.AVMEDIA_TYPE_AUDIO, -1, -1, &codec, 0);
+            if (audioStreamIndex < 0)
+            {
+                Debug.WriteLine("没有找到音频流");
+                return;
+            }
+            //获取音频流
+            audioStream = format->streams[audioStreamIndex];
+            //创建解码上下文
+            codecContext = ffmpeg.avcodec_alloc_context3(codec);
+            //将音频流里面的解码器参数设置到 解码器上下文中
+            error = ffmpeg.avcodec_parameters_to_context(codecContext, audioStream->codecpar);
+            if (error < 0)
+            {
+                Debug.WriteLine("设置解码器参数失败");
+            }
+            error = ffmpeg.avcodec_open2(codecContext, codec, null);
+            //媒体时长
+            Duration = TimeSpan.FromMilliseconds(format->duration / 1000);
+            //编解码id
+            CodecId = codec->id.ToString();
+            //解码器名字
+            CodecName = ffmpeg.avcodec_get_name(codec->id);
+            //比特率
+            Bitrate = codecContext->bit_rate;
+            //音频通道数
+            Channels = codecContext->channels;
+            //通道布局类型
+            ChannelLyaout = codecContext->channel_layout;
+            //音频采样率
+            SampleRate = codecContext->sample_rate;
+            //音频采样格式
+            SampleFormat = codecContext->sample_fmt;
+            //采样次数  //获取给定音频参数所需的缓冲区大小。
+            BitsPerSample = ffmpeg.av_samples_get_buffer_size(null, 2, codecContext->frame_size, AVSampleFormat.AV_SAMPLE_FMT_S16, 1);
+            //创建一个指针
+            audioBuffer = Marshal.AllocHGlobal((int)BitsPerSample);
+            bufferPtr = (byte*)audioBuffer;
+            //初始化音频重采样转换器
+            InitConvert((int)ChannelLyaout, AVSampleFormat.AV_SAMPLE_FMT_S16, (int)SampleRate, (int)ChannelLyaout, SampleFormat, (int)SampleRate);
+            //创建一个包和帧指针
             packet = ffmpeg.av_packet_alloc();
             frame = ffmpeg.av_frame_alloc();
-
-            return 0;
+            State = MediaState.Read;
         }
-
-        SwrContext* convert;
+        //缓冲区指针
+        IntPtr audioBuffer;
+        //缓冲区句柄
+        byte* bufferPtr;
+        /// <summary>
+        /// 初始化重采样转换器
+        /// </summary>
+        /// <param name="occ">输出的通道类型</param>
+        /// <param name="osf">输出的采样格式</param>
+        /// <param name="osr">输出的采样率</param>
+        /// <param name="icc">输入的通道类型</param>
+        /// <param name="isf">输入的采样格式</param>
+        /// <param name="isr">输入的采样率</param>
+        /// <returns></returns>
         bool InitConvert(int occ, AVSampleFormat osf, int osr, int icc, AVSampleFormat isf, int isr)
         {
             //创建一个重采样转换器
@@ -109,7 +164,6 @@ namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
             ffmpeg.swr_init(convert);
             return true;
         }
-
         /// <summary>
         /// 尝试读取下一帧
         /// </summary>
@@ -157,12 +211,12 @@ namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
                             return false;
                         }
                         //判断读取的帧数据是否是视频数据，不是则继续读取
-                        if (packet->stream_index != streamIndex)
+                        if (packet->stream_index != audioStreamIndex)
                             continue;
                         //将包数据发送给解码器解码
-                        ffmpeg.avcodec_send_packet(codec_ctx, packet);
+                        ffmpeg.avcodec_send_packet(codecContext, packet);
                         //从解码器中接收解码后的帧
-                        result = ffmpeg.avcodec_receive_frame(codec_ctx, frame);
+                        result = ffmpeg.avcodec_receive_frame(codecContext, frame);
                         if (result < 0)
                             continue;
                         //计算当前帧播放的时长
@@ -190,7 +244,7 @@ namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
                 var tempFormat = format;
                 ffmpeg.avformat_free_context(tempFormat);
                 format = null;
-                var tempCodecContext = codec_ctx;
+                var tempCodecContext = codecContext;
                 ffmpeg.avcodec_free_context(&tempCodecContext);
                 var tempPacket = packet;
                 ffmpeg.av_packet_free(&tempPacket);
@@ -199,22 +253,22 @@ namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
                 var tempConvert = convert;
                 ffmpeg.swr_free(&tempConvert);
 
-                Marshal.FreeHGlobal(buffer);
-                buffer_ptr = null;
+                Marshal.FreeHGlobal(audioBuffer);
+                bufferPtr = null;
 
-                stream = null;
-                streamIndex = -1;
+                audioStream = null;
+                audioStreamIndex = -1;
                 //视频时长
                 Duration = TimeSpan.FromMilliseconds(0);
                 //编解码器名字
                 CodecName = String.Empty;
-                CodecId = AVCodecID.AV_CODEC_ID_NONE;
+                CodecId = String.Empty;
                 //比特率
                 Bitrate = 0;
                 //帧率
 
                 Channels = 0;
-                ChannelLayout = null;
+                ChannelLyaout = 0;
                 SampleRate = 0;
                 BitsPerSample = 0;
                 State = MediaState.None;
@@ -229,16 +283,16 @@ namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
         /// <param name="seekTime">更改到的位置（秒）</param>
         public void SeekProgress(int seekTime)
         {
-            if (format == null || streamIndex != -1)
+            if (format == null || audioStreamIndex == null)
                 return;
             lock (SyncLock)
             {
                 IsPlaying = false;//将视频暂停播放
                 clock.Stop();
                 //将秒数转换成视频的时间戳
-                var timestamp = seekTime / ffmpeg.av_q2d(stream->time_base);
+                var timestamp = seekTime / ffmpeg.av_q2d(audioStream->time_base);
                 //将媒体容器里面的指定流（视频）的时间戳设置到指定的位置，并指定跳转的方法；
-                ffmpeg.av_seek_frame(format, streamIndex, (long)timestamp, ffmpeg.AVSEEK_FLAG_BACKWARD | ffmpeg.AVSEEK_FLAG_FRAME);
+                ffmpeg.av_seek_frame(format, audioStreamIndex, (long)timestamp, ffmpeg.AVSEEK_FLAG_BACKWARD | ffmpeg.AVSEEK_FLAG_FRAME);
                 ffmpeg.av_frame_unref(frame);//清除上一帧的数据
                 ffmpeg.av_packet_unref(packet); //清除上一帧的数据包
                 int error = 0;
@@ -253,9 +307,9 @@ namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
                             error = ffmpeg.av_read_frame(format, packet);//读取数据
                             if (error == ffmpeg.AVERROR_EOF)//是否是到达了视频的结束位置
                                 return;
-                        } while (packet->stream_index != streamIndex);//判断当前获取的数据是否是视频数据
-                        ffmpeg.avcodec_send_packet(codec_ctx, packet);//将数据包发送给解码器解码
-                        error = ffmpeg.avcodec_receive_frame(codec_ctx, frame);//从解码器获取解码后的帧数据
+                        } while (packet->stream_index != audioStreamIndex);//判断当前获取的数据是否是视频数据
+                        ffmpeg.avcodec_send_packet(codecContext, packet);//将数据包发送给解码器解码
+                        error = ffmpeg.avcodec_receive_frame(codecContext, frame);//从解码器获取解码后的帧数据
                     } while (error == ffmpeg.AVERROR(ffmpeg.EAGAIN));
                 }
                 OffsetClock = TimeSpan.FromSeconds(seekTime);//设置时间偏移
@@ -271,7 +325,7 @@ namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
         /// <returns></returns>
         public byte[] FrameConvertBytes(AVFrame* sourceFrame)
         {
-            var tempBufferPtr = buffer_ptr;
+            var tempBufferPtr = bufferPtr;
             //重采样音频
             var outputSamplesPerChannel = ffmpeg.swr_convert(convert, &tempBufferPtr, frame->nb_samples, sourceFrame->extended_data, sourceFrame->nb_samples);
             //获取重采样后的音频数据大小
@@ -280,7 +334,7 @@ namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
                 return null;
             byte[] bytes = new byte[outPutBufferLength];
             //从内存中读取转换后的音频数据
-            Marshal.Copy(buffer, bytes, 0, bytes.Length);
+            Marshal.Copy(audioBuffer, bytes, 0, bytes.Length);
             return bytes;
         }
         public void Play()
