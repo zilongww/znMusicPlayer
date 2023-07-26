@@ -60,6 +60,7 @@ namespace znMusicPlayerWUI.Background
 
         private async void AudioPlayer_PlayEnd(Media.AudioPlayer audioPlayer)
         {
+            AddHistory(audioPlayer.MusicData);
             switch (PlayBehaviour)
             {
                 case PlayBehaviour.顺序播放:
@@ -139,10 +140,9 @@ namespace znMusicPlayerWUI.Background
 
             var a = true;
             //System.Diagnostics.Debug.WriteLine(musicData.Title);
-            AddHistory(musicData);
-                await App.audioPlayer.SetSource(musicData);
             try
             {
+                await App.audioPlayer.SetSource(musicData);
                 if (playState == NAudio.Wave.PlaybackState.Playing)
                     App.audioPlayer.SetPlay();
             }

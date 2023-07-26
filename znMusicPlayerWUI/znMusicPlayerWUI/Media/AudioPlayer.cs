@@ -720,11 +720,11 @@ namespace znMusicPlayerWUI.Media
                     var m = MusicData;
                     MusicData = musicData;
                     Exception exception = null;
+                    try
+                    {
                         _filePath = resultPath;
                         Debug.WriteLine($"AudioPlayer：正在加载 \"{resultPath}\".");
                         await SetSource(resultPath);
-                    try
-                    {
                     }
                     catch (Exception err)
                     {
