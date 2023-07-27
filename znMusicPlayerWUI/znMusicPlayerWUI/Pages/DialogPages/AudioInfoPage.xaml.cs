@@ -168,7 +168,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 else
                 {
                     if (getd.SampleRate != App.audioPlayer.FileReader.WaveFormat.SampleRate)
-                        sampleRateText = $"{App.audioPlayer.FileReader.WaveFormat.SampleRate} Hz -> {getd.SampleRate} Hz（SRC）";
+                        sampleRateText = $"{App.audioPlayer.FileReader.WaveFormat.SampleRate} Hz -> SRC -> {getd.SampleRate} Hz";
                     else
                         sampleRateText = $"{App.audioPlayer.NowOutObj.OutputWaveFormat.SampleRate} Hz（SRC）";
 

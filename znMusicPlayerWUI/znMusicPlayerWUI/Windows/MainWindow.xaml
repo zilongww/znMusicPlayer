@@ -238,9 +238,10 @@
                                               Click="Button_Click"
                                               Label="音量"
                                               AccessKey="BV">
-                                    <AppBarButton.Icon>
+                                    <Grid>
+                                        <FontIcon Glyph="&#xE995;" Opacity="{ThemeResource VolumeOpacity}"/>
                                         <FontIcon Glyph="{Binding ElementName=VolumeIconBase,Path=Glyph}"/>
-                                    </AppBarButton.Icon>
+                                    </Grid>
                                 </AppBarButton>
                                 <AppBarButton Click="Button_Click_4"
                                               Label="播放列表"
@@ -364,7 +365,10 @@
                                     HorizontalAlignment="Center"
                                     Click="Button_Click_3"
                                     AccessKey="X">
-                                <FontIcon Glyph="&#xE995;" FontSize="16" x:Name="VolumeIconBase"/>
+                                <Grid>
+                                    <FontIcon Glyph="&#xE995;" FontSize="16" Opacity="{ThemeResource VolumeOpacity}"/>
+                                    <FontIcon Glyph="&#xE995;" FontSize="16" x:Name="VolumeIconBase"/>
+                                </Grid>
                             </Button>
                             <AppBarSeparator/>
                             <StackPanel Orientation="Horizontal"

@@ -124,9 +124,9 @@ namespace CUETools.Codecs.FLAKE
 
                             _sampleOffset = seek_table[best_st].number;
 						}
-					}
+					}/*
 					if (value < Position)
-						throw new Exception("cannot seek backwards without seek table");
+						throw new Exception("cannot seek backwards without seek table");*/
 				}
 				while (value > _sampleOffset)
 				{

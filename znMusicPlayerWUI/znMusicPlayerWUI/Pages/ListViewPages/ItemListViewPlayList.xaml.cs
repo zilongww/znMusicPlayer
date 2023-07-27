@@ -241,6 +241,11 @@ namespace znMusicPlayerWUI.Pages
             {
                 PlayList_Image.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(NavToObj));
             }
+
+            if (PlayList_Image.Source == null)
+            {
+                PlayList_Image.Source = await FileHelper.GetImageSource("");
+            }
             System.Diagnostics.Debug.WriteLine("图片加载完成。");
         }
 

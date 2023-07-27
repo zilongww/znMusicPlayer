@@ -43,7 +43,8 @@
             </ResourceDictionary.ThemeDictionaries>
 
             <SolidColorBrush x:Key="LrcWindowForeground" Color="#CCEEEEEE"/>
-            
+
+            <x:Double x:Key="VolumeOpacity">0.3</x:Double>
             <x:Double x:Key="TeachingTipMinHeight">2</x:Double>
             <x:Double x:Key="TeachingTipMaxHeight">1000</x:Double>
             <x:Double x:Key="TeachingTipMinWidth">2</x:Double>

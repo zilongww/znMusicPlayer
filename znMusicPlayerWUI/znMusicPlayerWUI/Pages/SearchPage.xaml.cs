@@ -10,11 +10,21 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.Controls;
 using znMusicPlayerWUI.DataEditor;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 
 namespace znMusicPlayerWUI.Pages
 {
     public partial class SearchPage : Page
     {
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            var navtostring = e.Parameter as string;
+            if (string.IsNullOrEmpty(navtostring)) return;
+            SearchTextBox.Text = navtostring;
+        }
+
         public SearchPage()
         {
             InitializeComponent();
@@ -72,12 +82,28 @@ namespace znMusicPlayerWUI.Pages
 
         private void AutoSuggestBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            MainWindow.CanKeyDownBack = false;
+
         }
 
         private void AutoSuggestBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            MainWindow.CanKeyDownBack = true;
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            SearchTextBox.Focus(FocusState.Keyboard);
+        }
+
+        private void Page_PreviewKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(SearchTextBox.Text))
+            {
+                MainWindow.CanKeyDownBack = true;
+            }
+            else
+            {
+                MainWindow.CanKeyDownBack = false;
+            }
         }
     }
 }

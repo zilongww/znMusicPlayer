@@ -137,13 +137,25 @@ namespace znMusicPlayerWUI
         }
 
         bool isBackground = false;
-        private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
-        {
+        private async void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
+        {/*
             args.Cancel = true;
             if (InOpenMusicPage) SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
             else RemoveEvents();
             this.AppWindow.Hide();
-            isBackground = true;
+            isBackground = true;*/
+            
+            args.Cancel = true;
+            HideDialog();
+            var result = await ShowDialog("再确认一次", "你真的要退出程序吗？", "确定", "取消", null, ContentDialogButton.Close);
+            if (result == ContentDialogResult.None)
+            {
+                App.Current.Exit();
+            }
+            else
+            {
+                HideDialog();
+            }
         }
 
         public async void ReadLAE()
@@ -208,6 +220,7 @@ namespace znMusicPlayerWUI
             PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
             LyricManager_PlayingLyricSelectedChange(App.lyricManager.NowLyricsData);
             App.audioPlayer.ReCallTiming();
+            System.Diagnostics.Debug.WriteLine("Data Updated.");
         }
 
         bool isAddEvents = false;

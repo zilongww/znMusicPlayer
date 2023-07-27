@@ -16,50 +16,75 @@
     <Grid.Resources>
         <MenuFlyout x:Name="rmf" Opening="rmf_Opening" Opened="rmf_Opened" Closed="rmf_Closed">
             <MenuFlyoutItem Text="{x:Bind MusicData.Title, Mode=OneWay}" IsEnabled="False"/>
-            <MenuFlyoutItem Text="播放" Click="Play_Click">
+            <MenuFlyoutItem Text="播放" Click="Play_Click" AccessKey="Q">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE768;"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
-            <MenuFlyoutItem Text="添加到播放中列表" Click="AddPlay_Click">
+            <MenuFlyoutItem Text="添加到播放中列表" Click="AddPlay_Click" AccessKey="W">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE710;"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
-            <MenuFlyoutItem Text="下一首播放" Click="NextPlay_Click">
+            <MenuFlyoutItem Text="下一首播放" Click="NextPlay_Click" AccessKey="E">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE893;"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
-            <MenuFlyoutItem x:Name="DeleteFlyoutBtn" Text="从列表中删除" Click="DeleteFlyoutBtn_Click">
+            <MenuFlyoutItem x:Name="DeleteFlyoutBtn" Text="从列表中删除" Click="DeleteFlyoutBtn_Click" AccessKey="R">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE74D;"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutSeparator/>
-            <MenuFlyoutSubItem x:Name="AddToPlayListSubItems" Text="添加到播放列表" Loaded="AddToPlayListSubItems_Loaded">
+            <MenuFlyoutSubItem x:Name="AddToPlayListSubItems" Text="添加到播放列表" Loaded="AddToPlayListSubItems_Loaded" AccessKey="T">
                 <MenuFlyoutSubItem.Icon>
                     <FontIcon Glyph="&#xE90B;"/>
                 </MenuFlyoutSubItem.Icon>
                 </MenuFlyoutSubItem>
-            <MenuFlyoutItem Text="下载" Click="Download_Click">
+            <MenuFlyoutItem Text="下载" Click="Download_Click" AccessKey="A">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE896;"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutSeparator/>
-            <MenuFlyoutSubItem x:Name="rmfs" Text="艺术家">
+            <MenuFlyoutSubItem x:Name="rmfs" Text="艺术家" AccessKey="S">
                 <MenuFlyoutSubItem.Icon>
                     <FontIcon Glyph="&#xE77B;"/>
                 </MenuFlyoutSubItem.Icon>
             </MenuFlyoutSubItem>
-            <MenuFlyoutItem x:Name="rmfi" Text="专辑" Click="mfi_Click">
+            <MenuFlyoutItem x:Name="rmfi" Text="专辑" Click="mfi_Click" AccessKey="D">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE93C;"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutSeparator/>
-            <MenuFlyoutItem Text="详细信息" Click="Info_Click"/>
+            <MenuFlyoutSubItem Text="去搜索" AccessKey="Z">
+                <MenuFlyoutSubItem.Icon>
+                    <FontIcon Glyph="&#xE721;"/>
+                </MenuFlyoutSubItem.Icon>
+                <MenuFlyoutItem Text="在软件内搜索" Click="Search_Click" Tag="0">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xE721;"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="去网站上搜索" Click="Search_Click" Tag="1">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xF6FA;"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="如果为在线歌曲，尝试浏览其网站" Click="Search_Click" Tag="2">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xEB41;"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="复制标题" Click="Search_Click" Tag="3">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xE8C8;"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+            </MenuFlyoutSubItem>
+            <MenuFlyoutItem Text="详细信息" Click="Info_Click" AccessKey="X"/>
         </MenuFlyout>
 
         <MenuFlyout x:Name="mf" Opening="mf_Opening">
@@ -181,7 +206,7 @@
                     <Button ToolTipService.ToolTip="播放" Click="Play_Click">
                         <FontIcon Glyph="&#xE768;"/>
                     </Button>
-                    <Button Margin="2,0,0,0" ToolTipService.ToolTip="更多选项" Click="Button_Click">
+                    <Button Margin="4,0,0,0" ToolTipService.ToolTip="更多选项" Click="Button_Click">
                         <FontIcon Glyph="&#xE712;"/>
                     </Button>
                 </StackPanel>

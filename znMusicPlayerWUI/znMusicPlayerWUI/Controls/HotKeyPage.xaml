@@ -29,7 +29,7 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <TextBlock Text="{Binding HotKeyID,Converter={StaticResource HMConverter}}" FontSize="18" VerticalAlignment="center" Margin="0,0,0,6"/>
+                            <TextBlock Text="{Binding HotKeyID,Converter={StaticResource HMConverter}}" FontSize="16" VerticalAlignment="center" Margin="0,0,0,6"/>
                             <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,0">
                                 <TextBlock Text="{Binding HotKeyModifiers,Converter={StaticResource MKConverter}}"/>
                                 <StackPanel Orientation="Horizontal">

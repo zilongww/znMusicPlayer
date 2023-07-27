@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:znMusicPlayerWUI"
+    xmlns:labs="using:CommunityToolkit.Labs.WinUI"
     xmlns:control="using:znMusicPlayerWUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -11,9 +12,6 @@
     <ListView x:Name="ListViewBase" HorizontalContentAlignment="Center" SelectionMode="None"
               Padding="0,0,0,24">
         <ListView.Resources>
-            <Style TargetType="Viewbox">
-                <Setter Property="Margin" Value="4,0,0,0"/>
-            </Style>
             <Style x:Key="STPS" TargetType="StackPanel">
                 <Setter Property="Padding" Value="18,12,0,12"/>
             </Style>
@@ -30,10 +28,13 @@
                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="CornerRadius" Value="8"/>
-                <Setter Property="Margin" Value="0,12,0,0"/>
+                <Setter Property="Margin" Value="0,00,0,0"/>
                 <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
             </Style>
             <Style x:Key="ItemGridStyle" TargetType="Grid">
+                <Setter Property="Margin" Value="0,0,0,14"/>
+            </Style>
+            <Style TargetType="labs:SettingsExpander">
                 <Setter Property="Margin" Value="0,0,0,14"/>
             </Style>
         </ListView.Resources>
@@ -47,283 +48,129 @@
             </Grid>
         </ListView.Header>
         
-        <StackPanel Margin="0,0,0,0">
-            <TextBlock Text="下载和缓存" Style="{ThemeResource HeaderTextBlock}" Visibility="Collapsed"/>
-            <Expander Expanding="Expander_Expanding">
-                <Expander.Header>
+            <labs:SettingsExpander Header="缓存" CornerRadius="8"
+                                   Description="管理缓存文件"
+                                   x:Name="CacheEpd">
+                <labs:SettingsExpander.HeaderIcon>
+                    <FontIcon Glyph="&#xE81E;"/>
+                </labs:SettingsExpander.HeaderIcon>
+                <labs:SettingsExpander.Items>
+                <labs:SettingsCard Header="缓存路径"
+                                   Description="{Binding CachePath}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE81E;"/>
+                    </labs:SettingsCard.HeaderIcon>
                     <StackPanel Orientation="Horizontal">
-                        <FontIcon Glyph="&#xe8b7;"/>
-                        <StackPanel Style="{StaticResource STPS}">
-                            <TextBlock Text="缓存"/>
-                            <TextBlock Text="管理缓存" Style="{StaticResource LowTextBlock}"/>
-                        </StackPanel>
+                        <Button Content="打开文件夹" Tag="0" Click="Button_Click"/>
+                        <Button Content="设置路径" Tag="0" Click="Button_Click_1" Margin="4,0,0,0"/>
                     </StackPanel>
-                </Expander.Header>
-                <StackPanel>
-                    <Grid x:Name="CachePathBaseGrid"
-                              Loaded="CachePathBaseGrid_Loaded"
-                              Style="{StaticResource ItemGridStyle}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <TextBlock Text="缓存路径"/>
-                            <TextBlock Text="{Binding CachePath}" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
-                            <Button Content="打开目标文件夹" Tag="1" Margin="{ThemeResource ContentDialogButton1HostMargin}" Click="Button_Click"/>
-                            <Button Content="设置路径" Tag="1" Click="Button_Click_1"/>
-                        </StackPanel>
-                    </Grid>
-                    <Grid x:Name="AudioCachePathBaseGrid"
-                              Loaded="AudioCachePathBaseGrid_Loaded"
-                              Style="{StaticResource ItemGridStyle}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <TextBlock Text="音频缓存路径"/>
-                            <TextBlock Text="{Binding AudioCachePath}" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
-                            <Button Content="打开目标文件夹" Tag="2" Margin="{ThemeResource ContentDialogButton1HostMargin}" Click="Button_Click"/>
-                            <Button Content="设置路径" Tag="2" Click="Button_Click_1"/>
-                        </StackPanel>
-                    </Grid>
-                    <Grid x:Name="ImageCachePathBaseGrid"
-                              Loaded="ImageCachePathBaseGrid_Loaded"
-                              Style="{StaticResource ItemGridStyle}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <TextBlock Text="图片缓存路径"/>
-                            <TextBlock Text="{Binding ImageCachePath}" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
-                            <Button Content="打开目标文件夹" Tag="3" Margin="{ThemeResource ContentDialogButton1HostMargin}" Click="Button_Click"/>
-                            <Button Content="设置路径" Tag="3" Click="Button_Click_1"/>
-                        </StackPanel>
-                    </Grid>
-                    <Grid x:Name="LyricCachePathBaseGrid"
-                              Loaded="LyricCachePathBaseGrid_Loaded"
-                              Style="{StaticResource ItemGridStyle}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <TextBlock Text="歌词缓存路径"/>
-                            <TextBlock Text="{Binding LyricCachePath}" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
-                            <Button Content="打开目标文件夹" Tag="4" Margin="{ThemeResource ContentDialogButton1HostMargin}" Click="Button_Click"/>
-                            <Button Content="设置路径" Tag="4" Click="Button_Click_1"/>
-                        </StackPanel>
-                    </Grid>
-                    <Grid x:Name="CacheDeleteBaseGrid"
-                          Loaded="CacheDeleteBaseGrid_Loaded">
-                        <StackPanel>
-                            <TextBlock Text="清理缓存"/>
-                            <TextBlock Text="{Binding AudioCachePlaceSize}" Style="{StaticResource LowTextBlock}"/>
-                        </StackPanel>
-                        <Button Content="清理" HorizontalAlignment="Right"/>
-                    </Grid>
-                </StackPanel>
-            </Expander>
-            <Expander x:Name="DownloadEpd" Expanding="Expander_Expanding">
-                <Expander.Transitions>
-                    <TransitionCollection>
-                        <RepositionThemeTransition/>
-                    </TransitionCollection>
-                </Expander.Transitions>
-                <Expander.Header>
+                </labs:SettingsCard>
+                <labs:SettingsCard Header="音频缓存路径"
+                                   Description="{Binding AudioCachePath}">
+                        <labs:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE8D6;"/>
+                        </labs:SettingsCard.HeaderIcon>
                     <StackPanel Orientation="Horizontal">
-                        <FontIcon Glyph="&#xe896;"/>
-                        <StackPanel Style="{StaticResource STPS}">
-                            <TextBlock Text="下载"/>
-                            <TextBlock Text="管理下载" Style="{StaticResource LowTextBlock}"/>
-                        </StackPanel>
+                        <Button Content="打开文件夹" Tag="1" Click="Button_Click"/>
+                        <Button Content="设置路径" Tag="1" Click="Button_Click_1" Margin="4,0,0,0"/>
                     </StackPanel>
-                </Expander.Header>
-                <StackPanel>
-                    <Grid x:Name="DownloadPathBaseGrid"
-                          Loaded="DownloadPathBaseGrid_Loaded"
-                          Style="{StaticResource ItemGridStyle}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <TextBlock Text="音频下载路径"/>
-                            <TextBlock x:Name="DownloadPathTb" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
+                    </labs:SettingsCard>
+                <labs:SettingsCard Header="图片缓存路径"
+                                   Description="{Binding ImageCachePath}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE91B;"/>
+                    </labs:SettingsCard.HeaderIcon>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="打开文件夹" Tag="2" Click="Button_Click"/>
+                        <Button Content="设置路径" Tag="2" Click="Button_Click_1" Margin="4,0,0,0"/>
+                    </StackPanel>
+                </labs:SettingsCard>
+                <labs:SettingsCard Header="歌词缓存路径"
+                                   Description="{Binding LyricCachePath}">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE8E4;"/>
+                    </labs:SettingsCard.HeaderIcon>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="打开文件夹" Tag="3" Click="Button_Click"/>
+                        <Button Content="设置路径" Tag="3" Click="Button_Click_1" Margin="4,0,0,0"/>
+                    </StackPanel>
+                </labs:SettingsCard>
+                <labs:SettingsCard Header="清理缓存文件"
+                                   Description="{Binding AudioCachePlaceSize}">
+                        <labs:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE74D;"/>
+                        </labs:SettingsCard.HeaderIcon>
+                        <Button Content="清理"/>
+                    </labs:SettingsCard>
+                </labs:SettingsExpander.Items>
+            </labs:SettingsExpander>
+
+            <labs:SettingsExpander Header="下载" CornerRadius="8"
+                                   Description="管理下载"
+                                   x:Name="DownloadEpd">
+                <labs:SettingsExpander.HeaderIcon>
+                    <FontIcon Glyph="&#xE896;"/>
+                </labs:SettingsExpander.HeaderIcon>
+                <labs:SettingsExpander.Items>
+                    <labs:SettingsCard Header="音频下载路径"
+                                       Description="{Binding DownloadPath}">
+                        <labs:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE8B7;"/>
+                        </labs:SettingsCard.HeaderIcon>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="打开路径" Tag="4" Click="Button_Click"/>
+                            <Button Content="更改" Tag="4" Click="Button_Click_1" Margin="4,0,0,0"/>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
-                            <Button Content="打开目标文件夹" Tag="2" Margin="{ThemeResource ContentDialogButton1HostMargin}" Click="Button_Click_2"/>
-                            <Button Content="设置路径" Tag="2" Click="Button_Click_2"/>
-                        </StackPanel>
-                    </Grid>
-                    <Grid x:Name="DownloadFormatBaseGrid"
-                          Loaded="DownloadFormatBaseGrid_Loaded"
-                          Style="{StaticResource ItemGridStyle}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="下载质量" VerticalAlignment="Center"/>
-                        <ComboBox x:Name="DownloadFormatCb"
-                                  HorizontalAlignment="Right" VerticalAlignment="Center"
-                                  SelectionChanged="ComboBox_SelectionChanged">
-                            <x:String>128kbps 流畅</x:String>
-                            <x:String>192kbps 高品</x:String>
-                            <x:String>320kbps 超清</x:String>
-                            <x:String>960kbps 无损</x:String>
-                        </ComboBox>
-                    </Grid>
-                    <Grid x:Name="DownloadMaximumBaseGrid"
-                          Loaded="DownloadMaximumBaseGrid_Loaded">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="同时下载最大数量" VerticalAlignment="Center"/>
-                        <NumberBox x:Name="DownloadMaximumNb"
-                                   HorizontalAlignment="Right" Minimum="1" Maximum="6" SpinButtonPlacementMode="Compact"
+                    </labs:SettingsCard>
+                    <labs:SettingsCard Header="下载质量">
+                        <ComboBox/>
+                    </labs:SettingsCard>
+                    <labs:SettingsCard Header="同时下载最大数量">
+                        <NumberBox Minimum="1" Maximum="6" SpinButtonPlacementMode="Compact"
                                    ValueChanged="NumberBox_ValueChanged"/>
-                    </Grid>
-                </StackPanel>
-            </Expander>
-            <Expander x:Name="FutureEpd" Expanding="Expander_Expanding">
-                <Expander.Transitions>
-                    <TransitionCollection>
-                        <RepositionThemeTransition/>
-                    </TransitionCollection>
-                </Expander.Transitions>
-                <Expander.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <FontIcon Glyph="&#xe712;"/>
-                        <StackPanel Style="{StaticResource STPS}">
-                            <TextBlock Text="其它"/>
-                        </StackPanel>
+                    </labs:SettingsCard>
+                </labs:SettingsExpander.Items>
+            </labs:SettingsExpander>
+
+        <Expander x:Name="HotKeySettings">
+            <Expander.Transitions>
+                <TransitionCollection>
+                    <RepositionThemeTransition/>
+                </TransitionCollection>
+            </Expander.Transitions>
+            <Expander.Header>
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xf210;"/>
+                    <StackPanel Style="{StaticResource STPS}">
+                        <TextBlock Text="热键设置"/>
                     </StackPanel>
-                </Expander.Header>
-                <StackPanel>
-                    <Grid x:Name="PlayBehaviourBaseeGrid"
-                          Loaded="PlayBehaviourBaseeGrid_Loaded"
-                          Style="{StaticResource ItemGridStyle}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <TextBlock Text="播放行为"/>
-                            <TextBlock Text="设置播放完成后的行为" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
-                        </StackPanel>
-                        <ComboBox Grid.Column="1"
-                                  x:Name="PlayBehaviourCb"
-                                  SelectionChanged="PlayBehaviourCb_SelectionChanged">
-                            <x:String>顺序播放</x:String>
-                            <x:String>随机播放</x:String>
-                            <x:String>单曲循环</x:String>
-                            <x:String>单曲播放完成后停止</x:String>
-                        </ComboBox>
-                    </Grid>
-                    <Grid x:Name="OpenMediaBaseGrid"
-                          Loaded="OpenMediaBaseGrid_Loaded"
-                          Style="{StaticResource ItemGridStyle}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <TextBlock Text="打开媒体文件"/>
-                            <TextBlock Text="使用MediaPlayerElement打开媒体文件" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                            <Button Content="打开文件" Margin="{ThemeResource ContentDialogButton1HostMargin}" Click="Button_Click_3"/>
-                            <Button Content="输入地址" Click="Button_Click_3"/>
-                        </StackPanel>
-                    </Grid>
                 </StackPanel>
-            </Expander>
-            <Expander x:Name="ThemeEpd" Expanding="Expander_Expanding">
-                <Expander.Transitions>
-                    <TransitionCollection>
-                        <RepositionThemeTransition/>
-                    </TransitionCollection>
-                </Expander.Transitions>
-                <Expander.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <FontIcon Glyph="&#xe790;"/>
-                        <StackPanel Style="{StaticResource STPS}">
-                            <TextBlock Text="主题"/>
-                        </StackPanel>
+            </Expander.Header>
+            <StackPanel>
+                <Grid Style="{StaticResource ItemGridStyle}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="尝试重新注册热键"/>
+                        <TextBlock Text="如果之前被其它程序占用的热键被释放，重新注册可以使之前被占用的热键恢复在此程序的功能" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
                     </StackPanel>
-                </Expander.Header>
-                <StackPanel>
-                    <Grid x:Name="ThemeBaseGrid"
-                          Loaded="ThemeBaseGrid_Loaded">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <TextBlock Text="应用主题"/>
-                            <TextBlock Text="更改应用主题的行为" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
-                        </StackPanel>
-                        <ComboBox Grid.Column="1"
-                                  x:Name="ThemeCb"
-                                  SelectionChanged="ThemeCb_SelectionChanged">
-                            <x:String>跟随系统</x:String>
-                            <x:String>浅色</x:String>
-                            <x:String>深色</x:String>
-                        </ComboBox>
-                    </Grid>
-                </StackPanel>
-            </Expander>
-            <Expander x:Name="HotKeySettings" Expanding="Expander_Expanding">
-                <Expander.Transitions>
-                    <TransitionCollection>
-                        <RepositionThemeTransition/>
-                    </TransitionCollection>
-                </Expander.Transitions>
-                <Expander.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <FontIcon Glyph="&#xf210;"/>
-                        <StackPanel Style="{StaticResource STPS}">
-                            <TextBlock Text="热键设置"/>
-                        </StackPanel>
+                    <Button Grid.Column="1" Click="Button_Click_5" Content="重新注册"/>
+                </Grid>
+                <Grid Style="{StaticResource ItemGridStyle}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="重置热键键位"/>
+                        <TextBlock Text="将热键键位恢复到程序默认键位" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
                     </StackPanel>
-                </Expander.Header>
-                <StackPanel>
-                    <Grid Style="{StaticResource ItemGridStyle}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <TextBlock Text="尝试重新注册热键"/>
-                            <TextBlock Text="如果之前被其它程序占用的热键被释放，重新注册可以使之前被占用的热键恢复在此程序的功能" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
-                        </StackPanel>
-                        <Button Grid.Column="1" Click="Button_Click_5" Content="重新注册"/>
-                    </Grid>
-                    <Grid Style="{StaticResource ItemGridStyle}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <TextBlock Text="重置热键键位"/>
-                            <TextBlock Text="将热键键位恢复到程序默认键位" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
-                        </StackPanel>
-                        <Button Grid.Column="1" Click="Button_Click_6" Content="重置"/>
-                    </Grid>
-                    <control:HotKeyPresenter Margin="-18,0"/>
-                </StackPanel>
-            </Expander>
-        </StackPanel>
+                    <Button Grid.Column="1" Click="Button_Click_6" Content="重置"/>
+                </Grid>
+                <control:HotKeyPresenter Margin="-18,0"/>
+            </StackPanel>
+        </Expander>
     </ListView>
 </Page>

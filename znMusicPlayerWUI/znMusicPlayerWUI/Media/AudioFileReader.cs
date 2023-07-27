@@ -63,11 +63,11 @@ namespace znMusicPlayerWUI.Media
         public bool isMidi = false;
         public string DecodeName = null;
 
-        public AudioFileReader(string fileName)
+        public AudioFileReader(string fileName, bool cueFile)
         {
             lockObject = new object();
             FileName = fileName;
-            CreateReaderStream(fileName);
+            CreateReaderStream(fileName, cueFile);
             if (isMidi) return;
             sourceBytesPerSample = readerStream.WaveFormat.BitsPerSample / 8 * readerStream.WaveFormat.Channels;
             sampleChannel = new SampleChannel(readerStream, forceStereo: false);
@@ -76,7 +76,7 @@ namespace znMusicPlayerWUI.Media
             CreateFilters();
         }
 
-        private void CreateReaderStream(string fileName)
+        private void CreateReaderStream(string fileName, bool cueFile = false)
         {
             if (File.Exists(fileName))
             {
@@ -99,9 +99,17 @@ namespace znMusicPlayerWUI.Media
                 switch (addr)
                 {
                     case "10276":
-                        readerStream = new FlakeNAudioAdapter.FlakeFileReader(fileName);
+                        if (!cueFile)
+                        {
+                            readerStream = new FlakeNAudioAdapter.FlakeFileReader(fileName);
+                            System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 FlakeFlac 解码器");
+                        }
+                        else
+                        {
+                            readerStream = new NAudio.Flac.FlacReader(fileName);
+                            System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 NAudio.Flac 解码器（CUE文件兼容性）");
+                        }
                         DecodeName = $"{App.AppName} Built-in FLAC Decoder";
-                        System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Flac 解码器");
                         break;
                     case "79103":
                         readerStream = new NAudio.Vorbis.VorbisWaveReader(f);

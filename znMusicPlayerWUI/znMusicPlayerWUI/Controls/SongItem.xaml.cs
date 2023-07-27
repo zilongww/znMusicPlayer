@@ -15,6 +15,7 @@ using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Pages;
 using System.Security.Cryptography;
 using System.Diagnostics;
+using Windows.System;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -137,6 +138,7 @@ namespace znMusicPlayerWUI.Controls
 
         public async void UpdataImageInterface(MusicData musicData)
         {
+            if (isDisposed) return;
             if (AlbumImage.Source != null)
             {
                 AlbumImage.Dispose();
@@ -151,6 +153,8 @@ namespace znMusicPlayerWUI.Controls
 
             MusicData data = musicData;
             ImageSource a = (await Media.ImageManage.GetImageSource(musicData, (int)(58 * ImageScaleDPI), (int)(58 * ImageScaleDPI), true)).Item1;
+            
+            if (isDisposed) return;
             if (musicData == MusicData)
             {
                 if (a != null)
@@ -185,14 +189,17 @@ namespace znMusicPlayerWUI.Controls
             //await MainWindow.ShowDialog("result", $"{artist.Name}\n{artist.PicturePath}\n{artist.Describee}\n{artist.HotSongs.Songs.Count}");
         }
 
+        bool isDisposed = false;
         public void Dispose()
         {
             try
             {
+                if (!isDisposed) { return; }
                 DataContext = null;
                 AlbumImage?.Dispose();
                 MusicData = null;
                 UnloadObject(this);
+                isDisposed = true;
             }
             catch (Exception err)
             {
@@ -490,6 +497,41 @@ namespace znMusicPlayerWUI.Controls
         private void root_AccessKeyInvoked(UIElement sender, Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs args)
         {
             rmf.ShowAt(this);
+        }
+
+        private async void Search_Click(object sender, RoutedEventArgs e)
+        {
+            var fe = sender as FrameworkElement;
+            string tag = fe.Tag as string;
+            switch (tag)
+            {
+                case "0":
+                    MainWindow.SetNavViewContent(typeof(SearchPage), MusicData.Title);
+                    break;
+                case "1":
+                    await Launcher.LaunchUriAsync(new System.Uri($"https://www.bing.com/search?q={MusicData.Title}-{MusicData.Album}"));
+                    break;
+                case "2":
+                    Uri uri = null;
+                    switch (MusicData.From)
+                    {
+                        case MusicFrom.neteaseMusic:
+                            uri = new($"https://music.163.com/#/song?id={MusicData.ID}");
+                            break;
+                    }
+
+                    if (uri != null)
+                    {
+                        var success = await Launcher.LaunchUriAsync(uri);
+                    }
+                    break;
+                case "3":
+                    var dp = new Windows.ApplicationModel.DataTransfer.DataPackage();
+                    dp.RequestedOperation = Windows.ApplicationModel.DataTransfer.DataPackageOperation.Copy;
+                    dp.SetText(MusicData.Title);
+                    Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dp);
+                    break;
+            }
         }
     }
 }

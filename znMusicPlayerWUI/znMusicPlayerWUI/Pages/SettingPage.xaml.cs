@@ -22,6 +22,7 @@ using znMusicPlayerWUI.Windowed;
 using znMusicPlayerWUI.Background;
 using znMusicPlayerWUI.Background.HotKeys;
 using CommunityToolkit.WinUI.UI;
+using CommunityToolkit.Labs.WinUI;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -44,7 +45,7 @@ namespace znMusicPlayerWUI.Pages
 
         private void DelaySetParameter(string value)
         {
-            Expander expander = null;
+            SettingsExpander expander = null;
             switch (value)
             {
                 case "open download":
@@ -68,6 +69,7 @@ namespace znMusicPlayerWUI.Pages
         public string ImageCachePath { get; set; } = null;
         public string LyricCachePath { get; set; } = null;
         public string AudioCachePlaceSize { get; set; } = null;
+        public string DownloadPath { get; set; } = null;
         public bool AudioCachePlaceSizeBusy { get; set; } = false;
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -77,9 +79,10 @@ namespace znMusicPlayerWUI.Pages
             AudioCachePath = DataFolderBase.AudioCacheFolder;
             ImageCachePath = DataFolderBase.ImageCacheFolder;
             LyricCachePath = DataFolderBase.LyricCacheFolder;
-            DownloadPathTb.Text = DataFolderBase.DownloadFolder;
+            DownloadPath = DataFolderBase.DownloadFolder;
 
             //System.Diagnostics.Debug.WriteLine(App.downloadManager.br);
+            /*
             switch (App.downloadManager.br)
             {
                 case 128: DownloadFormatCb.SelectedIndex = 0; break;
@@ -88,6 +91,7 @@ namespace znMusicPlayerWUI.Pages
                 case 960: DownloadFormatCb.SelectedIndex = 3; break;
             }
             DownloadMaximumNb.Value = App.downloadManager.DownloadingMaxium;
+            */
         }
 
         Visual headerVisual;
@@ -155,49 +159,9 @@ namespace znMusicPlayerWUI.Pages
             headerVisual.IsPixelSnappingEnabled = true;
         }
 
-        private void CachePathBaseGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void CacheDeleteBaseGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void AudioCachePathBaseGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void ImageCachePathBaseGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void LyricCachePathBaseGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdataShyHeader();
-        }
-
-        private void DownloadPathBaseGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private async void Button_Click_2(object sender, RoutedEventArgs e)
@@ -214,19 +178,15 @@ namespace znMusicPlayerWUI.Pages
                     var newPath = await FileHelper.UserSelectFolder(Windows.Storage.Pickers.PickerLocationId.MusicLibrary);
                     if (newPath != null)
                     {
-                        DownloadPathTb.Text = newPath.Path;
+                        //DownloadPathTb.Text = newPath.Path;
                         DataFolderBase.DownloadFolder = newPath.Path;
                     }
                 }
             }
         }
 
-        private void DownloadFormatBaseGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-        }
-
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
+        {/*
             var a = DownloadFormatCb.SelectedIndex;
             switch (a)
             {
@@ -242,7 +202,7 @@ namespace znMusicPlayerWUI.Pages
                 case 3:
                     App.downloadManager.br = 960;
                     break;
-            }
+            }*/
         }
 
         private void DownloadMaximumBaseGrid_Loaded(object sender, RoutedEventArgs e)
@@ -283,6 +243,7 @@ namespace znMusicPlayerWUI.Pages
         bool isCodeChangedTheme = false;
         private void ThemeBaseGrid_Loaded(object sender, RoutedEventArgs e)
         {
+        /*
             isCodeChangedTheme = true;
             switch (MainWindow.SWindowGridBaseTop.RequestedTheme)
             {
@@ -295,13 +256,13 @@ namespace znMusicPlayerWUI.Pages
                 case ElementTheme.Dark:
                     ThemeCb.SelectedIndex = 2;
                     break;
-            }
+            }*/
             isCodeChangedTheme = false;
         }
 
         private void ThemeCb_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (isCodeChangedTheme) return;
+            if (isCodeChangedTheme) return;/*
             switch (ThemeCb.SelectedItem as string)
             {
                 case "跟随系统":
@@ -314,49 +275,23 @@ namespace znMusicPlayerWUI.Pages
                     MainWindow.SWindowGridBaseTop.RequestedTheme = ElementTheme.Dark;
                     break;
             }
-            MainWindow.UpdataWindowBackdropTheme();
+            MainWindow.UpdataWindowBackdropTheme();*/
         }
 
 
         private void PlayBehaviourBaseeGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-            PlayBehaviourCb.SelectedIndex = (int)App.playingList.PlayBehaviour;
+        {/*
+            PlayBehaviourCb.SelectedIndex = (int)App.playingList.PlayBehaviour;*/
         }
 
         private void PlayBehaviourCb_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            App.playingList.PlayBehaviour = (PlayBehaviour)Enum.Parse(typeof(PlayBehaviour), PlayBehaviourCb.SelectedItem as string);
+            //App.playingList.PlayBehaviour = (PlayBehaviour)Enum.Parse(typeof(PlayBehaviour), PlayBehaviourCb.SelectedItem as string);
             //System.Diagnostics.Debug.WriteLine(App.playingList.PlayBehaviour);
         }
 
         private void Page_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
-        }
-
-        private void HotKeyBaseGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private async void Button_Click_4(object sender, RoutedEventArgs e)
-        {
-            await MainWindow.ShowDialog("热键帮助", "目前暂不支持更改热键键位。\n" +
-                "使用以下热键可在不与此程序的窗口交互的情况下控制程序的行为：\n" +
-                "●Ctrl + 左键：上一首歌曲\n" +
-                "●Ctrl + 右键：下一首歌曲\n" +
-                "●Ctrl + 下键：暂停正在播放的歌曲\n" +
-                "●Ctrl + 上键：停止正在播放的歌曲\n" +
-                "●Ctrl + 减号键：减少音量\n" +
-                "●Ctrl + 加号键：增大音量\n" +
-                "●Ctrl + Shift + O键：尝试唤起应用程序窗口\n" +
-                "●Ctrl + Shift + L键：打开/关闭桌面歌词\n" +
-                "●Ctrl + Shift + I键：打开/关闭随机播放\n" +
-                "●Ctrl + Shift + U键：尝试将桌面歌词置顶\n" +
-                "●Ctrl + Shift + K键：锁定桌面歌词\n" +
-                "●Ctrl + Shift + Home键：播放正在播放歌曲列表的第一首歌曲\n" +
-                "●Alt + 左键 或 退格键 或 鼠标4键：返回上一页\n" +
-                "●Alt + 右键 或 鼠标5键：返回下一页"
-                );
         }
 
         private async void Button_Click_5(object sender, RoutedEventArgs e)
@@ -375,20 +310,62 @@ namespace znMusicPlayerWUI.Pages
             App.hotKeyManager.RegisterHotKeys(HotKeyManager.DefaultRegisterHotKeysList);
         }
 
-        private void Expander_Expanding(Expander sender, ExpanderExpandingEventArgs args)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var expander in ListViewBase.Items)
+            Button button = sender as Button;
+            if (button == null) return;
+
+            string tagObj = button.Tag as string;
+            string folderPath = null;
+            switch (tagObj)
             {
-                if (expander.GetType() == typeof(Expander))
-                {
-                    if ((Expander)expander != sender)
-                    {
-                        (expander as Expander).IsExpanded = false;
-                    }
-                }
+                case "0":
+                    folderPath = CachePath;
+                    break;
+                case "1":
+                    folderPath = AudioCachePath;
+                    break;
+                case "2":
+                    folderPath = ImageCachePath;
+                    break;
+                case "3":
+                    folderPath = LyricCachePath;
+                    break;
+                case "4":
+                    folderPath = DownloadPath;
+                    break;
             }
-            //if (sender.IsExpanded)
-             //   ListViewBase.SmoothScrollIntoViewWithItemAsync(sender, ScrollItemPlacement.Default, true);
+
+            await FileHelper.OpenFilePath(folderPath);
+        }
+
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button == null) return;
+
+            string tagObj = button.Tag as string;
+            var folder = await FileHelper.UserSelectFolder();
+            if (folder == null) return;
+            var folderPath = folder.Path;
+            switch (tagObj)
+            {
+                case "0":
+                    DataFolderBase.CacheFolder = folderPath;
+                    break;
+                case "1":
+                    DataFolderBase.AudioCacheFolder = folderPath;
+                    break;
+                case "2":
+                    DataFolderBase.ImageCacheFolder = folderPath;
+                    break;
+                case "3":
+                    DataFolderBase.LyricCacheFolder = folderPath;
+                    break;
+                case "4":
+                    DataFolderBase.DownloadFolder = folderPath;
+                    break;
+            }
         }
     }
 }

@@ -78,7 +78,7 @@ namespace znMusicPlayerWUI.DataEditor
         /// </summary>
         public static JObject SettingDefault = new JObject()
         {
-            { SettingParams.Volume.ToString(), 0.5f },
+            { SettingParams.Volume.ToString(), 50f },
             { SettingParams.DownloadFolderPath.ToString(), DownloadFolder },
             { SettingParams.AudioCacheFolderPath.ToString(), AudioCacheFolder },
             { SettingParams.ImageCacheFolderPath.ToString(), ImageCacheFolder },
@@ -87,7 +87,7 @@ namespace znMusicPlayerWUI.DataEditor
             { SettingParams.EqualizerString.ToString(), nameof(Media.AudioEqualizerBands.CustomBands) },
             { SettingParams.EqualizerCustomData.ToString(), "0,0,0,0,0,0,0,0,0,0" },
             { SettingParams.WasapiOnly.ToString(), false },
-            { SettingParams.AudioLatency.ToString(), 200 },
+            { SettingParams.AudioLatency.ToString(), 80 },
             { SettingParams.MusicPageShowLyricPage.ToString(), true },
             { SettingParams.HotKeySettings.ToString(), JArray.FromObject(HotKeyManager.DefaultRegisterHotKeysList) }
         };

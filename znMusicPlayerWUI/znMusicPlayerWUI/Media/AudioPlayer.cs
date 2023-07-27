@@ -724,7 +724,7 @@ namespace znMusicPlayerWUI.Media
                     {
                         _filePath = resultPath;
                         Debug.WriteLine($"AudioPlayer：正在加载 \"{resultPath}\".");
-                        await SetSource(resultPath);
+                        await SetSource(resultPath, musicData.CUETrackData != null);
                     }
                     catch (Exception err)
                     {
@@ -762,7 +762,7 @@ namespace znMusicPlayerWUI.Media
         public string AudioBitrate = null;
         public bool localFileIniting = false;
         public ATL.Track tfile = null;
-        public async Task SetSource(string filePath)
+        public async Task SetSource(string filePath, bool cueFile = false)
         {
             MusicData musicData = MusicData;
             if (localFileIniting) return;
@@ -796,7 +796,7 @@ namespace znMusicPlayerWUI.Media
 
             await Task.Run(() =>
             {
-                fileReader = new AudioFileReader(filePath);
+                fileReader = new AudioFileReader(filePath, cueFile);
                 FileSize = File.ReadAllBytes(filePath).Length;
                 UpdataInfo();
                 if (fileReader.isMidi)

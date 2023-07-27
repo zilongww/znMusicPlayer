@@ -192,6 +192,7 @@ namespace znMusicPlayerWUI.Controls
         private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
             if (ShowMenuBehavior == ShowMenuBehaviors.None || ShowMenuBehavior == ShowMenuBehaviors.OnlyLightUp) return;
+            isEnterDialog = true;
             ScrollViewer scrollViewer = new()
             {
                 ZoomMode = ZoomMode.Enabled,
@@ -253,6 +254,7 @@ namespace znMusicPlayerWUI.Controls
                     }
                 }
             }
+            isEnterDialog = false;
         }
 
         private void Grid_RightTapped(object sender, Microsoft.UI.Xaml.Input.RightTappedRoutedEventArgs e)
@@ -263,6 +265,7 @@ namespace znMusicPlayerWUI.Controls
         bool isFirstAnimate = true;
         private async void Grid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
+            if (isEnterDialog) return;
             if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
             isPointEnter = true;
 
@@ -341,10 +344,12 @@ namespace znMusicPlayerWUI.Controls
             scaleVisual.StartAnimation("Scale.Y", animation);
         }
 
+        bool isEnterDialog = false;
         private void Grid_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
             if (!IsMouse4Click)
             {
+                isEnterDialog = true;
                 MenuFlyoutItem_Click(null, null);
             }
             IsMouse4Click = false;

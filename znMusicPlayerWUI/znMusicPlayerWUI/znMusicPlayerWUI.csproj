@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <RootNamespace>znMusicPlayerWUI</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -71,30 +71,41 @@
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.Media" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.Primitives" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.UI.Media" Version="7.1.2" />
-    <PackageReference Include="Downloader" Version="3.0.4" />
+    <PackageReference Include="Downloader" Version="3.0.6" />
     <PackageReference Include="FFmpeg.AutoGen" Version="6.0.0.2" />
-    <PackageReference Include="Melanchall.DryWetMidi" Version="6.1.4" />
+    <PackageReference Include="Melanchall.DryWetMidi" Version="7.0.0" />
     <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.0.4" />
-    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.2.164-beta">
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.18-beta">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.230628000-preview1" />
     <PackageReference Include="NAudio" Version="2.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PInvoke.BCrypt" Version="0.7.124" />
     <PackageReference Include="PInvoke.NCrypt" Version="0.7.124" />
     <PackageReference Include="PInvoke.User32" Version="0.7.124" />
     <PackageReference Include="PInvoke.Windows.Core" Version="0.7.124" />
     <PackageReference Include="SoundTouch.Net.NAudioSupport" Version="2.3.2" />
     <PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0-preview.3.23174.8" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0-preview.6.23329.7" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
-    <PackageReference Include="Vanara.PInvoke.User32" Version="3.4.14" />
+    <PackageReference Include="Vanara.PInvoke.User32" Version="3.4.15" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Helpers\SDKs\NeteaseCloudMusicApi\NeteaseCloudMusicApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Media\Decoder\Flac\NAudio.Flac\FlacFrame_GetBuffer.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FlacFrame_GetBuffer.cs</LastGenOutput>
+    </None>
+    <None Update="Media\Decoder\Flac\NAudio.Flac\SubFrames\FlacSubFrameLPC_Calculation.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FlacSubFrameLPC_Calculation.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -230,5 +241,22 @@
     <Page Update="Windows\MediaPlayerWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Media\Decoder\Flac\NAudio.Flac\FlacFrame_GetBuffer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FlacFrame_GetBuffer.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Media\Decoder\Flac\NAudio.Flac\SubFrames\FlacSubFrameLPC_Calculation.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FlacSubFrameLPC_Calculation.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

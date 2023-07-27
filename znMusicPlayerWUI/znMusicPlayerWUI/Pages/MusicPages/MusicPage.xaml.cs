@@ -723,13 +723,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void TitleSearchMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewSearch>(
-                new List<object>
-                {
-                    MusicData.Title,
-                    MusicData.From,
-                    SearchDataType.歌曲
-                });
+            MainWindow.SetNavViewContent(typeof(SearchPage), MusicData.Title);
             MainWindow.OpenOrCloseMusicPage();
         }
 
@@ -754,7 +748,10 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void TitleFlyout_Opening(object sender, object e)
         {
-            TitleMenuFlyoutText.Text = $"{MusicData.Title}（{MusicData.Title2}）";
+            if (string.IsNullOrEmpty(MusicData.Title2))
+                TitleMenuFlyoutText.Text = MusicData.Title;
+            else
+                TitleMenuFlyoutText.Text = $"{MusicData.Title}（{MusicData.Title2}）";
         }
 
         private void AlbumFlyout_Opening(object sender, object e)

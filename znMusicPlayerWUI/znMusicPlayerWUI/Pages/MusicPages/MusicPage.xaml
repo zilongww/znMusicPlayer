@@ -299,16 +299,19 @@
                                               Stretch="UniformToFill" Margin="2"/>
                                     </Button>
                                     <Button x:Name="VloumeButton" AccessKey="V" Click="VloumeButton_Click" ToolTipService.ToolTip="音频">
-                                        <FontIcon x:Name="VolumeIcon" Glyph=""/>
+                                        <Grid>
+                                            <FontIcon Glyph="&#xE995;" Opacity="{ThemeResource VolumeOpacity}"/>
+                                            <FontIcon x:Name="VolumeIcon" Glyph="&#xE995;"/>
+                                        </Grid>
                                     </Button>
                                     <Button x:Name="PlayListButton" AccessKey="L" Click="PlayListButton_Click" ToolTipService.ToolTip="正在播放列表">
-                                        <FontIcon Glyph=""/>
+                                        <FontIcon Glyph="&#xE90B;"/>
                                     </Button>
                                     <Button x:Name="EqButton" AccessKey="E" Click="EqButton_Click" ToolTipService.ToolTip="音频设置">
-                                        <FontIcon Glyph=""/>
+                                        <FontIcon Glyph="&#xE9E9;"/>
                                     </Button>
                                     <Button x:Name="FullScreenButton" AccessKey="F" Click="FullScreenButton_Click" ToolTipService.ToolTip="全屏/退出全屏">
-                                        <FontIcon x:Name="FullScreenIcon" Glyph=""/>
+                                        <FontIcon x:Name="FullScreenIcon" Glyph="&#xE740;"/>
                                     </Button>
                                 </StackPanel>
                             </ScrollViewer>

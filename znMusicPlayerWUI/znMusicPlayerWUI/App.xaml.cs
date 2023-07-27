@@ -69,7 +69,7 @@ namespace znMusicPlayerWUI
         public static NotifyIconWindow NotifyIconWindow;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.2.52 Preview";
+        public static readonly string AppVersion = "0.2.53 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -81,12 +81,12 @@ namespace znMusicPlayerWUI
             Media.Decoder.FFmpeg.FFmpegBinariesHelper.InitFFmpeg();
             this.InitializeComponent();
             UnhandledException += App_UnhandledException;
-
+/*
             notifyIcon = new System.Windows.Forms.NotifyIcon();
             notifyIcon.Text = AppName;
             notifyIcon.Icon = new($"{System.IO.Directory.GetCurrentDirectory()}\\icon.ico");
             notifyIcon.Visible = true;
-
+*/
             SMTC.IsPlayEnabled = true;
             SMTC.IsPauseEnabled = true;
             SMTC.IsNextEnabled = true;
@@ -108,17 +108,17 @@ namespace znMusicPlayerWUI
                 if (_.MusicData == null)
                 {
                     SMTC.DisplayUpdater.MusicProperties.Title = _.FileReader?.FileName;
-                    notifyIcon.Text = AppName;
+                    //notifyIcon.Text = AppName;
                 }
                 else
                 {
                     SMTC.DisplayUpdater.MusicProperties.Title = _.MusicData.Title;
                     SMTC.DisplayUpdater.MusicProperties.Artist = _.MusicData.ButtonName;
-                    try
+                    /*try
                     {
                         notifyIcon.Text = $"{AppName}\n正在播放：{_.MusicData.Title}\n · 艺术家：{_.MusicData.ArtistName}\n · 专辑：{_.MusicData.Album.Title}";
                     }
-                    catch { }
+                    catch { }*/
                 }
                 SMTC.DisplayUpdater.Update();
             };
@@ -168,11 +168,6 @@ namespace znMusicPlayerWUI
             AppWindowLocalFullScreenPresenter = FullScreenPresenter.Create();
             App.AppWindowLocal.SetPresenter(AppWindowLocalOverlappedPresenter);
             LAE = args;
-            /*
-                        var l_window = new DesktopLyricWindow();
-                        AppDesktopLyricWindowHandle = WindowHelper.GetWindowHandle(l_window);
-                        l_window.Activate();
-            */
             
             var displayArea = CodeHelper.GetDisplayArea(m_window);
             var dpi = CodeHelper.GetScaleAdjustment(m_window);
@@ -195,12 +190,17 @@ namespace znMusicPlayerWUI
             m_window.Activate();
             m_window.Closed += M_window_Closed;
             //AppWindowLocal.SetPresenter(AppWindowLocalPresenter);
-            NotifyIconWindow = new();
             hotKeyManager.Init(App.WindowLocal);
+            //NotifyIconWindow = new();
         }
 
         private void M_window_Closed(object sender, WindowEventArgs args)
         {
+            if (MainWindow.DesktopLyricWindow != null)
+            {
+                MainWindow.DesktopLyricWindow.Close();
+            }
+            WindowLocal.Close();
             SMTC.DisplayUpdater.ClearAll();
             SMTC.DisplayUpdater.Update();
             audioPlayer.DisposeAll();
