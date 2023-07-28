@@ -79,7 +79,7 @@ namespace znMusicPlayerWUI
         {
             DataFolderBase.InitFiles();
             Media.Decoder.FFmpeg.FFmpegBinariesHelper.InitFFmpeg();
-            this.InitializeComponent();
+            InitializeComponent();
             UnhandledException += App_UnhandledException;
 /*
             notifyIcon = new System.Windows.Forms.NotifyIcon();
