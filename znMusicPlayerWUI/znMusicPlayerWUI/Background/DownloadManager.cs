@@ -131,7 +131,7 @@ namespace znMusicPlayerWUI.Background
             System.Diagnostics.Debug.WriteLine(downloadPath);*//*
             var downloader = new DownloadService();
             await downloader.DownloadFileTaskAsync(addressPath, downloadPath);
-            downloader.Dispose();*/
+            downloader.Dispose(); */
 
             string lastName = null;
             await Task.Run(() =>
