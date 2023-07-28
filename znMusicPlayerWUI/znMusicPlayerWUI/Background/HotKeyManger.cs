@@ -31,6 +31,7 @@ namespace znMusicPlayerWUI.Background.HotKeys
         public User32.HotKeyModifiers HotKeyModifiers { get; set; }
         public Windows.System.VirtualKey VirtualKey { get; set; }
         public HotKeyID HotKeyID { get; set; } = default;
+        public bool IsDisabled { get; set; } = false;
         [JsonIgnore]
         public bool IsUsed { get; set; } = false;
         public HotKey(User32.HotKeyModifiers hotKeyModifiers, Windows.System.VirtualKey virtualKey, HotKeyID hotKeyID)
@@ -175,6 +176,12 @@ namespace znMusicPlayerWUI.Background.HotKeys
 
         public bool RegisterHotKey(HotKey hotKey)
         {
+            if (hotKey.IsDisabled)
+            {
+                RegistedHotKeys.Add(hotKey);
+                return true;
+            }
+
             var r = User32.RegisterHotKey(
                 RegistedWindowHandle, (int)hotKey.HotKeyID, hotKey.HotKeyModifiers, (uint)hotKey.VirtualKey);
             if (!r) hotKey.IsUsed = true;

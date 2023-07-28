@@ -28,14 +28,14 @@
                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="CornerRadius" Value="8"/>
-                <Setter Property="Margin" Value="0,00,0,0"/>
+                <Setter Property="Margin" Value="0,0,6,0"/>
                 <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
             </Style>
             <Style x:Key="ItemGridStyle" TargetType="Grid">
                 <Setter Property="Margin" Value="0,0,0,14"/>
             </Style>
             <Style TargetType="labs:SettingsExpander">
-                <Setter Property="Margin" Value="0,0,0,14"/>
+                <Setter Property="Margin" Value="0,0,6,14"/>
             </Style>
         </ListView.Resources>
 
@@ -132,7 +132,8 @@
                 </labs:SettingsExpander.Items>
             </labs:SettingsExpander>
 
-        <Expander x:Name="HotKeySettings">
+        <Expander x:Name="HotKeySettings"
+                  BorderBrush="{ThemeResource ControlElevationBorderBrush}">
             <Expander.Transitions>
                 <TransitionCollection>
                     <RepositionThemeTransition/>
@@ -169,7 +170,7 @@
                     </StackPanel>
                     <Button Grid.Column="1" Click="Button_Click_6" Content="重置"/>
                 </Grid>
-                <control:HotKeyPresenter Margin="-18,0"/>
+                <control:HotKeyPresenter Margin="-18,-4"/>
             </StackPanel>
         </Expander>
     </ListView>

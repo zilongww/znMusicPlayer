@@ -219,6 +219,7 @@ namespace znMusicPlayerWUI
             AudioPlayer_VolumeChanged(App.audioPlayer, App.audioPlayer.Volume);
             PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
             LyricManager_PlayingLyricSelectedChange(App.lyricManager.NowLyricsData);
+            PlayingList_PlayingListItemChange(App.playingList.NowPlayingList);
             App.audioPlayer.ReCallTiming();
             System.Diagnostics.Debug.WriteLine("Data Updated.");
         }
@@ -235,6 +236,7 @@ namespace znMusicPlayerWUI
             App.audioPlayer.CacheLoadingChanged += AudioPlayer_CacheLoadingChanged;
             App.playingList.NowPlayingImageLoading += PlayingList_NowPlayingImageLoading;
             App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
+            App.playingList.PlayingListItemChange += PlayingList_PlayingListItemChange;
             isAddEvents = true;
             UpdataWhenDataLated();
             System.Diagnostics.Debug.WriteLine("Added Events.");
@@ -251,6 +253,7 @@ namespace znMusicPlayerWUI
             App.playingList.NowPlayingImageLoading -= PlayingList_NowPlayingImageLoading;
             App.playingList.NowPlayingImageLoaded -= PlayingList_NowPlayingImageLoaded;
             App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange;
+            App.playingList.PlayingListItemChange -= PlayingList_PlayingListItemChange;
             isAddEvents = false;
             System.Diagnostics.Debug.WriteLine("Removed Events.");
         }
@@ -593,6 +596,11 @@ namespace znMusicPlayerWUI
                         break;
                 }
             });
+        }
+
+        private void PlayingList_PlayingListItemChange(ObservableCollection<MusicData> nowPlayingList)
+        {
+            //PlayingListBaseView.SelectedItem = App.audioPlayer.MusicData;
         }
 
         private void AudioPlayer_VolumeChanged(Media.AudioPlayer audioPlayer, object data)

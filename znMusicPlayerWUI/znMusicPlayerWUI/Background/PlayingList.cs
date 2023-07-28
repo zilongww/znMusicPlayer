@@ -13,6 +13,7 @@ using znMusicPlayerWUI.Helpers;
 using WinRT;
 using znMusicPlayerWUI.Media;
 using Melanchall.DryWetMidi.Core;
+using TagLib.Ape;
 
 namespace znMusicPlayerWUI.Background
 {
@@ -30,7 +31,9 @@ namespace znMusicPlayerWUI.Background
         public event PlayBehaviourDelegate PlayBehaviourChanged;
 
         public ObservableCollection<MusicData> NowPlayingList = new();
+        public ObservableCollection<MusicData> RandomSavePlayingList = new();
 
+        bool lastIsRandomPlay = false;
         private PlayBehaviour _playBehaviour = PlayBehaviour.顺序播放;
         public PlayBehaviour PlayBehaviour
         {
@@ -38,6 +41,7 @@ namespace znMusicPlayerWUI.Background
             set
             {
                 _playBehaviour = value;
+                SetRandomPlay(value);
                 PlayBehaviourChanged?.Invoke(value);
             }
         }
@@ -58,17 +62,51 @@ namespace znMusicPlayerWUI.Background
             App.audioPlayer.PlayEnd += AudioPlayer_PlayEnd;
         }
 
+        private async void SetRandomPlay(PlayBehaviour value)
+        {
+            if (value == PlayBehaviour.随机播放)
+            {
+                lastIsRandomPlay = true;
+                RandomSavePlayingList.Clear();
+                foreach (var item in NowPlayingList) RandomSavePlayingList.Add(item);
+                var arr = NowPlayingList.ToList();
+                for (int i = 0; i < NowPlayingList.Count; i++)
+                {
+                    int index = new Random().Next(i, NowPlayingList.Count);
+                    var temp = arr[i];
+                    var random = arr[index];
+                    arr[i] = random;
+                    arr[index] = temp;
+                }
+                NowPlayingList.Clear();
+                foreach (var item in arr) NowPlayingList.Add(item);
+                PlayingListItemChange?.Invoke(NowPlayingList);
+            }
+            else
+            {
+                if (lastIsRandomPlay)
+                {
+                    NowPlayingList.Clear();
+                    foreach (var item in RandomSavePlayingList) NowPlayingList.Add(item);
+                    RandomSavePlayingList.Clear();
+                    PlayingListItemChange?.Invoke(NowPlayingList);
+                }
+            }
+            await Play(NowPlayingList.First());
+        }
+
         private async void AudioPlayer_PlayEnd(Media.AudioPlayer audioPlayer)
         {
             AddHistory(audioPlayer.MusicData);
             switch (PlayBehaviour)
             {
                 case PlayBehaviour.顺序播放:
+                case PlayBehaviour.随机播放:
                     await App.playingList.PlayNext(true, false);
-                    break;
+                    break;/*
                 case PlayBehaviour.随机播放:
                     await Play(NowPlayingList[new Random().Next(NowPlayingList.Count - 1)], true);
-                    break;
+                    break;*/
                 case PlayBehaviour.单曲循环:
                     await Play(App.audioPlayer.MusicData, true);
                     break;

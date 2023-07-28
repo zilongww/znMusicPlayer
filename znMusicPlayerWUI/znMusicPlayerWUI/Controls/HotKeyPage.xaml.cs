@@ -38,8 +38,17 @@ namespace znMusicPlayerWUI.Controls
         {
             var button = (Button)sender;
             nowChangedHotKey = button.DataContext as HotKey;
-            Pages.DialogPages.HotKeyEditor a = new();
-            a.ShowDialog(nowChangedHotKey);
+            switch (button.Tag as string)
+            {
+                case "0":
+                    nowChangedHotKey.IsDisabled = !nowChangedHotKey.IsDisabled;
+                    App.hotKeyManager.ChangeHotKey(nowChangedHotKey);
+                    break;
+                case "1":
+                    Pages.DialogPages.HotKeyEditor a = new();
+                    a.ShowDialog(nowChangedHotKey);
+                    break;
+            }
         }
 
         private void HotKeyRoot_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
@@ -100,6 +109,20 @@ namespace znMusicPlayerWUI.Controls
         {
             bool c = (bool)value;
             return c ? "已被其它应用程序占用" : "";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class IsDisabledConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            bool c = (bool)value;
+            return c ? "已被禁用" : "";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
