@@ -124,17 +124,14 @@ namespace znMusicPlayerWUI.Background
                 return;
             }
 
-            string lastName = new FileInfo(addressPath).Extension;
-            string downloadPath = downloadPath1 + lastName;
-            string lyricPath = downloadPath1 + ".lrc";
-            string picPath = downloadPath1 + ".imagez";
+            //string picPath = downloadPath1 + ".imagez";
             /*
             System.Diagnostics.Debug.WriteLine(addressPath);
             System.Diagnostics.Debug.WriteLine(lastName);
             System.Diagnostics.Debug.WriteLine(downloadPath);*//*
             var downloader = new DownloadService();
             await downloader.DownloadFileTaskAsync(addressPath, downloadPath);
-            downloader.Dispose(); */
+            downloader.Dispose();*/
 
             string lastName = null;
             await Task.Run(() =>
@@ -144,9 +141,9 @@ namespace znMusicPlayerWUI.Background
             string downloadPath = downloadPath1 + lastName;
             string lyricPath = downloadPath1 + ".lrc";
             await WebHelper.DownloadFileAsync(addressPath, downloadPath);
-/*
-            System.Net.WebClient TheDownloader = new System.Net.WebClient();
-            await TheDownloader.DownloadFileTaskAsync(new Uri(addressPath), downloadPath);*/
+            /*
+                        System.Net.WebClient TheDownloader = new System.Net.WebClient();
+                        await TheDownloader.DownloadFileTaskAsync(new Uri(addressPath), downloadPath);*/
             /*TheDownloader.DownloadProgressChanged += (s, e) =>
             {
                 dm.DownloadPercent = e.ProgressPercentage;
@@ -224,24 +221,11 @@ namespace znMusicPlayerWUI.Background
                 }
             }
 
-            // 在上面的异步操作完成后，似乎不会很快地将下载的数据从内存中写入到磁盘中，
-            // 因此导致文件被占用。在此每间隔1秒尝试保存。
-            int retryCount = 0;
-            while (retryCount <= 12)
+            await Task.Run(() =>
             {
-                try
-                {
-                    tagFile.Save();
-                    break;
-                }
-                catch (Exception err)
-                {
-                    System.Diagnostics.Debug.WriteLine(err.ToString());
-                    retryCount++;
-                }
-            }
-
-            tagFile.Dispose();
+                tagFile.Save();
+                tagFile.Dispose();
+            });
             DownloadingData.Remove(dm);
             DownloadedData.Add(dm);
             OnDownloaded?.Invoke(dm);
