@@ -65,13 +65,7 @@ namespace znMusicPlayerWUI.Helpers
                 throw new InvalidOperationException("无法定位到网络地址，请检查你的域名服务器是否正常工作或DNS配置是否正确。");
 
             var data = await Client.GetByteArrayAsync(address);
-            await Task.Run(() =>
-            {
-                var stream = File.Create(downloadPath);
-                stream.Write(data);
-                stream.Close();
-                stream.Dispose();
-            });
+            await File.WriteAllBytesAsync(downloadPath, data);
 
             DownloadingPathCache.Remove(address);
         }
