@@ -69,7 +69,7 @@ namespace znMusicPlayerWUI
         public static NotifyIconWindow NotifyIconWindow;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.2.54 Preview";
+        public static readonly string AppVersion = "0.2.55 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
