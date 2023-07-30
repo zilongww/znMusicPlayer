@@ -338,7 +338,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     {
                         //ScrollViewerBehavior.(scrollViewer, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48);
                         //sv.GetAnimationBaseValue(sv.ver);
-                        sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2, null, disableAnimation);
+                        sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2 , null, disableAnimation);
                     }
                     else
                     {

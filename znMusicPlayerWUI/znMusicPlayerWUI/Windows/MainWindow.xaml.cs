@@ -1284,7 +1284,7 @@ namespace znMusicPlayerWUI
                 AnimateHelper.AnimateOffset(
                     SMusicPageBaseFrame,
                     0, (float)SMusicPageBaseGrid.ActualHeight, 0,
-                    0.2,
+                    0.22,
                     0.5f, 0, 0.75f, 0,
                     out Visual contentGridVisual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
                 contentGridVisual.StartAnimation(nameof(contentGridVisual.Offset), animation);
@@ -1370,7 +1370,7 @@ namespace znMusicPlayerWUI
             {
                 SWindowGridBase.Visibility = Visibility.Visible;
                 Debug.WriteLine("主界面被显示。");
-                await Task.Delay(200);
+                await Task.Delay(220);
                 if (!InOpenMusicPage)
                     SMusicPageBaseFrame.Visibility = Visibility.Collapsed;
             }

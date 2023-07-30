@@ -87,6 +87,7 @@ namespace znMusicPlayerWUI.Windowed
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
             App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
             App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
+            App.audioPlayer.TimingChanged += AudioPlayer_TimingChanged;
             AudioPlayer_PlayStateChanged(App.audioPlayer);
 
             //AppWindow.Closing += AppWindow_Closing;
@@ -97,6 +98,7 @@ namespace znMusicPlayerWUI.Windowed
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
             App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
             App.audioPlayer.VolumeChanged -= AudioPlayer_VolumeChanged;
+            App.audioPlayer.TimingChanged -= AudioPlayer_TimingChanged;
         }
 
         int showBorderCount = 0;
@@ -148,6 +150,12 @@ namespace znMusicPlayerWUI.Windowed
             showCount--;
 
             if (showCount <= 0) InfoTBBorder.Opacity = 0;
+        }
+
+        private void AudioPlayer_TimingChanged(AudioPlayer audioPlayer)
+        {
+            progressBase.Maximum = audioPlayer.TotalTime.Ticks;
+            progressBase.Value = audioPlayer.CurrentTime.Ticks;
         }
 
         private void LyricManager_PlayingLyricSourceChange(ObservableCollection<LyricData> nowPlayingLyrics)

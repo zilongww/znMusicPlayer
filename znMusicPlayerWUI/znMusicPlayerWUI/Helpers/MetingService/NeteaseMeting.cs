@@ -225,11 +225,22 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                         ));
                 }
 
+                string pic = null;
+                if ((md["al"] as JObject).ContainsKey("picUrl"))
+                {
+                    pic = (string)md["al"]["picUrl"];
+                }
+                else
+                {
+                    pic = null;
+                }
+                Album album = new(
+                    (string)md["al"]["name"], (string)md["al"]["id"], pic);
+
                 MusicData data = new(
                     (string)md["name"],
                     (string)md["id"],
-                    artists,
-                    new((string)md["al"]["name"], (string)md["al"]["id"], md["al"].Contains("picUrl") ? (string)md["al"]["picUrl"] : null),
+                    artists, album,
                     md.ContainsKey("publishTime") ? (string)md["publishTime"] : null,
                     MusicFrom.neteaseMusic);
 
