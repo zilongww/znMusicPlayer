@@ -147,8 +147,8 @@ namespace znMusicPlayerWUI
             
             args.Cancel = true;
             HideDialog();
-            var result = await ShowDialog("再确认一次", "你真的要退出程序吗？", "确定", "取消", null, ContentDialogButton.Close);
-            if (result == ContentDialogResult.None)
+            var result = await ShowDialog("再确认一次", "你真的要退出程序吗？", "取消", "确定", null, ContentDialogButton.Primary);
+            if (result == ContentDialogResult.Primary)
             {
                 App.Current.Exit();
             }
@@ -458,7 +458,7 @@ namespace znMusicPlayerWUI
                     AsyncDialog.Title = title;
                     if (content is string)
                     {
-                        dialogScrollViewer.Content = new TextBlock() { Text = content as string, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true, MinHeight = 34 };
+                        dialogScrollViewer.Content = new TextBlock() { Text = content as string, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true, MinHeight = 26 };
                         AsyncDialog.Content = dialogScrollViewer;
                     }
                     else
