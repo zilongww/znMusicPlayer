@@ -282,11 +282,11 @@
                                               Fill="{ThemeResource ButtonForegroundThemeBrush}"
                                               Stretch="UniformToFill" Margin="2"/>
                                     </Button>
-                                    <Button x:Name="PlayButton" Width="50" Height="50" Padding="14"
+                                    <Button x:Name="PlayButton" Width="50" Height="50"
                                             FontWeight="Normal" Click="PlayButton_Click"
                                             ToolTipService.ToolTip="播放/暂停">
                                         <Grid>
-                                            <controls:MediaPlayStateViewer x:Name="MediaPlayStateViewer1" PlaybackState="Paused"/>
+                                            <controls:MediaPlayStateViewer x:Name="MediaPlayStateViewer1" PlaybackState="Paused" Margin="12"/>
                                             <ProgressRing x:Name="AudioLoadingProressRing" Width="48" Height="48" IsIndeterminate="True"/>
                                         </Grid>
                                     </Button>

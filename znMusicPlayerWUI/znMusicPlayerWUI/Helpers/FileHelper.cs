@@ -133,6 +133,7 @@ namespace znMusicPlayerWUI.Helpers
 
         public static async Task<ImageSource> GetImageSource(string filePath, int decodePixelWidth = 0, int decodePixelHeight = 0, bool useBitmapImage = false)
         {
+            System.Diagnostics.Debug.WriteLine(filePath);
             if (string.IsNullOrEmpty(filePath))
             {
                 filePath = @"ms-appx:///Images/SugarAndSalt.jpg";

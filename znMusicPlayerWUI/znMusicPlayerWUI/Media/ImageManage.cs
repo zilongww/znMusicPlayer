@@ -65,7 +65,7 @@ namespace znMusicPlayerWUI.Media
             string resultPath = null;
             if (musicData.From == DataEditor.MusicFrom.localMusic)
             {
-                    source = await CodeHelper.GetCover(musicData.InLocal, decodePixelWidth, decodePixelHeight);
+                source = await CodeHelper.GetCover(musicData.InLocal, decodePixelWidth, decodePixelHeight);
                 if (source == null)
                 {
                     string coverPath = await Task.Run(() =>
@@ -101,7 +101,7 @@ namespace znMusicPlayerWUI.Media
                     {
                         string b = $@"{DataEditor.DataFolderBase.ImageCacheFolder}\{musicData.From}{(string.IsNullOrEmpty(musicData.Album.ID) ? musicData.MD5.Replace(@"/", "#") : musicData.Album.ID)}";
                         string a;
-                        if (musicData.Album.PicturePath != null)
+                        if (musicData.Album?.PicturePath != null)
                         {
                             a = musicData.Album.PicturePath;
                         }

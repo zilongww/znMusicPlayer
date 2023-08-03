@@ -16,6 +16,8 @@ using znMusicPlayerWUI.Pages;
 using System.Security.Cryptography;
 using System.Diagnostics;
 using Windows.System;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Hosting;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -64,9 +66,44 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
+        bool _isMusicDataPlaying = false;
+        public bool IsMusicDataPlaying
+        {
+            get
+            {
+                return _isMusicDataPlaying;
+            }
+            set
+            {
+                _isMusicDataPlaying = value;
+                DelaySetIconRootVisibility(value);
+            }
+        }
+
+
+        private async void DelaySetIconRootVisibility(bool value)
+        {
+            await Task.Delay(100);
+            if (value)
+            {
+                PlayingText.Text = "正在播放.";
+                //PlayingIconRoot.Visibility = Visibility.Visible;
+                //AlbumImage.CornerRadius = new(8);
+            }
+            else
+            {
+                PlayingText.Text = null;
+                //PlayingIconRoot.Visibility = Visibility.Collapsed;
+                //AlbumImage.CornerRadius = new(0);
+            }
+        }
+
         public SongItem()
         {
             InitializeComponent();
+            ElementCompositionPreview.GetElementVisual(BackgroundBaseGrid).Opacity = 0;
+            ElementCompositionPreview.GetElementVisual(RightToolBar).Opacity = 0;
+
             AddUnloadedEvent();
             DataContextChanged += SongItem_DataContextChanged;
             //ShowImage = false;
@@ -115,6 +152,8 @@ namespace znMusicPlayerWUI.Controls
             {
                 UpdataImageInterface(bindBase.MusicData);
             }
+
+            IsMusicDataPlaying = App.audioPlayer.MusicData == MusicData;
         }
 
         public async void TestFileExists()
@@ -152,7 +191,9 @@ namespace znMusicPlayerWUI.Controls
             }
 
             MusicData data = musicData;
-            ImageSource a = (await Media.ImageManage.GetImageSource(musicData, (int)(58 * ImageScaleDPI), (int)(58 * ImageScaleDPI), true)).Item1;
+            ImageSource a = null;
+            var b = await Media.ImageManage.GetImageSource(musicData, (int)(58 * ImageScaleDPI), (int)(58 * ImageScaleDPI), true);
+            a = b.Item1 ?? null;
             
             if (isDisposed) return;
             if (musicData == MusicData)
@@ -245,33 +286,40 @@ namespace znMusicPlayerWUI.Controls
         {
             if (e.Pointer.PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Mouse)
             {
-                isShowRightToolBar = true;
                 RightToolBar.Visibility = Visibility.Visible;
-                Storyboard storyboard = new Storyboard();
-                DoubleAnimation doubleAnimation = new DoubleAnimation();
-
-                doubleAnimation.From = BackgroundBaseGrid.Opacity;
-                doubleAnimation.To = 1;
-                doubleAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.1));
-                Storyboard.SetTarget(doubleAnimation, BackgroundBaseGrid);
-                Storyboard.SetTargetProperty(doubleAnimation, "Opacity");
-
-                storyboard.Children.Add(doubleAnimation);
-                storyboard.Begin();
-
-
-                Storyboard storyboard1 = new Storyboard();
-                DoubleAnimation doubleAnimation1 = new DoubleAnimation();
-
-                doubleAnimation1.From = RightToolBar.Opacity;
-                doubleAnimation1.To = 1;
-                doubleAnimation1.Duration = new Duration(TimeSpan.FromSeconds(0.1));
-                Storyboard.SetTarget(doubleAnimation1, RightToolBar);
-                Storyboard.SetTargetProperty(doubleAnimation1, "Opacity");
-
-                storyboard1.Children.Add(doubleAnimation1);
-                storyboard1.Begin();
+                AnimateHelper.AnimateScalar(BackgroundBaseGrid,
+                    1, 0.1,
+                    0, 0, 0, 0,
+                    out var visual, out var compositor, out var animation);
+                visual.StartAnimation(nameof(visual.Opacity), animation);
+                ShowRightToolBar();
             }
+        }
+
+        public void ShowRightToolBar()
+        {
+            isShowRightToolBar = true;
+            AnimateHelper.AnimateScalar(RightToolBar, 1, 0.1,
+                0, 0, 0, 0,
+                out var visual, out var compositor, out var animation);
+            visual.StartAnimation(nameof(visual.Opacity), animation);
+        }
+
+        public void HideRightToolBar()
+        {
+            isShowRightToolBar = false;
+
+            AnimateHelper.AnimateScalar(RightToolBar, 0, 0.1,
+                0, 0, 0, 0,
+                out var visual, out var compositor, out var animation);
+            compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
+            {
+                if (!isShowRightToolBar)
+                {
+                    RightToolBar.Visibility = Visibility.Collapsed;
+                }
+            };
+            visual.StartAnimation(nameof(visual.Opacity), animation);
         }
 
         // 鼠标离开时改变颜色
@@ -285,38 +333,13 @@ namespace znMusicPlayerWUI.Controls
 
         public void AnimateMouseLeavingBackground(bool opacityStartAtHeighest = false)
         {
-            isShowRightToolBar = false;
-            Storyboard storyboard = new Storyboard();
-            DoubleAnimation doubleAnimation = new DoubleAnimation();
-
-            doubleAnimation.From = opacityStartAtHeighest ? 1 : BackgroundBaseGrid.Opacity;
-            doubleAnimation.To = 0;
-            doubleAnimation.Duration = new Duration(TimeSpan.FromSeconds(opacityStartAtHeighest ? 2.5 : 0.1));
-            Storyboard.SetTarget(doubleAnimation, BackgroundBaseGrid);
-            Storyboard.SetTargetProperty(doubleAnimation, "Opacity");
-
-            storyboard.Children.Add(doubleAnimation);
-            storyboard.Begin();
-
-
-            Storyboard storyboard1 = new Storyboard();
-            DoubleAnimation doubleAnimation1 = new DoubleAnimation();
-
-            doubleAnimation1.From = RightToolBar.Opacity;
-            doubleAnimation1.To = 0;
-            doubleAnimation1.Duration = new Duration(TimeSpan.FromSeconds(0.1));
-            Storyboard.SetTarget(doubleAnimation1, RightToolBar);
-            Storyboard.SetTargetProperty(doubleAnimation1, "Opacity");
-
-            storyboard1.Children.Add(doubleAnimation1);
-            storyboard1.Completed += (_, __) =>
-            {
-                if (!isShowRightToolBar)
-                {
-                    RightToolBar.Visibility = Visibility.Collapsed;
-                }
-            };
-            storyboard1.Begin();
+            AnimateHelper.AnimateScalar(BackgroundBaseGrid,
+                0, opacityStartAtHeighest ? 3.5 : 0.1,
+                0, 0, 0, 0,
+                out var visual, out var compositor, out var animation);
+            if (opacityStartAtHeighest) visual.Opacity = 1;
+            visual.StartAnimation(nameof(visual.Opacity), animation);
+            HideRightToolBar();
         }
 
         private void Grid_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)

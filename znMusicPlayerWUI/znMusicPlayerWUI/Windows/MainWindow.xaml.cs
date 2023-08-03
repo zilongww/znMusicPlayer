@@ -458,7 +458,7 @@ namespace znMusicPlayerWUI
                     AsyncDialog.Title = title;
                     if (content is string)
                     {
-                        dialogScrollViewer.Content = new TextBlock() { Text = content as string, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true };
+                        dialogScrollViewer.Content = new TextBlock() { Text = content as string, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true, MinHeight = 34 };
                         AsyncDialog.Content = dialogScrollViewer;
                     }
                     else
@@ -712,6 +712,7 @@ namespace znMusicPlayerWUI
                             animation2.TryStart(PlayArtist);
                         }
                     }
+                    i.IsMusicDataPlaying = i.MusicData == audioPlayer.MusicData;
                 }
             }
         }
@@ -722,7 +723,7 @@ namespace znMusicPlayerWUI
             {
                 PlayRing.Foreground = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
                 App.lyricManager.PlayingLyricSelectedChange += LyricManager_PlayingLyricSelectedChange;
-                App.lyricManager.ReCallUpdata();
+                App.lyricManager.ReCallUpdate();
             }
             else
             {
@@ -1629,6 +1630,7 @@ namespace znMusicPlayerWUI
                 else
                 {
                     DesktopLyricWindow.Closed -= DesktopLyricWindow_Closed;
+                    DesktopLyricWindow.RemoveEvents();
                     DesktopLyricWindow.Close();
                     DesktopLyricWindow = null;
                 }

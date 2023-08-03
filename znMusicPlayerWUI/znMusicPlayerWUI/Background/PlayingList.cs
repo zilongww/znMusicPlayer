@@ -14,6 +14,8 @@ using WinRT;
 using znMusicPlayerWUI.Media;
 using Melanchall.DryWetMidi.Core;
 using TagLib.Ape;
+using System.Xml.Schema;
+using znMusicPlayerWUI.Controls;
 
 namespace znMusicPlayerWUI.Background
 {

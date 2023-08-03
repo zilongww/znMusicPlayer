@@ -60,21 +60,43 @@ namespace znMusicPlayerWUI.Pages
         {
             AudioCachePlaceSizeBusy = true;
             AudioCachePlaceSize = "计算中...";
-            AudioCachePlaceSize = "当前占用：" + CodeHelper.GetAutoSizeString(await CodeHelper.GetDirctoryLength(DataEditor.DataFolderBase.AudioCacheFolder), 2);
+            AudioCachePlaceSize = "当前占用：" + CodeHelper.GetAutoSizeString(await CodeHelper.GetDirctoryLength(DataFolderBase.AudioCacheFolder), 2);
             AudioCachePlaceSizeBusy = false;
+        }
+        
+        public async void ToImageCachePlaceSize()
+        {
+            ImageCachePlaceSizeBusy = true;
+            ImageCachePlaceSize = "计算中...";
+            ImageCachePlaceSize = "当前占用：" + CodeHelper.GetAutoSizeString(await CodeHelper.GetDirctoryLength(DataFolderBase.ImageCacheFolder), 2);
+            ImageCachePlaceSizeBusy = false;
+        }
+        
+        public async void ToLyricCachePlaceSize()
+        {
+            LyricCachePlaceSizeBusy = true;
+            LyricCachePlaceSize = "计算中...";
+            LyricCachePlaceSize = "当前占用：" + CodeHelper.GetAutoSizeString(await CodeHelper.GetDirctoryLength(DataFolderBase.LyricCacheFolder), 2);
+            LyricCachePlaceSizeBusy = false;
         }
 
         public string CachePath { get; set; } = null;
         public string AudioCachePath { get; set; } = null;
         public string ImageCachePath { get; set; } = null;
         public string LyricCachePath { get; set; } = null;
-        public string AudioCachePlaceSize { get; set; } = null;
         public string DownloadPath { get; set; } = null;
+        public string AudioCachePlaceSize { get; set; } = null;
         public bool AudioCachePlaceSizeBusy { get; set; } = false;
+        public string ImageCachePlaceSize { get; set; } = null;
+        public bool ImageCachePlaceSizeBusy { get; set; } = false;
+        public string LyricCachePlaceSize { get; set; } = null;
+        public bool LyricCachePlaceSizeBusy { get; set; } = false;
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             ToAudioCachePlaceSize();
+            ToImageCachePlaceSize();
+            ToLyricCachePlaceSize();
             CachePath = DataFolderBase.CacheFolder;
             AudioCachePath = DataFolderBase.AudioCacheFolder;
             ImageCachePath = DataFolderBase.ImageCacheFolder;
@@ -364,6 +386,22 @@ namespace znMusicPlayerWUI.Pages
                     break;
                 case "4":
                     DataFolderBase.DownloadFolder = folderPath;
+                    break;
+            }
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button == null) return;
+            string tagObj = button.Tag as string;
+            switch (tagObj)
+            {
+                case "0":
+                    break;
+                case "1":
+                    break;
+                case "2":
                     break;
             }
         }

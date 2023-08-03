@@ -89,12 +89,19 @@ namespace znMusicPlayerWUI.Windowed
             App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
             App.audioPlayer.TimingChanged += AudioPlayer_TimingChanged;
             AudioPlayer_PlayStateChanged(App.audioPlayer);
+            App.audioPlayer.ReCallTiming();
 
-            //AppWindow.Closing += AppWindow_Closing;
+            AppWindow.Closing += AppWindow_Closing;
         }
 
         private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
+            RemoveEvents();
+        }
+
+        public void RemoveEvents()
+        {
+            System.Diagnostics.Debug.WriteLine("removed.");
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
             App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
             App.audioPlayer.VolumeChanged -= AudioPlayer_VolumeChanged;
@@ -115,7 +122,7 @@ namespace znMusicPlayerWUI.Windowed
                     isAddedEvent = true;
                     App.lyricManager.PlayingLyricSourceChange += LyricManager_PlayingLyricSourceChange;
                     App.lyricManager.PlayingLyricSelectedChange += LyricManager_PlayingLyricSelectedChange;
-                    App.lyricManager.ReCallUpdata();
+                    App.lyricManager.ReCallUpdate();
                     LyricManager_PlayingLyricSelectedChange(App.lyricManager.NowLyricsData);
                 }
             }
@@ -156,6 +163,7 @@ namespace znMusicPlayerWUI.Windowed
         {
             progressBase.Maximum = audioPlayer.TotalTime.Ticks;
             progressBase.Value = audioPlayer.CurrentTime.Ticks;
+            progressPresent.Text = $"{Math.Round(audioPlayer.CurrentTime / audioPlayer.TotalTime * 100)}%";
         }
 
         private void LyricManager_PlayingLyricSourceChange(ObservableCollection<LyricData> nowPlayingLyrics)
@@ -167,6 +175,7 @@ namespace znMusicPlayerWUI.Windowed
         bool IsT1Focus = true;
         private void LyricManager_PlayingLyricSelectedChange(LyricData nowLyricsData)
         {
+            System.Diagnostics.Debug.WriteLine("changed.");
             if (nowLyricsData == null)
             {
                 if (App.audioPlayer.MusicData != null)
@@ -279,7 +288,7 @@ namespace znMusicPlayerWUI.Windowed
 
         private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs args)
         {
-            UpdataDragSize();
+
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
@@ -443,5 +452,11 @@ namespace znMusicPlayerWUI.Windowed
         [DllImport("Comctl32.dll", SetLastError = true)]
         private static extern bool SetWindowSubclass(IntPtr hWnd, SUBCLASSPROC pfnSubclass, uint uIdSubclass, uint dwRefData);
         #endregion
+
+        private void root_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdataDragSize();
+            progressRoot.Width = root.ActualWidth / 4;
+        }
     }
 }

@@ -411,6 +411,13 @@ namespace znMusicPlayerWUI.Pages
                         if (i.MusicData == App.audioPlayer.MusicData)
                         {
                             await Children.SmoothScrollIntoViewWithItemAsync(i, ScrollItemPlacement.Center);
+                            await Children.SmoothScrollIntoViewWithItemAsync(i, ScrollItemPlacement.Center, true);
+                            foreach (var j in SongItem.StaticSongItems)
+                            {
+                                if (j != null)
+                                    if (j.MusicData == App.audioPlayer.MusicData)
+                                        j.AnimateMouseLeavingBackground(true);
+                            }
                         }
                     }
                     break;

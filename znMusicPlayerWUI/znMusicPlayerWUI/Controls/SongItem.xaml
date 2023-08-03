@@ -111,7 +111,6 @@
         <Grid>
             <Border x:Name="BackgroundBaseGrid"
                     Tapped="Grid_Tapped"
-                    Opacity="0"
                     CornerRadius="8"
                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource ControlElevationBorderBrush}"
@@ -149,6 +148,9 @@
                                         <TextBlock Text="找不到文件" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
                                     </StackPanel>
                                 </Grid>
+                                <Grid x:Name="PlayingIconRoot" Visibility="Collapsed" Background="{ThemeResource AcrylicNormal}">
+                                    <FontIcon Glyph="&#xF61F;" FontSize="48" Foreground="{ThemeResource AccentAAFillColorTertiaryBrush}" VerticalAlignment="Center"/>
+                                </Grid>
                             </Grid>
                         </Border>
                     </Grid>
@@ -168,6 +170,7 @@
                                    Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                                    FontSize="10">
                             <Run Text="{Binding MusicData.Count}"/>.
+                            <Run x:Name="PlayingText" Foreground="{ThemeResource AccentAAFillColorDefaultBrush}"/>
                             <Run Text="{Binding MusicData.Title}"
                                  Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
                                  FontSize="14"/>
@@ -189,7 +192,7 @@
                 </Grid>
 
                 <FontIcon x:Name="MoveSymbol" Visibility="Collapsed" Glyph="&#xE700;" Grid.Column="2" Margin="8,0,12,0" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                <StackPanel x:Name="RightToolBar" Grid.Column="1" Opacity="0" Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="LeftToRight" Margin="0,0,8,0">
+                <StackPanel x:Name="RightToolBar" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="LeftToRight" Margin="0,0,8,0">
                     <StackPanel.Resources>
                         <Style TargetType="Button">
                             <Setter Property="BorderBrush" Value="{ThemeResource CircleElevationBorderBrush}"/>

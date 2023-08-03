@@ -45,7 +45,7 @@ namespace znMusicPlayerWUI.Background
         public LyricManager()
         {
             timer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(100) };
-            timer.Tick += (_, __) => ReCallUpdata();
+            timer.Tick += (_, __) => ReCallUpdate();
 
             //MainWindow.WindowViewStateChanged += MainWindow_WindowViewStateChanged;
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
@@ -174,9 +174,9 @@ namespace znMusicPlayerWUI.Background
         }
 
         LyricData lastLyricData = null;
-        public void ReCallUpdata()
+        public void ReCallUpdate()
         {
-            //System.Diagnostics.Debug.WriteLine($"Lyric Lasted Count {PlayingLyricSelectedChange?.GetInvocationList().Length}");
+            System.Diagnostics.Debug.WriteLine($"Lyric Lasted Count {PlayingLyricSelectedChange?.GetInvocationList().Length}");
             timer.Start();
             if (PlayingLyricSelectedChange == null) timer.Stop();
             if (!NowPlayingLyrics.Any()) timer.Stop();

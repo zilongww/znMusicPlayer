@@ -67,10 +67,14 @@ namespace znMusicPlayerWUI.Helpers
             var data = await Client.GetByteArrayAsync(address);
             await Task.Run(() =>
             {
-                var stream = File.Create(downloadPath);
-                stream.Write(data);
-                stream.Close();
-                stream.Dispose();
+                try
+                {
+                    var stream = File.Create(downloadPath);
+                    stream.Write(data);
+                    stream.Close();
+                    stream.Dispose();
+                }
+                catch { }
             });
             DownloadingPathCache.Remove(address);
         }
