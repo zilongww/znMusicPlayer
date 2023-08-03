@@ -59,7 +59,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     LrcPageColumn.MaxWidth = 0;
                     LrcBaseGrid.Visibility = Visibility.Collapsed;
                 }
-                UpdataInterfaceDesign();*/
+                UpdateInterfaceDesign();*/
             }
         }
 
@@ -90,10 +90,10 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             DataContext = this;
             SizeChanged += MusicPage_SizeChanged;
 
-            UpdataInterfaceDesign();
+            UpdateInterfaceDesign();
         }
 
-        private void UpdataWhenDataLated()
+        private void UpdateWhenDataLated()
         {
             isCodeChangedLrcItem = true;
             AudioPlayer_SourceChanged(App.audioPlayer);
@@ -105,7 +105,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             LyricManager_PlayingLyricSelectedChange1(App.lyricManager.NowLyricsData);
             isCodeChangedLrcItem = false;
             App.audioPlayer.ReCallTiming();
-            //Debug.WriteLine("MusicPage Updataed Events.");
+            //Debug.WriteLine("MusicPage Updateed Events.");
         }
 
         bool isAddEvents = false;
@@ -122,7 +122,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             App.playingList.NowPlayingImageLoading += PlayingList_NowPlayingImageLoading;
             App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
             isAddEvents = true;
-            UpdataWhenDataLated();
+            UpdateWhenDataLated();
             //Debug.WriteLine("MusicPage Added Events.");
         }
 
@@ -245,7 +245,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         bool isMiniPage = false;
         bool isMiniPageOnlyLyric = false;
         bool isMiniPageLyricCenter = false;
-        public void UpdataInterfaceDesign()
+        public void UpdateInterfaceDesign()
         {
             if (!ShowLrcPage)
             {
@@ -359,7 +359,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         {
             if (ShowLrcPage)
             {
-                if (nowLyricsData != null) App.lyricManager.ReCallUpdata();
+                if (nowLyricsData != null) App.lyricManager.ReCallUpdate();
                 SelectedChangedDo();
             }
         }
@@ -371,7 +371,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void MusicPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdataInterfaceDesign();
+            UpdateInterfaceDesign();
 
             CloseMusicPageButton.Width = MainWindow.SNavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 86 : 44;
         }
@@ -601,7 +601,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             scrollViewer.CanContentRenderOutsideBounds = false;
             scrollViewer1.CanContentRenderOutsideBounds = false;
 
-            UpdataInterfaceDesign();
+            UpdateInterfaceDesign();
         }
 
         private void LrcButton_Checked(object sender, RoutedEventArgs e)

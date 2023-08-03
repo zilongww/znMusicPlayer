@@ -49,7 +49,7 @@ namespace znMusicPlayerWUI.Pages
 
         ScrollViewer scrollViewer;
         Visual headerVisual;
-        public void UpdataShyHeader()
+        public void UpdateShyHeader()
         {
             if (scrollViewer == null)
             {
@@ -99,7 +99,7 @@ namespace znMusicPlayerWUI.Pages
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdataShyHeader();
+            UpdateShyHeader();
         }
     }
 }

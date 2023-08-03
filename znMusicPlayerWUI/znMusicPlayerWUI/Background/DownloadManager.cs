@@ -45,7 +45,7 @@ namespace znMusicPlayerWUI.Background
         {
             OnDownloaded += (_) =>
             {
-                UpdataDownload();
+                UpdateDownload();
             };
         }
 
@@ -63,7 +63,7 @@ namespace znMusicPlayerWUI.Background
                 AddDownload?.Invoke(dm);
                 try
                 {
-                    UpdataDownload();
+                    UpdateDownload();
                 }
                 catch (Exception err)
                 {
@@ -74,7 +74,7 @@ namespace znMusicPlayerWUI.Background
             }
         }
 
-        public void UpdataDownload()
+        public void UpdateDownload()
         {
             while (DownloadingData.Count < DownloadingMaxium && WaitingDownloadData.Any())
             {

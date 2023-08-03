@@ -118,7 +118,7 @@ namespace znMusicPlayerWUI.Pages
 
         Visual headerVisual;
         ScrollViewer scrollViewer;
-        public void UpdataShyHeader()
+        public void UpdateShyHeader()
         {
             // 设置header为顶层
             var headerPresenter = (UIElement)VisualTreeHelper.GetParent((UIElement)ListViewBase.Header);
@@ -183,7 +183,7 @@ namespace znMusicPlayerWUI.Pages
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdataShyHeader();
+            UpdateShyHeader();
         }
 
         private async void Button_Click_2(object sender, RoutedEventArgs e)
@@ -297,7 +297,7 @@ namespace znMusicPlayerWUI.Pages
                     MainWindow.SWindowGridBaseTop.RequestedTheme = ElementTheme.Dark;
                     break;
             }
-            MainWindow.UpdataWindowBackdropTheme();*/
+            MainWindow.UpdateWindowBackdropTheme();*/
         }
 
 

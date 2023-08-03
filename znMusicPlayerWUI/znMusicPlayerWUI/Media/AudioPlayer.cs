@@ -798,7 +798,7 @@ namespace znMusicPlayerWUI.Media
             {
                 fileReader = new AudioFileReader(filePath, cueFile);
                 FileSize = File.ReadAllBytes(filePath).Length;
-                UpdataInfo();
+                UpdateInfo();
                 if (fileReader.isMidi)
                 {
                     WaveInfo = "midi";
@@ -940,7 +940,7 @@ namespace znMusicPlayerWUI.Media
             catch (Exception err) { Debug.WriteLine(err.ToString()); }
         }
 
-        public void UpdataInfo()
+        public void UpdateInfo()
         {
             try
             {

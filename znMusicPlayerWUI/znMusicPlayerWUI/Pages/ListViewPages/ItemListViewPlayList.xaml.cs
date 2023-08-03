@@ -53,7 +53,7 @@ namespace znMusicPlayerWUI.Pages
             }
 
             PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
-            App.playListReader.Updataed += PlayListReader_Updataed;
+            App.playListReader.Updateed += PlayListReader_Updateed;
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
 
             NavToObj = (MusicListData)e.Parameter;
@@ -67,7 +67,7 @@ namespace znMusicPlayerWUI.Pages
             base.OnNavigatedFrom(e);
             ImageManage.localImageCache.Clear();
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
-            App.playListReader.Updataed -= PlayListReader_Updataed;
+            App.playListReader.Updateed -= PlayListReader_Updateed;
 
             if (Children.SelectionMode != ListViewSelectionMode.None)
             {
@@ -208,10 +208,10 @@ namespace znMusicPlayerWUI.Pages
             }
             LoadingRing.IsIndeterminate = false; isLoading = false;
             LoadingRing.Visibility = Visibility.Collapsed;
-            UpdataShyHeader();
+            UpdateShyHeader();
         }
 
-        private void PlayListReader_Updataed()
+        private void PlayListReader_Updateed()
         {
             foreach (var data in App.playListReader.NowMusicListDatas)
             {
@@ -264,7 +264,7 @@ namespace znMusicPlayerWUI.Pages
         ExpressionAnimation stackVisualOffsetAnimation;
         ExpressionAnimation commandBarVisualOffsetAnimation;
         int logoSizeCount = 0;
-        public void UpdataShyHeader(bool xOnly = false)
+        public void UpdateShyHeader(bool xOnly = false)
         {
             if (scrollViewer == null) return;
 
@@ -361,14 +361,14 @@ namespace znMusicPlayerWUI.Pages
             textVisual.StartAnimation(nameof(Visual.Offset), headerOffsetAnimation);*/
         }
 
-        private async void UpdataCommandToolBarWidth()
+        private async void UpdateCommandToolBarWidth()
         {
             ToolsCommandBar.Width = 0;
             await Task.Delay(10);
             ToolsCommandBar.Width = double.NaN;
         }
 
-        private void UpdataInfoWidth()
+        private void UpdateInfoWidth()
         {
             if (logoVisual == null) return;
             var width = HeaderBaseGrid.ActualWidth - 50 - (PlayList_ImageBaseBorder.ActualWidth * logoVisual.Scale.X);
@@ -393,19 +393,19 @@ namespace znMusicPlayerWUI.Pages
                 Canvas.SetZIndex(headerContainer, 1);
             }
 
-            UpdataShyHeader();
+            UpdateShyHeader();
             await Task.Delay(1);
-            UpdataShyHeader();
+            UpdateShyHeader();
             CreatShadow();
-            UpdataInfoWidth();
+            UpdateInfoWidth();
         }
 
         bool isFirstScroll = true;
         private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
             if (!isFirstScroll) { isFirstScroll = false; return; }
-            UpdataShyHeader(true);
-            UpdataInfoWidth();
+            UpdateShyHeader(true);
+            UpdateInfoWidth();
         }
 
         private async void Result_BaseGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -424,8 +424,8 @@ namespace znMusicPlayerWUI.Pages
             }/*
             System.Diagnostics.Debug.WriteLine(ActualWidth);
             System.Diagnostics.Debug.WriteLine(ActualHeight);*/
-            UpdataShyHeader();
-            UpdataInfoWidth();
+            UpdateShyHeader();
+            UpdateInfoWidth();
             await Task.Delay(1);
             CreatShadow();
         }
@@ -481,7 +481,7 @@ namespace znMusicPlayerWUI.Pages
                     songItem.CanClickPlay = true;
                 }
             }
-            UpdataCommandToolBarWidth();
+            UpdateCommandToolBarWidth();
         }
 
         private void AddSelectedToPlayingListButton_Click(object sender, RoutedEventArgs e)

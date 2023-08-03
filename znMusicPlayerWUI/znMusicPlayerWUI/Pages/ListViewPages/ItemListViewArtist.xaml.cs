@@ -152,7 +152,7 @@ namespace znMusicPlayerWUI.Pages
         Visual backgroundVisual;
         Visual tbVisual;
         Visual ImageScrollVisual;
-        public void UpdataShyHeader()
+        public void UpdateShyHeader()
         {
             if (scrollViewer == null) return;
 
@@ -182,7 +182,7 @@ namespace znMusicPlayerWUI.Pages
             ImageScrollVisual.StartAnimation(nameof(ImageScrollVisual.Offset), ImageVisualOffsetAnimation);
         }
 
-        private async void UpdataCommandToolBarWidth()
+        private async void UpdateCommandToolBarWidth()
         {
             ToolsCommandBar.Width = 0;
             //await Task.Delay(1);
@@ -204,7 +204,7 @@ namespace znMusicPlayerWUI.Pages
                 Canvas.SetZIndex(headerContainer, 1);
             }
 
-            UpdataCommandToolBarWidth();
+            UpdateCommandToolBarWidth();
             Result_BaseGrid_SizeChanged(null, null);
         }
 
@@ -219,7 +219,7 @@ namespace znMusicPlayerWUI.Pages
             try { menu_border.Height = ActualHeight - 54; }
             catch { }
             ImageClip.Rect = new(0, 0, Artist_ImageBaseGrid.ActualWidth, Artist_ImageBaseGrid.ActualHeight);
-            UpdataShyHeader();
+            UpdateShyHeader();
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -272,7 +272,7 @@ namespace znMusicPlayerWUI.Pages
                 Children.AllowDrop = false;
                 Children.CanReorderItems = false;
             }
-            UpdataCommandToolBarWidth();
+            UpdateCommandToolBarWidth();
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)

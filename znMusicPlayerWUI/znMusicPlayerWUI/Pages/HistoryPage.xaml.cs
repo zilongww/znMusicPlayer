@@ -67,7 +67,7 @@ namespace znMusicPlayerWUI.Pages
 
         Visual headerVisual;
         Visual headerSelectVisual;
-        public void UpdataShyHeader()
+        public void UpdateShyHeader()
         {
             if (scrollViewer == null) return;
             CompositionPropertySet scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(scrollViewer);
@@ -123,7 +123,7 @@ namespace znMusicPlayerWUI.Pages
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdataShyHeader();
+            UpdateShyHeader();
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -145,9 +145,9 @@ namespace znMusicPlayerWUI.Pages
             scrollViewer.CanContentRenderOutsideBounds = true;
             scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
 
-            UpdataShyHeader();
+            UpdateShyHeader();
             await Task.Delay(1);
-            UpdataShyHeader();
+            UpdateShyHeader();
         }
 
         private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)

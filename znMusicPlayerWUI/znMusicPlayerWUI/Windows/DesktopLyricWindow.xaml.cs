@@ -293,7 +293,7 @@ namespace znMusicPlayerWUI.Windowed
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            UpdataDragSize();
+            UpdateDragSize();
         }
 
         static bool IsMoved = false;
@@ -318,7 +318,7 @@ namespace znMusicPlayerWUI.Windowed
                 TryTransparentWindow();
                 LockButton.Visibility = Visibility.Collapsed;
 
-                UpdataDragSize();
+                UpdateDragSize();
                 SizeInt32 sizeInt32 = new(AppWindow.Size.Width - 1, AppWindow.Size.Height);
                 SizeInt32 sizeInt32_1 = new(AppWindow.Size.Width + 1, AppWindow.Size.Height);
                 AppWindow.Resize(sizeInt32);
@@ -331,7 +331,7 @@ namespace znMusicPlayerWUI.Windowed
             Lock();
         }
 
-        public void UpdataDragSize()
+        public void UpdateDragSize()
         {
             double dpi = CodeHelper.GetScaleAdjustment(this);
             int windowWidth = (int)(AppWindow.Size.Width * dpi);
@@ -455,7 +455,7 @@ namespace znMusicPlayerWUI.Windowed
 
         private void root_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdataDragSize();
+            UpdateDragSize();
             progressRoot.Width = root.ActualWidth / 4;
         }
     }

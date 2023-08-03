@@ -20,7 +20,7 @@ namespace znMusicPlayerWUI.Pages
             InitializeComponent();
         }
 
-        public void UpdataShyHeader()
+        public void UpdateShyHeader()
         {
             // 设置header为顶层
             var headerPresenter = (UIElement)VisualTreeHelper.GetParent((UIElement)ListViewBase.Header);
@@ -76,7 +76,7 @@ namespace znMusicPlayerWUI.Pages
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdataShyHeader();
+            UpdateShyHeader();
         }
     }
 }

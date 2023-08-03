@@ -49,7 +49,7 @@ namespace znMusicPlayerWUI.Controls
             set
             {
                 _source = value;
-                UpdataSource();
+                UpdateSource();
             }
         }
 
@@ -66,7 +66,7 @@ namespace znMusicPlayerWUI.Controls
             set
             {
                 musicData = value;
-                UpdataDatas();
+                UpdateDatas();
             }
         }
 
@@ -78,7 +78,7 @@ namespace znMusicPlayerWUI.Controls
             set
             {
                 _isMassImage = value;
-                UpdataTheme();
+                UpdateTheme();
             }
         }
 
@@ -94,7 +94,7 @@ namespace znMusicPlayerWUI.Controls
         public Imagezn()
         {
             InitializeComponent();
-            UpdataTheme();
+            UpdateTheme();
         }
 
         public void Dispose()
@@ -105,7 +105,7 @@ namespace znMusicPlayerWUI.Controls
             firstLoad = true;
         }
 
-        private async void UpdataDatas()
+        private async void UpdateDatas()
         {
             var imageSource = (await ImageManage.GetImageSource(DataSource, (int)(50 * dataDPI), (int)(50 * dataDPI), true)).Item1;
             if (imageSource != null)
@@ -116,7 +116,7 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
-        private void UpdataTheme()
+        private void UpdateTheme()
         {
             if (IsMassImage)
             {
@@ -136,9 +136,9 @@ namespace znMusicPlayerWUI.Controls
         }
 
         bool firstLoad = true;
-        public void UpdataSource()
+        public void UpdateSource()
         {
-            UpdataTheme();
+            UpdateTheme();
             if (!firstLoad)
             {
                 ImageSourceBefore.Source = ImageSource.Source;
@@ -363,7 +363,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void RootGrid_ActualThemeChanged(FrameworkElement sender, object args)
         {
-            UpdataTheme();
+            UpdateTheme();
         }
     }
 }

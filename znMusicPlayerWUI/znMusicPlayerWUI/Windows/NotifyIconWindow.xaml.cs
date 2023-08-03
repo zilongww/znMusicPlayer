@@ -89,7 +89,7 @@ namespace znMusicPlayerWUI.Windowed
             SetBackdrop(BackdropType.DesktopAcrylic);
         }
 
-        public void UpdataDatas()
+        public void UpdateDatas()
         {
             AudioPlayer_SourceChanged(App.audioPlayer);
             AudioPlayer_PlayStateChanged(App.audioPlayer);
@@ -132,7 +132,7 @@ namespace znMusicPlayerWUI.Windowed
                 App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
                 MainWindow.DesktopLyricWindowOpenedEvent += MainWindow_DesktopLyricWindowOpenedEvent;
                 MainWindow.DesktopLyricWindowClosedEvent += MainWindow_DesktopLyricWindowClosedEvent;
-                UpdataDatas();
+                UpdateDatas();
                 System.Diagnostics.Debug.WriteLine("NotifyIconWindow Added Events");
             }
         }

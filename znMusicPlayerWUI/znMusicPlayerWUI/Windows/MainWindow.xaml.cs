@@ -123,7 +123,7 @@ namespace znMusicPlayerWUI
             Activated += MainWindow_Activated;
             SWindowGridBaseTop.ActualThemeChanged += WindowGridBase_ActualThemeChanged;
             App.SMTC.ButtonPressed += SMTC_ButtonPressed;
-            App.playListReader.Updataed += () => UpdataPlayListButtonUI();
+            App.playListReader.Updateed += () => UpdatePlayListButtonUI();
             App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
             MusicPageViewStateChanged += MainWindow_MusicPageViewStateChanged;
 
@@ -172,7 +172,7 @@ namespace znMusicPlayerWUI
             AppTitleTextBlock.Text = b;
         }
 
-        public void UpdataPlayListButtonUI()
+        public void UpdatePlayListButtonUI()
         {
             foreach (NavigationViewItem nvi in MusicPlayListButton.MenuItems)
             {
@@ -210,7 +210,7 @@ namespace znMusicPlayerWUI
             InitializeTitleBar(SWindowGridBaseTop.RequestedTheme);
         }
 
-        private void UpdataWhenDataLated()
+        private void UpdateWhenDataLated()
         {
             AudioPlayer_SourceChanged(App.audioPlayer);
             AudioPlayer_PlayStateChanged(App.audioPlayer);
@@ -238,7 +238,7 @@ namespace znMusicPlayerWUI
             App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
             App.playingList.PlayingListItemChange += PlayingList_PlayingListItemChange;
             isAddEvents = true;
-            UpdataWhenDataLated();
+            UpdateWhenDataLated();
             System.Diagnostics.Debug.WriteLine("Added Events.");
         }
 
@@ -309,14 +309,14 @@ namespace znMusicPlayerWUI
         private static void Window_Activated(object sender, WindowActivatedEventArgs args)
         {
             //SetBackdrop(BackdropType.DesktopAcrylic);
-            if (!isAcrylicBackdrop) UpdataWindowBackdropTheme();
+            if (!isAcrylicBackdrop) UpdateWindowBackdropTheme();
             if (m_currentBackdrop != BackdropType.DefaultColor)
             {
                 m_configurationSource.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
             }
         }
 
-        public static void UpdataWindowBackdropTheme()
+        public static void UpdateWindowBackdropTheme()
         {
             switch (SWindowGridBaseTop.RequestedTheme)
             {
@@ -360,7 +360,7 @@ namespace znMusicPlayerWUI
             SContentFrame = ContentFrame;
         }
 
-        public static void UpdataPlayListFlyoutHeight()
+        public static void UpdatePlayListFlyoutHeight()
         {
             try
             {
@@ -981,7 +981,7 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region NavView Events
-        public void UpdataNavViewContentBaseRGClip()
+        public void UpdateNavViewContentBaseRGClip()
         {
             NavViewContentBase_RGClip.Rect = new Windows.Foundation.Rect(0, 0,
                 NavViewContentBase.ActualWidth,
@@ -993,7 +993,7 @@ namespace znMusicPlayerWUI
             if (navigationTransitionInfo == null) navigationTransitionInfo = new DrillInNavigationTransitionInfo();
             SContentFrame.Navigate(type, param, navigationTransitionInfo);
             SNavView.IsBackEnabled = SContentFrame.CanGoBack;
-            UpdataNavViewSelectedItem(true);
+            UpdateNavViewSelectedItem(true);
             /*if (type == typeof(ItemListView))
             {
                 SNavView.SelectedItem = null;
@@ -1005,7 +1005,7 @@ namespace znMusicPlayerWUI
         public static bool IsBackRequest = false;
         private async void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            if (IsBackRequest || sender.SelectedItem == null || IsJustUpdata)
+            if (IsBackRequest || sender.SelectedItem == null || IsJustUpdate)
             {
                 return;
             }
@@ -1052,10 +1052,10 @@ namespace znMusicPlayerWUI
             else NavView.IsBackEnabled = false;
         }
 
-        static bool IsJustUpdata = false;
-        public static async void UpdataNavViewSelectedItem(bool justUpdata = false)
+        static bool IsJustUpdate = false;
+        public static async void UpdateNavViewSelectedItem(bool justUpdate = false)
         {
-            if (justUpdata) IsJustUpdata = true;
+            if (justUpdate) IsJustUpdate = true;
             switch ((SContentFrame.Content as Page).GetType().ToString().Split('.')[2])
             {
                 case "SearchPage":
@@ -1116,7 +1116,7 @@ namespace znMusicPlayerWUI
                     await ShowDialog("未添加此功能", $"未添加 \"{"未知"}\" 功能。");
                     break;
             }
-            IsJustUpdata = false;
+            IsJustUpdate = false;
         }
 
         public static bool TryGoBack()
@@ -1132,7 +1132,7 @@ namespace znMusicPlayerWUI
 
             IsBackRequest = true;
             SContentFrame.GoBack();
-            UpdataNavViewSelectedItem();
+            UpdateNavViewSelectedItem();
             SNavView.IsBackEnabled = SContentFrame.CanGoBack;
 
             IsBackRequest = false;
@@ -1145,7 +1145,7 @@ namespace znMusicPlayerWUI
             {
                 IsBackRequest = true;
                 SContentFrame.GoForward();
-                UpdataNavViewSelectedItem();
+                UpdateNavViewSelectedItem();
                 SNavView.IsBackEnabled = SContentFrame.CanGoBack;
                 IsBackRequest = false;
             }
@@ -1175,7 +1175,7 @@ namespace znMusicPlayerWUI
 
         private void NavViewContentBase_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdataNavViewContentBaseRGClip();
+            UpdateNavViewContentBaseRGClip();
         }
 
         private void NavView_PaneOpened(NavigationView sender, object args)
@@ -1254,7 +1254,7 @@ namespace znMusicPlayerWUI
             Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode flyoutPlacementMode = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.RightEdgeAlignedBottom,
             Thickness placementMargin = default)
         {
-            UpdataPlayListFlyoutHeight();
+            UpdatePlayListFlyoutHeight();
             STopControlsBaseGrid.HorizontalAlignment = horizontalAlignment;
             STopControlsBaseGrid.VerticalAlignment = verticalAlignment;
             STopControlsBaseGrid.Margin = placementMargin == default ? new(0, 0, 4, 94) : placementMargin;
@@ -1540,7 +1540,7 @@ namespace znMusicPlayerWUI
             App.playingList.ClearAll();
         }
 
-        public void UpdataPlayingListShyHeader()
+        public void UpdatePlayingListShyHeader()
         {
             /*
             // 设置header为顶层

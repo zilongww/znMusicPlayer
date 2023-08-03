@@ -150,7 +150,7 @@ namespace znMusicPlayerWUI.Controls
             }
             else
             {
-                UpdataImageInterface(bindBase.MusicData);
+                UpdateImageInterface(bindBase.MusicData);
             }
 
             IsMusicDataPlaying = App.audioPlayer.MusicData == MusicData;
@@ -168,14 +168,14 @@ namespace znMusicPlayerWUI.Controls
             }
 
             FileNotExistsRoot.Visibility = Visibility.Collapsed;
-            UpdataImageInterface(MusicData);
+            UpdateImageInterface(MusicData);
         }
 
-        public void UpdataFlyoutMenuContext(MusicData musicData)
+        public void UpdateFlyoutMenuContext(MusicData musicData)
         {
         }
 
-        public async void UpdataImageInterface(MusicData musicData)
+        public async void UpdateImageInterface(MusicData musicData)
         {
             if (isDisposed) return;
             if (AlbumImage.Source != null)

@@ -44,10 +44,10 @@ namespace znMusicPlayerWUI.Controls
             if (content.ActualHeight > ActualHeight) isVerticalContentOutOfBounds = true;
             else isVerticalContentOutOfBounds = false;
 
-            UpdataContentInterface();
+            UpdateContentInterface();
         }
 
-        public async void UpdataContentInterface()
+        public async void UpdateContentInterface()
         {
             if (!isHorizontalContentOutOfBounds && !isVerticalContentOutOfBounds)
             {

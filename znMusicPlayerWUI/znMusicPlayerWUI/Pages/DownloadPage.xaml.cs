@@ -23,7 +23,7 @@ namespace znMusicPlayerWUI.Pages
             int allDownload = 0;
             int downloaded = 0;
 
-            var updataTextTB = () => HeaderBaseTextBlock.Text = $"下载（{downloaded}/{allDownload}）";
+            var UpdateTextTB = () => HeaderBaseTextBlock.Text = $"下载（{downloaded}/{allDownload}）";
             App.downloadManager.AddDownload += (dm) =>
             {
                 bool noContains = true;
@@ -39,7 +39,7 @@ namespace znMusicPlayerWUI.Pages
                 {
                     ListViewBase.Items.Add(new DownloadCard(dm));
                     allDownload++;
-                    updataTextTB();
+                    UpdateTextTB();
                 }
             };
             App.downloadManager.OnDownloading += (dm) =>
@@ -81,7 +81,7 @@ namespace znMusicPlayerWUI.Pages
                         {
                             downloadCard.SetDownloaded();
                             downloaded++;
-                            updataTextTB();
+                            UpdateTextTB();
                             break;
                         }
                     }
@@ -125,7 +125,7 @@ namespace znMusicPlayerWUI.Pages
 
         ScrollViewer scrollViewer;
         Visual headerVisual;
-        public void UpdataShyHeader()
+        public void UpdateShyHeader()
         {
             // 设置header为顶层
             var headerPresenter = (UIElement)VisualTreeHelper.GetParent((UIElement)ListViewBase.Header);
@@ -190,7 +190,7 @@ namespace znMusicPlayerWUI.Pages
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdataShyHeader();
+            UpdateShyHeader();
         }
 
         private void ToSettingBtn_Click(object sender, RoutedEventArgs e)

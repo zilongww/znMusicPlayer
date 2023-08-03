@@ -24,23 +24,23 @@ namespace znMusicPlayerWUI.Pages
         public PlayListPage()
         {
             InitializeComponent();
-            App.playListReader.Updataed += PlayListReader_Updataed;
+            App.playListReader.Updateed += PlayListReader_Updateed;
         }
 
-        private void PlayListReader_Updataed()
+        private void PlayListReader_Updateed()
         {
-            UpdataPlayList();
+            UpdatePlayList();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            UpdataPlayList();
+            UpdatePlayList();
         }
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             await Task.Delay(500);
-            App.playListReader.Updataed -= PlayListReader_Updataed;
+            App.playListReader.Updateed -= PlayListReader_Updateed;
             foreach (PlayListCard item in BaseGridView.Items)
             {
                 item.Dispose();
@@ -48,11 +48,11 @@ namespace znMusicPlayerWUI.Pages
             BaseGridView.Items.Clear();
         }
 
-        bool isInUpdata = false;
-        public async void UpdataPlayList()
+        bool isInUpdate = false;
+        public async void UpdatePlayList()
         {
-            if (isInUpdata) return;
-            isInUpdata = true;
+            if (isInUpdate) return;
+            isInUpdate = true;
             foreach (PlayListCard item in BaseGridView.Items)
             {
                 item.Dispose();
@@ -75,7 +75,7 @@ namespace znMusicPlayerWUI.Pages
                 a.Init(item);
                 BaseGridView.Items.Add(a);
             }
-            isInUpdata = false;
+            isInUpdate = false;
         }
 
         CompositionPropertySet scrollerPropertySet;
@@ -84,7 +84,7 @@ namespace znMusicPlayerWUI.Pages
         Visual backgroundVisual;
         Visual logoVisual;
         ScrollViewer scrollViewer;
-        private void UpdataShyHeader()
+        private void UpdateShyHeader()
         {
             if (scrollViewer == null)
             {
@@ -152,7 +152,7 @@ namespace znMusicPlayerWUI.Pages
             var headerContainer = (UIElement)VisualTreeHelper.GetParent(headerPresenter);
             Canvas.SetZIndex(headerContainer, 1);
 
-            UpdataShyHeader();
+            UpdateShyHeader();
         }
 
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)
@@ -167,7 +167,7 @@ namespace znMusicPlayerWUI.Pages
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdataShyHeader();
+            UpdateShyHeader();
         }
     }
 }

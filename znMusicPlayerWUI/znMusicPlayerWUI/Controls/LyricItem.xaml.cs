@@ -40,7 +40,7 @@ namespace znMusicPlayerWUI.Controls
             SLItems.Add(this);
         }
 
-        public async void UpdataHeight()
+        public async void UpdateHeight()
         {
             int num = 0;
             while (num < 10)
