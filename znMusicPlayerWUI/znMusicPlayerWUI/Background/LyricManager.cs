@@ -176,7 +176,7 @@ namespace znMusicPlayerWUI.Background
         LyricData lastLyricData = null;
         public void ReCallUpdate()
         {
-            System.Diagnostics.Debug.WriteLine($"Lyric Lasted Count {PlayingLyricSelectedChange?.GetInvocationList().Length}");
+            //System.Diagnostics.Debug.WriteLine($"Lyric Lasted Count {PlayingLyricSelectedChange?.GetInvocationList().Length}");
             timer.Start();
             if (PlayingLyricSelectedChange == null) timer.Stop();
             if (!NowPlayingLyrics.Any()) timer.Stop();

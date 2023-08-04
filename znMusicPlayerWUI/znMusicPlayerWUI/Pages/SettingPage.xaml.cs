@@ -388,22 +388,83 @@ namespace znMusicPlayerWUI.Pages
                     DataFolderBase.DownloadFolder = folderPath;
                     break;
             }
+            (VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(button)))) as SettingsCard).Description = folderPath;
         }
 
-        private void Button_Click_4(object sender, RoutedEventArgs e)
+        private async void Button_Click_4(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
             if (button == null) return;
+
             string tagObj = button.Tag as string;
+            string folderPath = null;
             switch (tagObj)
             {
                 case "0":
+                    folderPath = AudioCachePath;
                     break;
                 case "1":
+                    folderPath = ImageCachePath;
                     break;
                 case "2":
+                    folderPath = LyricCachePath;
                     break;
             }
+            await Task.Run(() =>
+            {
+                var files = Directory.EnumerateFiles(folderPath);
+                foreach (var file in files)
+                {
+                    File.Delete(file);
+                }
+            });
+
+            (VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(button))) as SettingsCard).Description = "当前占用：0B";
+        }
+
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Download_NamedRadioButtons_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void ComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void CheckBox_Click_1(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CheckBox_Click_2(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CheckBox_Click_3(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ComboBox_SelectionChanged_2(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void ComboBox_SelectionChanged_3(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

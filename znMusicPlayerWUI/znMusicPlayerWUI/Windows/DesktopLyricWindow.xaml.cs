@@ -30,6 +30,7 @@ using Windows.Devices.Input;
 using znMusicPlayerWUI.DataEditor;
 using PInvoke;
 using znMusicPlayerWUI.Media;
+using static Vanara.PInvoke.User32;
 
 namespace znMusicPlayerWUI.Windowed
 {
@@ -159,23 +160,8 @@ namespace znMusicPlayerWUI.Windowed
             if (showCount <= 0) InfoTBBorder.Opacity = 0;
         }
 
-        private void AudioPlayer_TimingChanged(AudioPlayer audioPlayer)
+        private void SetLyric(LyricData nowLyricsData, bool isNext = false)
         {
-            progressBase.Maximum = audioPlayer.TotalTime.Ticks;
-            progressBase.Value = audioPlayer.CurrentTime.Ticks;
-            progressPresent.Text = $"{Math.Round(audioPlayer.CurrentTime / audioPlayer.TotalTime * 100)}%";
-        }
-
-        private void LyricManager_PlayingLyricSourceChange(ObservableCollection<LyricData> nowPlayingLyrics)
-        {
-            if (nowPlayingLyrics.Any())
-                LyricManager_PlayingLyricSelectedChange(nowPlayingLyrics[0]);
-        }
-
-        bool IsT1Focus = true;
-        private void LyricManager_PlayingLyricSelectedChange(LyricData nowLyricsData)
-        {
-            System.Diagnostics.Debug.WriteLine("changed.");
             if (nowLyricsData == null)
             {
                 if (App.audioPlayer.MusicData != null)
@@ -201,7 +187,12 @@ namespace znMusicPlayerWUI.Windowed
                 return;
             }
 
-            if (nowLyricsData?.Lyric.FirstOrDefault() == LyricHelper.NoneLyricString) return;
+            if (nowLyricsData.Lyric.First() == LyricHelper.NoneLyricString)
+            {
+                SetLyric(App.lyricManager.NowPlayingLyrics[App.lyricManager.NowPlayingLyrics.IndexOf(nowLyricsData) + 1], true);
+                return;
+            }
+
             if (nowLyricsData?.Lyric.Count > 1)
             {
                 IsT1Focus = true;
@@ -225,8 +216,16 @@ namespace znMusicPlayerWUI.Windowed
                 V2.HorizontalAlignment = HorizontalAlignment.Center;
                 T1.Text = t1text;
                 T2.Text = nowLyricsData?.Lyric[1];
-                T1.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
-                T2.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
+                if (!isNext)
+                {
+                    T1.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
+                    T2.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
+                }
+                else
+                {
+                    T1.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
+                    T2.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
+                }
             }
             else
             {
@@ -264,9 +263,14 @@ namespace znMusicPlayerWUI.Windowed
 
                 if (IsT1Focus)
                 {
-                    IsT1Focus = false;
                     T1.Text = t1text;
-                    T1.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
+                    if (isNext)
+                        T1.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
+                    else
+                    {
+                        IsT1Focus = false;
+                        T1.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
+                    }
                     T2.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
 
                     if (nextData.Lyric != null) T2.Text = t2text;
@@ -274,16 +278,41 @@ namespace znMusicPlayerWUI.Windowed
                 }
                 else
                 {
-                    IsT1Focus = true;
                     T2.Text = t1text;
 
                     T1.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
-                    T2.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
+                    if (isNext)
+                        T2.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
+                    else
+                    {
+                        IsT1Focus = true;
+                        T2.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
+                    }
 
                     if (nextData.Lyric != null) T1.Text = t2text;
                     else T1.Foreground = root.Resources["AccentLrcForeground"] as SolidColorBrush;
                 }
+                
             }
+        }
+
+        private void AudioPlayer_TimingChanged(AudioPlayer audioPlayer)
+        {
+            progressBase.Maximum = audioPlayer.TotalTime.Ticks;
+            progressBase.Value = audioPlayer.CurrentTime.Ticks;
+            progressPresent.Text = $"{Math.Round(audioPlayer.CurrentTime / audioPlayer.TotalTime * 100)}%";
+        }
+
+        private void LyricManager_PlayingLyricSourceChange(ObservableCollection<LyricData> nowPlayingLyrics)
+        {
+            if (nowPlayingLyrics.Any())
+                LyricManager_PlayingLyricSelectedChange(nowPlayingLyrics[0]);
+        }
+
+        bool IsT1Focus = true;
+        private void LyricManager_PlayingLyricSelectedChange(LyricData nowLyricsData)
+        {
+            SetLyric(nowLyricsData);
         }
 
         private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs args)

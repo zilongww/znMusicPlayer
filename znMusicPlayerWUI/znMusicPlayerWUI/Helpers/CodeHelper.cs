@@ -385,7 +385,9 @@ namespace znMusicPlayerWUI.Helpers
 
                             if (!lyricDictionary.ContainsKey(timesResult))
                             {
-                                lyricDictionary.Add(timesResult, new(new() { timesAndLyric.Last() }, null, timesResult));
+                                string text = timesAndLyric.Last();
+                                if (text == "") text = NoneLyricString;
+                                lyricDictionary.Add(timesResult, new(new() { text }, null, timesResult));
                             }
                         }
                     }
@@ -435,8 +437,8 @@ namespace znMusicPlayerWUI.Helpers
                 if (lyricDictionary.Any())
                 {
                     //lastLyric
-                    lyricDictionary.Add(lyricDictionary.Last().Key + TimeSpan.FromSeconds(0.1),
-                        new(null, null, lyricDictionary.Last().Key + TimeSpan.FromSeconds(0.1)));
+                    lyricDictionary.Add(lyricDictionary.Last().Key + TimeSpan.FromSeconds(1),
+                        new(null, null, lyricDictionary.Last().Key + TimeSpan.FromSeconds(1)));
                 }
             });
 

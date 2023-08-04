@@ -122,6 +122,7 @@ namespace znMusicPlayerWUI.Background
         MusicData lastMusicData = null;
         private async void AudioPlayer_SourceChanged(AudioPlayer audioPlayer)
         {
+            //System.Diagnostics.Debug.WriteLine(NowPlayingImageLoaded.GetInvocationList().Length);
             if (audioPlayer.MusicData == null) return;
             if (audioPlayer.MusicData.InLocal != null)
             {

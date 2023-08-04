@@ -116,6 +116,9 @@
                 <Setter Property="FontWeight" Value="Normal"/>
                 <Setter Property="FontSize" Value="24"/>
             </Style>
+
+            <MenuFlyout x:Key="PlayModeSelect">
+            </MenuFlyout>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

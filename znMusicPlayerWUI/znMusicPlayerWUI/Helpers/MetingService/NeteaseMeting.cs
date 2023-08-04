@@ -448,7 +448,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                     {
                         if (data["code"].ToString() == "200")
                         {
-
+                            System.Diagnostics.Debug.WriteLine(data);
                         }
                     }
                     catch(Exception err)
@@ -462,6 +462,50 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                 for (int i = 0; i <= App.metingServices.RetryCount; i++)
                 {
                     MusicData a = null;
+                    try
+                    {
+                        a = getSongAction();
+                    }
+                    catch(Exception err) { a = null; }
+
+                    if (a != null)
+                    {
+                        return a;
+                    }
+                }
+
+                return null;
+            });
+        }
+
+        public async Task<string> GetPicFromMusicDataID(string id)
+        {
+            return await Task.Run(() =>
+            {
+                var getSongAction = string () =>
+                {
+                    var data = JObject.Parse(Services.FormatMethod(false).Song(id));
+
+                    //System.Diagnostics.Debug.WriteLine(data);
+                    string result = null;
+                    try
+                    {
+                        if (data["code"].ToString() == "200")
+                        {
+                            result = (string)data["songs"][0]["al"]["picUrl"];
+                        }
+                    }
+                    catch(Exception err)
+                    {
+                        System.Diagnostics.Debug.WriteLine(err);
+                    }
+
+                    return result;
+                };
+
+                for (int i = 0; i <= App.metingServices.RetryCount; i++)
+                {
+                    string a = null;
                     try
                     {
                         a = getSongAction();

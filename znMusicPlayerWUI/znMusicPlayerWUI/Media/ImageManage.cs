@@ -99,7 +99,7 @@ namespace znMusicPlayerWUI.Media
 
                     if (WebHelper.IsNetworkConnected)
                     {
-                        string b = $@"{DataEditor.DataFolderBase.ImageCacheFolder}\{musicData.From}{(string.IsNullOrEmpty(musicData.Album.ID) ? musicData.MD5.Replace(@"/", "#") : musicData.Album.ID)}";
+                        string b = $@"{DataEditor.DataFolderBase.ImageCacheFolder}\{musicData.From}{(string.IsNullOrEmpty(musicData.Album?.ID) ? musicData.MD5.Replace(@"/", "#") : musicData.Album.ID)}";
                         string a;
                         if (musicData.Album?.PicturePath != null)
                         {
@@ -109,7 +109,11 @@ namespace znMusicPlayerWUI.Media
                         {
                             a = await WebHelper.GetPicturePathAsync(musicData);
                         }
-
+/*
+                        System.Diagnostics.Debug.WriteLine("");
+                        System.Diagnostics.Debug.WriteLine("md: " + musicData.Title + musicData.ButtonName);
+                        System.Diagnostics.Debug.WriteLine("1: " + a);
+                        System.Diagnostics.Debug.WriteLine("2: " + b);*/
                         bool error = await DownloadPic(a, b);
                         if (!error) resultPath = b;
                     }

@@ -25,6 +25,7 @@ namespace znMusicPlayerWUI.Helpers
         public Task<Artist> GetArtist(string id);
         public Task<Album> GetAlbum(string id);
         public Task<MusicData> GetMusicData(string songid);
+        public Task<string> GetPicFromMusicDataID(string id);
     }
 
     public class MetingServices

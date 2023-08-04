@@ -83,6 +83,10 @@ namespace znMusicPlayerWUI.DataEditor
             { SettingParams.AudioCacheFolderPath.ToString(), AudioCacheFolder },
             { SettingParams.ImageCacheFolderPath.ToString(), ImageCacheFolder },
             { SettingParams.LyricCacheFolderPath.ToString(), LyricCacheFolder },
+            { SettingParams.DownloadOptions.ToString(), new JArray(){ true, true, true } },
+            { SettingParams.DownloadNamedMethod.ToString(), (int)DownloadNamedMethod.t_ar_al },
+            { SettingParams.DownloadQuality.ToString(), (int)DownloadQuality.lossless },
+            { SettingParams.DownloadMaximum.ToString(), 3 },
             { SettingParams.EqualizerEnable.ToString(), false },
             { SettingParams.EqualizerString.ToString(), nameof(Media.AudioEqualizerBands.CustomBands) },
             { SettingParams.EqualizerCustomData.ToString(), "0,0,0,0,0,0,0,0,0,0" },
@@ -101,6 +105,20 @@ namespace znMusicPlayerWUI.DataEditor
             { "Search", new JObject() }
         };
 
+        public enum DownloadNamedMethod
+        {
+            t_ar_al,
+            t_ar,
+            t_al_ar,
+            t_al,
+            t
+        }
+        
+        public enum DownloadQuality
+        {
+            lossless, lossy_high, lossy_mid, lossy_low
+        }
+
         /// <summary>
         /// 设置标志
         /// </summary>
@@ -110,6 +128,10 @@ namespace znMusicPlayerWUI.DataEditor
             DownloadFolderPath,
             ImageCacheFolderPath,
             LyricCacheFolderPath,
+            DownloadOptions,
+            DownloadNamedMethod,
+            DownloadQuality,
+            DownloadMaximum,
             EqualizerEnable,
             EqualizerString,
             EqualizerCustomData,
