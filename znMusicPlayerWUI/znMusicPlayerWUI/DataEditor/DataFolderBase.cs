@@ -8,6 +8,9 @@ using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using znMusicPlayerWUI.Background.HotKeys;
+using znMusicPlayerWUI.Background;
+using Microsoft.UI.Xaml;
+using znMusicPlayerWUI.Windowed;
 
 namespace znMusicPlayerWUI.DataEditor
 {
@@ -87,12 +90,38 @@ namespace znMusicPlayerWUI.DataEditor
             { SettingParams.DownloadNamedMethod.ToString(), (int)DownloadNamedMethod.t_ar_al },
             { SettingParams.DownloadQuality.ToString(), (int)DownloadQuality.lossless },
             { SettingParams.DownloadMaximum.ToString(), 3 },
+            { SettingParams.PlayBehavior.ToString(), (int)PlayBehavior.循环播放 },
+            { SettingParams.PlayPauseWhenPreviousPause.ToString(), true },
+            { SettingParams.PlayNextWhenPlayError.ToString(), true },
             { SettingParams.EqualizerEnable.ToString(), false },
             { SettingParams.EqualizerString.ToString(), nameof(Media.AudioEqualizerBands.CustomBands) },
             { SettingParams.EqualizerCustomData.ToString(), "0,0,0,0,0,0,0,0,0,0" },
             { SettingParams.WasapiOnly.ToString(), false },
             { SettingParams.AudioLatency.ToString(), 120 },
             { SettingParams.MusicPageShowLyricPage.ToString(), true },
+            { SettingParams.ThemeColorMode.ToString(), (int)ElementTheme.Default },
+            { SettingParams.ThemeMusicPageColorMode.ToString(), (int)ElementTheme.Default },
+            { SettingParams.ThemeAccentColor.ToString(), null },
+            { SettingParams.ThemeBackdropEffect.ToString(), (int)MainWindow.BackdropType.Mica },
+            { SettingParams.ThemeBackdropImagePath.ToString(), null },
+            { SettingParams.ThemeBackdropImageMassOpacity.ToString(), 0.5 },
+            { SettingParams.DesktopLyricOptions.ToString(),
+                new JArray(){
+                    true, true, true, true
+                }
+            },
+            { SettingParams.DesktopLyricText.ToString(),
+                new JArray(){
+                    (int)LyricTextBehavior.Exchange,
+                    (int)LyricTextPosition.Default
+                }
+            },
+            { SettingParams.DesktopLyricTranslateText.ToString(),
+                new JArray(){
+                    (int)LyricTranslateTextBehavior.MainLyric,
+                    (int)LyricTranslateTextPosition.Center
+                }
+            },
             { SettingParams.HotKeySettings.ToString(), JArray.FromObject(HotKeyManager.DefaultRegisterHotKeysList) }
         };
         
@@ -107,7 +136,7 @@ namespace znMusicPlayerWUI.DataEditor
 
         public enum DownloadNamedMethod
         {
-            t_ar_al,
+            t_ar_al = 0,
             t_ar,
             t_al_ar,
             t_al,
@@ -116,7 +145,7 @@ namespace znMusicPlayerWUI.DataEditor
         
         public enum DownloadQuality
         {
-            lossless, lossy_high, lossy_mid, lossy_low
+            lossless = 960, lossy_high = 320, lossy_mid = 192, lossy_low = 128
         }
 
         /// <summary>
@@ -132,12 +161,24 @@ namespace znMusicPlayerWUI.DataEditor
             DownloadNamedMethod,
             DownloadQuality,
             DownloadMaximum,
+            PlayBehavior,
+            PlayPauseWhenPreviousPause,
+            PlayNextWhenPlayError,
             EqualizerEnable,
             EqualizerString,
             EqualizerCustomData,
             WasapiOnly,
             AudioLatency,
             MusicPageShowLyricPage,
+            ThemeColorMode,
+            ThemeMusicPageColorMode,
+            ThemeAccentColor,
+            ThemeBackdropEffect,
+            ThemeBackdropImagePath,
+            ThemeBackdropImageMassOpacity,
+            DesktopLyricOptions,
+            DesktopLyricText,
+            DesktopLyricTranslateText,
             HotKeySettings
         }
 

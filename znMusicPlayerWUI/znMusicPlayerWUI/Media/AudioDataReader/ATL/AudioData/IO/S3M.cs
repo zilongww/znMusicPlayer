@@ -14,7 +14,7 @@ namespace ATL.AudioData.IO
     /// 
     /// Note : Parsing as it is considers the file as one single song. 
     /// Modules with song delimiters (pattern code 0xFF) are supported, but displayed as one track
-    /// instead of multiple tracks (behaviour of foobar2000).
+    /// instead of multiple tracks (Behavior of foobar2000).
     /// 
     /// As a consequence, modules containing multiple songs and exotic loops (i.e. looping from song 2 to song 1)
     /// might not be detected with their exact duration.

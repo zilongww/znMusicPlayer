@@ -1218,7 +1218,7 @@ typedef struct AVFormatContext {
     int max_delay;
 
     /**
-     * Flags modifying the (de)muxer behaviour. A combination of AVFMT_FLAG_*.
+     * Flags modifying the (de)muxer Behavior. A combination of AVFMT_FLAG_*.
      * Set by the user before avformat_open_input() / avformat_write_header().
      */
     int flags;
@@ -2308,7 +2308,7 @@ int av_write_frame(AVFormatContext *s, AVPacket *pkt);
  * av_write_frame() instead of this function.
  *
  * Using this function instead of av_write_frame() can give muxers advance
- * knowledge of future packets, improving e.g. the behaviour of the mp4
+ * knowledge of future packets, improving e.g. the Behavior of the mp4
  * muxer for VFR content in fragmenting mode.
  *
  * @param s media file handle

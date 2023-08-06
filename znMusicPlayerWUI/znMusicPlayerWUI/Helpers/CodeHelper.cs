@@ -33,10 +33,19 @@ namespace znMusicPlayerWUI.Helpers
     public static class AnimateHelper
     {
         public static void AnimateScalar(UIElement element, float scalar, double TimeSecond,
-                                          float cubicBezierEasing1, float cubicBezierEasing2, float cubicBezierEasing3, float cubicBezierEasing4,
-                                          out Visual elementVisual, out Compositor compositor, out ScalarKeyFrameAnimation animation)
+                                         float cubicBezierEasing1, float cubicBezierEasing2, float cubicBezierEasing3, float cubicBezierEasing4,
+                                         out Visual elementVisual, out Compositor compositor, out ScalarKeyFrameAnimation animation)
         {
             elementVisual = ElementCompositionPreview.GetElementVisual(element);
+            AnimateScalar(elementVisual, scalar, TimeSecond, cubicBezierEasing1, cubicBezierEasing2, cubicBezierEasing3, cubicBezierEasing4,
+                out compositor, out animation);
+        }
+        
+        public static void AnimateScalar(Visual visual, float scalar, double TimeSecond,
+                                         float cubicBezierEasing1, float cubicBezierEasing2, float cubicBezierEasing3, float cubicBezierEasing4,
+                                         out Compositor compositor, out ScalarKeyFrameAnimation animation)
+        {
+            Visual elementVisual = visual;
             compositor = elementVisual.Compositor;
 
             animation = compositor.CreateScalarKeyFrameAnimation();

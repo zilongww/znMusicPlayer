@@ -132,7 +132,7 @@
                     </StackPanel>
                 </labs:SettingsCard>
                 <labs:SettingsCard Header="下载质量">
-                    <ComboBox SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged_1">
+                    <ComboBox SelectionChanged="ComboBox_SelectionChanged_1" Loaded="ComboBox_Loaded">
                         <x:String>无损格式</x:String>
                         <x:String>MP3 320kbps</x:String>
                         <x:String>MP3 192kbps</x:String>
@@ -141,27 +141,28 @@
                 </labs:SettingsCard>
                 <labs:SettingsCard Header="同时下载最大数量">
                     <NumberBox Minimum="1" Maximum="6" SpinButtonPlacementMode="Compact"
-                               Text="3"
+                               Loaded="DownloadMaximumBaseGrid_Loaded"
                                ValueChanged="NumberBox_ValueChanged"/>
                 </labs:SettingsCard>
-                <labs:SettingsCard Header="下载选项">
-                    <labs:SettingsCard.Description>
-                        <StackPanel Margin="12,8,0,0" x:Name="Download_Options">
-                            <CheckBox Content="IDv3标签中写入专辑图片数据" Click="CheckBox_Click" Tag="0"/>
-                            <CheckBox Content="IDv3标签中写入歌词数据" Click="CheckBox_Click" Tag="1"/>
-                            <CheckBox Content="歌词数据保存到.lrc文件中" Click="CheckBox_Click" Tag="2"/>
-                        </StackPanel>
-                    </labs:SettingsCard.Description>
-                </labs:SettingsCard>
                 <labs:SettingsCard Header="文件命名方式">
-                    <ComboBox x:Name="Download_NamedRadioButtons" SelectedIndex="0"
-                              SelectionChanged="Download_NamedRadioButtons_SelectionChanged">
+                    <ComboBox x:Name="Download_NamedRadioButtons"
+                              SelectionChanged="Download_NamedRadioButtons_SelectionChanged"
+                              Loaded="Download_NamedRadioButtons_Loaded">
                         <x:String>标题 - 艺术家 · 专辑</x:String>
                         <x:String>标题 - 艺术家</x:String>
                         <x:String>标题 - 专辑 · 艺术家</x:String>
                         <x:String>标题 - 专辑</x:String>
                         <x:String>标题</x:String>
                     </ComboBox>
+                </labs:SettingsCard>
+                <labs:SettingsCard Header="下载选项">
+                    <labs:SettingsCard.Description>
+                        <StackPanel Margin="12,8,0,0" x:Name="Download_Options" Loaded="Download_Options_Loaded">
+                            <CheckBox Content="IDv3标签中写入专辑图片数据" Click="CheckBox_Click" Tag="0"/>
+                            <CheckBox Content="IDv3标签中写入歌词数据" Click="CheckBox_Click" Tag="1"/>
+                            <CheckBox Content="歌词数据保存到.lrc文件中" Click="CheckBox_Click" Tag="2"/>
+                        </StackPanel>
+                    </labs:SettingsCard.Description>
                 </labs:SettingsCard>
             </labs:SettingsExpander.Items>
         </labs:SettingsExpander>
@@ -172,7 +173,7 @@
             </labs:SettingsExpander.HeaderIcon>
             <labs:SettingsExpander.Items>
                 <labs:SettingsCard Header="行为">
-                    <ComboBox SelectedIndex="0">
+                    <ComboBox Loaded="ComboBox_Loaded_1" SelectionChanged="ComboBox_SelectionChanged">
                         <x:String>循环播放</x:String>
                         <x:String>顺序播放</x:String>
                         <x:String>单曲循环</x:String>
@@ -215,9 +216,9 @@
                 </labs:SettingsCard>
                 <labs:SettingsCard>
                     <labs:SettingsCard.Header>
-                        <StackPanel>
-                            <CheckBox Content="暂停切换歌曲时仍然继续暂停"/>
-                            <CheckBox Content="播放出错时跳到下一首歌"/>
+                        <StackPanel Loaded="StackPanel_Loaded">
+                            <CheckBox Content="暂停切换歌曲时仍然继续暂停" Click="CheckBox_Checked" Tag="0"/>
+                            <CheckBox Content="播放出错时跳到下一首歌" Checked="CheckBox_Checked" Tag="1"/>
                         </StackPanel>
                     </labs:SettingsCard.Header>
                 </labs:SettingsCard>
@@ -229,14 +230,14 @@
             </labs:SettingsExpander.HeaderIcon>
             <labs:SettingsExpander.Items>
                 <labs:SettingsCard Header="颜色模式">
-                    <ComboBox SelectedIndex="0">
+                    <ComboBox Loaded="ComboBox_Loaded_2" SelectionChanged="ComboBox_SelectionChanged_4">
                         <x:String>默认</x:String>
                         <x:String>浅色</x:String>
                         <x:String>深色</x:String>
                     </ComboBox>
                 </labs:SettingsCard>
                 <labs:SettingsCard Header="音乐界面颜色模式">
-                    <ComboBox SelectedIndex="0">
+                    <ComboBox Loaded="ComboBox_Loaded_3" SelectionChanged="ComboBox_SelectionChanged_5">
                         <x:String>默认</x:String>
                         <x:String>浅色</x:String>
                         <x:String>深色</x:String>
@@ -247,25 +248,43 @@
                         <community:WrapPanel HorizontalSpacing="12"
                                              VerticalSpacing="12"
                                              Margin="0,4,0,0">
-                            <ComboBox SelectedIndex="0">
+                            <ComboBox IsEnabled="False" Loaded="ComboBox_Loaded_4" SelectionChanged="ComboBox_SelectionChanged_6">
                                 <x:String>系统默认</x:String>
                                 <x:String>自定义</x:String>
                             </ComboBox>
-                            <Rectangle Width="32" Height="32" HorizontalAlignment="Left"
-                                   RadiusX="50" RadiusY="50" VerticalAlignment="Top"
-                                   Fill="{ThemeResource SystemAccentColor}"/>
-                            <Button Content="应用设置" VerticalAlignment="Top" Visibility="Collapsed"/>
-                            <ColorPicker Visibility="Collapsed"/>
+                            <Border Height="32" HorizontalAlignment="Left"
+                                    CornerRadius="4" VerticalAlignment="Top"
+                                    Background="{ThemeResource SystemAccentColor}"
+                                    x:Name="accentcolor_accentcolor_presenter_root"
+                                    Visibility="Visible">
+                                <TextBlock Text="znMusicPlayer"
+                                           Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           FontSize="14"
+                                           Margin="8,0"/>
+                            </Border>
+                            <Button x:Name="accentcolor_applysettings_button" Content="应用设置" VerticalAlignment="Top" Visibility="Collapsed" Click="accentcolor_applysettings_button_Click"/>
+                            <TextBlock Text="需要重启程序才能看到你的更改" VerticalAlignment="Center" Visibility="{Binding ElementName=accentcolor_applysettings_button,Path=Visibility}"/>
+                            <ColorPicker x:Name="accentcolor_colorpicker" Visibility="Collapsed" ColorChanged="ColorPicker_ColorChanged"/>
                         </community:WrapPanel>
                     </labs:SettingsCard.Description>
                 </labs:SettingsCard>
                 <labs:SettingsCard Header="背景效果">
-                    <ComboBox SelectedIndex="0">
-                        <x:String>云母</x:String>
-                        <x:String>亚克力</x:String>
-                        <x:String>图片</x:String>
-                        <x:String>纯色</x:String>
-                    </ComboBox>
+                    <labs:SettingsCard.Description>
+                        <StackPanel Margin="0,4,0,0" Spacing="8">
+                            <ComboBox Loaded="ComboBox_Loaded_5" SelectionChanged="ComboBox_SelectionChanged_7">
+                                <x:String>云母</x:String>
+                                <x:String>亚克力</x:String>
+                                <x:String>图片</x:String>
+                                <x:String>纯色</x:String>
+                            </ComboBox>
+                            <StackPanel Spacing="8" x:Name="imageselect_root" Visibility="Collapsed" Loaded="imageselect_root_Loaded">
+                                <Button Content="选择图片" x:Name="background_selectimage_button" Click="Button_Click_2"/>
+                                <Slider Header="蒙版不透明度" HorizontalAlignment="Left" ValueChanged="Slider_ValueChanged"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </labs:SettingsCard.Description>
                 </labs:SettingsCard>
             </labs:SettingsExpander.Items>
         </labs:SettingsExpander>
@@ -277,39 +296,58 @@
             <labs:SettingsExpander.Items>
                 <labs:SettingsCard>
                     <labs:SettingsCard.Header>
-                        <StackPanel>
+                        <StackPanel Loaded="StackPanel_Loaded_3">
                             <CheckBox Content="暂停时显示暂停图标" Click="CheckBox_Click_1" Tag="0"/>
                             <CheckBox Content="显示进度条" Click="CheckBox_Click_1" Tag="1"/>
                             <CheckBox Content="显示进度条百分比" Click="CheckBox_Click_1" Tag="2"/>
                             <CheckBox Content="切换歌曲时显示当前的歌曲标题" Click="CheckBox_Click_1" Tag="3"/>
-                            <CheckBox Content="每次打开桌面歌词时恢复到上一次的位置和大小" Click="CheckBox_Click_1" Tag="4"/>
                         </StackPanel>
                     </labs:SettingsCard.Header>
                 </labs:SettingsCard>
-                <labs:SettingsCard Header="歌词位置"
-                                   Description="歌词文本在桌面歌词窗口中的位置">
-                    <ComboBox SelectedIndex="0"
-                              SelectionChanged="ComboBox_SelectionChanged_3">
-                        <x:String>居中</x:String>
-                        <x:String>靠左</x:String>
-                        <x:String>靠右</x:String>
-                    </ComboBox>
-                </labs:SettingsCard>
                 <labs:SettingsCard Header="当歌词没有翻译时">
-                    <ComboBox Margin="0,0,0,0" SelectedIndex="0">
-                        <x:String>当前歌词与下一歌词轮换</x:String>
-                        <x:String>当前歌词在第一行，下一歌词在第二行</x:String>
-                        <x:String>下一歌词在第一行，当前歌词在第二行</x:String>
-                        <x:String>只显示一行歌词</x:String>
-                    </ComboBox>
+                    <labs:SettingsCard.Description>
+                        <StackPanel Margin="12,4,0,0" Spacing="4"
+                                    Loaded="StackPanel_Loaded_1">
+                            <ComboBox Header="行为"
+                                      SelectionChanged="ComboBox_SelectionChanged_8"
+                                      Tag="0">
+                                <x:String>当前歌词与下一歌词轮换</x:String>
+                                <x:String>当前歌词在第一行，下一歌词在第二行</x:String>
+                                <x:String>下一歌词在第一行，当前歌词在第二行</x:String>
+                                <x:String>只显示一行歌词</x:String>
+                            </ComboBox>
+                            <ComboBox Header="位置"
+                                      SelectionChanged="ComboBox_SelectionChanged_8"
+                                      Tag="1">
+                                <x:String>默认</x:String>
+                                <x:String>靠左</x:String>
+                                <x:String>靠右</x:String>
+                                <x:String>居中</x:String>
+                            </ComboBox>
+                        </StackPanel>
+                    </labs:SettingsCard.Description>
                 </labs:SettingsCard>
                 <labs:SettingsCard Header="当歌词有翻译时">
-                    <ComboBox Margin="0,0,0,0" SelectedIndex="0">
-                        <x:String>原文在第一行，翻译在第二行</x:String>
-                        <x:String>翻译在第一行，原文在第二行</x:String>
-                        <x:String>只显示原文</x:String>
-                        <x:String>只显示翻译</x:String>
-                    </ComboBox>
+                    <labs:SettingsCard.Description>
+                        <StackPanel Margin="12,4,0,0" Spacing="4"
+                                    Loaded="StackPanel_Loaded_2">
+                            <ComboBox Header="行为"
+                                      SelectionChanged="ComboBox_SelectionChanged_8"
+                                      Tag="2">
+                                <x:String>原文在第一行，翻译在第二行</x:String>
+                                <x:String>翻译在第一行，原文在第二行</x:String>
+                                <x:String>只显示原文</x:String>
+                                <x:String>只显示翻译</x:String>
+                            </ComboBox>
+                            <ComboBox Header="位置"
+                                      SelectionChanged="ComboBox_SelectionChanged_8"
+                                      Tag="3">
+                                <x:String>居中</x:String>
+                                <x:String>靠左</x:String>
+                                <x:String>靠右</x:String>
+                            </ComboBox>
+                        </StackPanel>
+                    </labs:SettingsCard.Description>
                 </labs:SettingsCard>
             </labs:SettingsExpander.Items>
         </labs:SettingsExpander>
@@ -367,7 +405,7 @@
                     <labs:SettingsCard.HeaderIcon>
                         <FontIcon Glyph="&#xE895;"/>
                     </labs:SettingsCard.HeaderIcon>
-                    <Button Content="恢复"/>
+                    <Button Content="恢复" Click="Button_Click_7"/>
                 </labs:SettingsCard>
             </labs:SettingsExpander.Items>
         </labs:SettingsExpander>

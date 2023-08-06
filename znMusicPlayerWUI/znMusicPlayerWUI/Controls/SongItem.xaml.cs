@@ -98,11 +98,15 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
+        Visual backgroundBaseGridVisual;
+        Visual rightToolBarVisual;
         public SongItem()
         {
             InitializeComponent();
-            ElementCompositionPreview.GetElementVisual(BackgroundBaseGrid).Opacity = 0;
-            ElementCompositionPreview.GetElementVisual(RightToolBar).Opacity = 0;
+            backgroundBaseGridVisual = ElementCompositionPreview.GetElementVisual(BackgroundBaseGrid);
+            rightToolBarVisual = ElementCompositionPreview.GetElementVisual(RightToolBar);
+            backgroundBaseGridVisual.Opacity = 0;
+            rightToolBarVisual.Opacity = 0;
 
             AddUnloadedEvent();
             DataContextChanged += SongItem_DataContextChanged;
@@ -287,11 +291,12 @@ namespace znMusicPlayerWUI.Controls
             if (e.Pointer.PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Mouse)
             {
                 RightToolBar.Visibility = Visibility.Visible;
-                AnimateHelper.AnimateScalar(BackgroundBaseGrid,
-                    1, 0.1,
-                    0, 0, 0, 0,
-                    out var visual, out var compositor, out var animation);
-                visual.StartAnimation(nameof(visual.Opacity), animation);
+                AnimateHelper.AnimateScalar(backgroundBaseGridVisual,
+                                            1, 0.1,
+                                            0, 0, 0, 0,
+                                            out var compositor, out var animation);
+                backgroundBaseGridVisual.StartAnimation(
+                    nameof(backgroundBaseGridVisual.Opacity), animation);
                 ShowRightToolBar();
             }
         }
@@ -299,19 +304,19 @@ namespace znMusicPlayerWUI.Controls
         public void ShowRightToolBar()
         {
             isShowRightToolBar = true;
-            AnimateHelper.AnimateScalar(RightToolBar, 1, 0.1,
+            AnimateHelper.AnimateScalar(rightToolBarVisual, 1, 0.1,
                 0, 0, 0, 0,
-                out var visual, out var compositor, out var animation);
-            visual.StartAnimation(nameof(visual.Opacity), animation);
+                out var compositor, out var animation);
+            rightToolBarVisual.StartAnimation(nameof(rightToolBarVisual.Opacity), animation);
         }
 
         public void HideRightToolBar()
         {
             isShowRightToolBar = false;
 
-            AnimateHelper.AnimateScalar(RightToolBar, 0, 0.1,
+            AnimateHelper.AnimateScalar(rightToolBarVisual, 0, 0.1,
                 0, 0, 0, 0,
-                out var visual, out var compositor, out var animation);
+                out var compositor, out var animation);
             compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
             {
                 if (!isShowRightToolBar)
@@ -319,7 +324,7 @@ namespace znMusicPlayerWUI.Controls
                     RightToolBar.Visibility = Visibility.Collapsed;
                 }
             };
-            visual.StartAnimation(nameof(visual.Opacity), animation);
+            rightToolBarVisual.StartAnimation(nameof(rightToolBarVisual.Opacity), animation);
         }
 
         // 鼠标离开时改变颜色
@@ -333,12 +338,12 @@ namespace znMusicPlayerWUI.Controls
 
         public void AnimateMouseLeavingBackground(bool opacityStartAtHeighest = false)
         {
-            AnimateHelper.AnimateScalar(BackgroundBaseGrid,
+            AnimateHelper.AnimateScalar(backgroundBaseGridVisual,
                 0, opacityStartAtHeighest ? 3.5 : 0.1,
                 0, 0, 0, 0,
-                out var visual, out var compositor, out var animation);
-            if (opacityStartAtHeighest) visual.Opacity = 1;
-            visual.StartAnimation(nameof(visual.Opacity), animation);
+                out var compositor, out var animation);
+            if (opacityStartAtHeighest) backgroundBaseGridVisual.Opacity = 1;
+            backgroundBaseGridVisual.StartAnimation(nameof(backgroundBaseGridVisual.Opacity), animation);
             HideRightToolBar();
         }
 

@@ -19,7 +19,8 @@ using znMusicPlayerWUI.Controls;
 
 namespace znMusicPlayerWUI.Background
 {
-    public enum PlayBehaviour { 顺序播放, 随机播放, 单曲循环, 单曲播放完成后停止 }
+    public enum PlayBehavior { 循环播放, 顺序播放, 单曲循环, 随机播放, 播放完成后停止 }
+    public enum SetPlayInfo { Normal, Next, Previous }
     public class PlayingList
     {
         public delegate void PlayingListItemChangeDelegate(ObservableCollection<MusicData> nowPlayingList);
@@ -29,22 +30,25 @@ namespace znMusicPlayerWUI.Background
         public event NowPlayingImageChangeDelegate NowPlayingImageLoading;
         public event NowPlayingImageChangeDelegate NowPlayingImageLoaded;
 
-        public delegate void PlayBehaviourDelegate(PlayBehaviour playBehaviour);
-        public event PlayBehaviourDelegate PlayBehaviourChanged;
+        public delegate void PlayBehaviorDelegate(PlayBehavior playBehavior);
+        public event PlayBehaviorDelegate PlayBehaviorChanged;
 
         public ObservableCollection<MusicData> NowPlayingList = new();
         public ObservableCollection<MusicData> RandomSavePlayingList = new();
 
+        public bool PauseWhenPreviousPause { get; set; } = true;
+        public bool NextWhenPlayError { get; set; } = true;
+
         bool lastIsRandomPlay = false;
-        private PlayBehaviour _playBehaviour = PlayBehaviour.顺序播放;
-        public PlayBehaviour PlayBehaviour
+        private PlayBehavior _playBehavior = PlayBehavior.循环播放;
+        public PlayBehavior PlayBehavior
         {
-            get => _playBehaviour;
+            get => _playBehavior;
             set
             {
-                _playBehaviour = value;
+                _playBehavior = value;
                 SetRandomPlay(value);
-                PlayBehaviourChanged?.Invoke(value);
+                PlayBehaviorChanged?.Invoke(value);
             }
         }
 
@@ -64,9 +68,9 @@ namespace znMusicPlayerWUI.Background
             App.audioPlayer.PlayEnd += AudioPlayer_PlayEnd;
         }
 
-        private async void SetRandomPlay(PlayBehaviour value)
+        public void SetRandomPlay(PlayBehavior value)
         {
-            if (value == PlayBehaviour.随机播放)
+            if (value == PlayBehavior.随机播放)
             {
                 lastIsRandomPlay = true;
                 RandomSavePlayingList.Clear();
@@ -82,37 +86,42 @@ namespace znMusicPlayerWUI.Background
                 }
                 NowPlayingList.Clear();
                 foreach (var item in arr) NowPlayingList.Add(item);
-                PlayingListItemChange?.Invoke(NowPlayingList);
             }
             else
             {
                 if (lastIsRandomPlay)
                 {
+                    ClearAll();
                     NowPlayingList.Clear();
                     foreach (var item in RandomSavePlayingList) NowPlayingList.Add(item);
                     RandomSavePlayingList.Clear();
-                    PlayingListItemChange?.Invoke(NowPlayingList);
                 }
+                lastIsRandomPlay = false;
             }
-            await Play(NowPlayingList.First());
+            PlayingListItemChange?.Invoke(NowPlayingList);
+            /*
+            if (playFirst)
+                if (NowPlayingList.Any())
+                    await Play(NowPlayingList.First());*/
         }
 
         private async void AudioPlayer_PlayEnd(Media.AudioPlayer audioPlayer)
         {
             AddHistory(audioPlayer.MusicData);
-            switch (PlayBehaviour)
+            switch (PlayBehavior)
             {
-                case PlayBehaviour.顺序播放:
-                case PlayBehaviour.随机播放:
-                    await App.playingList.PlayNext(true, false);
+                case PlayBehavior.循环播放:
+                case PlayBehavior.顺序播放:
+                case PlayBehavior.随机播放:
+                    await App.playingList.PlayNext(true);
                     break;/*
-                case PlayBehaviour.随机播放:
+                case PlayBehavior.随机播放:
                     await Play(NowPlayingList[new Random().Next(NowPlayingList.Count - 1)], true);
                     break;*/
-                case PlayBehaviour.单曲循环:
+                case PlayBehavior.单曲循环:
                     await Play(App.audioPlayer.MusicData, true);
                     break;
-                case PlayBehaviour.单曲播放完成后停止:
+                case PlayBehavior.播放完成后停止:
                     App.audioPlayer.CurrentTime = TimeSpan.Zero;
                     App.audioPlayer.SetStop();
                     break;
@@ -155,19 +164,23 @@ namespace znMusicPlayerWUI.Background
             bool isFind = Find(musicData);
             if (!isFind)
                 NowPlayingList.Add(musicData);
-
+            if (PlayBehavior == PlayBehavior.随机播放)
+                RandomSavePlayingList.Add(musicData);
             if (invoke)
                 PlayingListItemChange?.Invoke(NowPlayingList);
         }
 
-        public async Task<bool> Play(MusicData musicData, bool isAutoPlay = false, bool freezeTime = true)
+        public async Task<bool> Play(MusicData musicData, bool isAutoPlay = false, SetPlayInfo isNextPlay = default)
         {
             Add(musicData);
 
             NAudio.Wave.PlaybackState playState;
-            if (App.audioPlayer.NowOutObj != null)
+            if (PauseWhenPreviousPause)
             {
-                playState = App.audioPlayer.NowOutObj.PlaybackState;
+                if (App.audioPlayer.NowOutObj != null)
+                    playState = App.audioPlayer.NowOutObj.PlaybackState;
+                else
+                    playState = NAudio.Wave.PlaybackState.Playing; 
             }
             else
             {
@@ -201,7 +214,7 @@ namespace znMusicPlayerWUI.Background
                     $"已将播放延迟设置到默认值，请尝试重新播放.");
                 if (retryPlay == Microsoft.UI.Xaml.Controls.ContentDialogResult.Secondary)
                 {
-                    await Play(musicData, isAutoPlay);
+                    await Play(musicData, true);
                 }
             }
             catch (NotEnoughBytesException err)
@@ -213,6 +226,20 @@ namespace znMusicPlayerWUI.Background
             {
                 LogHelper.WriteLog("PlayingList Play Error", e.ToString(), false);
                 a = false;
+
+                if (NextWhenPlayError)
+                {
+                    if (isNextPlay == SetPlayInfo.Next)
+                    {
+                        var index = NowPlayingList.IndexOf(musicData);
+                        Play(NowPlayingList[index + 1], true);
+                    }
+                    else if (isNextPlay == SetPlayInfo.Previous)
+                    {
+                        var index = NowPlayingList.IndexOf(musicData);
+                        Play(NowPlayingList[index - 1]);
+                    }
+                }
 #if DEBUG
                 await MainWindow.ShowDialog("播放音频时出现错误", e.ToString());
 #else
@@ -228,7 +255,7 @@ namespace znMusicPlayerWUI.Background
             await SongHistoryHelper.AddHistory(new() { MusicData = musicData, Time = DateTime.Now });
         }
 
-        public async Task<bool> PlayNext(bool isAutoPlay = false, bool freezeTime = true)
+        public async Task<bool> PlayNext(bool isAutoPlay = false)
         {
             if (NowPlayingList.Any())
             {
@@ -238,7 +265,7 @@ namespace znMusicPlayerWUI.Background
                     a = 0;
                 }
 
-                return await Play(NowPlayingList[a], isAutoPlay, freezeTime);
+                return await Play(NowPlayingList[a], isAutoPlay, SetPlayInfo.Next);
             }
 
             return true;
@@ -254,7 +281,7 @@ namespace znMusicPlayerWUI.Background
                     a = NowPlayingList.Count - 1;
                 }
 
-                return await Play(NowPlayingList[a]);
+                return await Play(NowPlayingList[a], false, SetPlayInfo.Previous);
             }
 
             return true;

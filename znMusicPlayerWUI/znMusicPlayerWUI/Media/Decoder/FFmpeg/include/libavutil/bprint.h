@@ -77,7 +77,7 @@ typedef struct name { \
  * is still updated. This situation can be tested with
  * av_bprint_is_complete().
  *
- * The AVBPrint.size_max field determines several possible behaviours:
+ * The AVBPrint.size_max field determines several possible Behaviors:
  * - `size_max = -1` (= `UINT_MAX`) or any large value will let the buffer be
  *   reallocated as necessary, with an amortized linear cost.
  * - `size_max = 0` prevents writing anything to the buffer: only the total
@@ -239,7 +239,7 @@ int av_bprint_finalize(AVBPrint *buf, char **ret_str);
  *                      need to be escaped, can be NULL
  * @param mode          escape mode to employ, see AV_ESCAPE_MODE_* macros.
  *                      Any unknown value for mode will be considered equivalent to
- *                      AV_ESCAPE_MODE_BACKSLASH, but this behaviour can change without
+ *                      AV_ESCAPE_MODE_BACKSLASH, but this Behavior can change without
  *                      notice.
  * @param flags         flags which control how to escape, see AV_ESCAPE_FLAG_* macros
  */

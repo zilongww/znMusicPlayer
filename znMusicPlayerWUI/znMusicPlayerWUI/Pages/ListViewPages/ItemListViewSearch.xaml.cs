@@ -229,12 +229,17 @@ namespace znMusicPlayerWUI.Pages
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (!MusicDataList.Any()) return;
-            foreach (SongItemBindBase songItem in MusicDataList)
+            if (!Children.Items.Any()) return;
+            if (App.playingList.PlayBehavior == znMusicPlayerWUI.Background.PlayBehavior.随机播放)
+            {
+                App.playingList.ClearAll();
+            }
+            foreach (var songItem in MusicDataList)
             {
                 App.playingList.Add(songItem.MusicData, false);
             }
             await App.playingList.Play(MusicDataList.First().MusicData, true);
+            App.playingList.SetRandomPlay(App.playingList.PlayBehavior);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)

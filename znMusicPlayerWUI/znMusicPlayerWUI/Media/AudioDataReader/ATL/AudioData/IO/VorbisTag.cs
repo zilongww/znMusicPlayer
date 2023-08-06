@@ -68,13 +68,13 @@ namespace ATL.AudioData.IO
                 { "LYRICS", Field.LYRICS_UNSYNCH }
         };
 
-        // Tweak to prevent/allow pictures to be written within the rest of metadata (OGG vs. FLAC behaviour)
+        // Tweak to prevent/allow pictures to be written within the rest of metadata (OGG vs. FLAC Behavior)
         private readonly bool writePicturesWithMetadata;
-        // Tweak to prevent/allow framing bit to be written at the end of the metadata block (OGG vs. FLAC behaviour)
+        // Tweak to prevent/allow framing bit to be written at the end of the metadata block (OGG vs. FLAC Behavior)
         private readonly bool writeMetadataFramingBit;
-        // Tweak to enable/disable core signature (OGG vs. FLAC behaviour)
+        // Tweak to enable/disable core signature (OGG vs. FLAC Behavior)
         private readonly bool hasCoreSignature;
-        // Tweak to enable/disable padding management at VorbisComment level (OGG vs. FLAC behaviour)
+        // Tweak to enable/disable padding management at VorbisComment level (OGG vs. FLAC Behavior)
         private readonly bool managePadding;
 
         // Initial offset of the entire Vorbis tag

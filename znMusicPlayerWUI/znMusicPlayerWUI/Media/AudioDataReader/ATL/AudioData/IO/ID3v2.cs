@@ -448,7 +448,7 @@ namespace ATL.AudioData.IO
         /// <inheritdoc/>
         protected override int getDefaultTagOffset()
         {
-            return TO_BOF; // Specs allow the ID3v2 tag to be located at the end of the audio (see §5 "Tag location" of specs)
+            return TO_BOF; // Specs allow the ID3v2 tag to be located at the end of the audio (see ? "Tag location" of specs)
         }
 
         /// <inheritdoc/>
@@ -1619,7 +1619,7 @@ namespace ATL.AudioData.IO
             // Lyrics
             foreach (LyricsInfo.LyricsPhrase phrase in lyrics.SynchronizedLyrics)
             {
-                w.Write((byte)10); // Emulate SyltEdit's behaviour that seems to be the de facto standard
+                w.Write((byte)10); // Emulate SyltEdit's Behavior that seems to be the de facto standard
                 w.Write(tagEncoding.GetBytes(phrase.Text));
                 w.Write(getNullTerminatorFromEncoding(tagEncoding));
                 w.Write(StreamUtils.EncodeBEInt32(phrase.TimestampMs));

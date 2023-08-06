@@ -7,7 +7,7 @@ namespace ATL
 #pragma warning disable S1104 // Fields should not have public accessibility
 
     /// <summary>
-    /// Global settings for the behaviour of the library
+    /// Global settings for the Behavior of the library
     /// </summary>
     public static class Settings
     {
@@ -73,7 +73,7 @@ namespace ATL
         public static char DisplayValueSeparator = ';';
 
         /// <summary>
-        /// If true, default Track behaviour reads all metadata frames, including those not described by IMetaDataIO
+        /// If true, default Track Behavior reads all metadata frames, including those not described by IMetaDataIO
         /// Default : true
         /// </summary>
         public static bool ReadAllMetaFrames = true;
@@ -110,7 +110,7 @@ namespace ATL
 
 
         //
-        // Behaviour related to leading zeroes when formatting Disc and Track fields (ID3v2, Vorbis, APE)
+        // Behavior related to leading zeroes when formatting Disc and Track fields (ID3v2, Vorbis, APE)
         //
 
         /// <summary>

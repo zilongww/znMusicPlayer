@@ -2253,7 +2253,7 @@ typedef struct AVHWAccel {
  * streams in hardware - it will often succeed, because many streams marked
  * as baseline profile actually conform to constrained baseline profile.
  *
- * @warning If the stream is actually not supported then the behaviour is
+ * @warning If the stream is actually not supported then the Behavior is
  *          undefined, and may include returning entirely incorrect output
  *          while indicating success.
  */
@@ -3165,7 +3165,7 @@ int av_get_audio_frame_duration(AVCodecContext *avctx, int frame_bytes);
 /* memory */
 
 /**
- * Same behaviour av_fast_malloc but the buffer has additional
+ * Same Behavior av_fast_malloc but the buffer has additional
  * AV_INPUT_BUFFER_PADDING_SIZE at the end which will always be 0.
  *
  * In addition the whole buffer will initially and after resizes
@@ -3174,7 +3174,7 @@ int av_get_audio_frame_duration(AVCodecContext *avctx, int frame_bytes);
 void av_fast_padded_malloc(void *ptr, unsigned int *size, size_t min_size);
 
 /**
- * Same behaviour av_fast_padded_malloc except that buffer will always
+ * Same Behavior av_fast_padded_malloc except that buffer will always
  * be 0-initialized after call.
  */
 void av_fast_padded_mallocz(void *ptr, unsigned int *size, size_t min_size);

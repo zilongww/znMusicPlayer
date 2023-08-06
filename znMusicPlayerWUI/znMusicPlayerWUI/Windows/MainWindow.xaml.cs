@@ -38,6 +38,7 @@ using CommunityToolkit.WinUI.UI;
 using Vanara.PInvoke;
 using ColorCode.Compilation.Languages;
 using CommunityToolkit.WinUI.UI.Animations;
+using Microsoft.UI.Xaml.Shapes;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -51,6 +52,10 @@ namespace znMusicPlayerWUI
     {
         public static UIElement SContent;
         public static Window SWindow;
+        public static Rectangle SBackgroundColor;
+        public static Grid SBackgroundImageRoot;
+        public static Rectangle SBackgroundMass;
+        public static Image SBackgroundImage;
         public static MusicPage SMusicPage = new();
         public static Grid STopControlsBaseGrid;
         public static TextBlock SPlayTitle;
@@ -81,6 +86,10 @@ namespace znMusicPlayerWUI
 
             WindowGridBase.DataContext = this;
             SContent = this.Content;
+            SBackgroundColor = BackgroundColor;
+            SBackgroundImageRoot = BackgroundImageRoot;
+            SBackgroundMass = BackgroundMass;
+            SBackgroundImage = BackgroundImage;
             SNavView = NavView;
             SContentFrame = ContentFrame;
             SPlayTitle = PlayTitle;
@@ -113,7 +122,6 @@ namespace znMusicPlayerWUI
 
             m_wsdqHelper = new WindowHelperzn.WindowsSystemDispatcherQueueHelper();
             m_wsdqHelper.EnsureWindowsSystemDispatcherQueueController();
-            SetBackdrop(BackdropType.Mica);
             SetDragRegionForCustomTitleBar(App.AppWindowLocal);
 
             NavView.SelectedItem = NavView.MenuItems[1];
@@ -132,7 +140,8 @@ namespace znMusicPlayerWUI
             loadingst.Children.Add(loadingprogress);
             loadingst.Children.Add(loadingtextBlock);
             // 第一次点击不会响应动画。。。
-            App.LoadSettings();
+            App.LoadSettings(App.StartingSettings);
+            SetBackdrop(m_currentBackdrop);
             ReadLAE();
         }
 
@@ -203,7 +212,7 @@ namespace znMusicPlayerWUI
 
         private void WindowGridBase_ActualThemeChanged(FrameworkElement sender, object args)
         {
-            if (isAcrylicBackdrop)
+            if (MainWindow.m_currentBackdrop == BackdropType.DesktopAcrylic)
             {
                 SetBackdrop(BackdropType.DesktopAcrylic);
             }
@@ -750,14 +759,17 @@ namespace znMusicPlayerWUI
         {
             Mica,
             DesktopAcrylic,
-            DefaultColor,
+            Image,
+            DefaultColor            
         }
 
         static WindowHelperzn.WindowsSystemDispatcherQueueHelper m_wsdqHelper;
-        static BackdropType m_currentBackdrop;
+        public static BackdropType m_currentBackdrop;
         static MicaController m_micaController;
         static DesktopAcrylicController m_acrylicController;
         static SystemBackdropConfiguration m_configurationSource;
+        public static string ImagePath = null;
+
 
         public static void SetBackdrop(BackdropType type)
         {
@@ -793,9 +805,30 @@ namespace znMusicPlayerWUI
                 {
                     m_currentBackdrop = type;
                 }
-                else
-                {
-                }
+            }
+            if (type == BackdropType.DefaultColor)
+                m_currentBackdrop = BackdropType.DefaultColor;
+            if (type == BackdropType.DefaultColor || type == BackdropType.Image)
+            {
+                SBackgroundColor.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                SBackgroundColor.Visibility = Visibility.Collapsed;
+            }
+            if (type == BackdropType.Image)
+            {
+                m_currentBackdrop = BackdropType.Image;
+                SBackgroundImageRoot.Visibility = Visibility.Visible;
+                var image = new BitmapImage();
+                if (ImagePath  != null)
+                    image.UriSource = new Uri(ImagePath);
+                SBackgroundImage.Source = image;
+            }
+            else
+            {
+                SBackgroundImageRoot.Visibility = Visibility.Collapsed;
+                SBackgroundImage.Source = null;
             }
         }
 
@@ -1265,6 +1298,7 @@ namespace znMusicPlayerWUI
             {
                 await Task.Delay(10);
                 await SPlayingListBaseView.SmoothScrollIntoViewWithItemAsync(App.audioPlayer.MusicData, ScrollItemPlacement.Center);
+                await SPlayingListBaseView.SmoothScrollIntoViewWithItemAsync(App.audioPlayer.MusicData, ScrollItemPlacement.Center, true);
             }
             catch { }
         }
@@ -1535,9 +1569,20 @@ namespace znMusicPlayerWUI
             inSelectionChange = false;
         }
 
-        private void Button_Click_5(object sender, RoutedEventArgs e)
+        private async void Button_Click_5(object sender, RoutedEventArgs e)
         {
-            App.playingList.ClearAll();
+            var btn = sender as Button;
+
+            if (btn.Content as string == "定位")
+            {
+                if (SPlayingListBaseView.Items.Contains(App.audioPlayer.MusicData))
+                {
+                    await SPlayingListBaseView.SmoothScrollIntoViewWithItemAsync(App.audioPlayer.MusicData, ScrollItemPlacement.Center);
+                    await SPlayingListBaseView.SmoothScrollIntoViewWithItemAsync(App.audioPlayer.MusicData, ScrollItemPlacement.Center, true);
+                }
+            }
+            else
+                App.playingList.ClearAll();
         }
 
         public void UpdatePlayingListShyHeader()

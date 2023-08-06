@@ -13,6 +13,7 @@
         <Grid.Resources>
             <ResourceDictionary>
                 <SolidColorBrush x:Key="LrcForeground" Color="#DDFFFFFF"/>
+                <SolidColorBrush x:Key="LrcSecondForeground" Color="#88FFFFFF"/>
                 <StaticResource x:Key="AccentLrcForeground" ResourceKey="AccentAAFillColorTertiaryBrush"/>
             </ResourceDictionary>
         </Grid.Resources>
@@ -70,10 +71,10 @@
         </Border>
         <Grid x:Name="progressRoot" VerticalAlignment="Bottom" HorizontalAlignment="Center" MinWidth="200" Margin="0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="32"/>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock x:Name="progressPresent" FontSize="11" Text="0%" HorizontalAlignment="Center" Margin="0,0,4,0" Foreground="Silver" Opacity="0.8"/>
+            <TextBlock x:Name="progressPresent" Width="32" FontSize="11" Text="0%" HorizontalAlignment="Center" Margin="0,0,4,0" Foreground="Silver" Opacity="0.8"/>
             <ProgressBar x:Name="progressBase" Grid.Column="1" Background="{ThemeResource SystemAccentColorDark2}"/>
             <Rectangle Fill="{ThemeResource SystemAccentColorLight2}" Grid.Column="1" Width="4" Height="3" RadiusX="3" RadiusY="3" VerticalAlignment="Center" HorizontalAlignment="Right"/>
         </Grid>

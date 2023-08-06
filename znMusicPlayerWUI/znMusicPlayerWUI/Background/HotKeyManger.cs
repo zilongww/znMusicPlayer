@@ -298,7 +298,7 @@ namespace znMusicPlayerWUI.Background.HotKeys
                         MainWindow.OpenDesktopLyricWindow();
                         break;
                     case HotKeyID.RandomPlay:
-                        App.playingList.PlayBehaviour = App.playingList.PlayBehaviour == Background.PlayBehaviour.随机播放 ? Background.PlayBehaviour.顺序播放 : Background.PlayBehaviour.随机播放;
+                        App.playingList.PlayBehavior = App.playingList.PlayBehavior == Background.PlayBehavior.随机播放 ? Background.PlayBehavior.顺序播放 : Background.PlayBehavior.随机播放;
                         break;
                     case HotKeyID.OpenMainWindow:
                         App.AppWindowLocal.Show();

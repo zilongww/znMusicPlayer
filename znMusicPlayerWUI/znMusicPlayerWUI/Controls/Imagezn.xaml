@@ -21,7 +21,7 @@
     <Grid x:Name="ImageSourceRoot" CornerRadius="{Binding ElementName=RootGrid,Path=CornerRadius}">
         <Image x:Name="ImageSource" Stretch="Uniform"
                HorizontalAlignment="{Binding ElementName=RootGrid,Path=HorizontalAlignment}"
-                   VerticalAlignment="{Binding ElementName=RootGrid,Path=VerticalAlignment}"/>
+               VerticalAlignment="{Binding ElementName=RootGrid,Path=VerticalAlignment}"/>
         <Rectangle x:Name="ImageMassAlpha" Opacity="0">
             <Rectangle.Fill>
                 <brushs:BackdropGammaTransferBrush BlueDisable="True" RedDisable="True" GreenDisable="True"

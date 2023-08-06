@@ -203,7 +203,7 @@ namespace ATL.AudioData.IO
             }
             w.Write(new byte[2] { 13, 10 } /* CR LF */);
 
-            // Emulation of the BWFMetaEdit padding behaviour (256 characters)
+            // Emulation of the BWFMetaEdit padding Behavior (256 characters)
             for (int i = 0; i < 256 - ((textData.Length + 2) % 256); i++) w.Write((byte)0);
 
             // Add the extra padding byte if needed

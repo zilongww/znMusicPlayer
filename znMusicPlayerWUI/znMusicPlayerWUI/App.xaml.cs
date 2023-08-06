@@ -154,6 +154,7 @@ namespace znMusicPlayerWUI
         }
 
         public static Microsoft.UI.Xaml.LaunchActivatedEventArgs LAE = null;
+        public static JObject StartingSettings = null;
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used such as when the application is launched to open a specific file.
@@ -161,6 +162,17 @@ namespace znMusicPlayerWUI
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            StartingSettings = JSettingData;
+            var accentcolor = StartingSettings[SettingParams.ThemeAccentColor.ToString()];
+            if (accentcolor != null)
+            {
+                /*Current.Resources["SystemAccentColor"] = Windows.UI.Color.FromArgb(255, 2,255,2);
+                Current.Resources["SystemAccentColorLight2"] = Windows.UI.Color.FromArgb(255, 2, 255, 2);
+                Current.Resources["SystemAccentColorDark1"] = Windows.UI.Color.FromArgb(255, 2, 255, 2);*/
+
+
+                Debug.WriteLine(Current.Resources["SystemAccentColorLight2"].GetType());
+            }
             m_window = new MainWindow();
             WindowLocal = m_window;
             AppWindowLocalHandle = WindowHelperzn.WindowHelper.GetWindowHandle(m_window);
@@ -210,11 +222,14 @@ namespace znMusicPlayerWUI
 
         static bool loadFailed = false;
         static int retryCount = 0;
-        public static void LoadSettings()
+        public static void LoadSettings(JObject b)
         {
             try
             {
-                var b = JSettingData;
+                DataFolderBase.DownloadFolder = (string)b[SettingParams.DownloadFolderPath.ToString()];
+                DataFolderBase.AudioCacheFolder = (string)b[SettingParams.AudioCacheFolderPath.ToString()];
+                DataFolderBase.ImageCacheFolder = (string)b[SettingParams.ImageCacheFolderPath.ToString()];
+                DataFolderBase.LyricCacheFolder = (string)b[SettingParams.LyricCacheFolderPath.ToString()];
 
                 var bdata = ((string)b[SettingParams.EqualizerCustomData.ToString()]).Split(',');
                 for (int i = 0; i < 10; i++)
@@ -234,6 +249,33 @@ namespace znMusicPlayerWUI
                     metingServices.NeteaseCookie = (string)b[nmc];
                 }
 
+                downloadManager.DownloadQuality = (DownloadQuality)(int)b[SettingParams.DownloadQuality.ToString()];
+                downloadManager.DownloadingMaximum = (int)b[SettingParams.DownloadMaximum.ToString()];
+                downloadManager.DownloadNamedMethod = (DownloadNamedMethod)(int)b[SettingParams.DownloadNamedMethod.ToString()];
+                downloadManager.IDv3WriteImage = (bool)b[SettingParams.DownloadOptions.ToString()][0];
+                downloadManager.IDv3WriteLyric = (bool)b[SettingParams.DownloadOptions.ToString()][1];
+                downloadManager.SaveLyricToLrcFile = (bool)b[SettingParams.DownloadOptions.ToString()][2];
+
+                playingList.PlayBehavior = (PlayBehavior)(int)b[SettingParams.PlayBehavior.ToString()];
+                playingList.PauseWhenPreviousPause = (bool)b[SettingParams.PlayPauseWhenPreviousPause.ToString()];
+                playingList.NextWhenPlayError = (bool)b[SettingParams.PlayNextWhenPlayError.ToString()];
+
+                MainWindow.SWindowGridBaseTop.RequestedTheme = (ElementTheme)(int)b[SettingParams.ThemeColorMode.ToString()];
+                MainWindow.SMusicPage.RequestedTheme = (ElementTheme)(int)b[SettingParams.ThemeMusicPageColorMode.ToString()];
+                MainWindow.m_currentBackdrop = (MainWindow.BackdropType)(int)b[SettingParams.ThemeBackdropEffect.ToString()];
+                MainWindow.ImagePath = (string)b[SettingParams.ThemeBackdropImagePath.ToString()];
+                MainWindow.SBackgroundMass.Opacity = (double)b[SettingParams.ThemeBackdropImageMassOpacity.ToString()];
+                //Accent Color
+                
+                DesktopLyricWindow.PauseButtonVisible = (bool)b[SettingParams.DesktopLyricOptions.ToString()][0];
+                DesktopLyricWindow.ProgressUIVisible = (bool)b[SettingParams.DesktopLyricOptions.ToString()][1];
+                DesktopLyricWindow.ProgressUIPercentageVisible = (bool)b[SettingParams.DesktopLyricOptions.ToString()][2];
+                DesktopLyricWindow.MusicChangeUIVisible = (bool)b[SettingParams.DesktopLyricOptions.ToString()][3];
+                DesktopLyricWindow.LyricTextBehavior = (LyricTextBehavior)(int)b[SettingParams.DesktopLyricText.ToString()][0];
+                DesktopLyricWindow.LyricTextPosition = (LyricTextPosition)(int)b[SettingParams.DesktopLyricText.ToString()][1];
+                DesktopLyricWindow.LyricTranslateTextBehavior = (LyricTranslateTextBehavior)(int)b[SettingParams.DesktopLyricTranslateText.ToString()][0];
+                DesktopLyricWindow.LyricTranslateTextPosition = (LyricTranslateTextPosition)(int)b[SettingParams.DesktopLyricTranslateText.ToString()][1];
+
                 JArray hkd = (JArray)b[SettingParams.HotKeySettings.ToString()];
                 HotKeyManager.WillRegisterHotKeysList = hkd.ToObject<List<HotKey>>();
 
@@ -249,7 +291,7 @@ namespace znMusicPlayerWUI
                 }
                 retryCount++;
                 JSettingData = DataFolderBase.SettingDefault;
-                LoadSettings();
+                LoadSettings(b);
             }
         }
 
@@ -264,15 +306,51 @@ namespace znMusicPlayerWUI
             App.Current.Exit();
         }
 
+        public static Windows.UI.Color AccentColor = Windows.UI.Color.FromArgb(0, 0, 0, 0);
         public static void SaveSettings()
         {
             var a = JSettingData;
             a[SettingParams.Volume.ToString()] = audioPlayer.Volume == 0 ? MainWindow.NoVolumeValue : audioPlayer.Volume;
+            a[SettingParams.DownloadFolderPath.ToString()] = DataFolderBase.DownloadFolder;
+            a[SettingParams.AudioCacheFolderPath.ToString()] = DataFolderBase.AudioCacheFolder;
+            a[SettingParams.ImageCacheFolderPath.ToString()] = DataFolderBase.ImageCacheFolder;
+            a[SettingParams.LyricCacheFolderPath.ToString()] = DataFolderBase.LyricCacheFolder;
+            a[SettingParams.DownloadOptions.ToString()][0] = downloadManager.IDv3WriteImage;
+            a[SettingParams.DownloadOptions.ToString()][1] = downloadManager.IDv3WriteLyric;
+            a[SettingParams.DownloadOptions.ToString()][2] = downloadManager.SaveLyricToLrcFile;
+            a[SettingParams.DownloadNamedMethod.ToString()] = (int)downloadManager.DownloadNamedMethod;
+            a[SettingParams.DownloadQuality.ToString()] = (int)downloadManager.DownloadQuality;
+            a[SettingParams.DownloadMaximum.ToString()] = downloadManager.DownloadingMaximum;
+            a[SettingParams.PlayBehavior.ToString()] = (int)playingList.PlayBehavior;
+            a[SettingParams.PlayPauseWhenPreviousPause.ToString()] = playingList.PauseWhenPreviousPause;
+            a[SettingParams.PlayNextWhenPlayError.ToString()] = playingList.NextWhenPlayError;
+            a[SettingParams.DownloadMaximum.ToString()] = downloadManager.DownloadingMaximum;
             a[SettingParams.EqualizerEnable.ToString()] = audioPlayer.EqEnabled;
             a[SettingParams.EqualizerString.ToString()] = AudioEqualizerBands.GetNameFromBands(audioPlayer.EqualizerBand);
             a[SettingParams.WasapiOnly.ToString()] = audioPlayer.WasapiOnly;
             a[SettingParams.AudioLatency.ToString()] = audioPlayer.Latency < 50 ? 50 : audioPlayer.Latency;
             a[SettingParams.MusicPageShowLyricPage.ToString()] = MainWindow.SMusicPage.ShowLrcPage;
+            a[SettingParams.ThemeColorMode.ToString()] = (int)MainWindow.SWindowGridBaseTop.RequestedTheme;
+            a[SettingParams.ThemeMusicPageColorMode.ToString()] = (int)MainWindow.SMusicPage.pageRoot.RequestedTheme;
+            a[SettingParams.ThemeBackdropEffect.ToString()] = (int)MainWindow.m_currentBackdrop;
+            a[SettingParams.ThemeBackdropImagePath.ToString()] = MainWindow.ImagePath;
+            a[SettingParams.ThemeBackdropImageMassOpacity.ToString()] = MainWindow.SBackgroundMass.Opacity;
+            a[SettingParams.ThemeAccentColor.ToString()] = AccentColor == Windows.UI.Color.FromArgb(0,0,0,0) ? null : AccentColor.ToString();
+            a[SettingParams.DesktopLyricOptions.ToString()] = new JArray()
+            {
+                DesktopLyricWindow.PauseButtonVisible, DesktopLyricWindow.ProgressUIVisible,
+                DesktopLyricWindow.ProgressUIPercentageVisible, DesktopLyricWindow.MusicChangeUIVisible
+            };
+            a[SettingParams.DesktopLyricText.ToString()] = new JArray()
+            {
+                DesktopLyricWindow.LyricTextBehavior,
+                DesktopLyricWindow.LyricTextPosition
+            };
+            a[SettingParams.DesktopLyricTranslateText.ToString()] = new JArray()
+            {
+                DesktopLyricWindow.LyricTranslateTextBehavior,
+                DesktopLyricWindow.LyricTranslateTextPosition
+            };
             a[SettingParams.HotKeySettings.ToString()] = JArray.FromObject(App.hotKeyManager.RegistedHotKeys);
 
             List<float> c = new();

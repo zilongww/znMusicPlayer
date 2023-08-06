@@ -359,7 +359,7 @@ enum AVEscapeMode {
  *                      need to be escaped, can be NULL
  * @param mode          escape mode to employ, see AV_ESCAPE_MODE_* macros.
  *                      Any unknown value for mode will be considered equivalent to
- *                      AV_ESCAPE_MODE_BACKSLASH, but this behaviour can change without
+ *                      AV_ESCAPE_MODE_BACKSLASH, but this Behavior can change without
  *                      notice.
  * @param flags         flags which control how to escape, see AV_ESCAPE_FLAG_ macros
  * @return the length of the allocated string, or a negative error code in case of error

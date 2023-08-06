@@ -23,6 +23,8 @@ using znMusicPlayerWUI.Background;
 using znMusicPlayerWUI.Background.HotKeys;
 using CommunityToolkit.WinUI.UI;
 using CommunityToolkit.Labs.WinUI;
+using Windows.UI;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -186,61 +188,6 @@ namespace znMusicPlayerWUI.Pages
             UpdateShyHeader();
         }
 
-        private async void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            Button button = sender as Button;
-            if (button != null)
-            {
-                if (button.Content as string == "打开目标文件夹")
-                {
-                    await FileHelper.OpenFilePath(DataFolderBase.DownloadFolder);
-                }
-                else
-                {
-                    var newPath = await FileHelper.UserSelectFolder(Windows.Storage.Pickers.PickerLocationId.MusicLibrary);
-                    if (newPath != null)
-                    {
-                        //DownloadPathTb.Text = newPath.Path;
-                        DataFolderBase.DownloadFolder = newPath.Path;
-                    }
-                }
-            }
-        }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {/*
-            var a = DownloadFormatCb.SelectedIndex;
-            switch (a)
-            {
-                case 0:
-                    App.downloadManager.br = 128;
-                    break;
-                case 1:
-                    App.downloadManager.br = 192;
-                    break;
-                case 2:
-                    App.downloadManager.br = 320;
-                    break;
-                case 3:
-                    App.downloadManager.br = 960;
-                    break;
-            }*/
-        }
-
-        private void DownloadMaximumBaseGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void NumberBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
-        {
-            App.downloadManager.DownloadingMaxium = (int)sender.Value;
-        }
-
-        private void OpenMediaBaseGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private async void Button_Click_3(object sender, RoutedEventArgs e)
         {
             if ((sender as Button).Content as string == "打开文件")
@@ -262,29 +209,9 @@ namespace znMusicPlayerWUI.Pages
             }
         }
 
-        bool isCodeChangedTheme = false;
-        private void ThemeBaseGrid_Loaded(object sender, RoutedEventArgs e)
-        {
-        /*
-            isCodeChangedTheme = true;
-            switch (MainWindow.SWindowGridBaseTop.RequestedTheme)
-            {
-                case ElementTheme.Default:
-                    ThemeCb.SelectedIndex = 0;
-                    break;
-                case ElementTheme.Light:
-                    ThemeCb.SelectedIndex = 1;
-                    break;
-                case ElementTheme.Dark:
-                    ThemeCb.SelectedIndex = 2;
-                    break;
-            }*/
-            isCodeChangedTheme = false;
-        }
-
         private void ThemeCb_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (isCodeChangedTheme) return;/*
+            /*if (isCodeChangedTheme) return;
             switch (ThemeCb.SelectedItem as string)
             {
                 case "跟随系统":
@@ -301,21 +228,22 @@ namespace znMusicPlayerWUI.Pages
         }
 
 
-        private void PlayBehaviourBaseeGrid_Loaded(object sender, RoutedEventArgs e)
+        private void PlayBehaviorBaseeGrid_Loaded(object sender, RoutedEventArgs e)
         {/*
-            PlayBehaviourCb.SelectedIndex = (int)App.playingList.PlayBehaviour;*/
+            PlayBehaviorCb.SelectedIndex = (int)App.playingList.PlayBehavior;*/
         }
 
-        private void PlayBehaviourCb_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void PlayBehaviorCb_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //App.playingList.PlayBehaviour = (PlayBehaviour)Enum.Parse(typeof(PlayBehaviour), PlayBehaviourCb.SelectedItem as string);
-            //System.Diagnostics.Debug.WriteLine(App.playingList.PlayBehaviour);
+            //App.playingList.PlayBehavior = (PlayBehavior)Enum.Parse(typeof(PlayBehavior), PlayBehaviorCb.SelectedItem as string);
+            //System.Diagnostics.Debug.WriteLine(App.playingList.PlayBehavior);
         }
 
         private void Page_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
         }
 
+        #region hotKeyExp
         private async void Button_Click_5(object sender, RoutedEventArgs e)
         {
             var list = App.hotKeyManager.RegistedHotKeys.ToList();
@@ -331,7 +259,9 @@ namespace znMusicPlayerWUI.Pages
             await Task.Delay(200);
             App.hotKeyManager.RegisterHotKeys(HotKeyManager.DefaultRegisterHotKeysList);
         }
+        #endregion
 
+        #region cacheExp
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
@@ -421,26 +351,364 @@ namespace znMusicPlayerWUI.Pages
 
             (VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(button))) as SettingsCard).Description = "当前占用：0B";
         }
+        #endregion
 
-        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        #region downloadExp
+        bool combo0loading = false;
+        private void ComboBox_Loaded(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void Download_NamedRadioButtons_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
+            combo0loading = true;
+            var combo = sender as ComboBox;
+            int index = 0;
+            switch (App.downloadManager.DownloadQuality)
+            {
+                case DataFolderBase.DownloadQuality.lossless: index = 0; break;
+                case DataFolderBase.DownloadQuality.lossy_high: index = 1; break;
+                case DataFolderBase.DownloadQuality.lossy_mid: index = 2; break;
+                case DataFolderBase.DownloadQuality.lossy_low: index = 3; break;
+            }
+            combo.SelectedIndex = index;
+            combo0loading = false;
         }
 
         private void ComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
-
+            if (combo0loading) return;
+            var combo = sender as ComboBox;
+            switch (combo.SelectedIndex)
+            {
+                case 0:
+                    App.downloadManager.DownloadQuality = DataFolderBase.DownloadQuality.lossless;
+                    break;
+                case 1:
+                    App.downloadManager.DownloadQuality = DataFolderBase.DownloadQuality.lossy_high;
+                    break;
+                case 2:
+                    App.downloadManager.DownloadQuality = DataFolderBase.DownloadQuality.lossy_mid;
+                    break;
+                case 3:
+                    App.downloadManager.DownloadQuality = DataFolderBase.DownloadQuality.lossy_low;
+                    break;
+            }
         }
 
+        bool downloadMaximumLoading = false;
+        private void DownloadMaximumBaseGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            downloadMaximumLoading = true;
+            (sender as NumberBox).Value = App.downloadManager.DownloadingMaximum;
+            downloadMaximumLoading = false;
+        }
+
+        private void NumberBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+        {
+            if (downloadMaximumLoading) return;
+            App.downloadManager.DownloadingMaximum = (int)sender.Value;
+        }
+
+        bool downloadNamedLoading = false;
+        private void Download_NamedRadioButtons_Loaded(object sender, RoutedEventArgs e)
+        {
+            downloadNamedLoading = true;
+            (sender as ComboBox).SelectedIndex = (int)App.downloadManager.DownloadNamedMethod;
+            downloadNamedLoading = false;
+        }
+
+        private void Download_NamedRadioButtons_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (downloadNamedLoading) return;
+            App.downloadManager.DownloadNamedMethod = (DataFolderBase.DownloadNamedMethod)(sender as ComboBox).SelectedIndex;
+        }
+
+        bool downloadOptionsLoading = false;
+        private void Download_Options_Loaded(object sender, RoutedEventArgs e)
+        {
+            downloadOptionsLoading = true;
+            var root = sender as StackPanel;
+            (root.Children[0] as CheckBox).IsChecked = App.downloadManager.IDv3WriteImage;
+            (root.Children[1] as CheckBox).IsChecked = App.downloadManager.IDv3WriteLyric;
+            (root.Children[2] as CheckBox).IsChecked = App.downloadManager.SaveLyricToLrcFile;
+            downloadOptionsLoading = false;
+        }
+
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            if (downloadOptionsLoading) return;
+            var checkBox = sender as CheckBox;
+            switch (checkBox.Tag)
+            {
+                case "0":
+                    App.downloadManager.IDv3WriteImage = (bool)checkBox.IsChecked;
+                    break;
+                case "1":
+                    App.downloadManager.IDv3WriteLyric = (bool)checkBox.IsChecked;
+                    break;
+                case "2":
+                    App.downloadManager.SaveLyricToLrcFile = (bool)checkBox.IsChecked;
+                    break;
+            }
+        }
+        #endregion
+
+        #region playExp
+        bool combo1Loading = false;
+        private void ComboBox_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            combo1Loading = true;
+            (sender as ComboBox).SelectedIndex = (int)App.playingList.PlayBehavior;
+            combo1Loading = false;
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (combo1Loading) return;
+            App.playingList.PlayBehavior = (PlayBehavior)(sender as ComboBox).SelectedIndex;
+        }
+
+        private void StackPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            var sp = sender as StackPanel;
+            (sp.Children[0] as CheckBox).IsChecked = App.playingList.PauseWhenPreviousPause;
+            (sp.Children[1] as CheckBox).IsChecked = App.playingList.NextWhenPlayError;
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            var checkBox = sender as CheckBox;
+            switch (checkBox.Tag)
+            {
+                case "0":
+                    App.playingList.PauseWhenPreviousPause = (bool)checkBox.IsChecked;
+                    break;
+                case "1":
+                    App.playingList.NextWhenPlayError = (bool)checkBox.IsChecked;
+                    break;
+            }
+        }
+        #endregion
+
+        #region themeExp
+        bool themeloading = false;
+        private void ComboBox_Loaded_2(object sender, RoutedEventArgs e)
+        {
+            themeloading = true;
+            var themeCombo = sender as ComboBox;
+            switch (MainWindow.SWindowGridBaseTop.RequestedTheme)
+            {
+                case ElementTheme.Default:
+                    themeCombo.SelectedIndex = 0;
+                    break;
+                case ElementTheme.Light:
+                    themeCombo.SelectedIndex = 1;
+                    break;
+                case ElementTheme.Dark:
+                    themeCombo.SelectedIndex = 2;
+                    break;
+            }
+            themeloading = false;
+        }
+
+        private void ComboBox_SelectionChanged_4(object sender, SelectionChangedEventArgs e)
+        {
+            if (themeloading) return;
+            var themeCombo = sender as ComboBox;
+            switch (themeCombo.SelectedIndex)
+            {
+                case 0:
+                    MainWindow.SWindowGridBaseTop.RequestedTheme = ElementTheme.Default;
+                    break;
+                case 1:
+                    MainWindow.SWindowGridBaseTop.RequestedTheme = ElementTheme.Light;
+                    break;
+                case 2:
+                    MainWindow.SWindowGridBaseTop.RequestedTheme = ElementTheme.Dark;
+                    break;
+            }
+            MainWindow.UpdateWindowBackdropTheme();
+        }
+
+        bool musicpageThemeLoading = false;
+        private void ComboBox_Loaded_3(object sender, RoutedEventArgs e)
+        {
+            musicpageThemeLoading = true;
+            (sender as ComboBox).SelectedIndex = (int)MainWindow.SMusicPage.pageRoot.RequestedTheme;
+            musicpageThemeLoading = false;
+        }
+
+        private void ComboBox_SelectionChanged_5(object sender, SelectionChangedEventArgs e)
+        {
+            if (musicpageThemeLoading) return;
+            var combo = sender as ComboBox;
+            switch (combo.SelectedIndex)
+            {
+                case 0:
+                    MainWindow.SMusicPage.pageRoot.RequestedTheme = ElementTheme.Default;
+                    break;
+                case 1:
+                    MainWindow.SMusicPage.pageRoot.RequestedTheme = ElementTheme.Light;
+                    break;
+                case 2:
+                    MainWindow.SMusicPage.pageRoot.RequestedTheme = ElementTheme.Dark;
+                    break;
+            }
+        }
+
+        bool accentColorLoading = false;
+        private void ComboBox_Loaded_4(object sender, RoutedEventArgs e)
+        {
+            accentColorLoading = true;
+            (sender as ComboBox).SelectedIndex = 0;
+            accentColorLoading = false;
+        }
+
+        private void ComboBox_SelectionChanged_6(object sender, SelectionChangedEventArgs e)
+        {
+            switch ((sender as ComboBox).SelectedIndex)
+            {
+                case 0:
+                    accentcolor_applysettings_button.Visibility = Visibility.Collapsed;
+                    accentcolor_colorpicker.Visibility = Visibility.Collapsed;
+                    break;
+                case 1:
+                    accentcolor_applysettings_button.Visibility = Visibility.Visible;
+                    accentcolor_colorpicker.Visibility = Visibility.Visible;
+                    break;
+            }
+        }
+
+        private void ColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
+        {
+            accentcolor_accentcolor_presenter_root.Background = new SolidColorBrush(sender.Color);
+        }
+
+        private void accentcolor_applysettings_button_Click(object sender, RoutedEventArgs e)
+        {
+            //App.AccentColor = accentcolor_colorpicker.Color;
+        }
+
+        bool backgroundTypeLoading = false;
+        private void ComboBox_Loaded_5(object sender, RoutedEventArgs e)
+        {
+            backgroundTypeLoading = true;
+            (sender as ComboBox).SelectedIndex = (int)MainWindow.m_currentBackdrop;
+            backgroundTypeLoading = false;
+        }
+
+        private void ComboBox_SelectionChanged_7(object sender, SelectionChangedEventArgs e)
+        {
+            int index = (sender as ComboBox).SelectedIndex;
+            if (index == 2)
+            {
+                imageselect_root.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                imageselect_root.Visibility = Visibility.Collapsed;
+            }
+            if (backgroundTypeLoading) return;
+            switch (index)
+            {
+                case 0:
+                    MainWindow.SetBackdrop(MainWindow.BackdropType.Mica);
+                    break;
+                case 1:
+                    MainWindow.SetBackdrop(MainWindow.BackdropType.DesktopAcrylic);
+                    break;
+                case 2:
+                    MainWindow.SetBackdrop(MainWindow.BackdropType.Image);
+                    break;
+                case 3:
+                    MainWindow.SetBackdrop(MainWindow.BackdropType.DefaultColor);
+                    break;
+            }
+        }
+
+        bool imageSelectLoading = false;
+        private void imageselect_root_Loaded(object sender, RoutedEventArgs e)
+        {
+            imageSelectLoading = true;
+            StackPanel stackPanel = sender as StackPanel;
+            (stackPanel.Children[1] as Slider).Value = MainWindow.SBackgroundMass.Opacity * 100;
+            imageSelectLoading = false;
+        }
+
+        private async void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            var path = await FileHelper.UserSelectFile(Windows.Storage.Pickers.PickerViewMode.Thumbnail, Windows.Storage.Pickers.PickerLocationId.PicturesLibrary);
+            MainWindow.ImagePath = path.Path;
+            MainWindow.SetBackdrop(MainWindow.BackdropType.Image);
+        }
+
+        private void Slider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            if (imageSelectLoading) return;
+            MainWindow.SBackgroundMass.Opacity = (sender as Slider).Value / 100;
+        }
+        #endregion
+
+        #region desktopExp
+        private void StackPanel_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            var stackPanel = sender as StackPanel;
+            (stackPanel.Children[0] as ComboBox).SelectedIndex = (int)DesktopLyricWindow.LyricTextBehavior;
+            (stackPanel.Children[1] as ComboBox).SelectedIndex = (int)DesktopLyricWindow.LyricTextPosition;
+        }
+
+        private void StackPanel_Loaded_2(object sender, RoutedEventArgs e)
+        {
+            var stackPanel = sender as StackPanel;
+            (stackPanel.Children[0] as ComboBox).SelectedIndex = (int)DesktopLyricWindow.LyricTranslateTextBehavior;
+            (stackPanel.Children[1] as ComboBox).SelectedIndex = (int)DesktopLyricWindow.LyricTranslateTextPosition;
+        }
+
+        private void StackPanel_Loaded_3(object sender, RoutedEventArgs e)
+        {
+            var stackPanel = sender as StackPanel;
+            (stackPanel.Children[0] as CheckBox).IsChecked = DesktopLyricWindow.PauseButtonVisible;
+            (stackPanel.Children[1] as CheckBox).IsChecked = DesktopLyricWindow.ProgressUIVisible;
+            (stackPanel.Children[2] as CheckBox).IsChecked = DesktopLyricWindow.ProgressUIPercentageVisible;
+            (stackPanel.Children[3] as CheckBox).IsChecked = DesktopLyricWindow.MusicChangeUIVisible;
+        }
+
+        private void ComboBox_SelectionChanged_8(object sender, SelectionChangedEventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+            switch (comboBox.Tag as string)
+            {
+                case "0":
+                    DesktopLyricWindow.LyricTextBehavior = (LyricTextBehavior)comboBox.SelectedIndex;
+                    break;
+                case "1":
+                    DesktopLyricWindow.LyricTextPosition = (LyricTextPosition)comboBox.SelectedIndex;
+                    break;
+                case "2":
+                    DesktopLyricWindow.LyricTranslateTextBehavior = (LyricTranslateTextBehavior)comboBox.SelectedIndex;
+                    break;
+                case "3":
+                    DesktopLyricWindow.LyricTranslateTextPosition = (LyricTranslateTextPosition)comboBox.SelectedIndex;
+                    break;
+            }
+        }
         private void CheckBox_Click_1(object sender, RoutedEventArgs e)
         {
-
+            var checkBox = sender as CheckBox;
+            switch (checkBox.Tag as string)
+            {
+                case "0":
+                    DesktopLyricWindow.PauseButtonVisible = (bool)checkBox.IsChecked;
+                    break;
+                case "1":
+                    DesktopLyricWindow.ProgressUIVisible = (bool)checkBox.IsChecked;
+                    break;
+                case "2":
+                    DesktopLyricWindow.ProgressUIPercentageVisible = (bool)checkBox.IsChecked;
+                    break;
+                case "3":
+                    DesktopLyricWindow.MusicChangeUIVisible = (bool)checkBox.IsChecked;
+                    break;
+            }
         }
+        #endregion
 
         private void CheckBox_Click_2(object sender, RoutedEventArgs e)
         {
@@ -465,6 +733,12 @@ namespace znMusicPlayerWUI.Pages
         private void ComboBox_SelectionChanged_3(object sender, SelectionChangedEventArgs e)
         {
 
+        }
+
+        private void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            DataFolderBase.JSettingData = DataFolderBase.SettingDefault;
+            App.LoadSettings(DataFolderBase.JSettingData);
         }
     }
 }

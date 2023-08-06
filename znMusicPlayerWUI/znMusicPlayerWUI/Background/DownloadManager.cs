@@ -39,7 +39,13 @@ namespace znMusicPlayerWUI.Background
         public event DownloadHandler OnDownloadedPreview;
         public event DownloadHandler OnDownloaded;
         public event DownloadHandler OnDownloadError;
-        public int DownloadingMaxium { get; set; } = 3;
+
+        public DataFolderBase.DownloadQuality DownloadQuality { get; set; } = DataFolderBase.DownloadQuality.lossless;
+        public DataFolderBase.DownloadNamedMethod DownloadNamedMethod { get; set; } = DataFolderBase.DownloadNamedMethod.t_ar_al;
+        public int DownloadingMaximum { get; set; } = 3;
+        public bool IDv3WriteImage { get; set; } = true;
+        public bool IDv3WriteLyric { get; set; } = true;
+        public bool SaveLyricToLrcFile { get; set; } = true;
 
         public DownloadManager()
         {
@@ -76,7 +82,7 @@ namespace znMusicPlayerWUI.Background
 
         public void UpdateDownload()
         {
-            while (DownloadingData.Count < DownloadingMaxium && WaitingDownloadData.Any())
+            while (DownloadingData.Count < DownloadingMaximum && WaitingDownloadData.Any())
             {
                 var dm = WaitingDownloadData[0];
                 WaitingDownloadData.Remove(dm);
@@ -100,17 +106,50 @@ namespace znMusicPlayerWUI.Background
             }
         }
 
-        public int br { get; set; } = 960;
         public async void StartDownload(DownloadData dm)
         {
             System.Diagnostics.Debug.WriteLine($"d:{dm.MusicData.Title}");
-            string downloadPath1 =
-                $"{DataFolderBase.DownloadFolder}\\{CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.Title)} - {CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.ButtonName)}";
+
+            string downloadPath1 = null;
+            switch (DownloadNamedMethod)
+            {
+                case DataFolderBase.DownloadNamedMethod.t_ar_al:
+                    downloadPath1 =
+                        $"{DataFolderBase.DownloadFolder}\\" +
+                        $"{CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.Title)} - {CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.ButtonName)}";
+                    break;
+                case DataFolderBase.DownloadNamedMethod.t_ar:
+                    downloadPath1 =
+                        $"{DataFolderBase.DownloadFolder}\\" +
+                        $"{CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.Title)} - {CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.ArtistName)}";
+                    break;
+                case DataFolderBase.DownloadNamedMethod.t_al_ar:
+                    downloadPath1 =
+                        $"{DataFolderBase.DownloadFolder}\\" +
+                        $"{CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.Title)} - {CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.Album.Title)} · {CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.ArtistName)}";
+                    break;
+                case DataFolderBase.DownloadNamedMethod.t_al:
+                    downloadPath1 =
+                        $"{DataFolderBase.DownloadFolder}\\" +
+                        $"{CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.Title)} - {CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.Album.Title)}";
+                    break;
+                case DataFolderBase.DownloadNamedMethod.t:
+                    downloadPath1 =
+                        $"{DataFolderBase.DownloadFolder}\\" +
+                        $"{CodeHelper.ReplaceBadCharOfFileName(dm.MusicData.Title)}";
+                    break;
+            }
+                
             string addressPath = null;
             bool isErr = false;
+
+            var downloadQuality = DownloadQuality;
+            var writeImage = IDv3WriteImage;
+            var writeLyric = IDv3WriteLyric;
+            var saveLyric = SaveLyricToLrcFile;
             try
             {
-                addressPath = await App.metingServices.NeteaseServices.GetUrl(dm.MusicData.ID, br);
+                addressPath = await App.metingServices.NeteaseServices.GetUrl(dm.MusicData.ID, (int)downloadQuality);
             }
             catch
             {
@@ -124,15 +163,6 @@ namespace znMusicPlayerWUI.Background
                 return;
             }
 
-            //string picPath = downloadPath1 + ".imagez";
-            /*
-            System.Diagnostics.Debug.WriteLine(addressPath);
-            System.Diagnostics.Debug.WriteLine(lastName);
-            System.Diagnostics.Debug.WriteLine(downloadPath);*//*
-            var downloader = new DownloadService();
-            await downloader.DownloadFileTaskAsync(addressPath, downloadPath);
-            downloader.Dispose();*/
-
             string lastName = null;
             await Task.Run(() =>
             {
@@ -141,33 +171,20 @@ namespace znMusicPlayerWUI.Background
             string downloadPath = downloadPath1 + lastName;
             string lyricPath = downloadPath1 + ".lrc";
             await WebHelper.DownloadFileAsync(addressPath, downloadPath);
-            /*
-                        System.Net.WebClient TheDownloader = new System.Net.WebClient();
-                        await TheDownloader.DownloadFileTaskAsync(new Uri(addressPath), downloadPath);*/
-            /*TheDownloader.DownloadProgressChanged += (s, e) =>
-            {
-                dm.DownloadPercent = e.ProgressPercentage;
-                dm.FileSize = e.TotalBytesToReceive;
-                dm.DownloadedSize = e.BytesReceived;
-                OnDownloading(dm);
-                System.Diagnostics.Debug.WriteLine(e.ProgressPercentage);
-                //Set1(e.ProgressPercentage, (Convert.ToDouble(e.BytesReceived) / Convert.ToDouble(e.TotalBytesToReceive) * 100).ToString("0.0") + "%", zilongcn.Others.GetAutoSizeString(e.BytesReceived, 2) + "/" + zilongcn.Others.GetAutoSizeString(e.TotalBytesToReceive, 2));
-            };
-            TheDownloader.DownloadFileCompleted += (s, e) =>
-            {
-                TheDownloader.Dispose();
-            };*/
-
+            
             OnDownloadedPreview?.Invoke(dm);
-            byte[] picDatas = null;
 
-            try
+            byte[] picDatas = null;
+            if (writeImage)
             {
-                picDatas = await WebHelper.Client.GetByteArrayAsync(await WebHelper.GetPicturePathAsync(dm.MusicData));
-            }
-            catch (Exception err)
-            {
-                System.Diagnostics.Debug.WriteLine(err.ToString());
+                try
+                {
+                    picDatas = await WebHelper.Client.GetByteArrayAsync(await WebHelper.GetPicturePathAsync(dm.MusicData));
+                }
+                catch (Exception err)
+                {
+                    System.Diagnostics.Debug.WriteLine(err.ToString());
+                }
             }
 
             TagLib.File tagFile = null;
@@ -184,7 +201,7 @@ namespace znMusicPlayerWUI.Background
                     Data = new TagLib.ByteVector(picDatas),
                     TextEncoding = TagLib.StringType.UTF16
                 };*/
-                tag.Pictures = new[] { new TagLib.Picture(new TagLib.ByteVector(picDatas)) };
+                if (picDatas != null) tag.Pictures = new[] { new TagLib.Picture(new TagLib.ByteVector(picDatas)) };
 
                 tag.Title = dm.MusicData.Title;
                 tag.Album = dm.MusicData.Album.Title;
@@ -207,13 +224,15 @@ namespace znMusicPlayerWUI.Background
                 {
                     await Task.Run(() =>
                     {
-                        File.Create(lyricPath).Dispose();
-
-                        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                        File.WriteAllText(lyricPath, $"{lyric.Item1}\n{lyric.Item2}", Encoding.GetEncoding("GB2312"));
+                        if (saveLyric)
+                        {
+                            File.Create(lyricPath).Dispose();
+                            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                            File.WriteAllText(lyricPath, $"{lyric.Item1}\n{lyric.Item2}", Encoding.GetEncoding("GB2312"));
+                        }
+                        
+                        if (writeLyric) tag.Lyrics = $"{lyric.Item1}\n{lyric.Item2}";
                     });
-
-                    tag.Lyrics = $"{lyric.Item1}\n{lyric.Item2}";
                 }
                 else
                 {

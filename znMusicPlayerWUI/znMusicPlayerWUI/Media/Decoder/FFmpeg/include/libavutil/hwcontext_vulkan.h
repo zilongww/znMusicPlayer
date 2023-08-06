@@ -138,7 +138,7 @@ typedef struct AVVulkanDeviceContext {
 } AVVulkanDeviceContext;
 
 /**
- * Defines the behaviour of frame allocation.
+ * Defines the Behavior of frame allocation.
  */
 typedef enum AVVkFrameFlags {
     /* Unless this flag is set, autodetected flags will be OR'd based on the
