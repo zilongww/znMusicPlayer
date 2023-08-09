@@ -720,10 +720,10 @@ namespace znMusicPlayerWUI.Media
                     var m = MusicData;
                     MusicData = musicData;
                     Exception exception = null;
+                    _filePath = resultPath;
+                    Debug.WriteLine($"AudioPlayer：正在加载 \"{resultPath}\".");
                     try
                     {
-                        _filePath = resultPath;
-                        Debug.WriteLine($"AudioPlayer：正在加载 \"{resultPath}\".");
                         await SetSource(resultPath, musicData.CUETrackData != null);
                     }
                     catch (Exception err)
@@ -798,15 +798,15 @@ namespace znMusicPlayerWUI.Media
             {
                 FileSize = File.ReadAllBytes(filePath).Length;
                 fileReader = new AudioFileReader(filePath, cueFile);
-                fileProvider = new AudioEffects.SoundTouchWaveProvider(fileReader);
 
-                UpdateInfo();
                 if (fileReader.isMidi)
                 {
                     WaveInfo = "midi";
                     return;
                 }
+                UpdateInfo();
 
+                fileProvider = new AudioEffects.SoundTouchWaveProvider(fileReader);
                 fileReader.EqEnabled = EqEnabled;
                 fileReader.Volume = Volume / 100;
                 fileProvider.Pitch = Pitch;
@@ -833,7 +833,11 @@ namespace znMusicPlayerWUI.Media
             if (FileReader.isMidi)
             {
                 MidiOutputDevice = OutputDevice.GetByIndex(0);
-                MidiFile = MidiFile.Read(filePath);
+                MidiFile = MidiFile.Read(filePath, new()
+                {
+                    NotEnoughBytesPolicy = NotEnoughBytesPolicy.Ignore,
+                    InvalidChunkSizePolicy = InvalidChunkSizePolicy.Ignore
+                });
                 MidiPlayback = MidiFile.GetPlayback(MidiOutputDevice);
                 MidiPlayback.Finished += (_, __) => MainWindow.Invoke(() => AudioPlayer_PlaybackStopped(null, null));
                 MidiPlayback.Speed = Tempo;

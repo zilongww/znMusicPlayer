@@ -88,8 +88,12 @@ namespace znMusicPlayerWUI.Background
             {
                 if (musicData.From == MusicFrom.localMusic)
                 {
-                    var tagfile = await Task.Run(() => TagLib.File.Create(musicData.InLocal));
-                    await InitLyricList(tagfile);
+                    try
+                    {
+                        var tagfile = await Task.Run(() => TagLib.File.Create(musicData.InLocal));
+                        await InitLyricList(tagfile);
+                    }
+                    catch { }
                     return;
                 }
 

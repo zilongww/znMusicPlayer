@@ -179,7 +179,7 @@ namespace znMusicPlayerWUI.Controls
 
         public void UpdateFlyoutMenuContext(MusicData musicData)
         {
-            if (MusicListData.ListDataType == DataType.歌单 || MusicListData.ListDataType == DataType.本地歌单)
+            if (MusicListData?.ListDataType == DataType.歌单 || MusicListData?.ListDataType == DataType.本地歌单)
             {
                 DeleteFlyoutBtn.Visibility = Visibility.Visible;
             }
@@ -223,8 +223,22 @@ namespace znMusicPlayerWUI.Controls
 
             MusicData data = musicData;
             ImageSource a = null;
-            var b = await Media.ImageManage.GetImageSource(musicData, (int)(58 * ImageScaleDPI), (int)(58 * ImageScaleDPI), true);
-            a = b.Item1 ?? null;
+            try
+            {
+                if (musicData.From == MusicFrom.localMusic)
+                {
+                    if (await FileHelper.FileTypeGetAsync(musicData.InLocal) == "7784")
+                    {
+                        a = null;
+                    }
+                }
+                else
+                {
+                    var b = await Media.ImageManage.GetImageSource(musicData, (int)(58 * ImageScaleDPI), (int)(58 * ImageScaleDPI), true);
+                    a = b.Item1;
+                }
+            }
+            catch { }
             
             if (isDisposed) return;
             if (musicData == MusicData)

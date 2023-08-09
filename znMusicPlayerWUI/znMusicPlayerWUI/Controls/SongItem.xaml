@@ -211,7 +211,20 @@
                                     x:Name="InfoButton"
                                     Flyout="{ThemeResource mf}"
                                     Content=" "
-                                    HorizontalAlignment="Stretch"/>
+                                    HorizontalAlignment="Stretch">
+                                <Button.Resources>
+                                    <ResourceDictionary>
+                                        <ResourceDictionary.ThemeDictionaries>
+                                            <ResourceDictionary x:Key="Dark">
+                                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#20FFFFFF"/>
+                                            </ResourceDictionary>
+                                            <ResourceDictionary x:Key="Light">
+                                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#25000000"/>
+                                            </ResourceDictionary>
+                                        </ResourceDictionary.ThemeDictionaries>
+                                    </ResourceDictionary>
+                                </Button.Resources>
+                            </Button>
                             <TextBlock x:Name="ButtonNameTextBlock" x:FieldModifier="Public" IsHitTestVisible="False" FontSize="12" Text="{x:Bind MusicData.ButtonName,Mode=OneWay}" Foreground="{ThemeResource SystemChromeDisabledLowColor}" TextTrimming="CharacterEllipsis"/>
                         </Grid>
 

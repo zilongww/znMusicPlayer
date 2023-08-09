@@ -123,7 +123,20 @@
                                 BorderThickness="0"
                                 Margin="0"
                                 Click="Button_Click_1"
-                                AccessKey="BM"/>
+                                AccessKey="BM">
+                            <Button.Resources>
+                                <ResourceDictionary>
+                                    <ResourceDictionary.ThemeDictionaries>
+                                        <ResourceDictionary x:Key="Dark">
+                                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#0DFFFFFF"/>
+                                        </ResourceDictionary>
+                                        <ResourceDictionary x:Key="Light">
+                                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#0E000000"/>
+                                        </ResourceDictionary>
+                                    </ResourceDictionary.ThemeDictionaries>
+                                </ResourceDictionary>
+                            </Button.Resources>
+                        </Button>
                         <Grid VerticalAlignment="Center">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>

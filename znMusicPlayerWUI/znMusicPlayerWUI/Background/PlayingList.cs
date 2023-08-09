@@ -132,6 +132,7 @@ namespace znMusicPlayerWUI.Background
         private async void AudioPlayer_SourceChanged(AudioPlayer audioPlayer)
         {
             //System.Diagnostics.Debug.WriteLine(NowPlayingImageLoaded.GetInvocationList().Length);
+            if (audioPlayer.FileReader.isMidi) return;
             if (audioPlayer.MusicData == null) return;
             if (audioPlayer.MusicData.InLocal != null)
             {

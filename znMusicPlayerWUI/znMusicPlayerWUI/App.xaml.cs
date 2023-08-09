@@ -135,13 +135,13 @@ namespace znMusicPlayerWUI
             };
 
             TaskScheduler.UnobservedTaskException +=
-            (object sender, UnobservedTaskExceptionEventArgs excArgs) =>
-            {
-                LogHelper.WriteLog("UnobservedTaskError", excArgs.Exception.ToString(), false);
-#if DEBUG
-                Debug.WriteLine("UnobservedTaskError: " + excArgs.Exception.ToString());
-#endif
-            };
+                (object sender, UnobservedTaskExceptionEventArgs excArgs) =>
+                {
+                    LogHelper.WriteLog("UnobservedTaskError", excArgs.Exception.ToString(), false);
+    #if DEBUG
+                    Debug.WriteLine("UnobservedTaskError: " + excArgs.Exception.ToString());
+    #endif
+                };
         }
 
         private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
