@@ -18,6 +18,7 @@ using System.Diagnostics;
 using Windows.System;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
+using Windows.Storage;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -148,6 +149,7 @@ namespace znMusicPlayerWUI.Controls
             musicListData = bindBase.MusicListData;
             ImageScaleDPI = bindBase.ImageScaleDPI;
 
+            UpdateFlyoutMenuContext(bindBase.MusicData);
             if (MusicData.From == MusicFrom.localMusic)
             {
                 TestFileExists();
@@ -177,6 +179,31 @@ namespace znMusicPlayerWUI.Controls
 
         public void UpdateFlyoutMenuContext(MusicData musicData)
         {
+            if (MusicListData.ListDataType == DataType.歌单 || MusicListData.ListDataType == DataType.本地歌单)
+            {
+                DeleteFlyoutBtn.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                DeleteFlyoutBtn.Visibility = Visibility.Collapsed;
+            }
+
+            if (musicData.From != MusicFrom.localMusic)
+            {
+                Menuflyout_DownloadItem.Visibility = Visibility.Visible;
+                MenuFlyout_BrowseSiteItem.Visibility = Visibility.Visible;
+                MenuFlyout_GetUriItem.Visibility = Visibility.Visible;
+                MenuFlyout_BrowseFileItem.Visibility = Visibility.Collapsed;
+                MenuFlyout_OpenFileItem.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                Menuflyout_DownloadItem.Visibility = Visibility.Collapsed;
+                MenuFlyout_BrowseSiteItem.Visibility = Visibility.Collapsed;
+                MenuFlyout_GetUriItem.Visibility = Visibility.Collapsed;
+                MenuFlyout_BrowseFileItem.Visibility = Visibility.Visible;
+                MenuFlyout_OpenFileItem.Visibility = Visibility.Visible;
+            }
         }
 
         public async void UpdateImageInterface(MusicData musicData)
@@ -433,6 +460,11 @@ namespace znMusicPlayerWUI.Controls
         {
             if (MusicListData.ListDataType == DataType.本地歌单 || MusicListData.ListDataType == DataType.歌单)
             {
+                if ((sender as FrameworkElement).Tag as string == "1")
+                {
+                    string path = MusicData.InLocal;
+                    await Task.Run(() => File.Delete(path));
+                }
                 await PlayListHelper.DeleteMusicDataFromPlayList(MusicListData.ListName, MusicData);
                 await App.playListReader.Refresh();
             }
@@ -560,6 +592,25 @@ namespace znMusicPlayerWUI.Controls
                     Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dp);
                     break;
             }
+        }
+
+        private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            var uri = await App.metingServices.NeteaseServices.GetUrl(MusicData.ID, (int)DataFolderBase.DownloadQuality.lossless);
+            MainWindow.HideDialog();
+            await MainWindow.ShowDialog("获取直链", $"获取到的链接是：\n{uri}");
+        }
+
+        private async void MenuFlyoutItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            var seletFile = new FolderLauncherOptions();
+            seletFile.ItemsToSelect.Add(await StorageFile.GetFileFromPathAsync(MusicData.InLocal));
+            await Launcher.LaunchFolderPathAsync(new FileInfo(MusicData.InLocal).DirectoryName, seletFile);
+        }
+
+        private async void MenuFlyout_OpenFileItem_Click(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri(MusicData.InLocal), new() { DisplayApplicationPicker = true });
         }
     }
 }

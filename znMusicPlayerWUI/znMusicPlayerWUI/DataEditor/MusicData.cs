@@ -127,7 +127,7 @@ namespace znMusicPlayerWUI.DataEditor
 
         public bool IsNull()
         {
-            return string.IsNullOrEmpty(Title) && string.IsNullOrEmpty(ID);
+            return Title == "未知" && string.IsNullOrEmpty(ID);
         }
 
         public override string GetMD5()

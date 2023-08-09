@@ -16,6 +16,7 @@
     <Grid.Resources>
         <MenuFlyout x:Name="rmf" Opening="rmf_Opening" Opened="rmf_Opened" Closed="rmf_Closed">
             <MenuFlyoutItem Text="{x:Bind MusicData.Title, Mode=OneWay}" IsEnabled="False"/>
+            <MenuFlyoutSeparator/>
             <MenuFlyoutItem Text="播放" Click="Play_Click" AccessKey="Q">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE768;"/>
@@ -31,22 +32,17 @@
                     <FontIcon Glyph="&#xE893;"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
-            <MenuFlyoutItem x:Name="DeleteFlyoutBtn" Text="从列表中删除" Click="DeleteFlyoutBtn_Click" AccessKey="R">
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutItem x:Name="DeleteFlyoutBtn" Text="从列表中删除" Click="DeleteFlyoutBtn_Click" AccessKey="R" Tag="0">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE74D;"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
-            <MenuFlyoutSeparator/>
             <MenuFlyoutSubItem x:Name="AddToPlayListSubItems" Text="添加到播放列表" Loaded="AddToPlayListSubItems_Loaded" AccessKey="T">
                 <MenuFlyoutSubItem.Icon>
                     <FontIcon Glyph="&#xE90B;"/>
                 </MenuFlyoutSubItem.Icon>
                 </MenuFlyoutSubItem>
-            <MenuFlyoutItem Text="下载" Click="Download_Click" AccessKey="A">
-                <MenuFlyoutItem.Icon>
-                    <FontIcon Glyph="&#xE896;"/>
-                </MenuFlyoutItem.Icon>
-            </MenuFlyoutItem>
             <MenuFlyoutSeparator/>
             <MenuFlyoutSubItem x:Name="rmfs" Text="艺术家" AccessKey="S">
                 <MenuFlyoutSubItem.Icon>
@@ -59,6 +55,11 @@
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutSeparator/>
+            <MenuFlyoutItem Text="下载" Click="Download_Click" AccessKey="A" x:Name="Menuflyout_DownloadItem">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE896;"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
             <MenuFlyoutSubItem Text="去搜索" AccessKey="Z">
                 <MenuFlyoutSubItem.Icon>
                     <FontIcon Glyph="&#xE721;"/>
@@ -68,12 +69,12 @@
                         <FontIcon Glyph="&#xE721;"/>
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="去网站上搜索" Click="Search_Click" Tag="1">
+                <MenuFlyoutItem Text="去网站上搜索..." Click="Search_Click" Tag="1">
                     <MenuFlyoutItem.Icon>
                         <FontIcon Glyph="&#xF6FA;"/>
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="如果为在线歌曲，尝试浏览其网站" Click="Search_Click" Tag="2">
+                <MenuFlyoutItem Text="浏览其网站..." Click="Search_Click" Tag="2" x:Name="MenuFlyout_BrowseSiteItem">
                     <MenuFlyoutItem.Icon>
                         <FontIcon Glyph="&#xEB41;"/>
                     </MenuFlyoutItem.Icon>
@@ -84,7 +85,33 @@
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
             </MenuFlyoutSubItem>
-            <MenuFlyoutItem Text="详细信息" Click="Info_Click" AccessKey="X"/>
+            <MenuFlyoutItem Text="获取直链..." Click="MenuFlyoutItem_Click" x:Name="MenuFlyout_GetUriItem" AccessKey="X">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE909;"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutItem Text="浏览本地文件..." Click="MenuFlyoutItem_Click_1" x:Name="MenuFlyout_BrowseFileItem" AccessKey="C">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE8DA;"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem Text="选择其它应用打开..." Click="MenuFlyout_OpenFileItem_Click" x:Name="MenuFlyout_OpenFileItem" AccessKey="V">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xECAA;"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem Text="从列表中删除并删除其文件" Click="DeleteFlyoutBtn_Click" x:Name="DeleteFileFlyoutBtn" Visibility="{Binding ElementName=MenuFlyout_OpenFileItem,Path=Visibility}" AccessKey="B" Tag="1">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE74D;"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator Visibility="{Binding ElementName=MenuFlyout_OpenFileItem,Path=Visibility}"/>
+            <MenuFlyoutItem Text="详细信息..." Click="Info_Click" AccessKey="N">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE946;"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
         </MenuFlyout>
 
         <MenuFlyout x:Name="mf" Opening="mf_Opening">
@@ -142,7 +169,7 @@
                             <Grid>
                                 <local:Imagezn x:Name="AlbumImage" ShowMenuBehavior="None"/>
                                 <Grid Width="58" Height="58" x:Name="FileNotExistsRoot" Visibility="Collapsed">
-                                    <Rectangle Fill="Red" Opacity="0.3"/>
+                                    <Rectangle Fill="{ThemeResource SystemFillColorCriticalBackgroundBrush}"/>
                                     <StackPanel VerticalAlignment="Center">
                                         <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xf167;" FontSize="24" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
                                         <TextBlock Text="找不到文件" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>

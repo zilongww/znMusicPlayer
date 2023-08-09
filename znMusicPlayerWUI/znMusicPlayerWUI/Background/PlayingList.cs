@@ -142,7 +142,8 @@ namespace znMusicPlayerWUI.Background
             }
             else
             {
-                if (audioPlayer.MusicData.Album.ID == lastMusicData?.Album.ID) return;
+                if (!audioPlayer.MusicData.Album.IsNull())
+                    if (audioPlayer.MusicData.Album.ID == lastMusicData?.Album.ID) return;
             }
             lastMusicData = audioPlayer.MusicData;
 
@@ -231,13 +232,15 @@ namespace znMusicPlayerWUI.Background
                 {
                     if (isNextPlay == SetPlayInfo.Next)
                     {
-                        var index = NowPlayingList.IndexOf(musicData);
-                        Play(NowPlayingList[index + 1], true);
+                        var index = NowPlayingList.IndexOf(musicData) + 1;
+                        if (index > NowPlayingList.Count - 1) index = 0;
+                        Play(NowPlayingList[index], true, isNextPlay);
                     }
                     else if (isNextPlay == SetPlayInfo.Previous)
                     {
-                        var index = NowPlayingList.IndexOf(musicData);
-                        Play(NowPlayingList[index - 1]);
+                        var index = NowPlayingList.IndexOf(musicData) - 1;
+                        if (index < 0) index = NowPlayingList.Count - 1;
+                        Play(NowPlayingList[index], true, isNextPlay);
                     }
                 }
 #if DEBUG

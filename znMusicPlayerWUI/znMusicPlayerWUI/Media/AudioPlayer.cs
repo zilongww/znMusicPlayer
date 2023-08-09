@@ -796,8 +796,10 @@ namespace znMusicPlayerWUI.Media
 
             await Task.Run(() =>
             {
-                fileReader = new AudioFileReader(filePath, cueFile);
                 FileSize = File.ReadAllBytes(filePath).Length;
+                fileReader = new AudioFileReader(filePath, cueFile);
+                fileProvider = new AudioEffects.SoundTouchWaveProvider(fileReader);
+
                 UpdateInfo();
                 if (fileReader.isMidi)
                 {
@@ -805,7 +807,6 @@ namespace znMusicPlayerWUI.Media
                     return;
                 }
 
-                fileProvider = new AudioEffects.SoundTouchWaveProvider(fileReader);
                 fileReader.EqEnabled = EqEnabled;
                 fileReader.Volume = Volume / 100;
                 fileProvider.Pitch = Pitch;

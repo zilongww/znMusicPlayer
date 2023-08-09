@@ -54,6 +54,11 @@ namespace znMusicPlayerWUI.DataEditor
         /// <summary>
         /// 歌曲缓存文件夹路径
         /// </summary>
+        public static string RemovedIDv3CacheFolder { get; set; } = CacheFolder + @"\RemovedIDv3";
+
+        /// <summary>
+        /// 歌曲缓存文件夹路径
+        /// </summary>
         public static string AudioCacheFolder { get; set; } = CacheFolder + @"\Audio";
 
         /// <summary>
@@ -86,7 +91,7 @@ namespace znMusicPlayerWUI.DataEditor
             { SettingParams.AudioCacheFolderPath.ToString(), AudioCacheFolder },
             { SettingParams.ImageCacheFolderPath.ToString(), ImageCacheFolder },
             { SettingParams.LyricCacheFolderPath.ToString(), LyricCacheFolder },
-            { SettingParams.DownloadOptions.ToString(), new JArray(){ true, true, true } },
+            { SettingParams.DownloadOptions.ToString(), new JArray(){ true, true, true, true } },
             { SettingParams.DownloadNamedMethod.ToString(), (int)DownloadNamedMethod.t_ar_al },
             { SettingParams.DownloadQuality.ToString(), (int)DownloadQuality.lossless },
             { SettingParams.DownloadMaximum.ToString(), 3 },
@@ -190,6 +195,7 @@ namespace znMusicPlayerWUI.DataEditor
             Directory.CreateDirectory(BaseFolder);
             Directory.CreateDirectory(UserDataFolder);
             Directory.CreateDirectory(CacheFolder);
+            Directory.CreateDirectory(RemovedIDv3CacheFolder);
             Directory.CreateDirectory(AudioCacheFolder);
             Directory.CreateDirectory(ImageCacheFolder);
             Directory.CreateDirectory(LyricCacheFolder);

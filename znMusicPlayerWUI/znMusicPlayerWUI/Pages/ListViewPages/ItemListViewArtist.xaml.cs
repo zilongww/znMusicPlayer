@@ -120,7 +120,7 @@ namespace znMusicPlayerWUI.Pages
                 {
                     count++;
                     i.Count = count;
-                    MusicDataList.Add(new() { MusicData = i, ImageScaleDPI = dpi });
+                    MusicDataList.Add(new() { MusicData = i, MusicListData = musicListData, ImageScaleDPI = dpi });
                 }
             }
             LoadingRing.IsIndeterminate = false;

@@ -302,6 +302,18 @@ namespace znMusicPlayerWUI.Helpers
 
                 var a = await Task.Run(() =>
                 {
+                    foreach (var data in f.Tag.Pictures)
+                    {
+                        switch (data.Type)
+                        {
+                            case TagLib.PictureType.FrontCover:
+                            case TagLib.PictureType.BackCover:
+                                if (data.Data.Data.Length == 0) continue;
+                                f.Dispose();
+                                return data.Data.Data;
+                        }
+                    }
+
                     var bin = f.Tag.Pictures[0].Data.Data;
                     f.Dispose();
                     return bin;

@@ -69,7 +69,7 @@ namespace znMusicPlayerWUI
         public static NotifyIconWindow NotifyIconWindow;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.2.6 Preview";
+        public static readonly string AppVersion = "0.2.62 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -253,8 +253,9 @@ namespace znMusicPlayerWUI
                 downloadManager.DownloadingMaximum = (int)b[SettingParams.DownloadMaximum.ToString()];
                 downloadManager.DownloadNamedMethod = (DownloadNamedMethod)(int)b[SettingParams.DownloadNamedMethod.ToString()];
                 downloadManager.IDv3WriteImage = (bool)b[SettingParams.DownloadOptions.ToString()][0];
-                downloadManager.IDv3WriteLyric = (bool)b[SettingParams.DownloadOptions.ToString()][1];
-                downloadManager.SaveLyricToLrcFile = (bool)b[SettingParams.DownloadOptions.ToString()][2];
+                downloadManager.IDv3WriteArtistImage = (bool)b[SettingParams.DownloadOptions.ToString()][1];
+                downloadManager.IDv3WriteLyric = (bool)b[SettingParams.DownloadOptions.ToString()][2];
+                downloadManager.SaveLyricToLrcFile = (bool)b[SettingParams.DownloadOptions.ToString()][3];
 
                 playingList.PlayBehavior = (PlayBehavior)(int)b[SettingParams.PlayBehavior.ToString()];
                 playingList.PauseWhenPreviousPause = (bool)b[SettingParams.PlayPauseWhenPreviousPause.ToString()];
@@ -291,7 +292,7 @@ namespace znMusicPlayerWUI
                 }
                 retryCount++;
                 JSettingData = DataFolderBase.SettingDefault;
-                LoadSettings(b);
+                LoadSettings(JSettingData);
             }
         }
 
@@ -299,7 +300,7 @@ namespace znMusicPlayerWUI
         {
             MessageDialog messageDialog = new("设置文件出现了一些错误，且程序尝试 5 次后也无法恢复默认配置。\n" +
                 "请尝试删除 文档->znMusicPlayerDatas->UserData 里的 Setting 文件。\n" +
-                "如果仍然出现问题，请到 GitHub 里向项目提出 Issues。", "读取设置时出错");
+                "如果仍然出现问题，请到 GitHub 里向项目提出 Issues。", "znMusicPlayerWUI - 程序无法启动");
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(WindowLocal);
             WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, hwnd);
             await messageDialog.ShowAsync();
@@ -316,8 +317,9 @@ namespace znMusicPlayerWUI
             a[SettingParams.ImageCacheFolderPath.ToString()] = DataFolderBase.ImageCacheFolder;
             a[SettingParams.LyricCacheFolderPath.ToString()] = DataFolderBase.LyricCacheFolder;
             a[SettingParams.DownloadOptions.ToString()][0] = downloadManager.IDv3WriteImage;
-            a[SettingParams.DownloadOptions.ToString()][1] = downloadManager.IDv3WriteLyric;
-            a[SettingParams.DownloadOptions.ToString()][2] = downloadManager.SaveLyricToLrcFile;
+            a[SettingParams.DownloadOptions.ToString()][1] = downloadManager.IDv3WriteArtistImage;
+            a[SettingParams.DownloadOptions.ToString()][2] = downloadManager.IDv3WriteLyric;
+            a[SettingParams.DownloadOptions.ToString()][3] = downloadManager.SaveLyricToLrcFile;
             a[SettingParams.DownloadNamedMethod.ToString()] = (int)downloadManager.DownloadNamedMethod;
             a[SettingParams.DownloadQuality.ToString()] = (int)downloadManager.DownloadQuality;
             a[SettingParams.DownloadMaximum.ToString()] = downloadManager.DownloadingMaximum;

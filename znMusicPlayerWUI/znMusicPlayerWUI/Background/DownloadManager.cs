@@ -44,6 +44,7 @@ namespace znMusicPlayerWUI.Background
         public DataFolderBase.DownloadNamedMethod DownloadNamedMethod { get; set; } = DataFolderBase.DownloadNamedMethod.t_ar_al;
         public int DownloadingMaximum { get; set; } = 3;
         public bool IDv3WriteImage { get; set; } = true;
+        public bool IDv3WriteArtistImage { get; set; } = true;
         public bool IDv3WriteLyric { get; set; } = true;
         public bool SaveLyricToLrcFile { get; set; } = true;
 
@@ -145,6 +146,7 @@ namespace znMusicPlayerWUI.Background
 
             var downloadQuality = DownloadQuality;
             var writeImage = IDv3WriteImage;
+            var writeArtistImage = IDv3WriteArtistImage;
             var writeLyric = IDv3WriteLyric;
             var saveLyric = SaveLyricToLrcFile;
             try
@@ -174,6 +176,7 @@ namespace znMusicPlayerWUI.Background
             
             OnDownloadedPreview?.Invoke(dm);
 
+            List<Tuple<string, byte[]>> artistsPictureData = new();
             byte[] picDatas = null;
             if (writeImage)
             {
@@ -185,6 +188,27 @@ namespace znMusicPlayerWUI.Background
                 {
                     System.Diagnostics.Debug.WriteLine(err.ToString());
                 }
+                if (IDv3WriteArtistImage)
+                {
+                    try
+                    {
+                        foreach (var a in dm.MusicData.Artists)
+                        {
+                            string result = a.PicturePath;
+                            if (a.PicturePath == null)
+                            {
+                                result =
+                                    (await App.metingServices.NeteaseServices.GetArtist(a.ID)).PicturePath;
+                            }
+                            var data = await WebHelper.Client.GetByteArrayAsync(result);
+                            artistsPictureData.Add(new(a.Name, data));
+                        }
+                    }
+                    catch (Exception err)
+                    {
+                        System.Diagnostics.Debug.WriteLine(err.ToString());
+                    }
+                }
             }
 
             TagLib.File tagFile = null;
@@ -193,16 +217,36 @@ namespace znMusicPlayerWUI.Background
             {
                 tagFile = TagLib.File.Create(downloadPath);
                 tag = tagFile.Tag;
-/*
-                TagLib.Id3v2.AttachmentFrame cover = new()
-                {
-                    Type = TagLib.PictureType.FrontCover,
-                    Description = "Cover",
-                    Data = new TagLib.ByteVector(picDatas),
-                    TextEncoding = TagLib.StringType.UTF16
-                };*/
-                if (picDatas != null) tag.Pictures = new[] { new TagLib.Picture(new TagLib.ByteVector(picDatas)) };
 
+                List<TagLib.IPicture> pictures = new() { };
+                if (picDatas != null)
+                {
+                    var cover = new TagLib.Id3v2.AttachmentFrame
+                    {
+                        Type = TagLib.PictureType.FrontCover,
+                        Description = "Cover",
+                        Data = new TagLib.ByteVector(picDatas),
+                        TextEncoding = TagLib.StringType.UTF16
+                    };
+                    pictures.Add(cover);
+                }
+
+                if (artistsPictureData.Any())
+                {
+                    foreach (var a in artistsPictureData)
+                    {
+                        TagLib.Id3v2.AttachmentFrame artistImage = new()
+                        {
+                            Type = TagLib.PictureType.Artist,
+                            Description = a.Item1,
+                            Data = new TagLib.ByteVector(a.Item2),
+                            TextEncoding = TagLib.StringType.UTF16
+                        };
+                        pictures.Add(artistImage);
+                    }
+                }
+
+                tag.Pictures = pictures.ToArray();
                 tag.Title = dm.MusicData.Title;
                 tag.Album = dm.MusicData.Album.Title;
                 tag.Comment = $"Download with {App.AppName}";
@@ -248,6 +292,7 @@ namespace znMusicPlayerWUI.Background
             DownloadingData.Remove(dm);
             DownloadedData.Add(dm);
             OnDownloaded?.Invoke(dm);
+            System.Diagnostics.Debug.WriteLine($"下载完成：{dm.MusicData.Title}");
         }
 
         public void CallOnDownloadingEvent(DownloadData dm)

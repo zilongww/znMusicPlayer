@@ -33,6 +33,7 @@ namespace znMusicPlayerWUI.Pages
         public object NavToObj { get; set; }
         public SearchDataType NowSearchMode { get; set; } = SearchDataType.歌曲;
         public MusicFrom NowMusicFrom { get; set; } = MusicFrom.neteaseMusic;
+        MusicListData musicListData;
 
         public ItemListViewSearch()
         {
@@ -47,6 +48,7 @@ namespace znMusicPlayerWUI.Pages
             NavToObj = a[0];
             NowMusicFrom = (MusicFrom)a[1];
             NowSearchMode = (SearchDataType)a[2];
+            musicListData = new() { ListDataType = DataType.歌曲 };
             InitData();
         }
 
@@ -142,7 +144,7 @@ namespace znMusicPlayerWUI.Pages
                         {
                             count++;
                             i.Count = count;
-                            MusicDataList.Add(new() { MusicData = i, ImageScaleDPI = dpi });
+                            MusicDataList.Add(new() { MusicData = i, MusicListData = musicListData, ImageScaleDPI = dpi });
                         }
                         ItemPresenterControlBridge.Margin = new(14, 0, 16, 0);
                         break;

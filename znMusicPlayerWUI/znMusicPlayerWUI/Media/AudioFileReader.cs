@@ -11,6 +11,7 @@ using znMusicPlayerWUI.Helpers;
 using NAudio.Midi;
 using System.Threading.Tasks;
 using znMusicPlayerWUI.Media.Decoder.FFmpeg;
+using FFmpeg.AutoGen;
 
 namespace znMusicPlayerWUI.Media
 {
@@ -78,77 +79,99 @@ namespace znMusicPlayerWUI.Media
 
         private void CreateReaderStream(string fileName, bool cueFile = false)
         {
-            if (File.Exists(fileName))
+            if (!File.Exists(fileName))
             {
-                FileStream f = File.OpenRead(fileName);
-                if (f.Length <= 10)
-                {
-                    throw new FileLoadException("无法读取此音频文件。");
-                }
+                throw new FileNotFoundException();
+            }
 
+/*
+            foreach (var file in Directory.GetFiles(DataEditor.DataFolderBase.RemovedIDv3CacheFolder))
+            {
                 try
                 {
-                    addr = FileHelper.FileTypeGet(f);
+                    File.Delete(file);
                 }
-                catch
-                {
-                    addr = "-1";
-                }
-                //addr = "-1";
-                FileAddr = addr;
-                switch (addr)
-                {
-                    case "10276":
-                        if (!cueFile)
-                        {
-                            readerStream = new FlakeNAudioAdapter.FlakeFileReader(fileName);
-                            System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 FlakeFlac 解码器");
-                        }
-                        else
-                        {
-                            readerStream = new NAudio.Flac.FlacReader(fileName);
-                            System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 NAudio.Flac 解码器（CUE文件兼容性）");
-                        }
-                        DecodeName = $"{App.AppName} Built-in FLAC Decoder";
-                        break;
-                    case "79103":
-                        readerStream = new NAudio.Vorbis.VorbisWaveReader(f);
-                        DecodeName = $"{App.AppName} Built-in Vorbis Decoder";
-                        System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Vorbis 解码器");
-                        break;
-                    case "7368":
-                        readerStream = new Mp3FileReader(f);
-                        DecodeName = $"NAudio MP3 Decoder";
-                        System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 MP3 解码器");
-                        break;
-                    case "8273":
-                        readerStream = new WaveFileReader(f);
-                        DecodeName = $"NAudio Wave Decoder";
-                        if (readerStream.WaveFormat.Encoding != WaveFormatEncoding.Pcm && readerStream.WaveFormat.Encoding != WaveFormatEncoding.IeeeFloat)
-                        {
-                            readerStream = WaveFormatConversionStream.CreatePcmStream(readerStream);
-                            readerStream = new BlockAlignReductionStream(readerStream);
-                            System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Wave 解码器");
-                        }
-                        break;
-                    case "7079":
-                        readerStream = new AiffFileReader(fileName);
-                        DecodeName = $"NAudio Aiff Decoder";
-                        System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Aiff 解码器");
-                        break;
-                    case "7784":
-                        isMidi = true;
-                        DecodeName = null;
-                        break;
-                    default:
-                        if (File.Exists(fileName))
-                        {
-                            System.Diagnostics.Debug.WriteLine($"AudioFileReader: 正在使用 Microsoft MediaFoundationReader 解码器，文件标识符为：{addr}");
-                            DecodeName = $"Microsoft MediaFoundation Decoder";
-                            readerStream = new MediaFoundationReader(fileName);
-                        }
-                        break;
-                }
+                catch { }
+            }
+
+            string newPath = Path.Combine(DataEditor.DataFolderBase.RemovedIDv3CacheFolder, Path.GetFileName(fileName));
+            File.Copy(fileName, newPath);
+            TagLib.File tagFile = TagLib.File.Create(newPath);
+            tagFile.RemoveTags(TagLib.TagTypes.AllTags);
+            tagFile.Save();
+            tagFile.Dispose();
+            fileName = newPath;
+*/
+            FileStream f = File.OpenRead(fileName);
+            if (f.Length <= 10)
+            {
+                throw new FileLoadException("无法读取此音频文件。");
+            }
+
+            try
+            {
+                addr = FileHelper.FileTypeGet(f);
+            }
+            catch
+            {
+                addr = "-1";
+            }
+
+            bool useMFR = false;
+            //addr = "-1";
+            FileAddr = addr;
+            switch (addr)
+            {
+                case "10276":
+                    if (!cueFile)
+                    {
+                        readerStream = new FlakeNAudioAdapter.FlakeFileReader(fileName);
+                        System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 FlakeFlac 解码器");
+                    }
+                    else
+                    {
+                        readerStream = new NAudio.Flac.FlacReader(fileName);
+                        System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 NAudio.Flac 解码器（CUE文件兼容性）");
+                    }
+                    DecodeName = $"{App.AppName} Built-in FLAC Decoder";
+                    break;
+                case "79103":
+                    readerStream = new NAudio.Vorbis.VorbisWaveReader(fileName);
+                    DecodeName = $"{App.AppName} Built-in Vorbis Decoder";
+                    System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Vorbis 解码器");
+                    break;
+                case "7368":
+                    readerStream = new Mp3FileReader(fileName);
+                    DecodeName = $"NAudio MP3 Decoder";
+                    System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 MP3 解码器");
+                    break;
+                case "8273":
+                    readerStream = new WaveFileReader(fileName);
+                    DecodeName = $"NAudio Wave Decoder";
+                    if (readerStream.WaveFormat.Encoding != WaveFormatEncoding.Pcm && readerStream.WaveFormat.Encoding != WaveFormatEncoding.IeeeFloat)
+                    {
+                        readerStream = WaveFormatConversionStream.CreatePcmStream(readerStream);
+                        readerStream = new BlockAlignReductionStream(readerStream);
+                        System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Wave 解码器");
+                    }
+                    break;
+                case "7079":
+                    readerStream = new AiffFileReader(fileName);
+                    DecodeName = $"NAudio Aiff Decoder";
+                    System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Aiff 解码器");
+                    break;
+                case "7784":
+                    isMidi = true;
+                    DecodeName = null;
+                    break;
+                default: useMFR = true; break;
+            }
+
+            if (useMFR)
+            {
+                System.Diagnostics.Debug.WriteLine($"AudioFileReader: 正在使用 Microsoft MediaFoundationReader 解码器，文件标识符为：{addr}");
+                DecodeName = $"Microsoft MediaFoundation Decoder";
+                readerStream = new MediaFoundationReader(fileName);
             }
         }
 

@@ -45,6 +45,7 @@ namespace znMusicPlayerWUI.Pages
             PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
             Album a = (Album)e.Parameter;
             NavToObj = a;
+            musicListData = new() { ListDataType = DataType.专辑 };
             InitData();
         }
 

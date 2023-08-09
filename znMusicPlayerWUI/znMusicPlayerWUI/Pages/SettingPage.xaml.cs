@@ -426,8 +426,9 @@ namespace znMusicPlayerWUI.Pages
             downloadOptionsLoading = true;
             var root = sender as StackPanel;
             (root.Children[0] as CheckBox).IsChecked = App.downloadManager.IDv3WriteImage;
-            (root.Children[1] as CheckBox).IsChecked = App.downloadManager.IDv3WriteLyric;
-            (root.Children[2] as CheckBox).IsChecked = App.downloadManager.SaveLyricToLrcFile;
+            (root.Children[1] as CheckBox).IsChecked = App.downloadManager.IDv3WriteArtistImage;
+            (root.Children[2] as CheckBox).IsChecked = App.downloadManager.IDv3WriteLyric;
+            (root.Children[3] as CheckBox).IsChecked = App.downloadManager.SaveLyricToLrcFile;
             downloadOptionsLoading = false;
         }
 
@@ -441,9 +442,12 @@ namespace znMusicPlayerWUI.Pages
                     App.downloadManager.IDv3WriteImage = (bool)checkBox.IsChecked;
                     break;
                 case "1":
-                    App.downloadManager.IDv3WriteLyric = (bool)checkBox.IsChecked;
+                    App.downloadManager.IDv3WriteArtistImage = (bool)checkBox.IsChecked;
                     break;
                 case "2":
+                    App.downloadManager.IDv3WriteLyric = (bool)checkBox.IsChecked;
+                    break;
+                case "3":
                     App.downloadManager.SaveLyricToLrcFile = (bool)checkBox.IsChecked;
                     break;
             }

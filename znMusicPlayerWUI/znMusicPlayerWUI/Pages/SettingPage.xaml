@@ -159,8 +159,16 @@
                     <labs:SettingsCard.Description>
                         <StackPanel Margin="12,8,0,0" x:Name="Download_Options" Loaded="Download_Options_Loaded">
                             <CheckBox Content="IDv3标签中写入专辑图片数据" Click="CheckBox_Click" Tag="0"/>
-                            <CheckBox Content="IDv3标签中写入歌词数据" Click="CheckBox_Click" Tag="1"/>
-                            <CheckBox Content="歌词数据保存到.lrc文件中" Click="CheckBox_Click" Tag="2"/>
+                            <CheckBox Click="CheckBox_Click" Tag="1"
+                                      ToolTipService.ToolTip="当你常用的播放设备或软件无法识别内嵌图片类型时，关闭此选项可能会解决只显示艺术家图片而不是专辑图片的问题">
+                                <TextBlock>
+                                    <Run Text="IDv3标签中写入艺术家图片数据" FontSize="14"/>
+                                    <Run Text="&#xE7BA;" FontSize="16" FontFamily="Segoe Fluent Icons"
+                                         Foreground="{ThemeResource SystemFillColorCautionBrush}"/>
+                                </TextBlock>
+                            </CheckBox>
+                            <CheckBox Content="IDv3标签中写入歌词数据" Click="CheckBox_Click" Tag="2"/>
+                            <CheckBox Content="歌词数据保存到.lrc文件中" Click="CheckBox_Click" Tag="3"/>
                         </StackPanel>
                     </labs:SettingsCard.Description>
                 </labs:SettingsCard>
