@@ -642,7 +642,13 @@ namespace znMusicPlayerWUI.Media
                     }
 
                     string a = await WebHelper.GetAudioAddressAsync(musicData);
-                    if (a != null)
+                    if (a == null)
+                    {
+                        LoadingMusicDatas.Remove(musicData);
+                        CacheLoadedChanged?.Invoke(this);
+                        throw new WebException($"无法获取歌曲链接。");
+                    }
+                    else
                     {
                         //Debug.WriteLine(a);
                         string b = @$"{AudioCacheFolder}\{musicData.From}{musicData.ID}";
@@ -886,7 +892,7 @@ namespace znMusicPlayerWUI.Media
                             if (WasapiOnly)
                                 throw new Exception("当前输出设备似乎不支持独占模式。\n" +
                                     "请尝试到音频输出设备的 属性 页面的 高级 选项卡打开 允许应用程序独占控制该设备。");
-                            throw new Exception("无法初始化音频输出，请重试。");
+                            throw new Exception("无法初始化音频输出，可能是其它应用程序独占了此音频输出设备，请尝试重新播放。");
                         }
                         NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
                         device.Dispose();
@@ -1003,7 +1009,6 @@ namespace znMusicPlayerWUI.Media
             MidiPlayback?.Start();
             PlayStateChanged?.Invoke(this);
             ReCallTiming();
-            App.SMTC.PlaybackStatus = MediaPlaybackStatus.Playing;
             return true;
         }
         
@@ -1013,7 +1018,6 @@ namespace znMusicPlayerWUI.Media
             NowOutObj?.Pause();
             MidiPlayback?.Stop();
             PlayStateChanged?.Invoke(this);
-            App.SMTC.PlaybackStatus = MediaPlaybackStatus.Paused;
             return true;
         }
         
@@ -1023,7 +1027,6 @@ namespace znMusicPlayerWUI.Media
             NowOutObj?.Stop();
             MidiPlayback?.Stop();
             PlayStateChanged?.Invoke(this);
-            App.SMTC.PlaybackStatus = MediaPlaybackStatus.Stopped;
             return true;
         }
 

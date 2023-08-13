@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
 using Microsoft.UI.Windowing;
 using System;
 using System.Collections.Generic;
@@ -30,13 +29,14 @@ using Microsoft.UI.Xaml.Markup;
 using System.Threading.Tasks;
 using znMusicPlayerWUI.Background;
 using static znMusicPlayerWUI.DataEditor.DataFolderBase;
-using Windows.Media.Playback;
-using Windows.Media;
 using Windows.Storage.Streams;
 using Windows.Storage;
 using znMusicPlayerWUI.Background.HotKeys;
 using Newtonsoft.Json.Linq;
 using Windows.UI.Popups;
+using System.Runtime.InteropServices;
+using Vanara.PInvoke;
+using static Vanara.PInvoke.Gdi32;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -48,8 +48,8 @@ namespace znMusicPlayerWUI
     /// </summary>
     public partial class App : Application
     {
-        public static readonly MediaPlayer BMP = BackgroundMediaPlayer.Current;
-        public static readonly Windows.Media.SystemMediaTransportControls SMTC = BackgroundMediaPlayer.Current?.SystemMediaTransportControls;
+        public static readonly Windows.Media.Playback.MediaPlayer BMP = Windows.Media.Playback.BackgroundMediaPlayer.Current;
+        public static Windows.Media.SystemMediaTransportControls SMTC { get; } = Windows.Media.Playback.BackgroundMediaPlayer.Current?.SystemMediaTransportControls;
         public static readonly MetingServices metingServices = new();
         public static readonly AudioPlayer audioPlayer = new();
         public static readonly PlayingList playingList = new();
@@ -78,7 +78,7 @@ namespace znMusicPlayerWUI
         public App()
         {
             DataFolderBase.InitFiles();
-            Media.Decoder.FFmpeg.FFmpegBinariesHelper.InitFFmpeg();
+            //Media.Decoder.FFmpeg.FFmpegBinariesHelper.InitFFmpeg();
             InitializeComponent();
             UnhandledException += App_UnhandledException;
 /*
@@ -92,7 +92,7 @@ namespace znMusicPlayerWUI
             SMTC.IsNextEnabled = true;
             SMTC.IsPreviousEnabled = true;
             SMTC.IsStopEnabled = true;
-            SMTC.DisplayUpdater.Type = MediaPlaybackType.Music;
+            SMTC.DisplayUpdater.Type = Windows.Media.MediaPlaybackType.Music;
             SMTC.DisplayUpdater.MusicProperties.Title = AppName;
             SMTC.DisplayUpdater.MusicProperties.Artist = "没有正在播放的歌曲";
             SMTC.DisplayUpdater.Update();
@@ -108,12 +108,14 @@ namespace znMusicPlayerWUI
                 if (_.MusicData == null)
                 {
                     SMTC.DisplayUpdater.MusicProperties.Title = _.FileReader?.FileName;
+                    AppWindowLocal.Title = AppName;
                     //notifyIcon.Text = AppName;
                 }
                 else
                 {
                     SMTC.DisplayUpdater.MusicProperties.Title = _.MusicData.Title;
                     SMTC.DisplayUpdater.MusicProperties.Artist = _.MusicData.ButtonName;
+                    AppWindowLocal.Title = $"{_.MusicData.Title} - {AppName}";
                     /*try
                     {
                         notifyIcon.Text = $"{AppName}\n正在播放：{_.MusicData.Title}\n · 艺术家：{_.MusicData.ArtistName}\n · 专辑：{_.MusicData.Album.Title}";
@@ -121,6 +123,25 @@ namespace znMusicPlayerWUI
                     catch { }*/
                 }
                 SMTC.DisplayUpdater.Update();
+            };
+            audioPlayer.PlayStateChanged += (_) =>
+            {
+                if (_.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+                {
+                    SMTC.PlaybackStatus = Windows.Media.MediaPlaybackStatus.Playing;
+                    Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] changer = {
+                        new Helpers.SDKs.TaskbarProgress.THUMBBUTTON() { iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = pauseIconHandle, szTip = "播放" }
+                    };
+                    Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarUpdateButtons(AppWindowLocalHandle, 3, changer);
+                }
+                else
+                {
+                    SMTC.PlaybackStatus = Windows.Media.MediaPlaybackStatus.Paused;
+                    Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] changer = {
+                        new Helpers.SDKs.TaskbarProgress.THUMBBUTTON() { iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = playIconHandle, szTip = "播放" }
+                    };
+                    Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarUpdateButtons(AppWindowLocalHandle, 3, changer);
+                }
             };
             playingList.NowPlayingImageLoading += (_, __) =>
             {
@@ -130,8 +151,13 @@ namespace znMusicPlayerWUI
             playingList.NowPlayingImageLoaded += async (_, __) =>
             {
                 if (__ == null) return;
-                SMTC.DisplayUpdater.Thumbnail = RandomAccessStreamReference.CreateFromFile(await StorageFile.GetFileFromPathAsync(__));
-                SMTC.DisplayUpdater.Update();
+                try
+                {
+                    SMTC.DisplayUpdater.Thumbnail = RandomAccessStreamReference.CreateFromFile(await StorageFile.GetFileFromPathAsync(__));
+                    SMTC.DisplayUpdater.Update();
+                    SetTaskbarImage(__);
+                }
+                catch { }
             };
 
             TaskScheduler.UnobservedTaskException +=
@@ -180,7 +206,18 @@ namespace znMusicPlayerWUI
             AppWindowLocalFullScreenPresenter = FullScreenPresenter.Create();
             App.AppWindowLocal.SetPresenter(AppWindowLocalOverlappedPresenter);
             LAE = args;
-            
+            /*
+                        List<Microsoft.WindowsAPICodePack.Taskbar.ThumbnailToolBarButton> buttons = new()
+                        {
+                            new (null, "上一首"),
+                            new(null, "播放/暂停"),
+                            new(null, "下一首")
+                        };
+                        Microsoft.WindowsAPICodePack.Taskbar.TaskbarManager.Instance.ThumbnailToolBars.AddButtons(AppWindowLocalHandle, buttons.ToArray());
+            */
+
+            InitTaskbarInfo();
+
             var displayArea = CodeHelper.GetDisplayArea(m_window);
             var dpi = CodeHelper.GetScaleAdjustment(m_window);
             double a = 2;
@@ -204,6 +241,62 @@ namespace znMusicPlayerWUI
             //AppWindowLocal.SetPresenter(AppWindowLocalPresenter);
             hotKeyManager.Init(App.WindowLocal);
             //NotifyIconWindow = new();
+        }
+
+        static string localPath = Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), "Images");
+        static nint pauseIconHandle = (Bitmap.FromFile(Path.Combine(localPath, "任务栏暂停.png")) as Bitmap).GetHicon();
+        static nint playIconHandle = (Bitmap.FromFile(Path.Combine(localPath, "任务栏播放.png")) as Bitmap).GetHicon();
+        private static async void InitTaskbarInfo()
+        {
+            int attributeTrue = (int)NativeMethods.TRUE;
+            var hresult = NativeMethods.DwmSetWindowAttribute(AppWindowLocalHandle, NativeMethods.DWMWA.HAS_ICONIC_BITMAP, ref attributeTrue, sizeof(int));
+            if ((hresult != 0))
+                throw Marshal.GetExceptionForHR(hresult);
+            hresult = NativeMethods.DwmSetWindowAttribute(AppWindowLocalHandle, NativeMethods.DWMWA.FORCE_ICONIC_REPRESENTATION, ref attributeTrue, sizeof(int));
+            if ((hresult != 0))
+                throw Marshal.GetExceptionForHR(hresult);
+
+            Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.HrInit();
+            await Task.Delay(10);
+            Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] taskbarInfoButtonPauseStyle = new Helpers.SDKs.TaskbarProgress.THUMBBUTTON[]
+            {
+                new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 1, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = (Bitmap.FromFile(Path.Combine(localPath, "上一首.png")) as Bitmap).GetHicon(), szTip = "上一首" },
+                new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = playIconHandle, szTip = "播放" },
+                new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 3, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = (Bitmap.FromFile(Path.Combine(localPath, "下一首.png")) as Bitmap).GetHicon(), szTip = "下一首" },
+            };
+            Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarAddButtons(AppWindowLocalHandle, 3, taskbarInfoButtonPauseStyle);
+            Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarUpdateButtons(AppWindowLocalHandle, 3, taskbarInfoButtonPauseStyle);
+        }
+
+        public static void SetTaskbarImage(string filePath)
+        {
+            if (filePath == null) return;
+            bool canBreak = false;
+            var bmp = Bitmap.FromFile(filePath);
+            int size = 160;
+            for (int i = 0; i < 50; i++)
+            {
+                if (canBreak) break;
+                var hBitmap = bmp.GetThumbnailImage(size, size, null, 0) as Bitmap;
+                try
+                {
+                    var a = NativeMethods.DwmSetIconicThumbnail(AppWindowLocalHandle, hBitmap.GetHbitmap(), NativeMethods.DWM_SIT.DISPLAYFRAME);
+                    if (a != 0)
+                    {
+                        //Debug.WriteLine($"{size}x{size} failed.");
+                        size -= 2;
+                        canBreak = false;
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"{size}x{size} completed.");
+                        canBreak = true;
+                    }
+                }
+                catch
+                {
+                }
+            }
         }
 
         private void M_window_Closed(object sender, WindowEventArgs args)
@@ -385,5 +478,40 @@ namespace znMusicPlayerWUI
             // other
             ".wav", ".ogg", ".flac", ".aiff", ".aif", ".mid", ".cue", ".dts"
         };
+    }
+
+    internal static class NativeMethods
+    {
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmSetIconicThumbnail(IntPtr hwnd, IntPtr hbmp, DWM_SIT dwSITFlags);
+
+        [DllImport("dwmapi.dll")]
+        public static extern int DwmSetWindowAttribute(IntPtr hwnd, DWMWA dwAttribute, ref int pvAttribute, int cbAttribute);
+
+        public enum DWM_SIT
+        {
+            None,
+            DISPLAYFRAME = 1
+        }
+
+        public enum DWMWA
+        {
+            NCRENDERING_ENABLED = 1,
+            NCRENDERING_POLICY,
+            TRANSITIONS_FORCEDISABLED,
+            ALLOW_NCPAINT,
+            CAPTION_BUTTON_BOUNDS,
+            NONCLIENT_RTL_LAYOUT,
+            FORCE_ICONIC_REPRESENTATION,
+            FLIP3D_POLICY,
+            EXTENDED_FRAME_BOUNDS,
+            // New to Windows 7:
+            HAS_ICONIC_BITMAP,
+            DISALLOW_PEEK,
+            EXCLUDED_FROM_PEEK
+            // LAST
+        }
+
+        public const uint TRUE = 1;
     }
 }

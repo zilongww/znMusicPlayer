@@ -23,7 +23,7 @@ namespace znMusicPlayerWUI.Pages
             int allDownload = 0;
             int downloaded = 0;
 
-            var UpdateTextTB = () => HeaderBaseTextBlock.Text = $"下载（{downloaded}/{allDownload}）";
+            var UpdateTextTB = () => HeaderBaseTextBlock.Text = $"下载（{App.downloadManager.DownloadedData.Count}/{App.downloadManager.AllDownloadData.Count} - {App.downloadManager.DownloadErrorData.Count} 错误）";
             App.downloadManager.AddDownload += (dm) =>
             {
                 bool noContains = true;
@@ -96,6 +96,7 @@ namespace znMusicPlayerWUI.Pages
                         if (downloadCard.downloadData == dm)
                         {
                             downloadCard.SetError();
+                            UpdateTextTB();
                             break;
                         }
                     }

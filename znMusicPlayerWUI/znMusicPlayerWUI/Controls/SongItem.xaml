@@ -216,10 +216,11 @@
                                     <ResourceDictionary>
                                         <ResourceDictionary.ThemeDictionaries>
                                             <ResourceDictionary x:Key="Dark">
-                                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#20FFFFFF"/>
+                                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#15FFFFFF"/>
                                             </ResourceDictionary>
                                             <ResourceDictionary x:Key="Light">
-                                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#25000000"/>
+                                                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#15000000"/>
+                                                <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#0A000000"/>
                                             </ResourceDictionary>
                                         </ResourceDictionary.ThemeDictionaries>
                                     </ResourceDictionary>

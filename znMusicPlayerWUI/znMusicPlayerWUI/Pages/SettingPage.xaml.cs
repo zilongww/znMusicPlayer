@@ -272,19 +272,19 @@ namespace znMusicPlayerWUI.Pages
             switch (tagObj)
             {
                 case "0":
-                    folderPath = CachePath;
+                    folderPath = DataFolderBase.CacheFolder;
                     break;
                 case "1":
-                    folderPath = AudioCachePath;
+                    folderPath = DataFolderBase.AudioCacheFolder;
                     break;
                 case "2":
-                    folderPath = ImageCachePath;
+                    folderPath = DataFolderBase.ImageCacheFolder;
                     break;
                 case "3":
-                    folderPath = LyricCachePath;
+                    folderPath = DataFolderBase.LyricCacheFolder;
                     break;
                 case "4":
-                    folderPath = DownloadPath;
+                    folderPath = DataFolderBase.DownloadFolder;
                     break;
             }
 

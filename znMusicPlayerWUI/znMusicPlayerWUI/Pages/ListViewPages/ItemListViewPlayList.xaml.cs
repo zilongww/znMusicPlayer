@@ -457,6 +457,7 @@ namespace znMusicPlayerWUI.Pages
             {
                 Children.SelectionMode = ListViewSelectionMode.Multiple;
 
+                MoveItemButton.Visibility = Visibility.Collapsed;
                 SelectorSeparator.Visibility = Visibility.Visible;
                 AddSelectedToPlayingListButton.Visibility = Visibility.Visible;
                 AddSelectedToPlayListButton.Visibility = Visibility.Visible;
@@ -472,6 +473,7 @@ namespace znMusicPlayerWUI.Pages
             }
             else
             {
+                MoveItemButton.Visibility = Visibility.Visible;
                 Children.SelectionMode = ListViewSelectionMode.None;
 
                 SelectorSeparator.Visibility = Visibility.Collapsed;
@@ -804,12 +806,16 @@ namespace znMusicPlayerWUI.Pages
                 Children.AllowDrop = true;
                 Children.CanDragItems = true;
                 Children.CanReorderItems = true;
+                Children.SelectionMode = ListViewSelectionMode.Multiple;
+                SelectItemButton.Visibility = Visibility.Collapsed;
             }
             else
             {
                 Children.AllowDrop = false;
                 Children.CanDragItems = false;
                 Children.CanReorderItems = false;
+                Children.SelectionMode = ListViewSelectionMode.None;
+                SelectItemButton.Visibility = Visibility.Visible;
                 foreach (var i in SongItem.StaticSongItems) i.AddUnloadedEvent();
 
                 var data = await PlayListHelper.ReadData();

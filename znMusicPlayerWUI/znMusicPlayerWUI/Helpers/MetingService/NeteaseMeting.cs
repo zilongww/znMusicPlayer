@@ -12,13 +12,13 @@ namespace znMusicPlayerWUI.Helpers.MetingService
 {
     public class NeteaseMeting: IMetingService
     {
-        public Meting4Net.Core.Meting Services { get; set; }
+        public override Meting4Net.Core.Meting Services { get; set; }
         public NeteaseMeting(Meting4Net.Core.Meting meting)
         {
             Services = meting;
         }
 
-        public async Task<string> GetUrl(string id, int br)
+        public override async Task<string> GetUrl(string id, int br)
         {
             return await Task.Run(() =>
             {
@@ -64,7 +64,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
         /// item1歌词
         /// item2歌词翻译
         /// </returns>
-        public async Task<Tuple<string, string>> GetLyric(string id)
+        public override async Task<Tuple<string, string>> GetLyric(string id)
         {
             return await Task.Run(() =>
             {
@@ -100,7 +100,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
         }
 
         private List<string> PictureLoadingList = new();
-        public async Task<Tuple<string, string>> GetPic(string id)
+        public override async Task<string> GetPic(string id)
         {
             while (PictureLoadingList.Count > 3)
             {
@@ -109,19 +109,13 @@ namespace znMusicPlayerWUI.Helpers.MetingService
             return await Task.Run(() =>
             {
                 PictureLoadingList.Add(id);
-                var getPicAction = Tuple<string, string> () =>
+                var getPicAction = string () =>
                 {
-                    string pic = Services.FormatMethod().Pic(id, 5000);
+                    var pic = Services.FormatMethod().PicObj(id, 5000);
 
                     if (pic != null)
                     {
-                        var a = JObject.Parse(pic);
-                        if (a.ContainsKey("lyric"))
-                        {
-                            var l = (string)a["lyric"];
-                            var t = (string)a["tlyric"];
-                            return new Tuple<string, string>(l, t);
-                        }
+                        return pic.url;
                     }
 
                     return null;
@@ -142,34 +136,34 @@ namespace znMusicPlayerWUI.Helpers.MetingService
             });
         }
         
-        public async Task<object> GetSearch(
+        public override async Task<object> GetSearch(
             string keyword,
             int pageNumber = 1,
             int pageSize = 30,
-            SearchDataType type = default)
+            int type = 0)
         {
             return await Task.Run(() =>
             {
                 var getSearchAction = object () =>
                 {
-                    string data = Services.FormatMethod(false).Search(keyword, new Meting4Net.Core.Models.Standard.Options() { page = pageNumber, limit = pageSize, type = (int)type });
+                    string data = Services.FormatMethod(false).Search(keyword, new Meting4Net.Core.Models.Standard.Options() { page = pageNumber, limit = pageSize, type = type });
 
                     if (data != null)
                     {
                         var a = JObject.Parse(data);
                         if (a.ContainsKey("result"))
                         {
-                            if (type == SearchDataType.歌曲)
+                            if (type == (int)SearchDataType.歌曲)
                             {
                                 MusicListData ld = new(keyword, keyword, null, MusicFrom.neteaseMusic, null, null);
                                 ld.Songs = UnpackMusicData(a["result"]["songs"]);
                                 return ld;
                             }
-                            else if (type == SearchDataType.歌单)
+                            else if (type == (int)SearchDataType.歌单)
                             {
 
                             }
-                            else if (type == SearchDataType.艺术家)
+                            else if (type == (int)SearchDataType.艺术家)
                             {
                                 List<Artist> artists = new();
                                 foreach (var artist in a["result"]["artists"])
@@ -183,15 +177,14 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                                 }
                                 return artists;
                             }
-                            else if (type == SearchDataType.用户)
+                            else if (type == (int)SearchDataType.用户)
                             {
 
                             }
-                            else if (type == SearchDataType.专辑)
+                            else if (type == (int)SearchDataType.专辑)
                             {
 
                             }
-                            System.Diagnostics.Debug.WriteLine(data);
                         }
                     }
 
@@ -252,7 +245,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
         }
 
         private List<string> PlayListLoadingList = new();
-        public async Task<MusicListData> GetPlayList(string id)
+        public override async Task<MusicListData> GetPlayList(string id)
         {
             while (PlayListLoadingList.Count > 3)
             {
@@ -311,7 +304,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
             });
         }
 
-        public async Task<Artist> GetArtist(string id)
+        public override async Task<Artist> GetArtist(string id)
         {
             return await Task.Run(() =>
             {
@@ -363,7 +356,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
             });
         }
 
-        public async Task<Album> GetAlbum(string id)
+        public override async Task<Album> GetAlbum(string id)
         {
             return await Task.Run(() =>
             {
@@ -434,7 +427,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
             });
         }
 
-        public async Task<MusicData> GetMusicData(string songid)
+        public override async Task<MusicData> GetMusicData(string songid)
         {
             return await Task.Run(() =>
             {
@@ -478,13 +471,13 @@ namespace znMusicPlayerWUI.Helpers.MetingService
             });
         }
 
-        public async Task<string> GetPicFromMusicDataID(string id)
+        public override async Task<string> GetPicFromMusicData(MusicData id)
         {
             return await Task.Run(() =>
             {
                 var getSongAction = string () =>
                 {
-                    var data = JObject.Parse(Services.FormatMethod(false).Song(id));
+                    var data = JObject.Parse(Services.FormatMethod(false).Song(id.ID));
 
                     //System.Diagnostics.Debug.WriteLine(data);
                     string result = null;

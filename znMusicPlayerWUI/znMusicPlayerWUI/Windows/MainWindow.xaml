@@ -132,6 +132,7 @@
                                         </ResourceDictionary>
                                         <ResourceDictionary x:Key="Light">
                                             <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#0E000000"/>
+                                            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#05000000"/>
                                         </ResourceDictionary>
                                     </ResourceDictionary.ThemeDictionaries>
                                 </ResourceDictionary>

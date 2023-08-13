@@ -248,9 +248,8 @@ namespace znMusicPlayerWUI.Helpers
 
         public static async Task OpenFilePath(string openPath)
         {
-            var t = new FolderLauncherOptions();
             StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(openPath);
-            await Launcher.LaunchFolderAsync(folder, t);
+            await Launcher.LaunchFolderAsync(folder);
         }
 
         public static async Task<string> FileTypeGetAsync(string name)

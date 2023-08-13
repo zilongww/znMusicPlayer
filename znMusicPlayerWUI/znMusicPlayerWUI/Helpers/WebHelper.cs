@@ -112,7 +112,7 @@ namespace znMusicPlayerWUI.Helpers
                     case MusicFrom.neteaseMusic:
                         if (musicData.Album.ID == null)
                         {
-                            addressResult = await App.metingServices.NeteaseServices.GetPicFromMusicDataID(musicData.ID);
+                            addressResult = await App.metingServices.NeteaseServices.GetPicFromMusicData(musicData);
                             //System.Diagnostics.Debug.WriteLine(addressResult);
                             /*string address = $"http://music.163.com/api/song/detail/?id={musicData.ID}&ids=%5B{musicData.ID}%5D";
                             var res = JObject.Parse(await GetStringAsync(address));*/
@@ -123,6 +123,13 @@ namespace znMusicPlayerWUI.Helpers
                             var album = await App.metingServices.NeteaseServices.GetAlbum(musicData.Album.ID);
                             addressResult = album.PicturePath;
                         }
+                        break;
+                    case MusicFrom.kgMusic:
+                        try
+                        {
+                            addressResult = await App.metingServices.KgServices.GetPicFromMusicData(musicData);
+                        }
+                        catch { }
                         break;
                     default:
                         addressResult = musicData.Album.PicturePath;
@@ -143,21 +150,26 @@ namespace znMusicPlayerWUI.Helpers
         public static async Task<string> GetAudioAddressAsync(MusicData musicData)
         {
             string returns = null;
-            switch (musicData.From)
+            try
             {
-                case MusicFrom.kwMusic:
-                    break;
-                case MusicFrom.kgMusic:
-                    break;
-                case MusicFrom.neteaseMusic:
-                    return await App.metingServices.NeteaseServices.GetUrl(musicData.ID, 960);
-                case MusicFrom.qqMusic:
-                    break;
-                case MusicFrom.miguMusic:
-                    break;
-                default:
-                    return null;
+                switch (musicData.From)
+                {
+                    case MusicFrom.kwMusic:
+                        break;
+                    case MusicFrom.kgMusic:
+                        return await App.metingServices.KgServices.GetUrl(musicData.ID, 320);
+                        break;
+                    case MusicFrom.neteaseMusic:
+                        return await App.metingServices.NeteaseServices.GetUrl(musicData.ID, 960);
+                    case MusicFrom.qqMusic:
+                        break;
+                    case MusicFrom.miguMusic:
+                        break;
+                    default:
+                        return null;
+                }
             }
+            catch(Exception err) { System.Diagnostics.Debug.WriteLine($"获取歌曲链接时出现错误！{err.Message}"); }
             return returns;
         }
 
@@ -199,10 +211,12 @@ namespace znMusicPlayerWUI.Helpers
                     break;
 
                 case MusicFrom.kgMusic:
+                    //var a = App.metingServices.KgServices.Services.Search(keyword);
+                    listData = await App.metingServices.KgServices.GetSearch(keyword, pageNumber, pageSize);
                     break;
 
                 case MusicFrom.neteaseMusic:
-                    listData = await App.metingServices.NeteaseServices.GetSearch(keyword, pageNumber, pageSize, searchDataType);
+                    listData = await App.metingServices.NeteaseServices.GetSearch(keyword, pageNumber, pageSize, (int)searchDataType);
                     break;
 
                 case MusicFrom.qqMusic:

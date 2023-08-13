@@ -13,7 +13,6 @@
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
-	
   <ItemGroup>
     <None Remove="Background.zip" />
     <None Remove="Controls\ArtistCard.xaml" />
@@ -89,12 +88,19 @@
     <PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0-preview.6.23329.7" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
-    <PackageReference Include="Vanara.PInvoke.User32" Version="3.4.15" />
+    <PackageReference Include="Vanara.PInvoke.User32" Version="3.4.16" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Helpers\SDKs\NeteaseCloudMusicApi\NeteaseCloudMusicApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\上一首.png" />
+    <Resource Include="Images\下一首.png" />
+    <Resource Include="Images\任务栏播放.png" />
+    <Resource Include="Images\任务栏暂停.png" />
   </ItemGroup>
 
   <ItemGroup>

@@ -39,6 +39,9 @@ using Vanara.PInvoke;
 using ColorCode.Compilation.Languages;
 using CommunityToolkit.WinUI.UI.Animations;
 using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Shell;
+using Windows.ApplicationModel.Background;
+using Windows.Devices.Enumeration;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -111,13 +114,14 @@ namespace znMusicPlayerWUI
                 XamlRoot = SContent.XamlRoot,
                 CloseButtonCommand = null
             };
+
             equalizerPage = new Pages.DialogPages.EqualizerPage();
             SubClassing();
 
             App.AppWindowLocal = WindowHelperzn.WindowHelper.GetAppWindowForCurrentWindow(this);
             App.AppWindowLocal.Title = App.AppName;
             App.AppWindowLocal.SetIcon("icon.ico");
-
+            
             InitializeTitleBar(SWindowGridBaseTop.RequestedTheme);
 
             m_wsdqHelper = new WindowHelperzn.WindowsSystemDispatcherQueueHelper();
@@ -143,6 +147,7 @@ namespace znMusicPlayerWUI
             App.LoadSettings(App.StartingSettings);
             SetBackdrop(m_currentBackdrop);
             ReadLAE();
+
         }
 
         bool isBackground = false;
@@ -430,9 +435,9 @@ namespace znMusicPlayerWUI
                 bar.ButtonHoverBackgroundColor = Color.FromArgb(20, 0, 0, 0);
                 bar.ButtonHoverForegroundColor = Colors.Black;
                 bar.ButtonPressedBackgroundColor = Color.FromArgb(10, 0, 0, 0);
-                bar.ButtonPressedForegroundColor = Color.FromArgb(100, 0, 0, 0);
+                bar.ButtonPressedForegroundColor = Color.FromArgb(255, 0, 0, 0);
                 bar.ButtonInactiveBackgroundColor = Colors.Transparent;
-                bar.ButtonInactiveForegroundColor = Color.FromArgb(50, 0, 0, 0);
+                bar.ButtonInactiveForegroundColor = Color.FromArgb(255, 150, 150, 150);
             }
             else if (theme == ElementTheme.Dark || defaultDarkTheme)
             {
@@ -441,9 +446,9 @@ namespace znMusicPlayerWUI
                 bar.ButtonHoverBackgroundColor = Color.FromArgb(20, 255, 255, 255);
                 bar.ButtonHoverForegroundColor = Colors.White;
                 bar.ButtonPressedBackgroundColor = Color.FromArgb(10, 255, 255, 255);
-                bar.ButtonPressedForegroundColor = Color.FromArgb(100, 255, 255, 255);
+                bar.ButtonPressedForegroundColor = Color.FromArgb(255, 255, 255, 255);
                 bar.ButtonInactiveBackgroundColor = Colors.Transparent;
-                bar.ButtonInactiveForegroundColor = Color.FromArgb(50, 255, 255, 255);
+                bar.ButtonInactiveForegroundColor = Color.FromArgb(255, 100, 100, 100);
             }
         }
         #endregion
@@ -1204,6 +1209,8 @@ namespace znMusicPlayerWUI
             {
                 AppTitleBar.Margin = new Thickness(50, 0, 0, 0);
             }
+
+            SetDragRegionForCustomTitleBar(App.AppWindowLocal);
         }
 
         private void NavViewContentBase_SizeChanged(object sender, SizeChangedEventArgs e)

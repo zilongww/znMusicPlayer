@@ -246,7 +246,7 @@ namespace znMusicPlayerWUI.Background.HotKeys
             var hotKeyPrcPointer = Marshal.GetFunctionPointerForDelegate(hotKeyPrc);
             origPrc =
                 Marshal.GetDelegateForFunctionPointer<Windows.Win32.UI.WindowsAndMessaging.WNDPROC>(
-                    (IntPtr)Windows.Win32.PInvoke.SetWindowLongPtr(
+                    Windows.Win32.PInvoke.SetWindowLongPtr(
                         new Windows.Win32.Foundation.HWND(RegistedWindowHandle),
                         Windows.Win32.UI.WindowsAndMessaging.WINDOW_LONG_PTR_INDEX.GWL_WNDPROC,
                         hotKeyPrcPointer)
@@ -256,11 +256,20 @@ namespace znMusicPlayerWUI.Background.HotKeys
         private const uint WM_HOTKEY = 0x0312;
         private Windows.Win32.UI.WindowsAndMessaging.WNDPROC origPrc;
         private Windows.Win32.UI.WindowsAndMessaging.WNDPROC hotKeyPrc;
+        /// <summary>
+        /// 窗口获得的系统消息在这里处理
+        /// </summary>
+        /// <param name="hwnd"></param>
+        /// <param name="uMsg"></param>
+        /// <param name="wParam"></param>
+        /// <param name="lParam"></param>
+        /// <returns></returns>
         private Windows.Win32.Foundation.LRESULT HotKeyPrc(Windows.Win32.Foundation.HWND hwnd,
             uint uMsg,
             Windows.Win32.Foundation.WPARAM wParam,
             Windows.Win32.Foundation.LPARAM lParam)
         {
+            //System.Diagnostics.Debug.WriteLine($"System Message: {uMsg}");
             if (uMsg == WM_HOTKEY)
             {
                 nuint id = wParam.Value;
@@ -337,6 +346,26 @@ namespace znMusicPlayerWUI.Background.HotKeys
 
                 return (Windows.Win32.Foundation.LRESULT)IntPtr.Zero;
             }
+            // 为什么任务栏按钮事件会在这里处理呢 www
+            else if (uMsg == 273)
+            {
+                switch (wParam.Value)
+                {
+                    case 402653185:
+                        App.playingList.PlayPrevious();
+                        break;
+                    case 402653186:
+                        if (App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+                            App.audioPlayer.SetPause();
+                        else 
+                            App.audioPlayer.SetPlay();
+                        break;
+                    case 402653187:
+                        App.playingList.PlayNext();
+                        break;
+                }
+            }
+
             return Windows.Win32.PInvoke.CallWindowProc(origPrc, hwnd, uMsg, wParam, lParam);
         }
     }
