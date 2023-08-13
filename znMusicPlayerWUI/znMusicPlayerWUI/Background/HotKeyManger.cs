@@ -346,26 +346,6 @@ namespace znMusicPlayerWUI.Background.HotKeys
 
                 return (Windows.Win32.Foundation.LRESULT)IntPtr.Zero;
             }
-            // 为什么任务栏按钮事件会在这里处理呢 www
-            else if (uMsg == 273)
-            {
-                switch (wParam.Value)
-                {
-                    case 402653185:
-                        App.playingList.PlayPrevious();
-                        break;
-                    case 402653186:
-                        if (App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing)
-                            App.audioPlayer.SetPause();
-                        else 
-                            App.audioPlayer.SetPlay();
-                        break;
-                    case 402653187:
-                        App.playingList.PlayNext();
-                        break;
-                }
-            }
-
             return Windows.Win32.PInvoke.CallWindowProc(origPrc, hwnd, uMsg, wParam, lParam);
         }
     }
