@@ -30,20 +30,7 @@ namespace znMusicPlayerWUI.Windowed
             InitCallBack();
             App.audioPlayer.PlayStateChanged += (_) =>
             {
-                if (_.PlaybackState == NAudio.Wave.PlaybackState.Playing)
-                {
-                    Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] changer = {
-                        new Helpers.SDKs.TaskbarProgress.THUMBBUTTON() { iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = pauseIconHandle, szTip = "播放" }
-                    };
-                    Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarUpdateButtons(Handle, 3, changer);
-                }
-                else
-                {
-                    Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] changer = {
-                        new Helpers.SDKs.TaskbarProgress.THUMBBUTTON() { iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = playIconHandle, szTip = "播放" }
-                    };
-                    Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarUpdateButtons(Handle, 3, changer);
-                }
+                SetTaskbarButtonIcon(_.PlaybackState);
             };
             App.audioPlayer.SourceChanged += (_) =>
             {
@@ -61,6 +48,12 @@ namespace znMusicPlayerWUI.Windowed
             Activated += (_, __) =>
             {
                 App.WindowLocal.Activate();
+            };
+            AppWindow.Closing += (_, __) =>
+            {
+                __.Cancel = true;
+                App.AppWindowLocalOverlappedPresenter.Restore();
+                MainWindow.AppWindow_Closing(App.AppWindowLocal, __);
             };
         }
 
@@ -143,6 +136,34 @@ namespace znMusicPlayerWUI.Windowed
                     );
         }
 
+        private void SetTaskbarButtonIcon(NAudio.Wave.PlaybackState playbackState)
+        {
+            Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] changer;
+            if (playbackState == NAudio.Wave.PlaybackState.Playing)
+            {
+                changer = new Helpers.SDKs.TaskbarProgress.THUMBBUTTON[]
+                {
+                    new Helpers.SDKs.TaskbarProgress.THUMBBUTTON() { iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = pauseIconHandle, szTip = "播放" }
+                };
+            }
+            else
+            {
+                changer = new Helpers.SDKs.TaskbarProgress.THUMBBUTTON[]
+                {
+                    new Helpers.SDKs.TaskbarProgress.THUMBBUTTON() { iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = playIconHandle, szTip = "播放" }
+                };
+            }
+            try
+            {
+                Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarUpdateButtons(Handle, 3, changer);
+            }
+            catch(Exception ex)
+            {
+                DataEditor.LogHelper.WriteLog(nameof(ex), ex.ToString());
+            }
+        }
+
+        nint appIconHandle = (Bitmap.FromFile(Path.Combine(localPath, "opacityMask.png")).GetThumbnailImage(1, 1, null, 0) as Bitmap).GetHbitmap();
         private const uint WM_HOTKEY = 0x0312;
         private Windows.Win32.UI.WindowsAndMessaging.WNDPROC origPrc;
         private Windows.Win32.UI.WindowsAndMessaging.WNDPROC hotKeyPrc;
@@ -168,7 +189,7 @@ namespace znMusicPlayerWUI.Windowed
                     // 到了屏幕外面就看不见了 :-)
                     NativeMethods.NativePoint offset = new(-5000, -5000);
                     // 只知道设置1x1的缩略图进去后看起来是正常的...
-                    var a = NativeMethods.DwmSetIconicLivePreviewBitmap(Handle, (bmp.GetThumbnailImage(1, 1, null, 0) as Bitmap).GetHbitmap(), ref offset, 0);
+                    var a = NativeMethods.DwmSetIconicLivePreviewBitmap(Handle, appIconHandle, ref offset, 0);
                 }
 
             }

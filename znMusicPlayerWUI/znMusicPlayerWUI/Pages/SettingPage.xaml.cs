@@ -209,36 +209,6 @@ namespace znMusicPlayerWUI.Pages
             }
         }
 
-        private void ThemeCb_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            /*if (isCodeChangedTheme) return;
-            switch (ThemeCb.SelectedItem as string)
-            {
-                case "跟随系统":
-                    MainWindow.SWindowGridBaseTop.RequestedTheme = ElementTheme.Default;
-                    break;
-                case "浅色":
-                    MainWindow.SWindowGridBaseTop.RequestedTheme = ElementTheme.Light;
-                    break;
-                case "深色":
-                    MainWindow.SWindowGridBaseTop.RequestedTheme = ElementTheme.Dark;
-                    break;
-            }
-            MainWindow.UpdateWindowBackdropTheme();*/
-        }
-
-
-        private void PlayBehaviorBaseeGrid_Loaded(object sender, RoutedEventArgs e)
-        {/*
-            PlayBehaviorCb.SelectedIndex = (int)App.playingList.PlayBehavior;*/
-        }
-
-        private void PlayBehaviorCb_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //App.playingList.PlayBehavior = (PlayBehavior)Enum.Parse(typeof(PlayBehavior), PlayBehaviorCb.SelectedItem as string);
-            //System.Diagnostics.Debug.WriteLine(App.playingList.PlayBehavior);
-        }
-
         private void Page_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
         }

@@ -197,7 +197,7 @@
                                    Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                                    FontSize="10">
                             <Run Text="{Binding MusicData.Count}"/>.
-                            <Run x:Name="PlayingText" Foreground="{ThemeResource AccentAAFillColorDefaultBrush}"/>
+                            <Run x:Name="PlayingText" FontSize="12" Foreground="{ThemeResource AccentAAFillColorDefaultBrush}"/>
                             <Run Text="{Binding MusicData.Title}"
                                  Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
                                  FontSize="14"/>

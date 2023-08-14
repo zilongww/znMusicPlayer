@@ -205,7 +205,11 @@ namespace znMusicPlayerWUI.Windowed
             if (nowLyricsData.Lyric.First() == LyricHelper.NoneLyricString)
             {
                 if (App.lyricManager.NowPlayingLyrics.Any())
-                    SetLyric(App.lyricManager.NowPlayingLyrics[App.lyricManager.NowPlayingLyrics.IndexOf(nowLyricsData) + 1], true);
+                {
+                    var index = App.lyricManager.NowPlayingLyrics.IndexOf(nowLyricsData) + 1;
+                    if (index > App.lyricManager.NowPlayingLyrics.Count - 1) return;
+                    SetLyric(App.lyricManager.NowPlayingLyrics[index], true);
+                }
                 return;
             }
 

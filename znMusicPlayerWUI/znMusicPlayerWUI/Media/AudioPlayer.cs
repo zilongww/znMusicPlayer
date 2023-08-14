@@ -728,9 +728,9 @@ namespace znMusicPlayerWUI.Media
                     Exception exception = null;
                     _filePath = resultPath;
                     Debug.WriteLine($"AudioPlayer：正在加载 \"{resultPath}\".");
+                        await SetSource(resultPath, musicData.CUETrackData != null);
                     try
                     {
-                        await SetSource(resultPath, musicData.CUETrackData != null);
                     }
                     catch (Exception err)
                     {
@@ -823,7 +823,7 @@ namespace znMusicPlayerWUI.Media
             FileReader = fileReader;
             FileProvider = fileProvider;
             Debug.WriteLine($"AudioPlayer：FileReader filePath \"{fileReader.FileName}\".");
-            if (EqEnabled)
+            if (EqEnabled && !fileReader.isMidi)
             {
                 EqualizerBand = EqualizerBand;
             }

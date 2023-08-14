@@ -87,7 +87,7 @@ namespace znMusicPlayerWUI.Controls
             await Task.Delay(100);
             if (value)
             {
-                PlayingText.Text = "正在播放.";
+                PlayingText.Text = "正在播放";
                 //PlayingIconRoot.Visibility = Visibility.Visible;
                 //AlbumImage.CornerRadius = new(8);
             }
@@ -225,14 +225,17 @@ namespace znMusicPlayerWUI.Controls
             ImageSource a = null;
             try
             {
+                bool err = false;
                 if (musicData.From == MusicFrom.localMusic)
                 {
                     if (await FileHelper.FileTypeGetAsync(musicData.InLocal) == "7784")
                     {
                         a = null;
+                        err = true;
                     }
                 }
-                else
+
+                if (!err)
                 {
                     var b = await Media.ImageManage.GetImageSource(musicData, (int)(58 * ImageScaleDPI), (int)(58 * ImageScaleDPI), true);
                     a = b.Item1;

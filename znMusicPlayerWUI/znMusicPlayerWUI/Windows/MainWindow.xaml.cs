@@ -151,7 +151,8 @@ namespace znMusicPlayerWUI
         }
 
         bool isBackground = false;
-        private async void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
+        static bool isShowClosingDialog = false;
+        public static async void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {/*
             args.Cancel = true;
             if (InOpenMusicPage) SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
@@ -160,6 +161,8 @@ namespace znMusicPlayerWUI
             isBackground = true;*/
             
             args.Cancel = true;
+            if (isShowClosingDialog) return;
+            isShowClosingDialog = true;
             HideDialog();
             var result = await ShowDialog("再确认一次", "你真的要退出程序吗？", "取消", "确定", null, ContentDialogButton.Primary);
             if (result == ContentDialogResult.Primary)
@@ -170,6 +173,7 @@ namespace znMusicPlayerWUI
             {
                 HideDialog();
             }
+            isShowClosingDialog = false;
         }
 
         public async void ReadLAE()
