@@ -19,11 +19,11 @@ using PInvoke;
 
 namespace znMusicPlayerWUI.Windowed
 {
-    public partial class IconWindow : Window
+    public partial class TaskBarInfoWindow : Window
     {
         public nint Handle { get; private set; }
 
-        public IconWindow()
+        public TaskBarInfoWindow()
         {
             InitializeComponent();
             InitTaskbarInfo();
@@ -53,6 +53,7 @@ namespace znMusicPlayerWUI.Windowed
             {
                 __.Cancel = true;
                 App.AppWindowLocalOverlappedPresenter.Restore();
+                App.WindowLocal.Activate();
                 MainWindow.AppWindow_Closing(App.AppWindowLocal, __);
             };
         }

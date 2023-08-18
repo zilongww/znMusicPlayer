@@ -36,16 +36,24 @@ using CommunityToolkit.WinUI.UI.Helpers;
 using znMusicPlayerWUI.Media;
 using NAudio.Gui;
 using znMusicPlayerWUI.DataEditor;
+using static Vanara.PInvoke.User32;
 
 namespace znMusicPlayerWUI.Windowed
 {
     public sealed partial class NotifyIconWindow : Window
     {
+        public System.Windows.Forms.NotifyIcon notifyIcon;
         OverlappedPresenter presenter;
         nint hwnd = 0;
         public NotifyIconWindow()
         {
             InitializeComponent();
+
+            notifyIcon = new System.Windows.Forms.NotifyIcon();
+            notifyIcon.Text = App.AppName;
+            notifyIcon.Icon = new(Path.Combine(Directory.GetCurrentDirectory(), "icon.ico"));
+            notifyIcon.Visible = true;
+
             #region others
             if (MicaController.IsSupported())
             {
@@ -56,14 +64,14 @@ namespace znMusicPlayerWUI.Windowed
                     sizeof(uint));
             }
             presenter = OverlappedPresenter.Create();
-            this.AppWindow.SetPresenter(presenter);
-            this.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
-            this.AppWindow.IsShownInSwitchers = false;
-            this.AppWindow.Title = $"{App.AppName} NotifyIcon";
-            this.AppWindow.SetIcon("icon.ico");
+            AppWindow.SetPresenter(presenter);
+            AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+            AppWindow.IsShownInSwitchers = false;
+            AppWindow.Title = $"{App.AppName} NotifyIcon";
+            AppWindow.SetIcon("icon.ico");
 
-            this.AppWindow.TitleBar.ButtonBackgroundColor = Color.FromArgb(0, 0, 0, 0);
-            this.AppWindow.TitleBar.ButtonForegroundColor = Color.FromArgb(0, 255, 255, 255);
+            AppWindow.TitleBar.ButtonBackgroundColor = Color.FromArgb(0, 0, 0, 0);
+            AppWindow.TitleBar.ButtonForegroundColor = Color.FromArgb(0, 255, 255, 255);
 
             presenter.IsMaximizable = false;
             presenter.IsMinimizable = false;
@@ -71,15 +79,14 @@ namespace znMusicPlayerWUI.Windowed
             presenter.IsAlwaysOnTop = true;
             presenter.SetBorderAndTitleBar(false, false);
 
-            this.AppWindow.Closing += AppWindow_Closing;
-            App.notifyIcon.Click += NotifyIcon_Click;
-            App.notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
+            AppWindow.Closing += AppWindow_Closing;
+            notifyIcon.Click += NotifyIcon_Click;
+            notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
             root.ActualThemeChanged += Root_ActualThemeChanged;
             Activated += NotifyIconWindow_Activated;
 
             SetBackdrop(BackdropType.DesktopAcrylic);
             MoveToPosition();
-
             #endregion
         }
 
@@ -108,7 +115,7 @@ namespace znMusicPlayerWUI.Windowed
             if (args.WindowActivationState == WindowActivationState.Deactivated)
             {
 #if !DEBUG
-                this.AppWindow.Hide();
+                AppWindow.Hide();
 #endif
                 App.audioPlayer.CacheLoadingChanged -= AudioPlayer_CacheLoadingChanged;
                 App.audioPlayer.CacheLoadedChanged -= AudioPlayer_CacheLoadedChanged;
@@ -143,6 +150,19 @@ namespace znMusicPlayerWUI.Windowed
             await Task.Delay(250);
             LoadingRing.IsIndeterminate = false;
             LoadingRoot.Visibility = Visibility.Collapsed;
+
+            if (audioPlayer.MusicData == null)
+            {
+                notifyIcon.Text = App.AppName;
+            }
+            else
+            {
+                try
+                {
+                    notifyIcon.Text = $"{App.AppName}\n正在播放：{audioPlayer.MusicData.Title}\n · 艺术家：{audioPlayer.MusicData.ArtistName}\n · 专辑：{audioPlayer.MusicData.Album.Title}";
+                }
+                catch { }
+            }
         }
 
         private void AudioPlayer_CacheLoadingChanged(AudioPlayer audioPlayer, object data)
@@ -239,7 +259,7 @@ namespace znMusicPlayerWUI.Windowed
             }
             isCodeChangedHeight = false;
 
-            this.AppWindow.MoveAndResize(new(
+            AppWindow.MoveAndResize(new(
                 displayArea.WorkArea.Width - width - (int)(12 * dpi),
                 displayArea.WorkArea.Height - height - (int)(12 * dpi),
                 width, height));
@@ -249,7 +269,7 @@ namespace znMusicPlayerWUI.Windowed
         {
             args.Cancel = true;
             if (Visible)
-                this.AppWindow.Hide();
+                AppWindow.Hide();
         }
 
         private void NotifyIcon_DoubleClick(object sender, EventArgs e)
@@ -263,12 +283,12 @@ namespace znMusicPlayerWUI.Windowed
         {
             if (this.Visible)
             {
-                this.AppWindow.Hide();
+                AppWindow.Hide();
                 return;
             }
 
             //TrySetAcrylicBackdrop();
-            this.AppWindow.Show(true);
+            AppWindow.Show(true);
             MoveToPosition();
             PInvoke.User32.SetForegroundWindow(hwnd);
         }
@@ -443,10 +463,10 @@ namespace znMusicPlayerWUI.Windowed
                 case "setting":
                     break;
                 case "off":
-                    App.notifyIcon.Visible = false;
+                    notifyIcon.Visible = false;
                     App.Current.Exit();
                     break;
-                case "returnback":
+                case "returnBack":
                     App.AppWindowLocal.Show();
                     App.AppWindowLocalOverlappedPresenter.Restore();
                     PInvoke.User32.SetForegroundWindow(App.AppWindowLocalHandle);

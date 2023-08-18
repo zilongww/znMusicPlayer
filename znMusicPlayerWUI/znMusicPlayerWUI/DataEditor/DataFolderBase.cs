@@ -19,57 +19,52 @@ namespace znMusicPlayerWUI.DataEditor
         /// <summary>
         /// 程序数据文件夹路径
         /// </summary>
-        public static string BaseFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @$"\{App.AppName}Datas";
+        public static string BaseFolder { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"{App.AppName}Datas");
 
         /// <summary>
         /// 数据文件夹路径
         /// </summary>
-        public static string UserDataFolder { get; } = BaseFolder + @"\UserData";
+        public static string UserDataFolder { get; } = Path.Combine(BaseFolder, "UserData");
 
         /// <summary>
         /// 歌单数据文件路径
         /// </summary>
-        public static string PlayListDataPath { get; } = UserDataFolder + @"\PlayList";
+        public static string PlayListDataPath { get; } = Path.Combine(UserDataFolder, "PlayList");
         
         /// <summary>
         /// 设置数据文件路径
         /// </summary>
-        public static string SettingDataPath { get; } = UserDataFolder + @"\Setting";
+        public static string SettingDataPath { get; } = Path.Combine(UserDataFolder, "Setting");
 
         /// <summary>
         /// 历史记录数据文件路径
         /// </summary>
-        public static string HistoryDataPath { get; } = UserDataFolder + @"\History";
+        public static string HistoryDataPath { get; } = Path.Combine(UserDataFolder, "History");
         
         /// <summary>
         /// 日志文件路径
         /// </summary>
-        public static string LogDataPath { get; } = UserDataFolder + @"\Log";
+        public static string LogDataPath { get; } = Path.Combine(UserDataFolder, "Log");
 
         /// <summary>
         /// 缓存文件夹路径
         /// </summary>
-        public static string CacheFolder { get; set; } = BaseFolder + @"\Cache";
+        public static string CacheFolder { get; set; } = Path.Combine(BaseFolder, "Cache");
 
         /// <summary>
         /// 歌曲缓存文件夹路径
         /// </summary>
-        public static string RemovedIDv3CacheFolder { get; set; } = CacheFolder + @"\RemovedIDv3";
-
-        /// <summary>
-        /// 歌曲缓存文件夹路径
-        /// </summary>
-        public static string AudioCacheFolder { get; set; } = CacheFolder + @"\Audio";
+        public static string AudioCacheFolder { get; set; } = Path.Combine(CacheFolder, "Audio");
 
         /// <summary>
         /// 图片缓存文件夹路径
         /// </summary>
-        public static string ImageCacheFolder { get; set; } = CacheFolder + @"\Image";
+        public static string ImageCacheFolder { get; set; } = Path.Combine(CacheFolder, "Image");
 
         /// <summary>
         /// 歌词缓存文件夹路径
         /// </summary>
-        public static string LyricCacheFolder { get; set; } = CacheFolder + @"\Lyric";
+        public static string LyricCacheFolder { get; set; } = Path.Combine(CacheFolder, "Lyric");
 
         /// <summary>
         /// 下载文件夹路径
@@ -79,7 +74,7 @@ namespace znMusicPlayerWUI.DataEditor
         /// <summary>
         /// 默认播放列表数据
         /// </summary>
-        public static MusicListData PlayListDefault = new("default", "default", null, MusicFrom.localMusic, null);
+        public static MusicListData PlayListDefault = new("default", "默认播放列表", Path.Combine(Environment.CurrentDirectory, "Images", "SugarAndSalt.jpg"), MusicFrom.localMusic, listDataType: DataType.本地歌单);
 
         /// <summary>
         /// 默认设置数据
@@ -195,7 +190,6 @@ namespace znMusicPlayerWUI.DataEditor
             Directory.CreateDirectory(BaseFolder);
             Directory.CreateDirectory(UserDataFolder);
             Directory.CreateDirectory(CacheFolder);
-            Directory.CreateDirectory(RemovedIDv3CacheFolder);
             Directory.CreateDirectory(AudioCacheFolder);
             Directory.CreateDirectory(ImageCacheFolder);
             Directory.CreateDirectory(LyricCacheFolder);

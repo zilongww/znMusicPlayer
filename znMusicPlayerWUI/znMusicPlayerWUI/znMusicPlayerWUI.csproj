@@ -33,6 +33,7 @@
     <None Remove="Pages\BrowsePage.xaml" />
     <None Remove="Pages\DialogPages\AddPlayListPage.xaml" />
     <None Remove="Pages\DialogPages\AudioInfoPage.xaml" />
+    <None Remove="Pages\DialogPages\EditPlayListPage.xaml" />
     <None Remove="Pages\DialogPages\EqualizerPage.xaml" />
     <None Remove="Pages\DialogPages\HotKeyEditor.xaml" />
     <None Remove="Pages\DialogPages\HotKeyPage.xaml" />
@@ -45,9 +46,9 @@
     <None Remove="Pages\PlayListPage.xaml" />
     <None Remove="Pages\SearchPage.xaml" />
     <None Remove="Pages\SettingPage.xaml" />
-    <None Remove="Windows\IconWindow.xaml" />
     <None Remove="Windows\MediaPlayerWindow.xaml" />
     <None Remove="Windows\NotifyIconWindow.xaml" />
+    <None Remove="Windows\TaskBarInfoWindow.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
@@ -78,7 +79,7 @@
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.18-beta">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.3.230724000" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.230811000-preview2" />
     <PackageReference Include="NAudio" Version="2.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PInvoke.BCrypt" Version="0.7.124" />
@@ -118,6 +119,10 @@
   <ItemGroup>
     <Page Update="Controls\SongHistoryInfo.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\DialogPages\EditPlayListPage.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
 
@@ -242,7 +247,7 @@
     <Page Update="Pages\AboutPage.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
-    <Page Update="Windows\IconWindow.xaml">
+    <Page Update="Windows\TaskBarInfoWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

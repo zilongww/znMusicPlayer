@@ -186,7 +186,7 @@
             </Grid.Resources>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
                         Margin="4,3,8,5">
-                <Button Click="Button_Click" Tag="returnback" ToolTipService.ToolTip="返回到应用程序" AccessKey="Z">
+                <Button Click="Button_Click" Tag="returnBack" ToolTipService.ToolTip="返回到应用程序" AccessKey="Z">
                     <FontIcon Glyph="&#xe944;" FontSize="16"/>
                 </Button>
                 <Button Click="Button_Click" Tag="setting" ToolTipService.ToolTip="设置" AccessKey="X">

@@ -40,7 +40,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 MainWindow.ShowLoadingDialog();
                 MusicListData musicListData = null;
 
-                if ((PivotList.SelectedItem as PivotItem).Header as string == "添加播放列表")
+                if (PivotList.SelectedIndex == 0)
                 {
                     musicListData = new MusicListData(null, AddLocalPage_ListNameTB.Text, AddLocalPage_ListImageTB.Text, MusicFrom.localMusic);
                     musicListData.ListName = musicListData.MD5;
@@ -72,9 +72,13 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                         await PlayListHelper.AddPlayList(musicListData);
                         await App.playListReader.Refresh();
                     }
+                    catch (ArgumentException)
+                    {
+                        await MainWindow.ShowDialog("已存在一个同名的列表", "无法添加这个播放列表，因为填写的属性已被其它播放列表占用。\n请尝试换一个播放列表名称或图片地址试试。");
+                    }
                     catch (Exception err)
                     {
-                        LogHelper.WriteLog("AddPlayListPage", err.ToString());
+                        LogHelper.WriteLog("AddPlayListPage", err.ToString(), false);
                         var b = await MainWindow.ShowDialog("添加播放列表时出现错误", err.Message, "确定", "重试");
                         if (b == ContentDialogResult.Primary)
                         {

@@ -476,7 +476,7 @@ namespace znMusicPlayerWUI
                     AsyncDialog.Title = title;
                     if (content is string)
                     {
-                        dialogScrollViewer.Content = new TextBlock() { Text = content as string, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true, MinHeight = 26 };
+                        dialogScrollViewer.Content = new TextBlock() { Text = content as string, TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true, MinHeight = 26, Margin = new(0, 0, 16, 0) };
                         AsyncDialog.Content = dialogScrollViewer;
                     }
                     else

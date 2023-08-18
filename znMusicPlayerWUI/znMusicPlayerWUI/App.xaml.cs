@@ -63,12 +63,11 @@ namespace znMusicPlayerWUI
         public static FullScreenPresenter AppWindowLocalFullScreenPresenter;
         public static IntPtr AppWindowLocalHandle;
         public static IntPtr AppDesktopLyricWindowHandle;
-        public static System.Windows.Forms.NotifyIcon notifyIcon;
         public static NotifyIconWindow NotifyIconWindow;
-        public static IconWindow IconWindow;
+        public static TaskBarInfoWindow taskBarInfoWindow;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.2.71 Preview";
+        public static readonly string AppVersion = "0.2.72 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -80,12 +79,7 @@ namespace znMusicPlayerWUI
             //Media.Decoder.FFmpeg.FFmpegBinariesHelper.InitFFmpeg();
             InitializeComponent();
             UnhandledException += App_UnhandledException;
-/*
-            notifyIcon = new System.Windows.Forms.NotifyIcon();
-            notifyIcon.Text = AppName;
-            notifyIcon.Icon = new($"{System.IO.Directory.GetCurrentDirectory()}\\icon.ico");
-            notifyIcon.Visible = true;
-*/
+
             SMTC.IsPlayEnabled = true;
             SMTC.IsPauseEnabled = true;
             SMTC.IsNextEnabled = true;
@@ -108,18 +102,12 @@ namespace znMusicPlayerWUI
                 {
                     SMTC.DisplayUpdater.MusicProperties.Title = _.FileReader?.FileName;
                     AppWindowLocal.Title = AppName;
-                    //notifyIcon.Text = AppName;
                 }
                 else
                 {
                     SMTC.DisplayUpdater.MusicProperties.Title = _.MusicData.Title;
                     SMTC.DisplayUpdater.MusicProperties.Artist = _.MusicData.ButtonName;
                     AppWindowLocal.Title = $"{_.MusicData.Title} - {_.MusicData.ArtistName} · {AppName}";
-                    /*try
-                    {
-                        notifyIcon.Text = $"{AppName}\n正在播放：{_.MusicData.Title}\n · 艺术家：{_.MusicData.ArtistName}\n · 专辑：{_.MusicData.Album.Title}";
-                    }
-                    catch { }*/
                 }
                 SMTC.DisplayUpdater.Update();
             };
@@ -206,7 +194,6 @@ namespace znMusicPlayerWUI
                         Microsoft.WindowsAPICodePack.Taskbar.TaskbarManager.Instance.ThumbnailToolBars.AddButtons(AppWindowLocalHandle, buttons.ToArray());
             */
 
-            IconWindow = new();
             var displayArea = CodeHelper.GetDisplayArea(m_window);
             var dpi = CodeHelper.GetScaleAdjustment(m_window);
             double a = 2;
@@ -229,7 +216,17 @@ namespace znMusicPlayerWUI
             m_window.Closed += M_window_Closed;
             //AppWindowLocal.SetPresenter(AppWindowLocalPresenter);
             hotKeyManager.Init(App.WindowLocal);
-            //NotifyIconWindow = new();
+            DelayOpenWindows();
+        }
+
+        public async void DelayOpenWindows()
+        {
+            await Task.Delay(500);
+            taskBarInfoWindow = new();
+
+            // 在 Windows App SDK 1.4 的版本一直闪退，1.3 则不会
+            await Task.Delay(1000);
+            NotifyIconWindow = new();
         }
 
         private void M_window_Closed(object sender, WindowEventArgs args)

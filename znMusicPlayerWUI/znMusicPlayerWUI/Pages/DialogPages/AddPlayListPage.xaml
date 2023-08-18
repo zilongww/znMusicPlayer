@@ -16,13 +16,14 @@
                             Orientation="Vertical">
                         <TextBox Header="播放列表名称"
                                  PlaceholderText="输入你想要的播放列表名称"
+                                 Text="默认播放列表 1"
                                  Margin="0,10,0,0"
                                  x:Name="AddLocalPage_ListNameTB"
                                  AccessKey="N"/>
 
                         <TextBlock Text="封面" Margin="0,10,0,0"/>
                         <VariableSizedWrapGrid Orientation="Horizontal" Margin="0,4,0,0">
-                            <TextBox PlaceholderText="输入图片路径"
+                            <TextBox PlaceholderText="使用默认图片"
                                      MinWidth="108" Margin="0,4,4,0"
                                      x:Name="AddLocalPage_ListImageTB"
                                      AccessKey="P"/>

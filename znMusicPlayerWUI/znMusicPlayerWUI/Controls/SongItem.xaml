@@ -201,6 +201,7 @@
                             <Run Text="{Binding MusicData.Title}"
                                  Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
                                  FontSize="14"/>
+                            <Run/>
                             <Run Text="{Binding MusicData.Title2}" FontSize="11"/>
                         </TextBlock>
                         <Grid Grid.Row="1" HorizontalAlignment="Left">

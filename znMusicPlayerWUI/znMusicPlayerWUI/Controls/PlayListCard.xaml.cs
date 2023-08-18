@@ -52,6 +52,14 @@ namespace znMusicPlayerWUI.Controls
             {
                 RefreshPlayListButton.Visibility = Visibility.Collapsed;
             }
+            if (musicListData.ListDataType == DataType.本地歌单)
+            {
+                EditPlayListButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                EditPlayListButton.Visibility = Visibility.Collapsed;
+            }
             DataContext = musicListData;
         }
 
@@ -88,13 +96,15 @@ namespace znMusicPlayerWUI.Controls
                 }
                 else if (MusicListData.ListDataType == DataType.歌单)
                 {
-                    PlayListImage.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(MusicListData), size, size, true);
+                    var path = await ImageManage.GetImageSource(MusicListData);
+                    PlayListImage.Source = await FileHelper.GetImageSource(path, size, size, true);
                 }
                 else
                 {
                     PlayListImage.Source = null;
                 }
             }
+            //System.Diagnostics.Debug.WriteLine(MusicListData.PicturePath);
         }
 
         private void UIUnloaded(object sender, RoutedEventArgs e)
@@ -260,6 +270,11 @@ namespace znMusicPlayerWUI.Controls
         {
             if (MusicListData != null)
                 ListViewPage.SetPageToListViewPage<ItemListViewPlayList>(MusicListData);
+        }
+
+        private async void EditPlayListButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Pages.DialogPages.EditPlayListPage.ShowDialog(MusicListData);
         }
     }
 }

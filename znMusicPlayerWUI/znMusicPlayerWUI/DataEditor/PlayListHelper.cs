@@ -33,7 +33,7 @@ namespace znMusicPlayerWUI.DataEditor
         public static async Task AddPlayList(MusicListData musicListData)
         {
             var jdata = await ReadData();
-            jdata.Add(musicListData.ListName, JObject.FromObject(musicListData));
+            jdata = AddPlayList(musicListData, jdata);
             await SaveData(jdata);
         }
 

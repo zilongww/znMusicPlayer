@@ -14,8 +14,13 @@
 
     <Grid.Resources>
         <MenuFlyout x:Name="FlyoutMenu">
-            <MenuFlyoutItem Icon="delete" Text="删除播放列表" Click="MenuFlyoutItem_Click"/>
-            <MenuFlyoutItem x:Name="RefreshPlayListButton" Icon="refresh" Text="更新播放列表" Click="MenuFlyoutItem_Click_1"/>
+            <MenuFlyoutItem x:Name="EditPlayListButton" Icon="edit" Text="编辑" Click="EditPlayListButton_Click"/>
+            <MenuFlyoutItem x:Name="RefreshPlayListButton" Icon="refresh" Text="更新" Click="MenuFlyoutItem_Click_1"/>
+            <MenuFlyoutItem Text="删除" Click="MenuFlyoutItem_Click" Foreground="{ThemeResource SystemFillColorCriticalBrush}">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE74D;" Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
         </MenuFlyout>
     </Grid.Resources>
     
