@@ -143,6 +143,17 @@
                     BorderBrush="{ThemeResource ControlElevationBorderBrush}"
                     BorderThickness="1"
                     VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            <Rectangle HorizontalAlignment="Left"
+                       Width="3"
+                       Fill="{ThemeResource SystemColorControlAccentBrush}"
+                       Margin="3,20"
+                       RadiusX="1.5" RadiusY="1.5"
+                       x:Name="PlayingThemeRectangle"
+                       Opacity="0">
+                <Rectangle.OpacityTransition>
+                    <ScalarTransition/>
+                </Rectangle.OpacityTransition>
+            </Rectangle>
             <Grid x:Name="BaseGrid" Padding="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -197,7 +208,6 @@
                                    Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
                                    FontSize="10">
                             <Run Text="{Binding MusicData.Count}"/>.
-                            <Run x:Name="PlayingText" FontSize="12" Foreground="{ThemeResource AccentAAFillColorDefaultBrush}"/>
                             <Run Text="{Binding MusicData.Title}"
                                  Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
                                  FontSize="14"/>
@@ -249,7 +259,7 @@
                         </Style>
                     </StackPanel.Resources>
                     <Button ToolTipService.ToolTip="播放" Click="Play_Click">
-                        <FontIcon Glyph="&#xE768;"/>
+                        <FontIcon x:Name="PlayingButtonIcon" Glyph="&#xE768;"/>
                     </Button>
                     <Button Margin="4,0,0,0" ToolTipService.ToolTip="更多选项" Click="Button_Click">
                         <FontIcon Glyph="&#xE712;"/>

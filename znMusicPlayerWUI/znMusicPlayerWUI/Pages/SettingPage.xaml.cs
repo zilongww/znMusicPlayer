@@ -571,7 +571,7 @@ namespace znMusicPlayerWUI.Pages
         private void ComboBox_SelectionChanged_7(object sender, SelectionChangedEventArgs e)
         {
             int index = (sender as ComboBox).SelectedIndex;
-            if (index == 2)
+            if (index == 3)
             {
                 imageselect_root.Visibility = Visibility.Visible;
             }
@@ -586,12 +586,15 @@ namespace znMusicPlayerWUI.Pages
                     MainWindow.SetBackdrop(MainWindow.BackdropType.Mica);
                     break;
                 case 1:
-                    MainWindow.SetBackdrop(MainWindow.BackdropType.DesktopAcrylic);
+                    MainWindow.SetBackdrop(MainWindow.BackdropType.MicaAlt);
                     break;
                 case 2:
-                    MainWindow.SetBackdrop(MainWindow.BackdropType.Image);
+                    MainWindow.SetBackdrop(MainWindow.BackdropType.DesktopAcrylic);
                     break;
                 case 3:
+                    MainWindow.SetBackdrop(MainWindow.BackdropType.Image);
+                    break;
+                case 4:
                     MainWindow.SetBackdrop(MainWindow.BackdropType.DefaultColor);
                     break;
             }

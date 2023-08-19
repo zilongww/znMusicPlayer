@@ -283,6 +283,7 @@
                         <StackPanel Margin="0,4,0,0" Spacing="8">
                             <ComboBox Loaded="ComboBox_Loaded_5" SelectionChanged="ComboBox_SelectionChanged_7">
                                 <x:String>云母</x:String>
+                                <x:String>云母 Alt</x:String>
                                 <x:String>亚克力</x:String>
                                 <x:String>图片</x:String>
                                 <x:String>纯色</x:String>

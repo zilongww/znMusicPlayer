@@ -495,7 +495,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         {
             MainWindow.OpenOrClosePlayingList(
                 HorizontalAlignment.Left,
-                flyoutPlacementMode: Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.LeftEdgeAlignedBottom,
+                flyoutPlacementMode: Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.RightEdgeAlignedBottom,
                 placementMargin: new(30, 0, 0, ControlBar.ActualHeight - PlaySlider.ActualHeight + 8));
         }
 
@@ -503,7 +503,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         {
             MainWindow.OpenOrCloseVolume(
                 HorizontalAlignment.Left,
-                flyoutPlacementMode: Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.LeftEdgeAlignedBottom,
+                flyoutPlacementMode: Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.RightEdgeAlignedBottom,
                 placementMargin: new(30, 0, 0, ControlBar.ActualHeight - PlaySlider.ActualHeight + 8));
         }
 

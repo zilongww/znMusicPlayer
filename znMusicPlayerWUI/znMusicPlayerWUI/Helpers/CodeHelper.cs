@@ -24,6 +24,7 @@ using Windows.Graphics.Imaging;
 using static System.Net.Mime.MediaTypeNames;
 using Windows.UI.ViewManagement;
 using ATL;
+using FFmpeg.AutoGen;
 
 namespace znMusicPlayerWUI.Helpers
 {
@@ -271,20 +272,28 @@ namespace znMusicPlayerWUI.Helpers
         public async static System.Threading.Tasks.Task<BitmapImage> ImageFromBytes(byte[] bytes, int width = 0, int height = 0)
         {
             var image = new BitmapImage();
+            InMemoryRandomAccessStream stream = null;
             image.DecodePixelWidth = width;
             image.DecodePixelHeight = height;
 
-            try
+            await Task.Run(async () =>
             {
-                var stream = new Windows.Storage.Streams.InMemoryRandomAccessStream();
-                await stream.WriteAsync(bytes.AsBuffer());
-                stream.Seek(0);
-                await image.SetSourceAsync(stream);
-            }
-            catch (Exception ex)
+                try
+                {
+                    stream = new();
+                    await stream.WriteAsync(bytes.AsBuffer());
+                    stream.Seek(0);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+            });
+            await image.SetSourceAsync(stream);
+            await Task.Run(() =>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
+                stream.Dispose();
+            });
 
             return image;
         }
@@ -295,13 +304,18 @@ namespace znMusicPlayerWUI.Helpers
             try
             {
                 TagLib.File f = null;
-                await Task.Run(() => f = TagLib.File.Create(path));
-                if (f == null) return null;
-                if (f.Tag.Pictures == null) return null;
-                if (f.Tag.Pictures.Length == 0) return null;
-
                 var a = await Task.Run(() =>
                 {
+                    try
+                    {
+                        f = TagLib.File.Create(path);
+                    }
+                    catch { }
+
+                    if (f == null) return null;
+                    if (f.Tag.Pictures == null) return null;
+                    if (f.Tag.Pictures.Length == 0) return null;
+
                     foreach (var data in f.Tag.Pictures)
                     {
                         switch (data.Type)
@@ -318,6 +332,7 @@ namespace znMusicPlayerWUI.Helpers
                     f.Dispose();
                     return bin;
                 });
+                if (a == null) return null;
                 result = await ImageFromBytes(a, width, height);
             }
             catch { result = null; }

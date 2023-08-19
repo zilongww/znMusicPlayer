@@ -250,7 +250,7 @@ namespace znMusicPlayerWUI.Helpers
 
         public static async Task<string> FileTypeGetAsync(string name)
         {
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
                 FileStream fs = new FileStream(@name, FileMode.Open, FileAccess.Read);
                 byte[] imagebytes = new byte[fs.Length];
@@ -261,6 +261,10 @@ namespace znMusicPlayerWUI.Helpers
                 {
                     ss += imagebytes[i];
                 }
+                fs.Close();
+                fs.Dispose();
+                br.Close();
+                br.Dispose();
                 return ss;
             });
         }

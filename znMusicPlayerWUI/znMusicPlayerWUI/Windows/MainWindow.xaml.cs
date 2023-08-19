@@ -147,7 +147,8 @@ namespace znMusicPlayerWUI
             App.LoadSettings(App.StartingSettings);
             SetBackdrop(m_currentBackdrop);
             ReadLAE();
-
+            PlayingListBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
+            VolumeBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
         }
 
         bool isBackground = false;
@@ -767,9 +768,10 @@ namespace znMusicPlayerWUI
         public enum BackdropType
         {
             Mica,
+            MicaAlt,
             DesktopAcrylic,
             Image,
-            DefaultColor            
+            DefaultColor         
         }
 
         static WindowHelperzn.WindowsSystemDispatcherQueueHelper m_wsdqHelper;
@@ -800,6 +802,17 @@ namespace znMusicPlayerWUI
             if (type == BackdropType.Mica)
             {
                 if (TrySetMicaBackdrop())
+                {
+                    m_currentBackdrop = type;
+                }
+                else
+                {
+                    type = BackdropType.DesktopAcrylic;
+                }
+            }
+            if (type == BackdropType.MicaAlt)
+            {
+                if (TrySetMicaBackdrop(true))
                 {
                     m_currentBackdrop = type;
                 }
@@ -841,7 +854,7 @@ namespace znMusicPlayerWUI
             }
         }
 
-        static bool TrySetMicaBackdrop()
+        static bool TrySetMicaBackdrop(bool alt = false)
         {
             if (MicaController.IsSupported())
             {
@@ -857,7 +870,7 @@ namespace znMusicPlayerWUI
                     case ElementTheme.Default: m_configurationSource.Theme = SystemBackdropTheme.Default; break;
                 }
 
-                m_micaController = new MicaController() { Kind = MicaKind.Base };
+                m_micaController = new MicaController() { Kind = alt ? MicaKind.BaseAlt : MicaKind.Base };
                 m_micaController.AddSystemBackdropTarget(SWindow.As<ICompositionSupportsSystemBackdrop>());
                 m_micaController.SetSystemBackdropConfiguration(m_configurationSource);
                 isAcrylicBackdrop = false;
@@ -1276,7 +1289,7 @@ namespace znMusicPlayerWUI
         public static void OpenOrCloseVolume(
             HorizontalAlignment horizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment verticalAlignment = VerticalAlignment.Bottom,
-            Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode flyoutPlacementMode = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.RightEdgeAlignedBottom,
+            Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode flyoutPlacementMode = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.LeftEdgeAlignedBottom,
             Thickness placementMargin = default)
         {
             if (teachingTipVolume.IsOpen)
@@ -1295,7 +1308,7 @@ namespace znMusicPlayerWUI
         public static async void OpenOrClosePlayingList(
             HorizontalAlignment horizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment verticalAlignment = VerticalAlignment.Bottom,
-            Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode flyoutPlacementMode = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.RightEdgeAlignedBottom,
+            Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode flyoutPlacementMode = Microsoft.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.LeftEdgeAlignedBottom,
             Thickness placementMargin = default)
         {
             UpdatePlayListFlyoutHeight();

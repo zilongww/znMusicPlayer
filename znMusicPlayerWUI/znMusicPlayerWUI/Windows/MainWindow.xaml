@@ -281,9 +281,11 @@
               IsHitTestVisible="False"
               SizeChanged="Grid_SizeChanged">
             <Grid.Resources>
-                <Flyout x:Name="PlayingListBasePopup">
+                <Flyout x:Name="PlayingListBasePopup"
+                        ShouldConstrainToRootBounds="False">
                     <Flyout.FlyoutPresenterStyle>
                         <Style TargetType="FlyoutPresenter">
+                            <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="ScrollViewer.VerticalScrollMode" Value="Disabled" />
                             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
                             <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
@@ -366,7 +368,14 @@
                     </Grid>
                 </Flyout>
 
-                <Flyout x:Name="VolumeBasePopup">
+                <Flyout x:Name="VolumeBasePopup"
+                        ShouldConstrainToRootBounds="False">
+                    <Flyout.FlyoutPresenterStyle>
+                        <Style TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenterStyle}">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="CornerRadius" Value="8" />
+                        </Style>
+                    </Flyout.FlyoutPresenterStyle>
                     <Grid x:Name="VolumeBaseGrid" Margin="-6">
                         <StackPanel Orientation="Horizontal">
                             <Button Padding="12"
