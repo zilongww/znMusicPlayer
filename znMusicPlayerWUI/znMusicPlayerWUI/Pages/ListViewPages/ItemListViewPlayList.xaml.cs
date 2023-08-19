@@ -270,9 +270,9 @@ namespace znMusicPlayerWUI.Pages
 
             int logoHeight = 280;
             double anotherHeight = 154;
-            int anotherXEnd = 151;
+            int anotherXEnd = 150;
             double logoSizeEnd = 0.45;
-            int commandYEnd = 84;
+            int commandYEnd = 88;
 
             if (logoSizeCount == 1)
             {
@@ -282,7 +282,7 @@ namespace znMusicPlayerWUI.Pages
                 anotherXEnd = 131;
                 commandYEnd = 63;
             }
-            int anotherX = 24 + logoHeight + 12;
+            int anotherX = 16 + logoHeight + 12;
 
             String progress = $"Clamp(-scroller.Translation.Y / {anotherHeight}, 0, 1.0)";
 
@@ -328,21 +328,22 @@ namespace znMusicPlayerWUI.Pages
                 backgroundVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
                 backgroundVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
 
-                logoVisualOffsetYAnimation = compositor.CreateExpressionAnimation($"Lerp(24, {anotherHeight} + 12, {progress})");
+                logoVisualOffsetYAnimation = compositor.CreateExpressionAnimation($"Lerp(16, 16, {progress})");
                 logoVisualOffsetYAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
                 logoVisual.StartAnimation("Offset.Y", logoVisualOffsetYAnimation);
 
-                logoVisualOffsetXAnimation = compositor.CreateExpressionAnimation($"Lerp(24, 12, {progress})");
+                logoVisualOffsetXAnimation = compositor.CreateExpressionAnimation($"Lerp(16, 16, {progress})");
                 logoVisualOffsetXAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
                 logoVisual.StartAnimation("Offset.X", logoVisualOffsetXAnimation);
 
-                stackVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3({anotherX},24,0), Vector3({anotherXEnd},{anotherHeight} + 12,0), {progress})");
+                stackVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3({anotherX},16,0), Vector3({anotherXEnd},{anotherHeight} + 12,0), {progress})");
                 stackVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
                 stackVisual.StartAnimation(nameof(stackVisual.Offset), stackVisualOffsetAnimation);
             }
 
             string sizelogo = null;
             if (logoSizeCount == 0) sizelogo = "1,1";
+            logoVisual.CenterPoint = new(0, logoVisual.Size.Y, 1);
             // Logo scale and transform                                          from               to
             logoHeaderScaleAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector2(1,1), Vector2({logoSizeEnd}, {logoSizeEnd}), " + progress + ")");
             logoHeaderScaleAnimation.SetReferenceParameter("scroller", scrollerPropertySet);

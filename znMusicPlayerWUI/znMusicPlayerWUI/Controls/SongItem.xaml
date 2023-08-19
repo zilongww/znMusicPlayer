@@ -17,9 +17,9 @@
         <MenuFlyout x:Name="rmf" Opening="rmf_Opening" Opened="rmf_Opened" Closed="rmf_Closed">
             <MenuFlyoutItem Text="{x:Bind MusicData.Title, Mode=OneWay}" IsEnabled="False"/>
             <MenuFlyoutSeparator/>
-            <MenuFlyoutItem Text="播放" Click="Play_Click" AccessKey="Q">
+            <MenuFlyoutItem Text="播放" Click="MenuFlyoutItem_Click_2" AccessKey="Q">
                 <MenuFlyoutItem.Icon>
-                    <FontIcon Glyph="&#xE768;"/>
+                    <FontIcon x:Name="PlayingIconMenu" Glyph="&#xE768;"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutItem Text="添加到播放中列表" Click="AddPlay_Click" AccessKey="W">

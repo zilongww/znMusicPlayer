@@ -36,14 +36,14 @@
             <ListView.Header>
                 <Border VerticalAlignment="Top"
                         x:Name="menu_border"
-                        Margin="0,0,0,24">
+                        Margin="0,0,0,4">
                     <Grid x:Name="headerRootGrid">
                         <Border x:Name="BackColorBaseRectangle" Background="{ThemeResource AcrylicNormal}"    
                                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                 BorderThickness="0,0,0,1"/>
                         <Grid x:Name="HeaderBaseGrid">
                             <Grid x:Name="PlayList_BaseGrid">
-                                <Grid x:Name="PlayList_Image_BaseGrid" Margin="24,24,0,0">
+                                <Grid x:Name="PlayList_Image_BaseGrid" Margin="0,32,0,0">
                                     <Rectangle x:Name="PlayList_Image_DropShadowBase"/>
                                     <Border Width="210"
                                             Height="210"
