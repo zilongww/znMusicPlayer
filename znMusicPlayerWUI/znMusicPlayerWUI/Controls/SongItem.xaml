@@ -10,7 +10,7 @@
     RightTapped="Button_RightTapped" Background="{x:Null}" x:FieldModifier="Public" 
     PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
     PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited"
-    DoubleTapped="Grid_DoubleTapped" Holding="Grid_Holding" x:Name="root"
+    Holding="Grid_Holding" x:Name="root"
     AccessKeyInvoked="root_AccessKeyInvoked" MinHeight="58">
     
     <Grid.Resources>
@@ -154,14 +154,15 @@
                     <ScalarTransition/>
                 </Rectangle.OpacityTransition>
             </Rectangle>
-            <Grid x:Name="BaseGrid" Padding="8">
+            <Grid x:Name="BaseGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Grid x:Name="InfoRoot" Opacity="1" x:FieldModifier="Public">
+                <Grid x:Name="InfoRoot" Opacity="1" x:FieldModifier="Public"
+                      Background="Transparent" DoubleTapped="Grid_DoubleTapped" Padding="8">
                     <Grid.OpacityTransition>
                         <ScalarTransition/>
                     </Grid.OpacityTransition>

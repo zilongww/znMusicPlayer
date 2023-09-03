@@ -122,7 +122,8 @@ namespace znMusicPlayerWUI.Controls
                 SetPlayingIcon(NAudio.Wave.PlaybackState.Paused);
                 App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
                 PlayingThemeRectangle.Opacity = 0;
-                AnimateMouseLeavingBackground();
+                backgroundBaseGridVisual.Opacity = 0;
+                RightToolBar.Visibility = Visibility.Collapsed;
             }
 
             /*

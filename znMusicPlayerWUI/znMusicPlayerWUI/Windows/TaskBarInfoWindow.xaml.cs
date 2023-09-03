@@ -22,6 +22,8 @@ namespace znMusicPlayerWUI.Windowed
     public partial class TaskBarInfoWindow : Window
     {
         public nint Handle { get; private set; }
+        public string IconPath { get; private set; }
+        public string IconPathUsing { get; private set; }
 
         public TaskBarInfoWindow()
         {
@@ -43,7 +45,7 @@ namespace znMusicPlayerWUI.Windowed
             };
             App.playingList.NowPlayingImageLoaded += (_, __) =>
             {
-                SetTaskbarImage(__);
+                IconPath = __;
             };
             Activated += (_, __) =>
             {
@@ -64,7 +66,8 @@ namespace znMusicPlayerWUI.Windowed
         System.Drawing.Image bmp = null;
         public void SetTaskbarImage(string filePath)
         {
-            if (filePath == null) return;
+            if (string.IsNullOrEmpty(filePath)) return;
+            if (IconPathUsing == filePath) return;
             bool canBreak = false;
             bmp = Bitmap.FromFile(filePath);
             int size = 160;
@@ -84,6 +87,7 @@ namespace znMusicPlayerWUI.Windowed
                     else
                     {
                         Debug.WriteLine($"{size}x{size} completed.");
+                        IconPathUsing = filePath;
                         canBreak = true;
                     }
                 }
@@ -180,10 +184,9 @@ namespace znMusicPlayerWUI.Windowed
             uint uMsg,
             Windows.Win32.Foundation.WPARAM wParam,
             Windows.Win32.Foundation.LPARAM lParam)
-        {/*
-            System.Diagnostics.Debug.WriteLine($"Get system message: {uMsg}");
-            System.Diagnostics.Debug.WriteLine($"Error message: {a}");*/
-            if (uMsg == 806 || uMsg == 127)
+        {
+            //System.Diagnostics.Debug.WriteLine($"Get system message: {uMsg}");
+            if (uMsg == 806)
             {
                 if (bmp != null)
                 {
@@ -211,6 +214,10 @@ namespace znMusicPlayerWUI.Windowed
                         App.playingList.PlayNext();
                         break;
                 }
+            }
+            else if (uMsg == 127)
+            {
+                SetTaskbarImage(IconPath);
             }
 
             return Windows.Win32.PInvoke.CallWindowProc(origPrc, hwnd, uMsg, wParam, lParam);

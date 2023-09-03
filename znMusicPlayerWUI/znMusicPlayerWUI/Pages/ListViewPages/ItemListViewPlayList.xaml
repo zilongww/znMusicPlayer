@@ -22,7 +22,7 @@
         <ListView x:Name="Children"
                   Background="Transparent"
                   ScrollViewer.CanContentRenderOutsideBounds="True"
-                  Padding="0,0,0,54"
+                  Padding="0,0,0,52"
                   SelectionMode="None"
                   SelectionChanged="Children_SelectionChanged"
                   ItemsSource="{x:Bind MusicDataList}"
@@ -30,7 +30,7 @@
                   DropCompleted="Children_DropCompleted">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="helper:SongItemBindBase">
-                    <controlszn:SongItem Margin="0,0,4,0"/>
+                    <controlszn:SongItem Margin="0,0,4,2"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Header>

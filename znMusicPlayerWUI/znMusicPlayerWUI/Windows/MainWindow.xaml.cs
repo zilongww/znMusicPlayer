@@ -425,8 +425,9 @@ namespace znMusicPlayerWUI
         {
             bar.ExtendsContentIntoTitleBar = true;
 
-            bool defaultLightTheme = false; ;
-            bool defaultDarkTheme = false; ;
+            bool defaultLightTheme = false;
+            bool defaultDarkTheme = false;
+            App.AppWindowLocal.TitleBar.IconShowOptions = IconShowOptions.HideIconAndSystemMenu;
             if (theme == ElementTheme.Default)
             {
                 defaultLightTheme = App.Current.RequestedTheme == ApplicationTheme.Light;

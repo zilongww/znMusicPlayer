@@ -77,6 +77,7 @@ namespace znMusicPlayerWUI.Windowed
                 AppWindow.TitleBar.ButtonForegroundColor = Colors.Transparent;
                 AppWindow.TitleBar.InactiveForegroundColor = Colors.Transparent;
                 AppWindow.TitleBar.ButtonInactiveForegroundColor = Colors.Transparent;
+                AppWindow.TitleBar.IconShowOptions = IconShowOptions.HideIconAndSystemMenu;
 
                 if (IsMoved)
                 {
