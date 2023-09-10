@@ -67,7 +67,7 @@ namespace znMusicPlayerWUI
         public static TaskBarInfoWindow taskBarInfoWindow;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.2.8 Preview";
+        public static readonly string AppVersion = "0.2.81 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -221,6 +221,9 @@ namespace znMusicPlayerWUI
 
         public async void DelayOpenWindows()
         {
+#if DEBUG
+            await Task.Delay(1000);
+#endif
             await Task.Delay(500);
             taskBarInfoWindow = new();
 

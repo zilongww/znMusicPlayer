@@ -282,16 +282,18 @@
               SizeChanged="Grid_SizeChanged">
             <Grid.Resources>
                 <Flyout x:Name="PlayingListBasePopup"
-                        ShouldConstrainToRootBounds="False">
+                        ShouldConstrainToRootBounds="True">
                     <Flyout.FlyoutPresenterStyle>
                         <Style TargetType="FlyoutPresenter">
-                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Background" Value="{ThemeResource AcrylicNormal}"/>
                             <Setter Property="ScrollViewer.VerticalScrollMode" Value="Disabled" />
                             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
                             <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
                             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
                             <Setter Property="CornerRadius" Value="8" />
                             <Setter Property="MaxHeight" Value="800"/>
+                            <Setter Property="AllowDrop" Value="True"/>
+                            <Setter Property="CanDrag" Value="True"/>
                         </Style>
                     </Flyout.FlyoutPresenterStyle>
                     <Grid x:Name="PlayingListBaseGrid"
@@ -369,10 +371,10 @@
                 </Flyout>
 
                 <Flyout x:Name="VolumeBasePopup"
-                        ShouldConstrainToRootBounds="False">
+                        ShouldConstrainToRootBounds="True">
                     <Flyout.FlyoutPresenterStyle>
                         <Style TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenterStyle}">
-                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Background" Value="{ThemeResource AcrylicNormal}"/>
                             <Setter Property="CornerRadius" Value="8" />
                         </Style>
                     </Flyout.FlyoutPresenterStyle>

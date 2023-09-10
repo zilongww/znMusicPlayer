@@ -159,6 +159,7 @@ namespace znMusicPlayerWUI.Background
 
             NowPlayingImage = a;
             NowPlayingImageLoaded?.Invoke(NowPlayingImage, path);
+            System.Diagnostics.Debug.WriteLine(NowPlayingImageLoaded.GetInvocationList().Length);
         }
 
 

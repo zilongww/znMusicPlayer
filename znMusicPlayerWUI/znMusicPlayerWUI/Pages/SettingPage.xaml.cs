@@ -22,7 +22,6 @@ using znMusicPlayerWUI.Windowed;
 using znMusicPlayerWUI.Background;
 using znMusicPlayerWUI.Background.HotKeys;
 using CommunityToolkit.WinUI.UI;
-using CommunityToolkit.Labs.WinUI;
 using Windows.UI;
 using Microsoft.UI.Xaml.Media.Imaging;
 
@@ -47,7 +46,7 @@ namespace znMusicPlayerWUI.Pages
 
         private void DelaySetParameter(string value)
         {
-            SettingsExpander expander = null;
+            CommunityToolkit.WinUI.Controls.SettingsExpander expander = null;
             switch (value)
             {
                 case "open download":
@@ -288,7 +287,7 @@ namespace znMusicPlayerWUI.Pages
                     DataFolderBase.DownloadFolder = folderPath;
                     break;
             }
-            (VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(button)))) as SettingsCard).Description = folderPath;
+            (VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(button)))) as CommunityToolkit.WinUI.Controls.SettingsCard).Description = folderPath;
         }
 
         private async void Button_Click_4(object sender, RoutedEventArgs e)
@@ -319,7 +318,7 @@ namespace znMusicPlayerWUI.Pages
                 }
             });
 
-            (VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(button))) as SettingsCard).Description = "当前占用：0B";
+            (VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(button))) as CommunityToolkit.WinUI.Controls.SettingsCard).Description = "当前占用：0B";
         }
         #endregion
 
@@ -716,6 +715,37 @@ namespace znMusicPlayerWUI.Pages
         {
             DataFolderBase.JSettingData = DataFolderBase.SettingDefault;
             App.LoadSettings(DataFolderBase.JSettingData);
+        }
+
+        private void NumberBox_ValueChanged_1(NumberBox sender, NumberBoxValueChangedEventArgs args)
+        {
+            ScrollViewer a = (ScrollViewer)VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(MainWindow.SWindowGridBaseTop)))));
+            a.RasterizationScale = sender.Value;
+            MainWindow.AsyncDialog.RasterizationScale = sender.Value;
+        }
+
+        private void ToggleSwitch_Toggled_1(object sender, RoutedEventArgs e)
+        {
+            var a = sender as ToggleSwitch;
+            ScrollViewer b = (ScrollViewer)VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(MainWindow.SWindowGridBaseTop)))));
+            if (a.IsOn)
+            {
+                b.ZoomMode = ZoomMode.Enabled;
+                b.HorizontalScrollMode = ScrollMode.Enabled;
+                b.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+                b.VerticalScrollMode = ScrollMode.Enabled;
+                b.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                b.ZoomToFactor(1);
+            }
+            else
+            {
+                b.ZoomMode = ZoomMode.Disabled;
+                b.HorizontalScrollMode = ScrollMode.Disabled;
+                b.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                b.VerticalScrollMode = ScrollMode.Disabled;
+                b.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                b.ZoomToFactor(1);
+            }
         }
     }
 }

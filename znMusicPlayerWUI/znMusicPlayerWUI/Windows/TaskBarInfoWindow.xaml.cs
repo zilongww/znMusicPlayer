@@ -64,20 +64,21 @@ namespace znMusicPlayerWUI.Windowed
         nint pauseIconHandle = (Bitmap.FromFile(Path.Combine(localPath, "任务栏暂停.png")) as Bitmap).GetHicon();
         nint playIconHandle = (Bitmap.FromFile(Path.Combine(localPath, "任务栏播放.png")) as Bitmap).GetHicon();
         System.Drawing.Image bmp = null;
-        public void SetTaskbarImage(string filePath)
+        public async void SetTaskbarImage(string filePath)
         {
             if (string.IsNullOrEmpty(filePath)) return;
             if (IconPathUsing == filePath) return;
             bool canBreak = false;
-            bmp = Bitmap.FromFile(filePath);
+            bmp = await Task.Run(() => Bitmap.FromFile(filePath));
             int size = 160;
             for (int i = 0; i < 50; i++)
             {
                 if (canBreak) break;
                 var hBitmap = bmp.GetThumbnailImage(size, size, null, 0) as Bitmap;
+                var hBitmapNint = hBitmap.GetHbitmap();
                 try
                 {
-                    var a = NativeMethods.DwmSetIconicThumbnail(Handle, hBitmap.GetHbitmap(), NativeMethods.DWM_SIT.None);
+                    var a = await Task.Run(() => NativeMethods.DwmSetIconicThumbnail(Handle, hBitmapNint, NativeMethods.DWM_SIT.None));
                     if (a != 0)
                     {
                         //Debug.WriteLine($"{size}x{size} failed.");
@@ -185,7 +186,7 @@ namespace znMusicPlayerWUI.Windowed
             Windows.Win32.Foundation.WPARAM wParam,
             Windows.Win32.Foundation.LPARAM lParam)
         {
-            //System.Diagnostics.Debug.WriteLine($"Get system message: {uMsg}");
+            //System.Diagnostics.Debug.WriteLine($"Get system message: {uMsg}\n    {wParam.Value}");
             if (uMsg == 806)
             {
                 if (bmp != null)
@@ -199,21 +200,7 @@ namespace znMusicPlayerWUI.Windowed
             }
             else if (uMsg == 273)
             {
-                switch (wParam.Value)
-                {
-                    case 402653185:
-                        App.playingList.PlayPrevious();
-                        break;
-                    case 402653186:
-                        if (App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing)
-                            App.audioPlayer.SetPause();
-                        else
-                            App.audioPlayer.SetPlay();
-                        break;
-                    case 402653187:
-                        App.playingList.PlayNext();
-                        break;
-                }
+                TaskbarButtonInvoke(wParam);
             }
             else if (uMsg == 127)
             {
@@ -221,6 +208,32 @@ namespace znMusicPlayerWUI.Windowed
             }
 
             return Windows.Win32.PInvoke.CallWindowProc(origPrc, hwnd, uMsg, wParam, lParam);
+        }
+
+        private async void TaskbarButtonInvoke(Windows.Win32.Foundation.WPARAM wParam)
+        {
+            switch (wParam.Value)
+            {
+                case 402653185:
+                    await App.playingList.PlayPrevious();
+                    break;
+                case 402653186:
+                    if (App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+                        App.audioPlayer.SetPause();
+                    else
+                        App.audioPlayer.SetPlay();
+                    break;
+                case 402653187:
+                    await App.playingList.PlayNext();
+                    break;
+            }
+            App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
+        }
+
+        private void PlayingList_NowPlayingImageLoaded(ImageSource imageSource, string path)
+        {
+            App.playingList.NowPlayingImageLoaded -= PlayingList_NowPlayingImageLoaded;
+            SetTaskbarImage(path);
         }
     }
 

@@ -147,8 +147,9 @@ namespace znMusicPlayerWUI
             App.LoadSettings(App.StartingSettings);
             SetBackdrop(m_currentBackdrop);
             ReadLAE();
-            PlayingListBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
-            VolumeBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
+            
+            //PlayingListBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
+            //VolumeBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
         }
 
         bool isBackground = false;
@@ -1454,7 +1455,6 @@ namespace znMusicPlayerWUI
         {
             switch (e.Key)
             {
-                case Windows.System.VirtualKey.Back:
                 case Windows.System.VirtualKey.GoBack:
                     if (CanKeyDownBack) TryGoBack();
                     break;

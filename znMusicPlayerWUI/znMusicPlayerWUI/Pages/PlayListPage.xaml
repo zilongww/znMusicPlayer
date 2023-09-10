@@ -5,9 +5,11 @@
     xmlns:local="using:znMusicPlayerWUI"
     xmlns:c="using:znMusicPlayerWUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:data="using:znMusicPlayerWUI.DataEditor"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:cc="using:znMusicPlayerWUI.Controls"
     mc:Ignorable="d" SizeChanged="Page_SizeChanged">
 
     <GridView x:Name="BaseGridView"
@@ -37,11 +39,19 @@
                 </CommandBar>
             </Grid>
         </GridView.Header>
-        <GridView.ItemContainerStyle>
-            <Style TargetType="GridViewItem">
-                <Setter Property="Margin" Value="8,2,4,16"/>
-            </Style>
-        </GridView.ItemContainerStyle>
+        <ItemsView x:Name="ItemsViewer" SelectionMode="None" Margin="12,12,12,0"
+                   HorizontalAlignment="Center" VerticalAlignment="Center">
+            <ItemsView.Layout>
+                <LinedFlowLayout ItemsStretch="Fill" LineHeight="320" LineSpacing="12" MinItemSpacing="12"/>
+            </ItemsView.Layout>
+            <ItemsView.ItemTemplate>
+                <DataTemplate x:DataType="data:MusicListData">
+                    <ItemContainer>
+                        <cc:PlayListCard/>
+                    </ItemContainer>
+                </DataTemplate>
+            </ItemsView.ItemTemplate>
+        </ItemsView>
         <!--
         <GridView.ItemTemplate>
             <DataTemplate>

@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Reflection.Emit;
 using Microsoft.UI.Xaml.Media.Animation;
+using System.Collections.ObjectModel;
+using znMusicPlayerWUI.DataEditor;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -34,17 +36,17 @@ namespace znMusicPlayerWUI.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            ItemsViewer.ItemsSource = playListCards;
             UpdatePlayList();
         }
 
+        ObservableCollection<MusicListData> playListCards = new();
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             await Task.Delay(500);
             App.playListReader.Updateed -= PlayListReader_Updateed;
-            foreach (PlayListCard item in BaseGridView.Items)
-            {
-                item.Dispose();
-            }
+            playListCards.Clear();
+            ItemsViewer.ItemsSource = null;
             BaseGridView.Items.Clear();
         }
 
@@ -53,11 +55,7 @@ namespace znMusicPlayerWUI.Pages
         {
             if (isInUpdate) return;
             isInUpdate = true;
-            foreach (PlayListCard item in BaseGridView.Items)
-            {
-                item.Dispose();
-            }
-            BaseGridView.Items.Clear();
+            playListCards.Clear();
             var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
 
             if (App.playListReader.NowMusicListDatas == null)
@@ -67,13 +65,7 @@ namespace znMusicPlayerWUI.Pages
             foreach (var item in App.playListReader.NowMusicListDatas)
             {
                 count++;
-                var a = new PlayListCard()
-                {
-                    ImageScaleDPI = dpi,
-                    AccessKey = $"L{count}"
-                };
-                a.Init(item);
-                BaseGridView.Items.Add(a);
+                playListCards.Add(item);
             }
             isInUpdate = false;
         }
@@ -153,6 +145,8 @@ namespace znMusicPlayerWUI.Pages
             Canvas.SetZIndex(headerContainer, 1);
 
             UpdateShyHeader();
+            ItemsViewer.ScrollView.HorizontalScrollBarVisibility = ScrollingScrollBarVisibility.Hidden;
+            ItemsViewer.ScrollView.HorizontalScrollMode = ScrollingScrollMode.Disabled;
         }
 
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)

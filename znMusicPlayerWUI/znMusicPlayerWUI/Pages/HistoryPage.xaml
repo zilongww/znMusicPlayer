@@ -5,7 +5,7 @@
     xmlns:local="using:znMusicPlayerWUI"
     xmlns:controls="using:znMusicPlayerWUI.Controls"
     xmlns:data="using:znMusicPlayerWUI.DataEditor"
-    xmlns:labs="using:CommunityToolkit.Labs.WinUI"
+    xmlns:cc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" SizeChanged="Page_SizeChanged" Loaded="Page_Loaded">
@@ -29,12 +29,12 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
                     <TextBlock x:Name="HeaderBaseTextBlock" Text="历史" Style="{ThemeResource TBHeader}"/>
-                    <labs:Segmented x:Name="HeaderSelectBase"
+                    <cc:Segmented x:Name="HeaderSelectBase"
                                     SelectedIndex="0" SelectionChanged="Segmented_SelectionChanged"
                                     Loaded="HeaderSelectBase_Loaded">
-                        <labs:SegmentedItem Content="播放历史"/>
-                        <labs:SegmentedItem Content="统计"/>
-                    </labs:Segmented>
+                        <cc:SegmentedItem Content="播放历史"/>
+                        <cc:SegmentedItem Content="统计"/>
+                    </cc:Segmented>
                     <Grid x:Name="HeaderText" VerticalAlignment="Bottom" Margin="29,0,157,4"
                           Grid.Row="1">
                         <Grid.Resources>

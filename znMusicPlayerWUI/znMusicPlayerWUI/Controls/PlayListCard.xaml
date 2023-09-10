@@ -27,18 +27,21 @@
     <Rectangle x:Name="ShadowBaseRectangle" Margin="4,2,0,0"/>
     <Border CornerRadius="8"
             BorderThickness="1"
-            BorderBrush="{ThemeResource CardStrokeColorDefaultSolid}">
+            BorderBrush="{ThemeResource ControlElevationBorderBrush}">
         <Grid>
             <Rectangle x:Name="ABackColorBaseRectAngle" Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" Opacity="0"/>
             <Rectangle x:Name="BackColorBaseRectAngle" Fill="{ThemeResource LayerFillColorDefault}" Opacity="1"/>
-            <StackPanel>
-                <Grid Width="200" Height="200">
-                    <local:Imagezn x:Name="PlayListImage" Stretch="UniformToFill" ShowMenuBehavior="OnlyLightUp"/>
+            <Grid>
+                <local:Imagezn x:Name="PlayListImage" Stretch="UniformToFill" ShowMenuBehavior="OnlyLightUp"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="6"/>
+                <Grid IsHitTestVisible="False" VerticalAlignment="Bottom"
+                      Background="{ThemeResource AcrylicNormal}">
+                    <TextBlock x:Name="TextBaseTb" Padding="8,6" TextTrimming="CharacterEllipsis"
+                               VerticalAlignment="Bottom" HorizontalAlignment="Left">
+                        <Run Text="{Binding ListShowName}"/><LineBreak/><Run Text="{Binding Songs.Count}" FontSize="12"/>首歌曲
+                    </TextBlock>
                 </Grid>
-                <TextBlock x:Name="TextBaseTb" Padding="6,4" TextTrimming="CharacterEllipsis" Height="50">
-                    <Run Text="{Binding ListShowName}"/><LineBreak/><Run Text="{Binding Songs.Count}" FontSize="12"/>首歌曲
-                </TextBlock>
-            </StackPanel>
+            </Grid>
         </Grid>
     </Border>
 </Grid>

@@ -36,6 +36,18 @@ namespace znMusicPlayerWUI.Controls
             InitializeComponent();
             ConnectAnimationElement = PlayListImage;
             ConnectAnimationElement1 = TextBaseTb;
+            DataContextChanged += PlayListCard_DataContextChanged;
+        }
+
+        private void PlayListCard_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            if (DataContext is not null)
+            {
+                if (DataContext is MusicListData)
+                {
+                    Init(DataContext as MusicListData);
+                }
+            }
         }
 
         public async Task Init(MusicFrom musicFrom, string id)
@@ -48,6 +60,7 @@ namespace znMusicPlayerWUI.Controls
         public void Init(MusicListData musicListData)
         {
             MusicListData = musicListData;
+            UpdateImage();
             if (MusicListData.ListDataType != DataType.歌单)
             {
                 RefreshPlayListButton.Visibility = Visibility.Collapsed;
@@ -60,7 +73,29 @@ namespace znMusicPlayerWUI.Controls
             {
                 EditPlayListButton.Visibility = Visibility.Collapsed;
             }
-            DataContext = musicListData;
+        }
+
+        public async void UpdateImage()
+        {
+            /*ExitMass();
+            CreatShadow();*/
+            if (MusicListData != null)
+            {
+                int size = 0;//(int)(200 * ImageScaleDPI);
+                if (MusicListData.ListDataType == DataType.本地歌单)
+                {
+                    PlayListImage.Source = await FileHelper.GetImageSource(MusicListData.PicturePath, size, size, true);
+                }
+                else if (MusicListData.ListDataType == DataType.歌单)
+                {
+                    var path = await ImageManage.GetImageSource(MusicListData);
+                    PlayListImage.Source = await FileHelper.GetImageSource(path, size, size, true);
+                }
+                else
+                {
+                    PlayListImage.Source = null;
+                }
+            }
         }
 
         Compositor compositor;
@@ -85,25 +120,6 @@ namespace znMusicPlayerWUI.Controls
 
         private async void UILoaded(object sender, RoutedEventArgs e)
         {
-            ExitMass();
-            CreatShadow();
-            if (MusicListData != null)
-            {
-                int size = (int)(200 * ImageScaleDPI);
-                if (MusicListData.ListDataType == DataType.本地歌单)
-                {
-                    PlayListImage.Source = await FileHelper.GetImageSource(MusicListData.PicturePath, size, size, true);
-                }
-                else if (MusicListData.ListDataType == DataType.歌单)
-                {
-                    var path = await ImageManage.GetImageSource(MusicListData);
-                    PlayListImage.Source = await FileHelper.GetImageSource(path, size, size, true);
-                }
-                else
-                {
-                    PlayListImage.Source = null;
-                }
-            }
             //System.Diagnostics.Debug.WriteLine(MusicListData.PicturePath);
         }
 
@@ -121,6 +137,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void Grid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
+            return;
             if (e.GetCurrentPoint(sender as UIElement).PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Mouse)
             {
                 AnimateHelper.AnimateOffset(
@@ -150,6 +167,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void Grid_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
+            return;
             if (e.GetCurrentPoint(sender as UIElement).PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Mouse)
             {
                 AnimateHelper.AnimateOffset(
