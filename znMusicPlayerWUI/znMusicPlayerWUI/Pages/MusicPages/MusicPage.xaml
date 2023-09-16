@@ -137,7 +137,9 @@
                             <Button.Flyout>
                                 <MenuFlyout x:Name="ArtistFlyout" Opening="ArtistFlyout_Opening"/>
                             </Button.Flyout>
-                            <TextBlock x:Name="ArtistRunText"/>
+                            <controls:AutoScrollViewer x:Name="AutoScrollViewer1">
+                                <TextBlock x:Name="ArtistRunText"/>
+                            </controls:AutoScrollViewer>
                         </Button>
                         <Button x:Name="TitleRunButton" AccessKey="T" Click="TitleRunButton_Click">
                             <Button.Flyout>
@@ -147,10 +149,12 @@
                                     <MenuFlyoutItem x:Name="CopyMenuItem" Click="CopyMenuItem_Click" Text="复制" Icon="copy"/>
                                 </MenuFlyout>
                             </Button.Flyout>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock x:Name="TitleRunText" FontWeight="Normal" FontSize="24" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/>
-                                <TextBlock x:Name="Title2RunText" VerticalAlignment="Bottom" Foreground="{ThemeResource ApplicationPressedForegroundThemeBrush}"/>
-                            </StackPanel>
+                            <controls:AutoScrollViewer x:Name="AutoScrollViewer2">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock x:Name="TitleRunText" FontWeight="Normal" FontSize="24" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                                    <TextBlock x:Name="Title2RunText" VerticalAlignment="Center" Foreground="{ThemeResource ApplicationPressedForegroundThemeBrush}"/>
+                                </StackPanel>
+                            </controls:AutoScrollViewer>
                         </Button>
                         <Button x:Name="AlbumRunButton" AccessKey="B" Click="AlbumRunButton_Click">
                             <Button.Flyout>
@@ -158,13 +162,19 @@
                                     <MenuFlyoutItem x:Name="AlbumMenuItem" Click="AlbumMenuItem_Click"/>
                                 </MenuFlyout>
                             </Button.Flyout>
-                            <TextBlock x:Name="AlbumRunText"/>
+                            <controls:AutoScrollViewer x:Name="AutoScrollViewer3">
+                                <TextBlock x:Name="AlbumRunText"/>
+                            </controls:AutoScrollViewer>
                         </Button>
                         <Button x:Name="OtherRunButton" AccessKey="O" Click="OtherRunButton_Click">
-                            <TextBlock x:Name="OtherRunText"/>
+                            <controls:AutoScrollViewer x:Name="AutoScrollViewer4">
+                                <TextBlock x:Name="OtherRunText"/>
+                            </controls:AutoScrollViewer>
                         </Button>
                         <Button x:Name="AudioInfoButton" AccessKey="I"  Click="AudioInfoButton_Click">
-                            <TextBlock x:Name="AudioInfoRunText" Text="{Binding App.audioPlayer}"/>
+                            <controls:AutoScrollViewer x:Name="AutoScrollViewer5">
+                                <TextBlock x:Name="AudioInfoRunText" Text="{Binding App.audioPlayer}"/>
+                            </controls:AutoScrollViewer>
                         </Button>
                     </StackPanel>
                 </Grid>

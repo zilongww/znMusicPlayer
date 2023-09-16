@@ -112,6 +112,9 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private void AddEvents()
         {
             if (isAddEvents) return;
+            AutoScrollViewer1.Pause = false; AutoScrollViewer2.Pause = false;
+            AutoScrollViewer3.Pause = false; AutoScrollViewer4.Pause = false;
+            AutoScrollViewer5.Pause = false;
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
             App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
             App.audioPlayer.TimingChanged += AudioPlayer_TimingChanged;
@@ -128,6 +131,9 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void RemoveEvents()
         {
+            AutoScrollViewer1.Pause = true; AutoScrollViewer2.Pause = true;
+            AutoScrollViewer3.Pause = true; AutoScrollViewer4.Pause = true;
+            AutoScrollViewer5.Pause = true;
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
             App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
             App.audioPlayer.TimingChanged -= AudioPlayer_TimingChanged;

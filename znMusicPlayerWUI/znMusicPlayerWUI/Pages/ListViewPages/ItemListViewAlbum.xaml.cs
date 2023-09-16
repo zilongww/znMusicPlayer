@@ -25,6 +25,8 @@ using znMusicPlayerWUI.Pages.ListViewPages;
 using System.Diagnostics;
 using CommunityToolkit.WinUI.UI;
 using znMusicPlayerWUI.Controls;
+using Microsoft.UI.Xaml.Data;
+using znMusicPlayerWUI.Background.HotKeys;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -106,7 +108,12 @@ namespace znMusicPlayerWUI.Pages
             }
             NavToObj = obj;
             musicListData = NavToObj.Songs;
-            Title2_Text.Text = obj.Title2;
+            if (string.IsNullOrEmpty(obj.Title2))
+            {
+                Title2_Text.Visibility = Visibility.Collapsed;
+            }
+            else
+                Title2_Text.Text = obj.Title2;
 
             if (musicListData != null)
             {

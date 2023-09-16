@@ -196,7 +196,8 @@
                     <Grid VerticalAlignment="Center"
                           HorizontalAlignment="Left"
                           Margin="12,0,0,0"
-                          Grid.Column="1">
+                          Grid.Column="1"
+                          RasterizationScale="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
@@ -207,13 +208,13 @@
                                    TextTrimming="CharacterEllipsis"
                                    Grid.Row="0"
                                    Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
-                                   FontSize="10">
+                                   FontSize="13">
                             <Run Text="{Binding MusicData.Count}"/>.
                             <Run Text="{Binding MusicData.Title}"
                                  Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
                                  FontSize="14"/>
                             <Run/>
-                            <Run Text="{Binding MusicData.Title2}" FontSize="11"/>
+                            <Run Text="{Binding MusicData.Title2}"/>
                         </TextBlock>
                         <Grid Grid.Row="1" HorizontalAlignment="Left">
                             <Button BorderThickness="0"

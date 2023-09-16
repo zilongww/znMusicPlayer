@@ -67,6 +67,11 @@
                                     <controlszn:Imagezn x:Name="AlbumLogo" CornerRadius="8" Source="/Images/SugarAndSalt.jpg"/>
                                 </Border>
                                 <Border x:Name="InfoTextsRoot" HorizontalAlignment="Left">
+                                    <Border.Resources>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="IsTextSelectionEnabled" Value="True"/>
+                                        </Style>
+                                    </Border.Resources>
                                     <Grid x:Name="ChangeWidthTextsRoot">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="auto"/>
@@ -74,14 +79,20 @@
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
                                         <TextBlock x:Name="AlbumTitle_Text" TextWrapping="WrapWholeWords" Style="{ThemeResource SubTBHeader}"
-                                                       MaxHeight="70" TextTrimming="CharacterEllipsis">
-                                            <Run Text="{Binding NavToObj.Title}"/>
-                                            <Run x:Name="Title2_Text" FontSize="14" Foreground="{ThemeResource ApplicationPressedForegroundThemeBrush}"/>
-                                        </TextBlock>
-                                        <ScrollViewer x:Name="DescribeeTextRoot" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Hidden" Margin="0,4,0,0">
-                                            <TextBlock x:Name="DescribeeText" TextWrapping="WrapWholeWords" TextTrimming="CharacterEllipsis" Margin="0,0,0,0"
-                                                       Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-                                        </ScrollViewer>
+                                                   MaxHeight="70" TextTrimming="CharacterEllipsis" Text="{Binding NavToObj.Title}"/>
+                                        <ScrollView x:Name="DescribeeTextRoot" Grid.Row="1" VerticalScrollBarVisibility="Hidden" Margin="0,4,0,0">
+                                            <StackPanel Orientation="Vertical">
+                                                <TextBlock x:Name="Title2_Text"
+                                                           TextWrapping="WrapWholeWords"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           FontSize="20" Margin="0,0,0,4"/>
+                                                <TextBlock x:Name="DescribeeText"
+                                                           TextWrapping="WrapWholeWords"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           Margin="0,0,0,0"
+                                                           Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                                            </StackPanel>
+                                        </ScrollView>
                                         <CommandBar x:Name="ToolsCommandBar"
                                                     DefaultLabelPosition="Right"
                                                     HorizontalAlignment="Left"

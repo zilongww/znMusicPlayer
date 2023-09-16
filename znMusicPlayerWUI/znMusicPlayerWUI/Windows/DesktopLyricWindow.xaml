@@ -9,7 +9,8 @@
     mc:Ignorable="d" SizeChanged="Window_SizeChanged"
     xmlns:ui="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:media="using:CommunityToolkit.WinUI.UI.Media">
-    <Grid x:Name="root" RequestedTheme="Dark" SizeChanged="root_SizeChanged">
+    <Grid x:Name="root" RequestedTheme="Dark" SizeChanged="root_SizeChanged"
+          RasterizationScale="1.9">
         <Grid.Resources>
             <ResourceDictionary>
                 <SolidColorBrush x:Key="LrcForeground" Color="#DDFFFFFF"/>
@@ -74,7 +75,7 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock x:Name="progressPresent" Width="32" FontSize="11" Text="0%" HorizontalAlignment="Center" Margin="0,0,4,0" Foreground="Silver" Opacity="0.8"/>
+            <TextBlock x:Name="progressPresent" Width="32" FontSize="13" Text="0%" HorizontalAlignment="Center" Margin="0,0,4,0" Foreground="Silver" Opacity="0.8"/>
             <ProgressBar x:Name="progressBase" Grid.Column="1" Background="{ThemeResource SystemAccentColorDark2}"/>
             <Rectangle Fill="{ThemeResource SystemAccentColorLight2}" Grid.Column="1" Width="4" Height="3" RadiusX="3" RadiusY="3" VerticalAlignment="Center" HorizontalAlignment="Right"/>
         </Grid>

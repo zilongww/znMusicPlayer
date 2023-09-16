@@ -41,8 +41,8 @@
                     Click="Button_Click"/>
             </StackPanel>
         </ScrollViewer>
-        <control:AutoScrollViewer Background="{ThemeResource SystemControlAltLowAcrylicElementBrush}" RequestedTheme="Dark" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12">
-            <TextBlock Text="Auto Scroll To View Control Test" Width="200"/>
+        <control:AutoScrollViewer Width="600" Background="{ThemeResource AcrylicInAppFillColorBaseBrush}" RequestedTheme="Dark" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12">
+            <TextBlock Text="Auto Scroll To View Control Test llllllllllasdjkfsdjkhadfshjkadfshjkadfsjkhadfshjkladfshjkdfsiouycdfsvghijcvxzbjvndfsbmn erhjdfsfghjcvxghjcvxbnvdfsbjnesghjcdsvxzftucvxghjvds abnvm adfsjhcvxzftuycxzfgtuybjnvebnmv cdvxzghjgiuydshjvadfsbmn dfshjcvxzuyfgdfshghvjadfsbncdsxhjvcvxzghjvdfsa mn adfsasdasdasdaskhjfdgbsdhjkfgsdhjabfgjkhsagbfhjbeajkbfhjwsef" HorizontalAlignment="Left"/>
         </control:AutoScrollViewer>
     </Grid>
 </Page>

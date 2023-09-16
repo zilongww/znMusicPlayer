@@ -26,21 +26,23 @@
                   VerticalAlignment="Top"
                   Height="48"
                   Margin="0,0,0,0">
-                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <Grid VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
                     <TextBlock x:Name="AppTitleTextBlock"
                                Text="znMusicPlayer"
                                TextWrapping="NoWrap"
-                               Style="{StaticResource CaptionTextBlockStyle}"/>
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               VerticalAlignment="Center"/>
                     <TextBlock x:Name="LyricTextBlock"
                                TextWrapping="NoWrap"
-                               Style="{StaticResource CaptionTextBlockStyle}">
-                        <TextBlock.Transitions>
-                            <TransitionCollection>
-                                <ContentThemeTransition/>
-                            </TransitionCollection>
-                        </TextBlock.Transitions>
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Grid.Column="1"
+                               VerticalAlignment="Center">
                     </TextBlock>
-                </StackPanel>
+                </Grid>
             </Grid>
 
             <NavigationView x:Name="NavView"
@@ -166,26 +168,28 @@
                                 <StackPanel VerticalAlignment="Center"
                                             Margin="0,0,0,0"
                                             Grid.Column="1"
-                                            IsHitTestVisible="False">
+                                            IsHitTestVisible="False" Background="{x:Null}">
                                     <StackPanel.Transitions>
                                         <TransitionCollection>
                                             <RepositionThemeTransition/>
                                         </TransitionCollection>
                                     </StackPanel.Transitions>
-                                    <TextBlock x:Name="PlayTitle"
-                                               Text="znMusicPlayer"
-                                               FontSize="20"
-                                               TextWrapping="NoWrap"
-                                               HorizontalAlignment="Left"
-                                               TextTrimming="CharacterEllipsis">
-                                    </TextBlock>
-                                    <TextBlock x:Name="PlayArtist"
-                                               Text="No media playing"
-                                               FontSize="14"
-                                               TextWrapping="NoWrap"
-                                               HorizontalAlignment="Left"
-                                               TextTrimming="CharacterEllipsis">
-                                    </TextBlock>
+                                    <controls:AutoScrollViewer x:Name="AutoScrollViewerFirst" Background="{x:Null}">
+                                        <TextBlock x:Name="PlayTitle"
+                                                   Text="znMusicPlayer"
+                                                   FontSize="20"
+                                                   HorizontalAlignment="Left"
+                                                   RasterizationScale="1.89">
+                                        </TextBlock>
+                                    </controls:AutoScrollViewer>
+                                    <controls:AutoScrollViewer x:Name="AutoScrollViewerSecond" Background="{x:Null}">
+                                        <TextBlock x:Name="PlayArtist"
+                                                   Text="No media playing"
+                                                   FontSize="14"
+                                                   HorizontalAlignment="Left"
+                                                   RasterizationScale="1.96">
+                                        </TextBlock>
+                                    </controls:AutoScrollViewer>
                                 </StackPanel>
                             </Grid>
 
