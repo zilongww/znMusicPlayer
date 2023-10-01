@@ -35,11 +35,20 @@
                 <local:Imagezn x:Name="PlayListImage" Stretch="UniformToFill" ShowMenuBehavior="OnlyLightUp"
                                HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="6"/>
                 <Grid IsHitTestVisible="False" VerticalAlignment="Bottom"
-                      Background="{ThemeResource AcrylicNormal}">
-                    <TextBlock x:Name="TextBaseTb" Padding="8,6" TextTrimming="CharacterEllipsis"
-                               VerticalAlignment="Bottom" HorizontalAlignment="Left">
-                        <Run Text="{Binding ListShowName}"/><LineBreak/><Run Text="{Binding Songs.Count}" FontSize="12"/>首歌曲
-                    </TextBlock>
+                      Background="{ThemeResource AcrylicNormal}" Padding="8,6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <local:AutoScrollViewer>
+                        <TextBlock x:Name="TextBaseTb"
+                                   Text="{Binding ListShowName}"/>
+                    </local:AutoScrollViewer>
+                    <local:AutoScrollViewer Grid.Row="1">
+                        <TextBlock FontSize="12">
+                        <Run Text="{Binding Songs.Count}"/>首歌曲
+                        </TextBlock>
+                    </local:AutoScrollViewer>
                 </Grid>
             </Grid>
         </Grid>

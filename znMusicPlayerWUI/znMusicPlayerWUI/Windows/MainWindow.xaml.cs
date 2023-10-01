@@ -79,6 +79,9 @@ namespace znMusicPlayerWUI
         public delegate void WindowViewStateChangedDelegate(bool isView);
         public static event WindowViewStateChangedDelegate WindowViewStateChanged;
         
+        public delegate void MainViewStateChangedDelegate(bool isView);
+        public static event MainViewStateChangedDelegate MainViewStateChanged;
+        
         public delegate void MusicPageViewStateChangedDelegate(MusicPageViewState musicPageViewState);
         public static event MusicPageViewStateChangedDelegate MusicPageViewStateChanged;
 
@@ -135,7 +138,7 @@ namespace znMusicPlayerWUI
             Activated += MainWindow_Activated;
             SWindowGridBaseTop.ActualThemeChanged += WindowGridBase_ActualThemeChanged;
             App.SMTC.ButtonPressed += SMTC_ButtonPressed;
-            App.playListReader.Updateed += () => UpdatePlayListButtonUI();
+            App.playListReader.Updated += () => UpdatePlayListButtonUI();
             App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
             MusicPageViewStateChanged += MainWindow_MusicPageViewStateChanged;
 
@@ -230,7 +233,7 @@ namespace znMusicPlayerWUI
             InitializeTitleBar(SWindowGridBaseTop.RequestedTheme);
         }
 
-        private void UpdateWhenDataLated()
+        private void UpdateWhenDataLate()
         {
             AudioPlayer_SourceChanged(App.audioPlayer);
             AudioPlayer_PlayStateChanged(App.audioPlayer);
@@ -248,8 +251,8 @@ namespace znMusicPlayerWUI
         private void AddEvents()
         {
             if (isAddEvents) return;
-            AutoScrollViewerFirst.Pause = false;
-            AutoScrollViewerSecond.Pause = false;
+            //AutoScrollViewerFirst.Pause = false;
+            //AutoScrollViewerSecond.Pause = false;
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
             App.audioPlayer.PlayEnd += AudioPlayer_PlayEnd;
             App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
@@ -260,14 +263,15 @@ namespace znMusicPlayerWUI
             App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
             App.playingList.PlayingListItemChange += PlayingList_PlayingListItemChange;
             isAddEvents = true;
-            UpdateWhenDataLated();
+            UpdateWhenDataLate();
+            MainViewStateChanged?.Invoke(true);
             System.Diagnostics.Debug.WriteLine("Added Events.");
         }
 
         private void RemoveEvents()
         {
-            AutoScrollViewerFirst.Pause = true;
-            AutoScrollViewerSecond.Pause = true;
+            //AutoScrollViewerFirst.Pause = true;
+            //AutoScrollViewerSecond.Pause = true;
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
             App.audioPlayer.PlayEnd -= AudioPlayer_PlayEnd;
             App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
@@ -279,6 +283,7 @@ namespace znMusicPlayerWUI
             App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange;
             App.playingList.PlayingListItemChange -= PlayingList_PlayingListItemChange;
             isAddEvents = false;
+            MainViewStateChanged?.Invoke(false);
             System.Diagnostics.Debug.WriteLine("Removed Events.");
         }
 
@@ -683,9 +688,20 @@ namespace znMusicPlayerWUI
 
         public static void PlayingList_NowPlayingImageLoaded(ImageSource imageSource, string _)
         {
-            if (imageSource != (SPlayContent.Content as Imagezn)?.Source)
+            var im = SPlayContent.Content as Imagezn;
+            if (im is null) return;
+            if (imageSource is null)
             {
-                (SPlayContent.Content as Imagezn).Source = imageSource;
+                SPlayContent.BorderThickness = new(0);
+                im.Source = null;
+                return;
+            }
+            if (imageSource != im.Source)
+            {
+                im.Source = imageSource;
+                im.SaveName = $"{App.audioPlayer.MusicData.Title} · {App.audioPlayer.MusicData.Album.Title}";
+                SPlayContent.BorderThickness = new(1);
+                SPlayContent.BorderBrush = App.Current.Resources["ControlElevationBorderBrush"] as Brush;
             }
 
         }

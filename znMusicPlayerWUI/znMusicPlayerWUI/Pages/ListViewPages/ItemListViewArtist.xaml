@@ -106,7 +106,7 @@
                                             Margin="12,0,0,0"
                                             Orientation="Horizontal" VerticalAlignment="Center">
                                     <Border Width="38" Height="38" CornerRadius="19">
-                                        <controlszn:Imagezn x:Name="Artist_Image1"/>
+                                        <controlszn:Imagezn x:Name="Artist_Image1" CornerRadius="19"/>
                                     </Border>
                                     <TextBlock x:Name="Artist_SmallName"
                                                VerticalAlignment="Center" FontSize="18" Margin="8,0,0,0"/>

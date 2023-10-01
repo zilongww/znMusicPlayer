@@ -70,6 +70,11 @@
         <TextBlock x:Name="BridgeTb" TextAlignment="Left" HorizontalAlignment="Left"/>
         <Rectangle>
             <Rectangle.Fill>
+                <brush:AcrylicBrush BlurAmount="50" TintOpacity="0" />
+            </Rectangle.Fill>
+        </Rectangle>
+        <Rectangle>
+            <Rectangle.Fill>
                 <!--<SolidColorBrush Color="#55000000"/>-->
                 <AcrylicBrush TintLuminosityOpacity="0.85" TintOpacity="0.0" FallbackColor="{ThemeResource MusicPageImageBlurFallbackColor}" TintColor="{ThemeResource BlurImageAcrylicBrush}" Opacity="1"/>
             </Rectangle.Fill>

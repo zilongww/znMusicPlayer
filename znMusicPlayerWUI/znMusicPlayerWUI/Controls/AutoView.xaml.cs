@@ -37,10 +37,13 @@ namespace znMusicPlayerWUI.Controls
             set
             {
                 SetValue(PauseProperty, value);
-                Debug.WriteLine(value);
                 if (!value)
                 {
                     RepeatChangeView();
+                }
+                else
+                {
+                    ScrollTo(0, 0, new(ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore));
                 }
             }
         }
@@ -53,13 +56,14 @@ namespace znMusicPlayerWUI.Controls
             InitializeComponent();
         }
 
+        FrameworkElement content;
         private void GetSizeResult()
         {
             if (Content is null) return;
             content = (FrameworkElement)Content;
             if (content.ActualWidth > ActualWidth) isHorizontalContentOutOfBounds = true;
             else isHorizontalContentOutOfBounds = false;
-            if (content.ActualHeight > ActualHeight) isVerticalContentOutOfBounds = true;
+            if (content.ActualHeight > ActualSize.Y) isVerticalContentOutOfBounds = true;
             else isVerticalContentOutOfBounds = false;
         }
 
@@ -69,12 +73,13 @@ namespace znMusicPlayerWUI.Controls
             RepeatChangeView();
         }
 
-        FrameworkElement content;
         bool isAddedVelocity = false;
         bool pauseChanged = false;
         private async void RepeatChangeView()
         {
+            //Debug.WriteLine("Repeating.");
             if (Content is null) return;
+            if (Visibility == Visibility.Collapsed) return;
             if (isAddedVelocity) return;
             if (ActualSize.X <= 0 || ActualSize.Y <= 0) return;
 
@@ -85,6 +90,10 @@ namespace znMusicPlayerWUI.Controls
             await Task.Delay(RepeatTime);
             isAddedVelocity = false;
 
+            GetSizeResult();
+            if (!isHorizontalContentOutOfBounds && !isVerticalContentOutOfBounds) return;
+
+            Debug.WriteLine("Repeated.");
             if (HorizontalOffset == 0 ? false : true)
             {
                 ScrollTo(0, 0, new(ScrollingAnimationMode.Enabled));
@@ -93,12 +102,12 @@ namespace znMusicPlayerWUI.Controls
 
             if (isHorizontalContentOutOfBounds)
             {
-                float velocity = Math.Min(80f, Math.Max(4f, ActualSize.X / 4 + content.ActualSize.X / 8));
+                float velocity = (float)Math.Min(80f, Math.Max(4, ActualWidth / 4 + content.ActualWidth / 12));
                 AddScrollVelocity(new(velocity, 0), new());
             }
             if (isVerticalContentOutOfBounds)
             {
-                float velocity = Math.Min(80f, Math.Max(4f, ActualSize.Y / 4 + content.ActualSize.Y / 8));
+                float velocity = Math.Min(80f, Math.Max(4f, ActualSize.Y / 4 + Content.ActualSize.Y / 12));
                 AddScrollVelocity(new(0, velocity), new());
             }
         }
@@ -116,11 +125,24 @@ namespace znMusicPlayerWUI.Controls
 
         private void ScrollView_ViewChanged(ScrollView sender, object args)
         {
+
         }
 
         private void ScrollView_ExtentChanged(ScrollView sender, object args)
         {
-            RepeatChangeView();
+            if (Content is not null)
+            {
+                (Content as FrameworkElement).Unloaded += AutoScrollViewer_Unloaded;
+                Pause = false;
+                //Debug.WriteLine("Content Changed.");
+            }
+        }
+
+        private void AutoScrollViewer_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Pause = true;
+            //Debug.WriteLine("Content Unloaded.");
+            (sender as FrameworkElement).Unloaded -= AutoScrollViewer_Unloaded;
         }
     }
 }

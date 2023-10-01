@@ -67,7 +67,7 @@ namespace znMusicPlayerWUI.Windowed
             AppWindow.SetPresenter(presenter);
             AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
             AppWindow.IsShownInSwitchers = false;
-            AppWindow.Title = $"{App.AppName} NotifyIcon";
+            AppWindow.Title = $"NotifyIcon Window";
             AppWindow.SetIcon("icon.ico");
 
             AppWindow.TitleBar.ButtonBackgroundColor = Color.FromArgb(0, 0, 0, 0);

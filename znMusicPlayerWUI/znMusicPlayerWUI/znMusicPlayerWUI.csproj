@@ -29,7 +29,6 @@
     <None Remove="Controls\SongHistoryInfo.xaml" />
     <None Remove="Controls\SongItem.xaml" />
     <None Remove="DesktopLyricWindow.xaml" />
-    <None Remove="Pages\AboutPage.xaml" />
     <None Remove="Pages\BrowsePage.xaml" />
     <None Remove="Pages\DialogPages\AddPlayListPage.xaml" />
     <None Remove="Pages\DialogPages\AudioInfoPage.xaml" />
@@ -46,6 +45,7 @@
     <None Remove="Pages\PlayListPage.xaml" />
     <None Remove="Pages\SearchPage.xaml" />
     <None Remove="Pages\SettingPage.xaml" />
+    <None Remove="Windows\ImageViewerWindow.xaml" />
     <None Remove="Windows\MediaPlayerWindow.xaml" />
     <None Remove="Windows\NotifyIconWindow.xaml" />
     <None Remove="Windows\TaskBarInfoWindow.xaml" />
@@ -79,7 +79,7 @@
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.18-beta">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.230822000" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.230913002" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PInvoke.BCrypt" Version="0.7.124" />
@@ -244,8 +244,9 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Pages\AboutPage.xaml">
+    <Page Update="Windows\ImageViewerWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
     </Page>
     <Page Update="Windows\TaskBarInfoWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

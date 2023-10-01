@@ -11,7 +11,8 @@
     Tapped="Grid_Tapped" RightTapped="Grid_RightTapped"
     PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
     PointerEntered="Grid_PointerEntered" PointerExited="Grid_PointerExited"
-    MinWidth="0" MinHeight="0" SizeChanged="RootGrid_SizeChanged" ActualThemeChanged="RootGrid_ActualThemeChanged">
+    MinWidth="0" MinHeight="0" SizeChanged="RootGrid_SizeChanged" ActualThemeChanged="RootGrid_ActualThemeChanged"
+    UseLayoutRounding="False">
     <Grid.Clip>
         <RectangleGeometry x:Name="RGClip"/>
     </Grid.Clip>
@@ -28,6 +29,6 @@
                                                    AlphaAmplitude="0.2" AlphaExponent="1" AlphaOffset="1"/>
             </Rectangle.Fill>
         </Rectangle>
+        <Rectangle x:Name="ImageMass" Fill="#3F000000" Opacity="1"/>
     </Grid>
-    <Rectangle x:Name="ImageMass" Fill="#3F000000" Opacity="1"/>
 </Grid>

@@ -133,8 +133,14 @@ namespace znMusicPlayerWUI.Background
         private async void AudioPlayer_SourceChanged(AudioPlayer audioPlayer)
         {
             //System.Diagnostics.Debug.WriteLine(NowPlayingImageLoaded.GetInvocationList().Length);
-            if (audioPlayer.FileReader.isMidi) return;
-            if (audioPlayer.MusicData == null) return;
+            if (audioPlayer.FileReader.isMidi ||
+                audioPlayer.MusicData == null)
+            {
+                lastMusicData = null;
+                NowPlayingImage = null;
+                NowPlayingImageLoaded?.Invoke(null, null);
+                return;
+            }
             if (audioPlayer.MusicData.InLocal != null)
             {
                 if (audioPlayer.MusicData.Album == lastMusicData?.Album)
@@ -159,7 +165,7 @@ namespace znMusicPlayerWUI.Background
 
             NowPlayingImage = a;
             NowPlayingImageLoaded?.Invoke(NowPlayingImage, path);
-            System.Diagnostics.Debug.WriteLine(NowPlayingImageLoaded.GetInvocationList().Length);
+            //System.Diagnostics.Debug.WriteLine(NowPlayingImageLoaded.GetInvocationList().Length);
         }
 
 

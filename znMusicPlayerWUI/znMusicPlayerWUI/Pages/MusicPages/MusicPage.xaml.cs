@@ -214,10 +214,17 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void PlayingList_NowPlayingImageLoaded(ImageSource imageSource, string _)
         {
+            if (imageSource is null)
+            {
+                BackgroundBaseImage.Dispose();
+                AlbumImageBase.Dispose();
+                return;
+            }
             if (imageSource == ImageSources) return;
             ImageSources = imageSource;
             BackgroundBaseImage.Source = ImageSources;
             AlbumImageBase.Source = imageSource;
+            AlbumImageBase.SaveName = $"{MusicData.Title} · {MusicData.Album.Title}";
 #if DEBUG
             Debug.WriteLine($"MusicPage: 图片已被更改.");
 #endif

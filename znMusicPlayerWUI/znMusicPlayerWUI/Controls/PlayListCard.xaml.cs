@@ -95,6 +95,7 @@ namespace znMusicPlayerWUI.Controls
                 {
                     PlayListImage.Source = null;
                 }
+                PlayListImage.SaveName = $"{MusicListData.ListShowName}";
             }
         }
 

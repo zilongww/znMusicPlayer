@@ -297,7 +297,7 @@ namespace znMusicPlayerWUI.Controls
 
                 if (!err)
                 {
-                    var b = await Media.ImageManage.GetImageSource(musicData, (int)(58 * ImageScaleDPI), (int)(58 * ImageScaleDPI), true);
+                    var b = await Media.ImageManage.GetImageSource(musicData, (int)(56 * ImageScaleDPI), (int)(56 * ImageScaleDPI), true);
                     a = b.Item1;
                 }
             }

@@ -238,7 +238,7 @@ namespace znMusicPlayerWUI.Media.AudioEffects
         /// <inheritdoc/>
         public int Read(byte[] buffer, int offset, int count)
         {
-            bool unUsingEffect =
+            bool unUsingEffect = //false;
                 Tempo == 1f && Rate == 1f && Pitch == 1f;
 
             if (!unUsingEffect)
@@ -301,7 +301,7 @@ namespace znMusicPlayerWUI.Media.AudioEffects
             }
             else
             {
-                return _sourceProvider.Read(buffer, offset, count);
+                return _sourceProvider.Read(buffer, 0, count);
             }
         }
     }

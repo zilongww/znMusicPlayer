@@ -154,6 +154,7 @@ namespace znMusicPlayerWUI.Pages
                 System.Diagnostics.Debug.WriteLine(art.PicturePath);
             }
             AlbumLogo.Source = Album_Image.Source;
+            AlbumLogo.SaveName = NavToObj.Title;
         }
 
         CompositionPropertySet scrollerPropertySet;

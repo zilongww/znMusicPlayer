@@ -87,7 +87,7 @@
             </MenuFlyoutSubItem>
             <MenuFlyoutItem Text="获取直链..." Click="MenuFlyoutItem_Click" x:Name="MenuFlyout_GetUriItem" AccessKey="X">
                 <MenuFlyoutItem.Icon>
-                    <FontIcon Glyph="&#xE909;"/>
+                    <FontIcon Glyph="&#xE71B;"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutSeparator/>
@@ -177,9 +177,13 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 IsHitTestVisible="False" x:FieldModifier="Public"
-                                CornerRadius="4">
+                                CornerRadius="0">
                             <Grid>
-                                <local:Imagezn x:Name="AlbumImage" ShowMenuBehavior="None"/>
+                                <local:Imagezn x:Name="AlbumImage"
+                                               ShowMenuBehavior="None"
+                                               CornerRadius="4"
+                                               BorderThickness="1"
+                                               BorderBrush="{ThemeResource ControlElevationBorderBrush}"/>
                                 <Grid Width="58" Height="58" x:Name="FileNotExistsRoot" Visibility="Collapsed">
                                     <Rectangle Fill="{ThemeResource SystemFillColorCriticalBackgroundBrush}"/>
                                     <StackPanel VerticalAlignment="Center">
@@ -248,7 +252,7 @@
                 <FontIcon x:Name="MoveSymbol" Visibility="Collapsed" Glyph="&#xE700;" Grid.Column="2" Margin="8,0,12,0" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                 <StackPanel x:Name="RightToolBar" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" FlowDirection="LeftToRight" Margin="0,0,8,0">
                     <StackPanel.Resources>
-                        <Style TargetType="Button">
+                        <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
                             <Setter Property="BorderBrush" Value="{ThemeResource CircleElevationBorderBrush}"/>
                             <Setter Property="BorderThickness" Value="1"/>
                             <Setter Property="Width" Value="38"/>

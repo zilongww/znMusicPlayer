@@ -68,7 +68,7 @@ namespace znMusicPlayerWUI.Windowed
                 //AppWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay);
                 AppWindow.SetPresenter(overlappedPresenter);
                 AppWindow.IsShownInSwitchers = false;
-                AppWindow.Title = "Desktop Lyric Window";
+                AppWindow.Title = "DesktopLyric Window";
                 AppWindow.SetIcon("icon.ico");
                 AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
                 AppWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;

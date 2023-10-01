@@ -229,14 +229,15 @@ namespace znMusicPlayerWUI.Helpers
         public static async Task<StorageFile> UserSaveFile(
             string suggestedFileName = "SaveFile",
             PickerLocationId suggestedStartLocation = default,
-            string[] fileTypeFilter = null, string fileTypeFilterKey = null)
+            string[] fileTypeFilter = null, string fileTypeFilterKey = null,
+            nint windowHandle = 0)
         {
             var saveFile = new FileSavePicker();
             saveFile.SuggestedStartLocation = suggestedStartLocation;
             saveFile.FileTypeChoices.Add(fileTypeFilterKey, fileTypeFilter);
             saveFile.SuggestedFileName = suggestedFileName;
 
-            WinRT.Interop.InitializeWithWindow.Initialize(saveFile, App.AppWindowLocalHandle);
+            WinRT.Interop.InitializeWithWindow.Initialize(saveFile, windowHandle == 0 ? App.AppWindowLocalHandle : windowHandle);
             StorageFile sFile = await saveFile.PickSaveFileAsync();
 
             return sFile;

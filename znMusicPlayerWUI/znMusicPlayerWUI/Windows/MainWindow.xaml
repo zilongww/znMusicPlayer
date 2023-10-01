@@ -40,7 +40,8 @@
                                TextWrapping="NoWrap"
                                Style="{StaticResource CaptionTextBlockStyle}"
                                Grid.Column="1"
-                               VerticalAlignment="Center">
+                               VerticalAlignment="Center"
+                               Margin="0,0,138,0">
                     </TextBlock>
                 </Grid>
             </Grid>
@@ -152,11 +153,10 @@
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Border CornerRadius="4"
-                                        Height="66"
+                                <Border Height="66"
                                         Margin="0,0,10,0">
                                     <Frame x:Name="PlayContent"
-                                           IsTabStop="True" MinWidth="0"
+                                           IsTabStop="True" MinWidth="0" CornerRadius="4"
                                            CommonNavigationTransitionInfo.IsStaggerElement="True">
                                         <Frame.ContentTransitions>
                                             <TransitionCollection>
@@ -174,22 +174,20 @@
                                             <RepositionThemeTransition/>
                                         </TransitionCollection>
                                     </StackPanel.Transitions>
-                                    <controls:AutoScrollViewer x:Name="AutoScrollViewerFirst" Background="{x:Null}">
-                                        <TextBlock x:Name="PlayTitle"
-                                                   Text="znMusicPlayer"
-                                                   FontSize="20"
-                                                   HorizontalAlignment="Left"
-                                                   RasterizationScale="1.89">
-                                        </TextBlock>
-                                    </controls:AutoScrollViewer>
-                                    <controls:AutoScrollViewer x:Name="AutoScrollViewerSecond" Background="{x:Null}">
-                                        <TextBlock x:Name="PlayArtist"
-                                                   Text="No media playing"
-                                                   FontSize="14"
-                                                   HorizontalAlignment="Left"
-                                                   RasterizationScale="1.96">
-                                        </TextBlock>
-                                    </controls:AutoScrollViewer>
+                                    <TextBlock x:Name="PlayTitle"
+                                               Text="znMusicPlayer"
+                                               FontSize="20"
+                                               HorizontalAlignment="Left"
+                                               RasterizationScale="1.89"
+                                               TextTrimming="CharacterEllipsis">
+                                    </TextBlock>
+                                    <TextBlock x:Name="PlayArtist"
+                                               Text="No media playing"
+                                               FontSize="14"
+                                               HorizontalAlignment="Left"
+                                               RasterizationScale="1.96"
+                                               TextTrimming="CharacterEllipsis">
+                                    </TextBlock>
                                 </StackPanel>
                             </Grid>
 

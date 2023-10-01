@@ -53,6 +53,8 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
+        public string SaveName { get; set; }
+
         double dataDPI = 1.0;
         public double DataDPI
         {
@@ -193,6 +195,7 @@ namespace znMusicPlayerWUI.Controls
         {
             if (ShowMenuBehavior == ShowMenuBehaviors.None || ShowMenuBehavior == ShowMenuBehaviors.OnlyLightUp) return;
             isEnterDialog = true;
+            /*
             ScrollViewer scrollViewer = new()
             {
                 ZoomMode = ZoomMode.Enabled,
@@ -216,44 +219,8 @@ namespace znMusicPlayerWUI.Controls
             var result = await MainWindow.ShowDialog("查看图片", grid, "确定", "保存到文件...", defaultButton: ContentDialogButton.Close, fullSizeDesired: true);
             if (result == ContentDialogResult.Primary)
             {
-                StorageFile f = null;
-                
-                if (Source.GetType() == typeof(WriteableBitmap))
-                {
-                    f = await FileHelper.UserSaveFile("一张图片", Windows.Storage.Pickers.PickerLocationId.PicturesLibrary, new[] { ".png" }, "图片");
-                }
-                else
-                {
-                    await MainWindow.ShowDialog("无法保存图片", "不支持保存此类型的图片。");
-                }
-
-                if (f != null)
-                {
-                    try
-                    {
-                        using (IRandomAccessStream stream = await f.OpenAsync(FileAccessMode.ReadWrite))
-                        {
-                            WriteableBitmap wb = Source as WriteableBitmap;
-                            BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
-                            Stream pixelStream = wb.PixelBuffer.AsStream();
-                            byte[] pixels = new byte[pixelStream.Length];
-                            await pixelStream.ReadAsync(pixels, 0, pixels.Length);
-
-                            encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore,
-                                                (uint)wb.PixelWidth,
-                                                (uint)wb.PixelHeight,
-                                                96.0, 96.0,
-                                                pixels);
-                            await encoder.FlushAsync();
-                        }
-                    }
-                    catch (Exception err)
-                    {
-                        LogHelper.WriteLog("Imagezn MenuFlyoutItem_Click", err.ToString(), false);
-                        await MainWindow.ShowDialog("保存图片失败", $"保存图片时出现错误：\n{err.Message}");
-                    }
-                }
-            }
+            }*/
+            var window = Windowed.ImageViewerWindow.ShowWindow(Source, SaveName);
             isEnterDialog = false;
         }
 
@@ -319,7 +286,8 @@ namespace znMusicPlayerWUI.Controls
         bool IsMouse4Click = false;
         private void Grid_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            if (e.GetCurrentPoint(this).Properties.IsXButton1Pressed)
+            if (e.GetCurrentPoint(this).Properties.IsXButton1Pressed ||
+                e.GetCurrentPoint(this).Properties.IsXButton2Pressed)
             {
                 IsMouse4Click = true;
             }

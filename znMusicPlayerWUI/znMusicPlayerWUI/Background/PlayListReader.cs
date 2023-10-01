@@ -9,7 +9,7 @@ namespace znMusicPlayerWUI.Background
     public sealed class PlayListReader
     {
         public delegate void PlayListChanged();
-        public event PlayListChanged Updateed;
+        public event PlayListChanged Updated;
 
         DataEditor.MusicListData[] nowMusicListDatas;
         public DataEditor.MusicListData[] NowMusicListDatas
@@ -29,7 +29,7 @@ namespace znMusicPlayerWUI.Background
             if (inRefresh) return;
             inRefresh = true;
             NowMusicListDatas = await DataEditor.PlayListHelper.ReadAllPlayList();
-            Updateed?.Invoke();
+            Updated?.Invoke();
             inRefresh = false;
         }
     }

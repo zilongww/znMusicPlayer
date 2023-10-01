@@ -53,7 +53,7 @@ namespace znMusicPlayerWUI.Pages
             }
 
             PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
-            App.playListReader.Updateed += PlayListReader_Updateed;
+            App.playListReader.Updated += PlayListReader_Updated;
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
 
             NavToObj = (MusicListData)e.Parameter;
@@ -67,7 +67,7 @@ namespace znMusicPlayerWUI.Pages
             base.OnNavigatedFrom(e);
             ImageManage.localImageCache.Clear();
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
-            App.playListReader.Updateed -= PlayListReader_Updateed;
+            App.playListReader.Updated -= PlayListReader_Updated;
 
             if (Children.SelectionMode != ListViewSelectionMode.None)
             {
@@ -211,7 +211,7 @@ namespace znMusicPlayerWUI.Pages
             UpdateShyHeader();
         }
 
-        private void PlayListReader_Updateed()
+        private void PlayListReader_Updated()
         {
             foreach (var data in App.playListReader.NowMusicListDatas)
             {
@@ -241,6 +241,7 @@ namespace znMusicPlayerWUI.Pages
             {
                 PlayList_Image.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(NavToObj));
             }
+            PlayList_Image.SaveName = NavToObj.ListShowName;
 
             if (PlayList_Image.Source == null)
             {

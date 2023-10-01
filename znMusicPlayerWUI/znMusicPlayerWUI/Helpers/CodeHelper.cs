@@ -470,6 +470,10 @@ namespace znMusicPlayerWUI.Helpers
                     }
                 }
 
+                if (lyricDictionary.Count <= 2)
+                {
+                    lyricDictionary.Clear();
+                }
                 if (lyricDictionary.Any())
                 {
                     //lastLyric
