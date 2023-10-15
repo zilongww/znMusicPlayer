@@ -157,7 +157,7 @@
                             <controls:AutoScrollViewer x:Name="AutoScrollViewer2">
                                 <StackPanel Orientation="Horizontal" Spacing="4">
                                     <TextBlock x:Name="TitleRunText" FontWeight="Normal" FontSize="24" Foreground="{ThemeResource ApplicationForegroundThemeBrush}"/>
-                                    <TextBlock x:Name="Title2RunText" VerticalAlignment="Center" Foreground="{ThemeResource ApplicationPressedForegroundThemeBrush}"/>
+                                    <TextBlock x:Name="Title2RunText" VerticalAlignment="Center" FontSize="24" Foreground="{ThemeResource ApplicationPressedForegroundThemeBrush}"/>
                                 </StackPanel>
                             </controls:AutoScrollViewer>
                         </Button>

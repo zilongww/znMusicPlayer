@@ -196,15 +196,20 @@ namespace znMusicPlayerWUI
 
             var displayArea = CodeHelper.GetDisplayArea(m_window);
             var dpi = CodeHelper.GetScaleAdjustment(m_window);
-            double a = 2;
-
-            CodeHelper.MoveWindow(
-                AppWindowLocalHandle,
-                (int)((displayArea.WorkArea.Width / a - 1140 / a) * dpi),
-                (int)((displayArea.WorkArea.Height / a - 630 / a) * dpi),
-                1140 * (int)dpi, 640 * (int)dpi,
-                false
-                );
+            var width = 1140;
+            var height = 640;
+            if (displayArea.WorkArea.Width <= width ||
+                displayArea.WorkArea.Height <= height)
+            {
+                AppWindowLocalOverlappedPresenter.Maximize();
+            }
+            else
+            {
+                AppWindowLocal.MoveAndResize(new(
+                    displayArea.WorkArea.Width / 2 - width / 2,
+                    displayArea.WorkArea.Height / 2 - height / 2,
+                    width, height));
+            }
 
             if (loadFailed)
             {
