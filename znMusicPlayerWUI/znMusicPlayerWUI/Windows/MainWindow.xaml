@@ -22,6 +22,12 @@
             <Rectangle x:Name="BackgroundMass" Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" Opacity="0.6"/>
         </Grid>
         <Grid x:Name="GridBase">
+            <Rectangle VerticalAlignment="Top"
+                       HorizontalAlignment="Stretch"
+                       Height="48"
+                       Fill="{ThemeResource LayerFillColorDefault}"
+                       x:Name="NavigationViewMinSizeTopColorRectangle"
+                       Visibility="Collapsed"/>
             <Grid x:Name="AppTitleBar"
                   VerticalAlignment="Top"
                   Height="48"

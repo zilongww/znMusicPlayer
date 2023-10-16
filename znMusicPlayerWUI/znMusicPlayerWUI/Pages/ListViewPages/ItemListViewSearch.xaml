@@ -243,9 +243,19 @@
             </ListView.Header>
         </ListView>
         <Rectangle x:Name="ItemPresenterControlBridge"/>
-        <ProgressRing x:Name="LoadingRing"
-                      Width="48" Height="48"
-                      VerticalAlignment="Bottom" Margin="0,0,0,24"/>
+        <Grid x:Name="LoadingRingBaseGrid"
+              VerticalAlignment="Bottom"
+              HorizontalAlignment="Center"
+              Padding="24" Opacity="1" Margin="0,0,0,12"
+              CornerRadius="8" BorderThickness="1"
+              BorderBrush="{ThemeResource ControlElevationBorderBrush}"
+              Background="{ThemeResource AcrylicNormal}">
+            <Grid.OpacityTransition>
+                <ScalarTransition/>
+            </Grid.OpacityTransition>
+            <ProgressRing x:Name="LoadingRing"
+                      Width="48" Height="48"/>
+        </Grid>
         <Grid VerticalAlignment="Bottom"
               HorizontalAlignment="Right"
               CornerRadius="4" Margin="0,0,16,8">

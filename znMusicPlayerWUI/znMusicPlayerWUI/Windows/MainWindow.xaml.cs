@@ -1243,10 +1243,12 @@ namespace znMusicPlayerWUI
             if (sender.DisplayMode == NavigationViewDisplayMode.Minimal)
             {
                 AppTitleBar.Margin = new Thickness(90, 0, 0, 0);
+                NavigationViewMinSizeTopColorRectangle.Visibility = Visibility.Visible;
             }
             else
             {
                 AppTitleBar.Margin = new Thickness(50, 0, 0, 0);
+                NavigationViewMinSizeTopColorRectangle.Visibility = Visibility.Collapsed;
             }
 
             SetDragRegionForCustomTitleBar(App.AppWindowLocal);

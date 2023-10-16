@@ -23,6 +23,7 @@ using Windows.Storage.Streams;
 using Windows.Storage;
 using znMusicPlayerWUI.DataEditor;
 using WinRT.Interop;
+using Microsoft.UI.Windowing;
 
 namespace znMusicPlayerWUI.Windowed
 {
@@ -41,16 +42,26 @@ namespace znMusicPlayerWUI.Windowed
             window.AppWindow.TitleBar.ButtonForegroundColor =
                 App.Current.RequestedTheme == ApplicationTheme.Light ? Color.FromArgb(255, 0, 0, 0) : Color.FromArgb(255, 255, 255, 255);
             window.AppWindow.Resize(new(500,500));
+            window.Maximize();
             window.Activate();
             window.Title = "查看图片";
             window.AppWindow.SetIcon("icon.ico");
             return window;
         }
 
+        OverlappedPresenter overlappedPresenter = null;
+
         static bool IsOpened = false;
         public ImageViewerWindow()
         {
             InitializeComponent();
+            overlappedPresenter = OverlappedPresenter.Create();
+            AppWindow.SetPresenter(overlappedPresenter);
+        }
+
+        public void Maximize()
+        {
+            overlappedPresenter.Maximize();
         }
 
         public void SetSource(ImageSource imageSource)

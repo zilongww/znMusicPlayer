@@ -70,9 +70,7 @@ namespace znMusicPlayerWUI.Pages
         int pageSize = 30;
         public async void InitData()
         {
-            LoadingRing.Visibility = Visibility.Visible;
-            LoadingRing.IsIndeterminate = true;
-
+            ShowLoading();
             SelectorSeparator.Visibility = Visibility.Collapsed;
             AddSelectedToPlayingListButton.Visibility = Visibility.Collapsed;
             AddSelectedToPlayListButton.Visibility = Visibility.Collapsed;
@@ -160,8 +158,22 @@ namespace znMusicPlayerWUI.Pages
             }
 
             System.Diagnostics.Debug.WriteLine("加载完成。");
+            UnShowLoading();
+        }
+
+        private void ShowLoading()
+        {
+            LoadingRingBaseGrid.Visibility = Visibility.Visible;
+            LoadingRingBaseGrid.Opacity = 1;
+            LoadingRing.IsIndeterminate = true;
+        }
+
+        private async void UnShowLoading()
+        {
+            LoadingRingBaseGrid.Opacity = 0;
+            await Task.Delay(500);
             LoadingRing.IsIndeterminate = false;
-            LoadingRing.Visibility = Visibility.Collapsed;
+            LoadingRingBaseGrid.Visibility = Visibility.Collapsed;
         }
 
         CompositionPropertySet scrollerPropertySet;

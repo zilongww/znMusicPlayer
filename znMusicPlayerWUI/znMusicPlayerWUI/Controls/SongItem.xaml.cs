@@ -677,7 +677,7 @@ namespace znMusicPlayerWUI.Controls
         {
             var uri = await App.metingServices.NeteaseServices.GetUrl(MusicData.ID, (int)DataFolderBase.DownloadQuality.lossless);
             MainWindow.HideDialog();
-            await MainWindow.ShowDialog("获取直链", $"获取到的链接是：\n{uri}");
+            await MainWindow.ShowDialog("获取到的链接是：", uri);
         }
 
         private async void MenuFlyoutItem_Click_1(object sender, RoutedEventArgs e)

@@ -93,8 +93,7 @@ namespace znMusicPlayerWUI.Pages
             DownloadSelectedButton.Visibility = Visibility.Collapsed;
             SelectReverseButton.Visibility = Visibility.Collapsed;
             SelectAllButton.Visibility = Visibility.Collapsed;
-            LoadingRing.Visibility = Visibility.Visible;
-            LoadingRing.IsIndeterminate = true;
+            ShowLoading();
             var obj = await App.metingServices.NeteaseServices.GetArtist(NavToObj.ID);
             if (obj == null)
             {
@@ -104,13 +103,11 @@ namespace znMusicPlayerWUI.Pages
             NavToObj = obj;
             musicListData = NavToObj.HotSongs;
             Artist_SmallName.Text = string.IsNullOrEmpty(NavToObj.Name2) ? NavToObj.Name : $"{NavToObj.Name}（{NavToObj.Name2}）";
-            ToolTipService.SetToolTip(Artist_Info, NavToObj.Describee);
+            //ToolTipService.SetToolTip(Artist_Info, NavToObj.Describee);
 
             if (musicListData != null)
             {
                 LoadImage();
-                LoadingRing.Visibility = Visibility.Visible;
-                LoadingRing.IsIndeterminate = true;
                 await Task.Delay(100);
                 var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
 
@@ -123,8 +120,22 @@ namespace znMusicPlayerWUI.Pages
                     MusicDataList.Add(new() { MusicData = i, MusicListData = musicListData, ImageScaleDPI = dpi });
                 }
             }
+            UnShowLoading();
+        }
+
+        private void ShowLoading()
+        {
+            LoadingRingBaseGrid.Visibility = Visibility.Visible;
+            LoadingRingBaseGrid.Opacity = 1;
+            LoadingRing.IsIndeterminate = true;
+        }
+        
+        private async void UnShowLoading()
+        {
+            LoadingRingBaseGrid.Opacity = 0;
+            await Task.Delay(500);
             LoadingRing.IsIndeterminate = false;
-            LoadingRing.Visibility = Visibility.Collapsed;
+            LoadingRingBaseGrid.Visibility= Visibility.Collapsed;
         }
 
         private async void LoadImage()
@@ -397,9 +408,17 @@ namespace znMusicPlayerWUI.Pages
             //AddToPlayListFlyout.Items.Clear();
         }
 
-        private void Button_Click_6(object sender, RoutedEventArgs e)
+        private async void Button_Click_6(object sender, RoutedEventArgs e)
         {
-            scrollViewer.ChangeView(null, menu_border.ActualHeight - LittleBarGrid.ActualHeight, null);
+            switch ((sender as Button).Tag)
+            {
+                case "1":
+                    await MainWindow.ShowDialog($"{NavToObj.Name}的信息", NavToObj.Describee);
+                    break;
+                case "2":
+                    scrollViewer.ChangeView(null, menu_border.ActualHeight - LittleBarGrid.ActualHeight, null);
+                    break;
+            }
         }
         private async void Button_Click_7(object sender, RoutedEventArgs e)
         {

@@ -60,12 +60,12 @@
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <Border x:Name="AlbumLogoRoot"
-                                        CornerRadius="8" BorderThickness="0"
-                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                        Margin="0,0,12,0" HorizontalAlignment="Left">
-                                    <controlszn:Imagezn x:Name="AlbumLogo" CornerRadius="8" Source="/Images/SugarAndSalt.jpg"/>
-                                </Border>
+                                <Rectangle x:Name="AlbumLogo_DropShadowBase"/>
+                                <Grid x:Name="AlbumLogoRoot"
+                                      Margin="0,0,12,0" HorizontalAlignment="Left"
+                                      CornerRadius="8" BorderThickness="0">
+                                    <controlszn:Imagezn x:Name="AlbumLogo" CornerRadius="8"/>
+                                </Grid>
                                 <Border x:Name="InfoTextsRoot" HorizontalAlignment="Left">
                                     <Border.Resources>
                                         <Style TargetType="TextBlock">
@@ -199,9 +199,19 @@
                 </Border>
             </ListView.Header>
         </ListView>
-        <ProgressRing x:Name="LoadingRing"
-                      Width="48" Height="48"
-                      VerticalAlignment="Bottom" Margin="0,0,0,24"/>
+        <Grid x:Name="LoadingRingBaseGrid"
+              VerticalAlignment="Bottom"
+              HorizontalAlignment="Center"
+              Padding="24" Opacity="1" Margin="0,0,0,12"
+              CornerRadius="8" BorderThickness="1"
+              BorderBrush="{ThemeResource ControlElevationBorderBrush}"
+              Background="{ThemeResource AcrylicNormal}">
+            <Grid.OpacityTransition>
+                <ScalarTransition/>
+            </Grid.OpacityTransition>
+            <ProgressRing x:Name="LoadingRing"
+                      Width="48" Height="48"/>
+        </Grid>
         <Grid VerticalAlignment="Bottom"
               HorizontalAlignment="Right"
               CornerRadius="4" Margin="0,0,16,8">

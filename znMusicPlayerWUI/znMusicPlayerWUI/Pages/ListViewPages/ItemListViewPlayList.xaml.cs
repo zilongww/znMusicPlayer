@@ -140,8 +140,7 @@ namespace znMusicPlayerWUI.Pages
             PlayList_TitleTextBlock.Text = NavToObj.ListShowName;
             PlayList_OtherTextBlock.Text = $"共{NavToObj.Songs.Count}首歌曲";
 
-            LoadingRing.Visibility = Visibility.Visible;
-            LoadingRing.IsIndeterminate = true;
+            ShowLoading();
 
             if (NavToObj != null)
             {
@@ -206,9 +205,24 @@ namespace znMusicPlayerWUI.Pages
                 array = null;
                 System.Diagnostics.Debug.WriteLine("加载完成。");
             }
-            LoadingRing.IsIndeterminate = false; isLoading = false;
-            LoadingRing.Visibility = Visibility.Collapsed;
+            isLoading = false;
+            UnShowLoading();
             UpdateShyHeader();
+        }
+
+        private void ShowLoading()
+        {
+            LoadingRingBaseGrid.Visibility = Visibility.Visible;
+            LoadingRingBaseGrid.Opacity = 1;
+            LoadingRing.IsIndeterminate = true;
+        }
+
+        private async void UnShowLoading()
+        {
+            LoadingRingBaseGrid.Opacity = 0;
+            await Task.Delay(500);
+            LoadingRing.IsIndeterminate = false;
+            LoadingRingBaseGrid.Visibility = Visibility.Collapsed;
         }
 
         private void PlayListReader_Updated()
