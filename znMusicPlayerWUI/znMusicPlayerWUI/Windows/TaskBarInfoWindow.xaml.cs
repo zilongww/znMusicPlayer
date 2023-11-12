@@ -87,7 +87,7 @@ namespace znMusicPlayerWUI.Windowed
                     }
                     else
                     {
-                        Debug.WriteLine($"{size}x{size} completed.");
+                        Debug.WriteLine($"[TaskBarInfoWindow]: TaskBar Image {size}x{size} completed.");
                         IconPathUsing = filePath;
                         canBreak = true;
                     }

@@ -90,10 +90,12 @@ namespace znMusicPlayerWUI.Controls
             await Task.Delay(RepeatTime);
             isAddedVelocity = false;
 
+            if (Pause) return;
+
             GetSizeResult();
             if (!isHorizontalContentOutOfBounds && !isVerticalContentOutOfBounds) return;
 
-            Debug.WriteLine("Repeated.");
+            Debug.WriteLine("[AutoView]: Repeated.");
             if (HorizontalOffset == 0 ? false : true)
             {
                 ScrollTo(0, 0, new(ScrollingAnimationMode.Enabled));
@@ -133,6 +135,7 @@ namespace znMusicPlayerWUI.Controls
             if (Content is not null)
             {
                 (Content as FrameworkElement).Unloaded += AutoScrollViewer_Unloaded;
+                ScrollTo(0, 0, new(ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore));
                 Pause = false;
                 //Debug.WriteLine("Content Changed.");
             }

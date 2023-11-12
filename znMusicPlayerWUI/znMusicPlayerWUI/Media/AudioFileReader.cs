@@ -126,24 +126,24 @@ namespace znMusicPlayerWUI.Media
                     if (!cueFile)
                     {
                         readerStream = new FlakeNAudioAdapter.FlakeFileReader(fileName);
-                        System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 FlakeFlac 解码器");
+                        System.Diagnostics.Debug.WriteLine("[AudioFileReader]: 正在使用 FlakeFlac 解码器");
                     }
                     else
                     {
                         readerStream = new NAudio.Flac.FlacReader(fileName);
-                        System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 NAudio.Flac 解码器（CUE文件兼容性）");
+                        System.Diagnostics.Debug.WriteLine("[AudioFileReader]: 正在使用 NAudio.Flac 解码器（CUE文件兼容性）");
                     }
-                    DecodeName = $"{App.AppName} Built-in FLAC Decoder";
+                    DecodeName = $"{App.AppName} built-in FLAC Decoder";
                     break;
                 case "79103":
                     readerStream = new NAudio.Vorbis.VorbisWaveReader(fileName);
-                    DecodeName = $"{App.AppName} Built-in Vorbis Decoder";
-                    System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Vorbis 解码器");
+                    DecodeName = $"{App.AppName} built-in Vorbis Decoder";
+                    System.Diagnostics.Debug.WriteLine("[AudioFileReader]: 正在使用 Vorbis 解码器");
                     break;
                 case "7368":
                     readerStream = new Mp3FileReader(fileName);
                     DecodeName = $"NAudio MP3 Decoder";
-                    System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 MP3 解码器");
+                    System.Diagnostics.Debug.WriteLine("[AudioFileReader]: 正在使用 MP3 解码器");
                     break;
                 case "8273":
                     readerStream = new WaveFileReader(fileName);
@@ -152,13 +152,13 @@ namespace znMusicPlayerWUI.Media
                     {
                         readerStream = WaveFormatConversionStream.CreatePcmStream(readerStream);
                         readerStream = new BlockAlignReductionStream(readerStream);
-                        System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Wave 解码器");
+                        System.Diagnostics.Debug.WriteLine("[AudioFileReader]: 正在使用 Wave 解码器");
                     }
                     break;
                 case "7079":
                     readerStream = new AiffFileReader(fileName);
                     DecodeName = $"NAudio Aiff Decoder";
-                    System.Diagnostics.Debug.WriteLine("AudioFileReader: 正在使用 Aiff 解码器");
+                    System.Diagnostics.Debug.WriteLine("[AudioFileReader]: 正在使用 Aiff 解码器");
                     break;
                 case "7784":
                     isMidi = true;
@@ -169,7 +169,7 @@ namespace znMusicPlayerWUI.Media
 
             if (useMFR)
             {
-                System.Diagnostics.Debug.WriteLine($"AudioFileReader: 正在使用 Microsoft MediaFoundationReader 解码器，文件标识符为：{addr}");
+                System.Diagnostics.Debug.WriteLine($"[AudioFileReader]: 正在使用 Microsoft MediaFoundationReader 解码器，文件标识符为：{addr}");
                 DecodeName = $"Microsoft MediaFoundation Decoder";
                 readerStream = new MediaFoundationReader(fileName);
             }

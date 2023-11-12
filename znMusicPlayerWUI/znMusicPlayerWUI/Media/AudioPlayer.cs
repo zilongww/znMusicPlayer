@@ -198,31 +198,31 @@ namespace znMusicPlayerWUI.Media
 
         public void OnDefaultDeviceChanged(DataFlow dataFlow, Role deviceRole, string defaultDeviceId)
         {
-            Debug.WriteLine("Defualt Device Changed.");
+            Debug.WriteLine("[DeviceManage]: Default Device Changed.");
             OnDefaultDeviceChangedEvent?.Invoke(dataFlow, deviceRole, defaultDeviceId);
         }
 
         public void OnDeviceAdded(string deviceId)
         {
-            Debug.WriteLine("Device added.");
+            Debug.WriteLine("[DeviceManage]: Device added.");
             OnDeviceAddedEvent?.Invoke(deviceId);
         }
 
         public void OnDeviceRemoved(string deviceId)
         {
-            Debug.WriteLine("Device removed.");
+            Debug.WriteLine("[DeviceManage]: Device removed.");
             OnDeviceRemovedEvent?.Invoke(deviceId);
         }
 
         public void OnDeviceStateChanged(string deviceId, DeviceState newState)
         {
-            Debug.WriteLine($"Device State changed. deviceId:{deviceId}/newState:{newState}.");
+            Debug.WriteLine($"[DeviceManage]: Device State changed. deviceId:{deviceId}/newState:{newState}.");
             OnDeviceStateChangedEvent?.Invoke(deviceId, newState);
         }
 
         public void OnPropertyValueChanged(string deviceId, PropertyKey propertyKey)
         {
-            Debug.WriteLine($"Device PropertyValue changed. deviceId: {deviceId} / propertyKey:{propertyKey.formatId.ToString()}.");
+            Debug.WriteLine($"[DeviceManage]: Device PropertyValue changed. deviceId: {deviceId} / propertyKey:{propertyKey.formatId.ToString()}.");
             OnPropertyValueChangedEvent?.Invoke(deviceId, propertyKey);
         }
 
@@ -582,7 +582,7 @@ namespace znMusicPlayerWUI.Media
 
         private void NotificationClient_OnDeviceRemovedEvent(string deviceId)
         {
-            Debug.WriteLine("removed");
+            Debug.WriteLine("[DeviceManage]: Device Removed.");
         }
 
         MusicData PointMusicData = null;
@@ -664,7 +664,7 @@ namespace znMusicPlayerWUI.Media
                             await Task.Run(() => File.Delete(b));
                             LoadingMusicDatas.Remove(musicData);
                             CacheLoadedChanged?.Invoke(this);
-                            throw new FileLoadException($"加载缓存文件失败：{err.Message}");
+                            throw new FileLoadException($"加载缓存文件失败: {err.Message}");
                         }
 
                         resultPath = b;
@@ -690,7 +690,7 @@ namespace znMusicPlayerWUI.Media
                 {
                     LoadingMusicDatas.Remove(musicData);
                     CacheLoadedChanged?.Invoke(this);
-                    throw new FileLoadException($"找不到音频文件：\"{resultPath}\"，\n可能是文件已被删除或移动。");
+                    throw new FileLoadException($"找不到音频文件: \"{resultPath}\"，\n可能是文件已被删除或移动。");
                 }
 
 
@@ -727,7 +727,7 @@ namespace znMusicPlayerWUI.Media
                     MusicData = musicData;
                     Exception exception = null;
                     _filePath = resultPath;
-                    Debug.WriteLine($"AudioPlayer：正在加载 \"{resultPath}\".");
+                    Debug.WriteLine($"[AudioPlayer]: 正在加载 \"{resultPath}\".");
                         await SetSource(resultPath, musicData.CUETrackData != null);
                     try
                     {
@@ -822,7 +822,7 @@ namespace znMusicPlayerWUI.Media
             await Task.Run(() => DisposeAll());
             FileReader = fileReader;
             FileProvider = fileProvider;
-            Debug.WriteLine($"AudioPlayer：FileReader filePath \"{fileReader.FileName}\".");
+            Debug.WriteLine($"[AudioPlayer]: FileReader filePath \"{fileReader.FileName}\".");
             if (EqEnabled && !fileReader.isMidi)
             {
                 EqualizerBand = EqualizerBand;
@@ -904,8 +904,8 @@ namespace znMusicPlayerWUI.Media
                         NowOutObj.PlaybackStopped += AudioPlayer_PlaybackStopped;
                         break;
                 }
-                Debug.WriteLine($"AudioPlayer：Inited FileReader filePath \"{fileReader.FileName}\".");
-                Debug.WriteLine($"AudioPlayer：Inited MusicData \"{MusicData}\".");
+                Debug.WriteLine($"[AudioPlayer]: Inited FileReader filePath \"{fileReader.FileName}\".");
+                Debug.WriteLine($"[AudioPlayer]: Inited MusicData \"{MusicData}\".");
             }
 
             SourceChanged?.Invoke(this);

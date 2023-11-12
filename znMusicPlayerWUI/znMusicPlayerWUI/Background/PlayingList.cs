@@ -17,6 +17,7 @@ using TagLib.Ape;
 using System.Xml.Schema;
 using znMusicPlayerWUI.Controls;
 using NAudio;
+using System.Diagnostics;
 
 namespace znMusicPlayerWUI.Background
 {
@@ -171,6 +172,7 @@ namespace znMusicPlayerWUI.Background
 
         public void Add(MusicData musicData, bool invoke = true)
         {
+            Debug.WriteLine($"[PlayingList]: 播放列表已添加：\"{musicData.Title}\"");
             bool isFind = Find(musicData);
             if (!isFind)
                 NowPlayingList.Add(musicData);
@@ -184,6 +186,7 @@ namespace znMusicPlayerWUI.Background
         {
             Add(musicData);
 
+            Debug.WriteLine($"[PlayingList]: 正在设置播放：\"{musicData.Title}\"");
             NAudio.Wave.PlaybackState playState;
             if (PauseWhenPreviousPause)
             {
@@ -209,6 +212,7 @@ namespace znMusicPlayerWUI.Background
                 await App.audioPlayer.SetSource(musicData);
                 if (playState == NAudio.Wave.PlaybackState.Playing)
                     App.audioPlayer.SetPlay();
+                Debug.WriteLine($"[PlayingList]: 设置播放完成：\"{musicData.Title}\"");
             }
             catch (DivideByZeroException)
             {

@@ -175,10 +175,10 @@ namespace znMusicPlayerWUI.Pages
                         array = NavToObj.Songs.OrderByDescending(m => m.Artists[0].Name).ToArray();
                         break;
                     case PlaySort.专辑升序:
-                        array = NavToObj.Songs.OrderBy(m => m.Album).ToArray();
+                        array = NavToObj.Songs.OrderBy(m => m.Album.Title).ToArray();
                         break;
                     case PlaySort.专辑降序:
-                        array = NavToObj.Songs.OrderByDescending(m => m.Album).ToArray();
+                        array = NavToObj.Songs.OrderByDescending(m => m.Album.Title).ToArray();
                         break;
                     case PlaySort.时间升序:
                         array = NavToObj.Songs.OrderBy(m => m.RelaseTime).ToArray();
@@ -203,7 +203,7 @@ namespace znMusicPlayerWUI.Pages
                     MusicDataList.Add(new() { MusicData = i, MusicListData = NavToObj, ImageScaleDPI = dpi });
                 }
                 array = null;
-                System.Diagnostics.Debug.WriteLine("加载完成。");
+                System.Diagnostics.Debug.WriteLine("[ItemListViewPlayList] 加载完成。");
             }
             isLoading = false;
             UnShowLoading();
@@ -261,7 +261,7 @@ namespace znMusicPlayerWUI.Pages
             {
                 PlayList_Image.Source = await FileHelper.GetImageSource("");
             }
-            System.Diagnostics.Debug.WriteLine("图片加载完成。");
+            System.Diagnostics.Debug.WriteLine("[ItemListViewPlayList] 图片加载完成。");
         }
 
         CompositionPropertySet scrollerPropertySet;
@@ -295,7 +295,7 @@ namespace znMusicPlayerWUI.Pages
                 logoSizeEnd = 0.66;
                 anotherHeight = 54;
                 anotherXEnd = 131;
-                commandYEnd = 63;
+                commandYEnd = 68;
             }
             int anotherX = 16 + logoHeight + 12;
 
@@ -420,8 +420,18 @@ namespace znMusicPlayerWUI.Pages
         private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
             if (!isFirstScroll) { isFirstScroll = false; return; }
+            if (scrollViewer == null) return;
             UpdateShyHeader(true);
             UpdateInfoWidth();
+            if (logoSizeCount == 1)
+            {
+                PlayList_Image.CornerRadius = new(Math.Min(Math.Max(scrollViewer.VerticalOffset / 4, 8), 13));
+            }
+            else
+            {
+                PlayList_Image.CornerRadius = new(Math.Min(Math.Max(scrollViewer.VerticalOffset / 8, 8), 15));
+            }
+
         }
 
         private async void Result_BaseGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -816,6 +826,13 @@ namespace znMusicPlayerWUI.Pages
 
         private async void MoveItemButton_Click(object sender, RoutedEventArgs e)
         {
+            if (NavToObj.PlaySort != PlaySort.默认升序)
+            {
+                MoveItemButton.IsChecked = false;
+                await MainWindow.ShowDialog("无法使用排序", "排序功能只能在此列表排序方式为 \"默认升序\" 时可使用。");
+                return;
+            }
+
             if ((bool)MoveItemButton.IsChecked)
             {
                 foreach (var i in SongItem.StaticSongItems) i.RemoveUnloadedEvent();

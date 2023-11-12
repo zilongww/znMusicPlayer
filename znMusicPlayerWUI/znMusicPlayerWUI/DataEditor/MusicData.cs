@@ -229,7 +229,6 @@ namespace znMusicPlayerWUI.DataEditor
         public MusicFrom ListFrom { get; set; }
         public DataType ListDataType { get; set; }
         public string ID { get; set; }
-        public int ListCount { get; set; }
         public PlaySort PlaySort { get; set; }
         public List<MusicData> Songs { get; set; }
 
@@ -243,13 +242,12 @@ namespace znMusicPlayerWUI.DataEditor
             this.ListDataType = listDataType;
             this.ID = ID;
             this.Songs = songs == null ? new() : songs;
-            this.ListCount = songs == null ? 0 : songs.Count;
             ListDataType = listDataType;
         }
 
         public override string GetMD5()
         {
-            return CodeHelper.ToMD5($"{ListShowName}{ListName}{PicturePath}{ListFrom}{ListDataType}{ID}{ListCount}");
+            return CodeHelper.ToMD5($"{ListShowName}{ListName}{PicturePath}{ListFrom}{ListDataType}{ID}{Songs.Count}");
         }
     }
 

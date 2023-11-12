@@ -244,7 +244,7 @@ namespace znMusicPlayerWUI
             LyricManager_PlayingLyricSelectedChange(App.lyricManager.NowLyricsData);
             PlayingList_PlayingListItemChange(App.playingList.NowPlayingList);
             App.audioPlayer.ReCallTiming();
-            System.Diagnostics.Debug.WriteLine("Data Updated.");
+            Debug.WriteLine("[MainWindow]: Data Updated.");
         }
 
         bool isAddEvents = false;
@@ -265,7 +265,7 @@ namespace znMusicPlayerWUI
             isAddEvents = true;
             UpdateWhenDataLate();
             MainViewStateChanged?.Invoke(true);
-            System.Diagnostics.Debug.WriteLine("Added Events.");
+            Debug.WriteLine("[MainWindow]: Added Events.");
         }
 
         private void RemoveEvents()
@@ -284,7 +284,7 @@ namespace znMusicPlayerWUI
             App.playingList.PlayingListItemChange -= PlayingList_PlayingListItemChange;
             isAddEvents = false;
             MainViewStateChanged?.Invoke(false);
-            System.Diagnostics.Debug.WriteLine("Removed Events.");
+            Debug.WriteLine("[MainWindow]: Removed Events.");
         }
 
         static ApplicationTheme applicationTheme = App.Current.RequestedTheme;
@@ -594,7 +594,7 @@ namespace znMusicPlayerWUI
             }
             catch (Exception err)
             {
-                System.Diagnostics.Debug.WriteLine("zn1-----" + err.Message);
+                Debug.WriteLine("[MainWindow]: zn1-----" + err.Message);
             }
         }
 
@@ -764,7 +764,7 @@ namespace znMusicPlayerWUI
             {
                 PlayRing.Foreground = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
                 App.lyricManager.PlayingLyricSelectedChange += LyricManager_PlayingLyricSelectedChange;
-                App.lyricManager.ReCallUpdate();
+                App.lyricManager.StartTimer();
             }
             else
             {
@@ -1452,7 +1452,7 @@ namespace znMusicPlayerWUI
             if (visibility)
             {
                 SWindowGridBase.Visibility = Visibility.Visible;
-                Debug.WriteLine("主界面被显示。");
+                Debug.WriteLine("[MainWindow]: 主界面被显示。");
                 await Task.Delay(220);
                 if (!InOpenMusicPage)
                     SMusicPageBaseFrame.Visibility = Visibility.Collapsed;
@@ -1464,7 +1464,7 @@ namespace znMusicPlayerWUI
                 if (InOpenMusicPage)
                 {
                     SWindowGridBase.Visibility = Visibility.Collapsed;
-                    Debug.WriteLine("主界面被隐藏。");
+                    Debug.WriteLine("[MainWindow]: 主界面被隐藏。");
                 }
             }
         }

@@ -31,7 +31,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Grid Margin="24,24,12,0" CornerRadius="8" VerticalAlignment="Top" MaxWidth="140">
-                        <c:Imagezn x:Name="LogoImage" ShowMenuBehavior="None" Visibility="Visible"/>
+                        <c:Imagezn x:Name="LogoImage" Visibility="Visible" CornerRadius="8"/>
                         <Grid x:Name="LoadingRoot" Background="{ThemeResource AcrylicNormal}" Opacity="0">
                             <Grid.OpacityTransition>
                                 <ScalarTransition Duration="0:0:0.25"/>
@@ -50,8 +50,35 @@
                             </TransitionCollection>
                         </Grid.Transitions>
                         <StackPanel VerticalAlignment="Top">
-                            <TextBlock x:Name="TitleTB" Text="znMusicPlayer" FontSize="18" TextTrimming="CharacterEllipsis"/>
-                            <TextBlock x:Name="ButtonNameTB" Text="没有正在播放的歌曲" TextTrimming="CharacterEllipsis"/>
+                            <c:AutoScrollViewer x:Name="TitleTBBase">
+                                <TextBlock x:Name="TitleTB" Text="znMusicPlayer" FontSize="18" TextTrimming="CharacterEllipsis"/>
+                            </c:AutoScrollViewer>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xE77B;" FontSize="16" Margin="0,0,4,0"/>
+                                <c:AutoScrollViewer x:Name="ArtistTBBase" Grid.Column="1">
+                                    <TextBlock x:Name="ArtistTB" Text="无"
+                                               TextTrimming="CharacterEllipsis" TextWrapping="WrapWholeWords"
+                                               MaxLines="1"
+                                               Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                                </c:AutoScrollViewer>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xE93C;" FontSize="16" Margin="0,0,4,0"/>
+                                <c:AutoScrollViewer x:Name="AlbumTBBase" Grid.Column="1">
+                                    <TextBlock x:Name="AlbumTB" Text="无"
+                                               TextTrimming="CharacterEllipsis" TextWrapping="WrapWholeWords"
+                                               MaxLines="1"
+                                               Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                                </c:AutoScrollViewer>
+                            </Grid>
                         </StackPanel>
                         <Grid VerticalAlignment="bottom" Grid.Row="1">
                             <Grid.Resources>
@@ -167,7 +194,10 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
                 <Button Height="40" Width="40" Background="Transparent" BorderThickness="0" Click="Button_Click_2">
-                    <FontIcon x:Name="VolumeIconBase" Glyph="&#xe995;" FontSize="16"/>
+                    <Grid>
+                        <FontIcon Glyph="&#xe995;" FontSize="16" Opacity="{ThemeResource VolumeOpacity}"/>
+                        <FontIcon x:Name="VolumeIconBase" Glyph="&#xe995;" FontSize="16"/>
+                    </Grid>
                 </Button>
                 <Slider x:Name="VolumeSD" Grid.Column="1" VerticalAlignment="Center" Margin="12,0,12,0"
                         ValueChanged="VolumeSD_ValueChanged" IsThumbToolTipEnabled="False"/>

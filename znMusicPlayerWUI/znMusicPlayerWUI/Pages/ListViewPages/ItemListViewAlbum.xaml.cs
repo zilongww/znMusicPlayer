@@ -127,10 +127,11 @@ namespace znMusicPlayerWUI.Pages
                 {
                     count++;
                     i.Count = count;
-                    MusicDataList.Add(new() { MusicData = i, ImageScaleDPI = dpi, MusicListData = musicListData });
+                    MusicDataList.Add(new() { MusicData = i, ImageScaleDPI = dpi, MusicListData = musicListData, ShowAlbumName = false });
                 }
             }
             UnShowLoading();
+            Debug.WriteLine("[ItemListViewAlbum] 加载完成");
         }
 
         private void ShowLoading()
@@ -162,7 +163,6 @@ namespace znMusicPlayerWUI.Pages
             {
                 var art = NavToObj;
                 Album_Image.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(art.PicturePath));
-                System.Diagnostics.Debug.WriteLine(art.PicturePath);
             }
             AlbumLogo.Source = Album_Image.Source;
             AlbumLogo.SaveName = NavToObj.Title;
@@ -173,6 +173,7 @@ namespace znMusicPlayerWUI.Pages
             UpdateShyHeader();
             await Task.Delay(200);
             UpdateShyHeader();
+            Debug.WriteLine("[ItemListViewAlbum] 图片加载完成");
         }
 
         CompositionPropertySet scrollerPropertySet;
@@ -288,7 +289,7 @@ namespace znMusicPlayerWUI.Pages
         {
             UpdateShyHeader();
             if (scrollViewer != null)
-                AlbumLogoRoot.CornerRadius = new(Math.Min(Math.Max(scrollViewer.VerticalOffset / 8, 8), 18));
+                AlbumLogoRoot.CornerRadius = new(Math.Min(Math.Max(scrollViewer.VerticalOffset / 8, 8), 15));
             if (logoVisual != null)
             {
                 var a = ActualWidth - (logoVisual.Scale.X * AlbumLogoRoot.ActualWidth + 44);

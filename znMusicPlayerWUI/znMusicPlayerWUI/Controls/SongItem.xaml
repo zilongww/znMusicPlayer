@@ -137,7 +137,6 @@
             x:Name="rootBorder">
         <Grid>
             <Border x:Name="BackgroundBaseGrid"
-                    Tapped="Grid_Tapped"
                     CornerRadius="8"
                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     BorderBrush="{ThemeResource ControlElevationBorderBrush}"
@@ -162,7 +161,10 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid x:Name="InfoRoot" Opacity="1" x:FieldModifier="Public"
-                      Background="Transparent" DoubleTapped="Grid_DoubleTapped" Padding="8">
+                      Background="Transparent"
+                      Tapped="Grid_Tapped"
+                      DoubleTapped="Grid_DoubleTapped"
+                      Padding="8">
                     <Grid.OpacityTransition>
                         <ScalarTransition/>
                     </Grid.OpacityTransition>

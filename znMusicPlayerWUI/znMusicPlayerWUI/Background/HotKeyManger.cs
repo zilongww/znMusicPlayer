@@ -145,12 +145,12 @@ namespace znMusicPlayerWUI.Background.HotKeys
 
         public static List<HotKey> DefaultRegisterHotKeysList { get; set; } = new()
         {
-            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_ALT, Windows.System.VirtualKey.Left, HotKeyID.PreviousSong),
-            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_ALT, Windows.System.VirtualKey.Right, HotKeyID.NextSong),
-            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_ALT, Windows.System.VirtualKey.Down, HotKeyID.Pause),
-            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_ALT, Windows.System.VirtualKey.Up, HotKeyID.Stop),
-            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_ALT, Windows.System.VirtualKey.Subtract, HotKeyID.VolumeRemove),
-            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_ALT, Windows.System.VirtualKey.Add, HotKeyID.VolumeAdd),
+            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.Left, HotKeyID.PreviousSong),
+            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.Right, HotKeyID.NextSong),
+            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.Down, HotKeyID.Pause),
+            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.Up, HotKeyID.Stop),
+            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.Subtract, HotKeyID.VolumeRemove),
+            new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.Add, HotKeyID.VolumeAdd),
             new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.O, HotKeyID.OpenMainWindow),
             new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.L, HotKeyID.OpenLyricWindow),
             new(User32.HotKeyModifiers.MOD_CONTROL | User32.HotKeyModifiers.MOD_SHIFT, Windows.System.VirtualKey.I, HotKeyID.RandomPlay),

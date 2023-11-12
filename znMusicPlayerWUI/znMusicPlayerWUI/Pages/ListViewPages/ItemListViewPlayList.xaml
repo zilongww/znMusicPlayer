@@ -40,7 +40,8 @@
                     <Grid x:Name="headerRootGrid">
                         <Border x:Name="BackColorBaseRectangle" Background="{ThemeResource AcrylicNormal}"    
                                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                BorderThickness="0,0,0,1"/>
+                                BorderThickness="0,0,0,1"
+                                CornerRadius="8"/>
                         <Grid x:Name="HeaderBaseGrid">
                             <Grid x:Name="PlayList_BaseGrid">
                                 <Grid x:Name="PlayList_Image_BaseGrid" Margin="0,32,0,0">

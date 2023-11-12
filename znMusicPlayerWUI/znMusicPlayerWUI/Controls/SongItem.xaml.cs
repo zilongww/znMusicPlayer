@@ -89,13 +89,14 @@ namespace znMusicPlayerWUI.Controls
             if (lastValue != null)
                 if ((bool)lastValue == value) return;
             lastValue = value;
-/*
-            if (MainWindow.DriveInType == Microsoft.UI.Input.PointerDeviceType.Mouse)
+
+            if (MainWindow.DriveInType != Microsoft.UI.Input.PointerDeviceType.Mouse)
             {
                 InfoButton.Visibility = Visibility.Collapsed;
                 RightToolBar.Opacity = 1;
                 RightToolBar.Visibility = Visibility.Visible;
-                RightToolBar.Children[0].Visibility = Visibility.Collapsed;
+                if (value) RightToolBar.Children[0].Visibility = Visibility.Visible;
+                else RightToolBar.Children[0].Visibility = Visibility.Collapsed;
                 if (!ShowImage)
                     BaseGrid.Padding = new(10, 16, 10, 16);
             }
@@ -105,7 +106,7 @@ namespace znMusicPlayerWUI.Controls
                 RightToolBar.Visibility = Visibility.Collapsed;
                 RightToolBar.Children[0].Visibility = Visibility.Visible;
             }
-*/
+
             if (value)
             {
                 SetPlayingIcon(App.audioPlayer.PlaybackState);
@@ -113,8 +114,6 @@ namespace znMusicPlayerWUI.Controls
                 PlayingThemeRectangle.Opacity = 1;
                 ShowRightToolBar();
                 AnimatedMouseEnterBackground();
-                // 右边菜单总是消失 ╯︿╰
-                await Task.Delay(100);
                 RightToolBar.Visibility = Visibility.Visible;
             }
             else
@@ -125,6 +124,9 @@ namespace znMusicPlayerWUI.Controls
                 backgroundBaseGridVisual.Opacity = 0;
                 RightToolBar.Visibility = Visibility.Collapsed;
             }
+
+            if (MainWindow.DriveInType != Microsoft.UI.Input.PointerDeviceType.Mouse)
+                RightToolBar.Visibility = Visibility.Visible;
 
             /*
             if (value)
@@ -165,8 +167,6 @@ namespace znMusicPlayerWUI.Controls
             InitializeComponent();
             backgroundBaseGridVisual = ElementCompositionPreview.GetElementVisual(BackgroundBaseGrid);
             rightToolBarVisual = ElementCompositionPreview.GetElementVisual(RightToolBar);
-            backgroundBaseGridVisual.Opacity = 0;
-            rightToolBarVisual.Opacity = 0;
 
             AddUnloadedEvent();
             DataContextChanged += SongItem_DataContextChanged;
@@ -216,6 +216,11 @@ namespace znMusicPlayerWUI.Controls
             else
             {
                 UpdateImageInterface(bindBase.MusicData);
+            }
+
+            if (!bindBase.ShowAlbumName)
+            {
+                ButtonNameTextBlock.Text = bindBase.MusicData.ArtistName;
             }
 
             IsMusicDataPlaying = App.audioPlayer.MusicData == MusicData;
@@ -467,6 +472,7 @@ namespace znMusicPlayerWUI.Controls
         // 单击播放按钮
         private async void Play_Click(object sender, RoutedEventArgs e)
         {
+            if (!CanClickPlay) return;
             if (IsMusicDataPlaying)
             {
                 if (App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing)
@@ -497,12 +503,11 @@ namespace znMusicPlayerWUI.Controls
         }
 
         // 双击元素 播放
-        private async void Grid_DoubleTapped(object sender, Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        private void Grid_DoubleTapped(object sender, Microsoft.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
             if (e.PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Mouse)
             {
-                if (CanClickPlay)
-                    await App.playingList.Play(MusicData, true);
+                Play_Click(null, null);
             }
         }
 
@@ -511,8 +516,7 @@ namespace znMusicPlayerWUI.Controls
         {
             if (e.PointerDeviceType != Microsoft.UI.Input.PointerDeviceType.Mouse)
             {
-                if (CanClickPlay)
-                    Play_Click(null, null);
+                Play_Click(null, null);
             }
         }
 

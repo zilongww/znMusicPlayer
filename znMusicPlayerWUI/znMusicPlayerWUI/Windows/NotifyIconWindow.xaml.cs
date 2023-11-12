@@ -126,7 +126,10 @@ namespace znMusicPlayerWUI.Windowed
                 App.playingList.NowPlayingImageLoaded -= PlayingList_NowPlayingImageLoaded;
                 MainWindow.DesktopLyricWindowOpenedEvent -= MainWindow_DesktopLyricWindowOpenedEvent;
                 MainWindow.DesktopLyricWindowClosedEvent -= MainWindow_DesktopLyricWindowClosedEvent;
-                System.Diagnostics.Debug.WriteLine("NotifyIconWindow Removed Events");
+                TitleTBBase.Pause = true;
+                ArtistTBBase.Pause = true;
+                AlbumTBBase.Pause = true;
+                System.Diagnostics.Debug.WriteLine("[NotifyIconWindow]: Removed Events");
             }
             else
             {
@@ -139,8 +142,11 @@ namespace znMusicPlayerWUI.Windowed
                 App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
                 MainWindow.DesktopLyricWindowOpenedEvent += MainWindow_DesktopLyricWindowOpenedEvent;
                 MainWindow.DesktopLyricWindowClosedEvent += MainWindow_DesktopLyricWindowClosedEvent;
+                TitleTBBase.Pause = false;
+                ArtistTBBase.Pause = false;
+                AlbumTBBase.Pause = false;
                 UpdateDatas();
-                System.Diagnostics.Debug.WriteLine("NotifyIconWindow Added Events");
+                System.Diagnostics.Debug.WriteLine("[NotifyIconWindow]: Added Events");
             }
         }
 
@@ -161,7 +167,10 @@ namespace znMusicPlayerWUI.Windowed
                 {
                     notifyIcon.Text = $"{App.AppName}\n正在播放：{audioPlayer.MusicData.Title}\n · 艺术家：{audioPlayer.MusicData.ArtistName}\n · 专辑：{audioPlayer.MusicData.Album.Title}";
                 }
-                catch { }
+                catch
+                {
+                    notifyIcon.Text = App.AppName;
+                }
             }
         }
 
@@ -224,6 +233,7 @@ namespace znMusicPlayerWUI.Windowed
         {
             if (imageSource == LogoImage.Source) return;
             LogoImage.Source = imageSource;
+            LogoImage.SaveName = $"{MusicData.Title} - {MusicData.ButtonName}";
         }
 
         MusicData MusicData = null;
@@ -235,7 +245,9 @@ namespace znMusicPlayerWUI.Windowed
             MusicData = audioPlayer.MusicData;
             TitleTB.Text = string.IsNullOrEmpty(audioPlayer.MusicData.Title2) ? audioPlayer.MusicData.Title :
                 $"{audioPlayer.MusicData.Title}（{audioPlayer.MusicData.Title2}）";
-            ButtonNameTB.Text = audioPlayer.MusicData.ButtonName;
+            ArtistTB.Text = audioPlayer.MusicData.ArtistName;
+            AlbumTB.Text = string.IsNullOrEmpty(audioPlayer.MusicData.Album.Title2) ? audioPlayer.MusicData.Album.Title :
+                $"{audioPlayer.MusicData.Album.Title}（{audioPlayer.MusicData.Album.Title2}）";
 
             MoveToPosition();
         }

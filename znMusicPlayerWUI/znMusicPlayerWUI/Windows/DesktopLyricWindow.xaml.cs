@@ -108,6 +108,7 @@ namespace znMusicPlayerWUI.Windowed
 
         public void AddEvents()
         {
+            System.Diagnostics.Debug.WriteLine("[DesktopLyricWindow]: Add Events.");
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
             App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
             App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
@@ -118,7 +119,7 @@ namespace znMusicPlayerWUI.Windowed
 
         public void RemoveEvents()
         {
-            System.Diagnostics.Debug.WriteLine("removed.");
+            System.Diagnostics.Debug.WriteLine("[DesktopLyricWindow]: Removed Events.");
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
             App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
             App.audioPlayer.VolumeChanged -= AudioPlayer_VolumeChanged;
@@ -139,7 +140,7 @@ namespace znMusicPlayerWUI.Windowed
                     isAddedEvent = true;
                     App.lyricManager.PlayingLyricSourceChange += LyricManager_PlayingLyricSourceChange;
                     App.lyricManager.PlayingLyricSelectedChange += LyricManager_PlayingLyricSelectedChange;
-                    App.lyricManager.ReCallUpdate();
+                    App.lyricManager.StartTimer();
                     LyricManager_PlayingLyricSelectedChange(App.lyricManager.NowLyricsData);
                 }
             }

@@ -4,11 +4,13 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Helpers;
+using static znMusicPlayerWUI.Helpers.MetingService.KgMeting;
 
 namespace znMusicPlayerWUI.Background
 {
@@ -32,14 +34,20 @@ namespace znMusicPlayerWUI.Background
                 if (value == null)
                 {
                     _nowLyricsData = value;
-                    PlayingLyricSelectedChange?.Invoke(value);
+                    InovkeLyricChangeEvent(value);
                 }
                 else if (_nowLyricsData != value)
                 {
                     _nowLyricsData = value;
-                    PlayingLyricSelectedChange?.Invoke(value);
+                    InovkeLyricChangeEvent(value);
                 }
             }
+        }
+
+        private void InovkeLyricChangeEvent(LyricData lyricData)
+        {
+            PlayingLyricSelectedChange?.Invoke(lyricData);
+            Debug.WriteLine($"[LyricManager]: 当前歌词已设置为：\"{lyricData?.Lyric.FirstOrDefault()}\"");
         }
 
         public LyricManager()
@@ -52,28 +60,17 @@ namespace znMusicPlayerWUI.Background
             App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
         }
 
-        private void MainWindow_WindowViewStateChanged(bool isView)
-        {
-            if (isView)
-            {
-                timer.Start();
-            }
-            else
-            {
-                timer.Stop();
-            }
-        }
-
         private void AudioPlayer_PlayStateChanged(Media.AudioPlayer audioPlayer)
         {
             if (App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing)
             {
-                timer.Start();
+                StartTimer();
             }
         }
 
         public async Task InitLyricList(MusicData musicData)
         {
+            Debug.WriteLine($"[LyricManager]: 初始化歌词：\"{musicData.Title}\"");
             if (musicData == null) return;
             NowPlayingLyrics.Clear();
 
@@ -83,6 +80,7 @@ namespace znMusicPlayerWUI.Background
             if (cachePath != null)
             {
                 resultPath = cachePath;
+                Debug.WriteLine($"[LyricManager]: 找到歌词缓存：\"{cachePath}\"");
             }
             else
             {
@@ -97,6 +95,7 @@ namespace znMusicPlayerWUI.Background
                     return;
                 }
 
+                Debug.WriteLine($"[LyricManager]: 从网络中下载歌词");
                 Tuple<string, string> lyricTuple;
                 if (musicData.From == MusicFrom.neteaseMusic)
                 {
@@ -123,15 +122,18 @@ namespace znMusicPlayerWUI.Background
                         System.IO.File.WriteAllText(path, $"{lyricTuple.Item1}\n{lyricTuple.Item2}");
                     });
                     resultPath = path;
+                    Debug.WriteLine($"[LyricManager]: 下载网络歌词完成");
                 }
             }
 
             await InitLyricList(resultPath);
+            Debug.WriteLine($"[LyricManager]: 初始化歌词成功： \"{musicData.Title}\"");
         }
 
         public async Task InitLyricList(TagLib.File file)
         {
             if (string.IsNullOrEmpty(file.Tag.Lyrics)) return;
+            Debug.WriteLine($"[LyricManager]: 从 IDv3 标签中获取歌词");
             InitLyricList(await LyricHelper.LyricToLrcData(file.Tag.Lyrics));
         }
 
@@ -141,9 +143,11 @@ namespace znMusicPlayerWUI.Background
             {
                 NowPlayingLyrics.Clear();
                 NowLyricsData = null;
+                Debug.WriteLine($"[LyricManager]: 无法获取有效");
                 return;
             }
 
+            Debug.WriteLine($"[LyricManager]: 读取歌词文件：\"{lyricPath}\"");
             string f = null;
             var lrcEncode = FileHelper.GetEncodeingType(lyricPath);
             if (lrcEncode == Encoding.Default)
@@ -158,6 +162,7 @@ namespace znMusicPlayerWUI.Background
 
             if (f.Length < 10)
             {
+                Debug.WriteLine($"[LyricManager]: 歌词文件大小未超过 10 字节，不保存歌词缓存");
                 System.IO.File.Delete(lyricPath);
                 return;
             }
@@ -177,14 +182,26 @@ namespace znMusicPlayerWUI.Background
             NowLyricsData = null;
         }
 
+        public void StartTimer()
+        {
+            //Debug.WriteLine($"[LyricManager]: 歌词循环已开始");
+            ReCallUpdate();
+        }
+        
+        private void StopTimer()
+        {
+            //Debug.WriteLine($"[LyricManager]: 歌词循环已停止");
+            timer.Stop();
+        }
+
         LyricData lastLyricData = null;
         public void ReCallUpdate()
         {
             //System.Diagnostics.Debug.WriteLine($"Lyric Lasted Count {PlayingLyricSelectedChange?.GetInvocationList().Length}");
             timer.Start();
-            if (PlayingLyricSelectedChange == null) timer.Stop();
-            if (!NowPlayingLyrics.Any()) timer.Stop();
-            if (NowPlayingLyrics.Count <= 3) timer.Stop();
+            if (PlayingLyricSelectedChange == null) StopTimer();
+            if (!NowPlayingLyrics.Any()) StopTimer();
+            if (NowPlayingLyrics.Count <= 3) StopTimer();
 
             //System.Diagnostics.Debug.WriteLine($"Lyric Timing Changed: {App.audioPlayer.FileReader?.Position}.");
             //System.Diagnostics.Debug.WriteLine($"Lyric Timing Changed: {App.audioPlayer.FileReader?.WaveFormat.AverageBytesPerSecond}.");
@@ -229,7 +246,7 @@ namespace znMusicPlayerWUI.Background
 
                 //if (audioPlayer.NowOutDevice.DeviceType == Media.AudioPlayer.OutApi.Wasapi) timer.Interval = TimeSpan.FromMilliseconds(audioPlayer.Latency);
                 //else timer.Interval = TimeSpan.FromMilliseconds(100);
-                timer.Start();
+                StartTimer();
             }
         }
     }

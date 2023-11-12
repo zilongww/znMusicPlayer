@@ -22,6 +22,7 @@ namespace znMusicPlayerWUI.Helpers
                 }
             }
         }
+
         MusicListData _musicListData;
         public MusicListData MusicListData
         {
@@ -35,6 +36,7 @@ namespace znMusicPlayerWUI.Helpers
                 }
             }
         }
+
         double _imageScaleDPI = 1.0;
         public double ImageScaleDPI
         {
@@ -46,6 +48,17 @@ namespace znMusicPlayerWUI.Helpers
                     _imageScaleDPI = value;
                     OnPropertyChanged(nameof(ImageScaleDPI));
                 }
+            }
+        }
+
+        bool _showAlbumName = true;
+        public bool ShowAlbumName
+        {
+            get=> _showAlbumName;
+            set
+            {
+                _showAlbumName = value;
+                OnPropertyChanged(nameof(ShowAlbumName));
             }
         }
 

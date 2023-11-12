@@ -184,7 +184,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 RemoveLyricListItemSourceAsync();
             }
 #if DEBUG
-            Debug.WriteLine($"MusicPage: ViewState 已被设置为 {musicPageViewState}.");
+            Debug.WriteLine($"[MusicPage]: ViewState 已被设置为 {musicPageViewState}.");
 #endif
         }
 
@@ -195,7 +195,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             {
                 LrcBaseListView.ItemsSource = null;
 #if DEBUG
-                Debug.WriteLine($"MusicPage: LrcBaseListView.ItemSource 已被设置为 null.");
+                Debug.WriteLine($"[MusicPage]: LrcBaseListView.ItemSource 已被设置为 null.");
 #endif
             }
         }
@@ -226,7 +226,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             AlbumImageBase.Source = imageSource;
             AlbumImageBase.SaveName = $"{MusicData.Title} · {MusicData.Album.Title}";
 #if DEBUG
-            Debug.WriteLine($"MusicPage: 图片已被更改.");
+            Debug.WriteLine($"[MusicPage]: 图片已被更改.");
 #endif
 
         }
@@ -372,7 +372,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         {
             if (ShowLrcPage)
             {
-                if (nowLyricsData != null) App.lyricManager.ReCallUpdate();
+                if (nowLyricsData != null) App.lyricManager.StartTimer();
                 SelectedChangedDo();
             }
         }
@@ -591,7 +591,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 // 加1ms，否则会短时间判定到上一句歌词
                 App.audioPlayer.CurrentTime = lrcItem.LyricTimeSpan + TimeSpan.FromMilliseconds(App.audioPlayer.Latency + 1);
 #if DEBUG
-                Debug.WriteLine("audio player time setted.");
+                Debug.WriteLine("[MusicPage]: Audio player time setted.");
 #endif
             }
         }
