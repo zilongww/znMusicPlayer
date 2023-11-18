@@ -44,6 +44,7 @@ namespace znMusicPlayerWUI.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            MainWindow.MainViewStateChanged += MainWindow_MainViewStateChanged;
             ImageManage.localImageCache.Clear();
             ConnectedAnimation animation =
                 ConnectedAnimationService.GetForCurrentView().GetAnimation("forwardAnimation");
@@ -62,6 +63,7 @@ namespace znMusicPlayerWUI.Pages
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
+            MainWindow.MainViewStateChanged -= MainWindow_MainViewStateChanged;
             if (MoveItemButton.IsChecked == true)
                 foreach (var i in SongItem.StaticSongItems) i.AddUnloadedEvent();
             base.OnNavigatedFrom(e);
@@ -98,7 +100,12 @@ namespace znMusicPlayerWUI.Pages
             //System.Diagnostics.Debug.WriteLine("Clear");
         }
 
-        private void CreatShadow()
+        private void MainWindow_MainViewStateChanged(bool isView)
+        {
+            AutoScrollViewerControl.Pause = !isView;
+        }
+
+        private void CrateShadow()
         {
             if (logoVisual == null) return;
             compositor = logoVisual.Compositor;
@@ -140,7 +147,7 @@ namespace znMusicPlayerWUI.Pages
             PlayList_TitleTextBlock.Text = NavToObj.ListShowName;
             PlayList_OtherTextBlock.Text = $"共{NavToObj.Songs.Count}首歌曲";
 
-            ShowLoading();
+            LoadingTipControl.ShowLoading();
 
             if (NavToObj != null)
             {
@@ -206,23 +213,8 @@ namespace znMusicPlayerWUI.Pages
                 System.Diagnostics.Debug.WriteLine("[ItemListViewPlayList] 加载完成。");
             }
             isLoading = false;
-            UnShowLoading();
+            LoadingTipControl.UnShowLoading();
             UpdateShyHeader();
-        }
-
-        private void ShowLoading()
-        {
-            LoadingRingBaseGrid.Visibility = Visibility.Visible;
-            LoadingRingBaseGrid.Opacity = 1;
-            LoadingRing.IsIndeterminate = true;
-        }
-
-        private async void UnShowLoading()
-        {
-            LoadingRingBaseGrid.Opacity = 0;
-            await Task.Delay(500);
-            LoadingRing.IsIndeterminate = false;
-            LoadingRingBaseGrid.Visibility = Visibility.Collapsed;
         }
 
         private void PlayListReader_Updated()
@@ -262,6 +254,14 @@ namespace znMusicPlayerWUI.Pages
                 PlayList_Image.Source = await FileHelper.GetImageSource("");
             }
             System.Diagnostics.Debug.WriteLine("[ItemListViewPlayList] 图片加载完成。");
+            await Task.Delay(100);
+            UpdateShyHeader();
+            UpdateInfoWidth();
+            CrateShadow();
+            await Task.Delay(1500);
+            UpdateShyHeader();
+            UpdateInfoWidth();
+            CrateShadow();
         }
 
         CompositionPropertySet scrollerPropertySet;
@@ -287,7 +287,7 @@ namespace znMusicPlayerWUI.Pages
             double anotherHeight = 154;
             int anotherXEnd = 150;
             double logoSizeEnd = 0.45;
-            int commandYEnd = 88;
+            int commandYEnd = 84;
 
             if (logoSizeCount == 1)
             {
@@ -295,7 +295,7 @@ namespace znMusicPlayerWUI.Pages
                 logoSizeEnd = 0.66;
                 anotherHeight = 54;
                 anotherXEnd = 131;
-                commandYEnd = 68;
+                commandYEnd = 64;
             }
             int anotherX = 16 + logoHeight + 12;
 
@@ -351,7 +351,7 @@ namespace znMusicPlayerWUI.Pages
                 logoVisualOffsetXAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
                 logoVisual.StartAnimation("Offset.X", logoVisualOffsetXAnimation);
 
-                stackVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3({anotherX},16,0), Vector3({anotherXEnd},{anotherHeight} + 12,0), {progress})");
+                stackVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3({logoVisual.Size.X + 32},16,0), Vector3({(int)(logoVisual.Size.X * logoSizeEnd) + 32},{anotherHeight} + 16,0), {progress})");
                 stackVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
                 stackVisual.StartAnimation(nameof(stackVisual.Offset), stackVisualOffsetAnimation);
             }
@@ -388,7 +388,6 @@ namespace znMusicPlayerWUI.Pages
         {
             if (logoVisual == null) return;
             var width = HeaderBaseGrid.ActualWidth - 50 - (PlayList_ImageBaseBorder.ActualWidth * logoVisual.Scale.X);
-            //System.Diagnostics.Debug.WriteLine(width);
             if (width > 0)
             {
                 WidthChanger.Width = width;
@@ -410,10 +409,16 @@ namespace znMusicPlayerWUI.Pages
             }
 
             UpdateShyHeader();
-            await Task.Delay(1);
-            UpdateShyHeader();
-            CreatShadow();
             UpdateInfoWidth();
+            await Task.Delay(100);
+            UpdateShyHeader();
+            UpdateInfoWidth();
+            CrateShadow();
+
+            await Task.Delay(1000);
+            UpdateShyHeader();
+            UpdateInfoWidth();
+            CrateShadow();
         }
 
         bool isFirstScroll = true;
@@ -439,21 +444,21 @@ namespace znMusicPlayerWUI.Pages
             if (ActualWidth <= 660 || ActualHeight <= 348)
             {
                 logoSizeCount = 1;
-                PlayList_ImageBaseBorder.Width = 160;
+                //PlayList_ImageBaseBorder.Width = 160;
                 PlayList_ImageBaseBorder.Height = 160;
             }
             else
             {
                 logoSizeCount = 0;
-                PlayList_ImageBaseBorder.Width = 280;
+                //PlayList_ImageBaseBorder.Width = 280;
                 PlayList_ImageBaseBorder.Height = 280;
             }/*
             System.Diagnostics.Debug.WriteLine(ActualWidth);
             System.Diagnostics.Debug.WriteLine(ActualHeight);*/
+            await Task.Delay(1);
             UpdateShyHeader();
             UpdateInfoWidth();
-            await Task.Delay(1);
-            CreatShadow();
+            CrateShadow();
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)

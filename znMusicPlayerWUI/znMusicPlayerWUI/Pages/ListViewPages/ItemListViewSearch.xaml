@@ -62,7 +62,7 @@
                                 <CommandBar Grid.Column="1" x:Name="ToolsCommandBar"
                                             DefaultLabelPosition="Right"
                                             HorizontalAlignment="Left"
-                                            Margin="20,0,16,0"
+                                            Margin="22,0,16,0"
                                             AccessKey="Z"
                                             Background="Transparent">
                                     <AppBarButton x:Name="SelectAllButton"
@@ -243,19 +243,9 @@
             </ListView.Header>
         </ListView>
         <Rectangle x:Name="ItemPresenterControlBridge"/>
-        <Grid x:Name="LoadingRingBaseGrid"
-              VerticalAlignment="Bottom"
-              HorizontalAlignment="Center"
-              Padding="24" Opacity="1" Margin="0,0,0,12"
-              CornerRadius="8" BorderThickness="1"
-              BorderBrush="{ThemeResource ControlElevationBorderBrush}"
-              Background="{ThemeResource AcrylicNormal}">
-            <Grid.OpacityTransition>
-                <ScalarTransition/>
-            </Grid.OpacityTransition>
-            <ProgressRing x:Name="LoadingRing"
-                      Width="48" Height="48"/>
-        </Grid>
+        <controlszn:LoadingTip x:Name="LoadingTipControl"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Center"/>
         <Grid VerticalAlignment="Bottom"
               HorizontalAlignment="Right"
               CornerRadius="4" Margin="0,0,16,8">

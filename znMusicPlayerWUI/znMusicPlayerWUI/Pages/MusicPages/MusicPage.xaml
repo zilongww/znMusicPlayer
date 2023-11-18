@@ -116,7 +116,8 @@
                                   SizeChanged="LrcBaseListView_SizeChanged"
                                   IsFocusEngagementEnabled="True"/>
                     </Grid>
-                    <StackPanel x:Name="InfoBaseTitle" Grid.Row="2" Loaded="InfoBaseTitle_Loaded">
+                    <StackPanel x:Name="InfoBaseTitle" Grid.Row="2" Loaded="InfoBaseTitle_Loaded"
+                                Spacing="4" Margin="0,12,0,0">
                         <StackPanel.Resources>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Foreground" Value="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
@@ -135,7 +136,6 @@
                                 <Setter Property="Background" Value="{x:Null}"/>
                                 <Setter Property="BorderThickness" Value="0"/>
                                 <Setter Property="CornerRadius" Value="4"/>
-                                <Setter Property="Margin" Value="0,4,0,0"/>
                             </Style>
                         </StackPanel.Resources>
                         <Button x:Name="ArtistRunButton" AccessKey="A" Click="ArtistRunButton_Click">
@@ -274,14 +274,14 @@
                             <ScrollViewer  VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled"
                                            HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Hidden"
                                            HorizontalAlignment="Stretch">
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
                                     <StackPanel.Resources>
                                         <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
                                             <Setter Property="CornerRadius" Value="100"/>
                                             <Setter Property="Height" Value="44"/>
                                             <Setter Property="Width" Value="44"/>
                                             <Setter Property="Padding" Value="0"/>
-                                            <Setter Property="Margin" Value="0,0,4,0"/>
+                                            <Setter Property="Margin" Value="0,0,0,0"/>
                                             <Setter Property="BorderThickness" Value="2"/>
                                             <Setter Property="BorderBrush" Value="{ThemeResource CircleElevationBorderBrush}"/>
                                         </Style>

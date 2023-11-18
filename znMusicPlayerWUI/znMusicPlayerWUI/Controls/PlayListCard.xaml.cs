@@ -78,7 +78,7 @@ namespace znMusicPlayerWUI.Controls
         public async void UpdateImage()
         {
             /*ExitMass();
-            CreatShadow();*/
+            CrateShadow();*/
             if (MusicListData != null)
             {
                 int size = 0;//(int)(200 * ImageScaleDPI);
@@ -101,7 +101,7 @@ namespace znMusicPlayerWUI.Controls
 
         Compositor compositor;
         DropShadow dropShadow;
-        private void CreatShadow()
+        private void CrateShadow()
         {
             var visual = ElementCompositionPreview.GetElementVisual(ShadowBaseRectangle);
             compositor = visual.Compositor;

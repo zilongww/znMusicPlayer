@@ -27,6 +27,8 @@ namespace znMusicPlayerWUI.Controls
 {
     public partial class Imagezn : Grid, IDisposable
     {
+        public static bool ImageDarkMass { get; set; } = true;
+
         public enum ShowMenuBehaviors { Tapped, OnlyLightUp, None }
 
         private ShowMenuBehaviors _showMenuBehavior = default;
@@ -124,12 +126,11 @@ namespace znMusicPlayerWUI.Controls
             {
                 if (ActualTheme == ElementTheme.Dark)
                 {
-                    ImageMass.Visibility = Visibility.Visible;
+                    if (ImageDarkMass)
+                        ImageMass.Visibility = Visibility.Visible;
                 }
                 else
-                {
                     ImageMass.Visibility = Visibility.Collapsed;
-                }
             }
             else
             {

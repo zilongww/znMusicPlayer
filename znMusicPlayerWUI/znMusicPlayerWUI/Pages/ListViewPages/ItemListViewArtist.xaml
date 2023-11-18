@@ -224,19 +224,9 @@
                 </Border>
             </ListView.Header>
         </ListView>
-        <Grid x:Name="LoadingRingBaseGrid"
-              VerticalAlignment="Bottom"
-              HorizontalAlignment="Center"
-              Padding="24" Opacity="1" Margin="0,0,0,12"
-              CornerRadius="8" BorderThickness="1"
-              BorderBrush="{ThemeResource ControlElevationBorderBrush}"
-              Background="{ThemeResource AcrylicNormal}">
-            <Grid.OpacityTransition>
-                <ScalarTransition/>
-            </Grid.OpacityTransition>
-            <ProgressRing x:Name="LoadingRing"
-                      Width="48" Height="48"/>
-        </Grid>
+        <controlszn:LoadingTip x:Name="LoadingTipControl"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Center"/>
         <Grid VerticalAlignment="Bottom"
               HorizontalAlignment="Right"
               CornerRadius="4" Margin="0,0,16,8">

@@ -44,11 +44,9 @@
                                 CornerRadius="8"/>
                         <Grid x:Name="HeaderBaseGrid">
                             <Grid x:Name="PlayList_BaseGrid">
-                                <Grid x:Name="PlayList_Image_BaseGrid" Margin="0,32,0,0">
+                                <Grid x:Name="PlayList_Image_BaseGrid" Margin="0,32,0,0" HorizontalAlignment="Left">
                                     <Rectangle x:Name="PlayList_Image_DropShadowBase"/>
-                                    <Border Width="210"
-                                            Height="210"
-                                            HorizontalAlignment="Left"
+                                    <Border HorizontalAlignment="Left"
                                             x:Name="PlayList_ImageBaseBorder">
                                         <controlszn:Imagezn x:Name="PlayList_Image"
                                             CornerRadius="8"/>
@@ -62,10 +60,10 @@
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
                                         <StackPanel>
-                                            <TextBlock x:Name="PlayList_TitleTextBlock"
-                                                   Style="{ThemeResource SubTBHeader}"
-                                                   TextTrimming="WordEllipsis"
-                                                   TextWrapping="NoWrap"/>
+                                            <controlszn:AutoScrollViewer x:Name="AutoScrollViewerControl">
+                                                <TextBlock x:Name="PlayList_TitleTextBlock"
+                                                           Style="{ThemeResource SubTBHeader}"/>
+                                            </controlszn:AutoScrollViewer>
                                             <TextBlock x:Name="PlayList_OtherTextBlock" Text="共0首歌曲"/>
                                         </StackPanel>
                                         <Grid x:Name="CommandBarWidthChanger"
@@ -226,19 +224,9 @@
                 </Border>
             </ListView.Header>
         </ListView>
-        <Grid x:Name="LoadingRingBaseGrid"
-              VerticalAlignment="Center"
-              HorizontalAlignment="Center"
-              Padding="24" Opacity="1"
-              CornerRadius="8" BorderThickness="1"
-              BorderBrush="{ThemeResource ControlElevationBorderBrush}"
-              Background="{ThemeResource AcrylicNormal}">
-            <Grid.OpacityTransition>
-                <ScalarTransition/>
-            </Grid.OpacityTransition>
-            <ProgressRing x:Name="LoadingRing"
-                      Width="48" Height="48"/>
-        </Grid>
+        <controlszn:LoadingTip x:Name="LoadingTipControl"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Center"/>
         <Grid VerticalAlignment="Bottom"
               HorizontalAlignment="Right"
               CornerRadius="4" Margin="0,0,16,8">

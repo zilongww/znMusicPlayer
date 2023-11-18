@@ -53,6 +53,8 @@ namespace znMusicPlayerWUI
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        public static bool RunInBackground = false;
+
         public static UIElement SContent;
         public static Window SWindow;
         public static Rectangle SBackgroundColor;
@@ -154,16 +156,20 @@ namespace znMusicPlayerWUI
             //PlayingListBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
             //VolumeBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
         }
-
+        
         bool isBackground = false;
         static bool isShowClosingDialog = false;
-        public static async void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
-        {/*
-            args.Cancel = true;
-            if (InOpenMusicPage) SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
-            else RemoveEvents();
-            this.AppWindow.Hide();
-            isBackground = true;*/
+        public async void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
+        {
+            if (RunInBackground)
+            {
+                args.Cancel = true;
+                if (InOpenMusicPage) SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
+                else RemoveEvents();
+                AppWindow.Hide();
+                isBackground = true;
+                return;
+            }
             
             args.Cancel = true;
             if (isShowClosingDialog) return;
@@ -172,6 +178,8 @@ namespace znMusicPlayerWUI
             var result = await ShowDialog("再确认一次", "你真的要退出程序吗？", "取消", "确定", null, ContentDialogButton.Primary);
             if (result == ContentDialogResult.Primary)
             {
+                App.Current.Exit();
+                App.Current.Exit();
                 App.Current.Exit();
             }
             else
@@ -692,7 +700,7 @@ namespace znMusicPlayerWUI
             if (im is null) return;
             if (imageSource is null)
             {
-                SPlayContent.BorderThickness = new(0);
+                im.BorderThickness = new(0);
                 im.Source = null;
                 return;
             }
@@ -700,8 +708,8 @@ namespace znMusicPlayerWUI
             {
                 im.Source = imageSource;
                 im.SaveName = $"{App.audioPlayer.MusicData.Title} · {App.audioPlayer.MusicData.Album.Title}";
-                SPlayContent.BorderThickness = new(1);
-                SPlayContent.BorderBrush = App.Current.Resources["ControlElevationBorderBrush"] as Brush;
+                im.BorderThickness = new(1);
+                im.BorderBrush = App.Current.Resources["ControlElevationBorderBrush"] as Brush;
             }
 
         }

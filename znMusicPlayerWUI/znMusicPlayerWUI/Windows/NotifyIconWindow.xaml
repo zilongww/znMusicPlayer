@@ -31,8 +31,9 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Grid Margin="24,24,12,0" CornerRadius="8" VerticalAlignment="Top" MaxWidth="140">
-                        <c:Imagezn x:Name="LogoImage" Visibility="Visible" CornerRadius="8"/>
-                        <Grid x:Name="LoadingRoot" Background="{ThemeResource AcrylicNormal}" Opacity="0">
+                        <c:Imagezn x:Name="LogoImage" CornerRadius="8"/>
+                        <Grid x:Name="LoadingRoot" Background="{ThemeResource AcrylicNormal}" Opacity="0"
+                              IsHitTestVisible="False">
                             <Grid.OpacityTransition>
                                 <ScalarTransition Duration="0:0:0.25"/>
                             </Grid.OpacityTransition>
@@ -58,7 +59,8 @@
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <FontIcon Glyph="&#xE77B;" FontSize="16" Margin="0,0,4,0"/>
+                                <FontIcon Glyph="&#xE77B;" FontSize="16" Margin="0,0,4,0"
+                                          Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                                 <c:AutoScrollViewer x:Name="ArtistTBBase" Grid.Column="1">
                                     <TextBlock x:Name="ArtistTB" Text="无"
                                                TextTrimming="CharacterEllipsis" TextWrapping="WrapWholeWords"
@@ -71,7 +73,8 @@
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <FontIcon Glyph="&#xE93C;" FontSize="16" Margin="0,0,4,0"/>
+                                <FontIcon Glyph="&#xE93C;" FontSize="16" Margin="0,0,4,0"
+                                          Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                                 <c:AutoScrollViewer x:Name="AlbumTBBase" Grid.Column="1">
                                     <TextBlock x:Name="AlbumTB" Text="无"
                                                TextTrimming="CharacterEllipsis" TextWrapping="WrapWholeWords"
@@ -128,7 +131,7 @@
                 </Grid>
             </StackPanel>
             <Rectangle HorizontalAlignment="Stretch" Height="1" Fill="{ThemeResource CardStrokeColorDefaultBrush}" VerticalAlignment="Top" Grid.Row="1"/>
-            <ScrollViewer Grid.Row="1">
+            <ScrollViewer Grid.Row="1" Visibility="Collapsed">
                 <ScrollViewer.Resources>
                     <Style TargetType="TextBlock">
                         <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -156,7 +159,7 @@
                     </Style>
                 </ScrollViewer.Resources>
 
-                <cc:WrapPanel Visibility="Visible" Margin="24,24,24,12" HorizontalSpacing="16"> 
+                <cc:WrapPanel Margin="24,24,24,12" HorizontalSpacing="16"> 
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -187,7 +190,7 @@
                     </Grid>
                 </cc:WrapPanel>
             </ScrollViewer>
-            <Grid Margin="16,0,24,12" Grid.Row="2">
+            <Grid Margin="16,12,24,12" Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition/>

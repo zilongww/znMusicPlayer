@@ -49,12 +49,14 @@ namespace znMusicPlayerWUI.Pages
             NavToObj = a;
             musicListData = new() { ListDataType = DataType.专辑 };
             InitData();
+            MainWindow.MainViewStateChanged += MainWindow_MainViewStateChanged;
         }
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
             await Task.Delay(500);
+            MainWindow.MainViewStateChanged -= MainWindow_MainViewStateChanged;
             scrollViewer?.ScrollToVerticalOffset(0);
 
             MusicDataList?.Clear();
@@ -66,7 +68,12 @@ namespace znMusicPlayerWUI.Pages
             UnloadObject(this);
         }
 
-        private void CreatShadow()
+        private void MainWindow_MainViewStateChanged(bool isView)
+        {
+            AutoScrollViewerControl.Pause = !isView;
+        }
+
+        private void CrateShadow()
         {
             var visual = ElementCompositionPreview.GetElementVisual(AlbumLogoRoot);
             compositor = visual.Compositor;
@@ -98,7 +105,7 @@ namespace znMusicPlayerWUI.Pages
             DownloadSelectedButton.Visibility = Visibility.Collapsed;
             SelectReverseButton.Visibility = Visibility.Collapsed;
             SelectAllButton.Visibility = Visibility.Collapsed;
-            ShowLoading();
+            LoadingTipControl.ShowLoading();
             var obj = await App.metingServices.NeteaseServices.GetAlbum(NavToObj.ID);
             if (obj == null)
             {
@@ -130,23 +137,10 @@ namespace znMusicPlayerWUI.Pages
                     MusicDataList.Add(new() { MusicData = i, ImageScaleDPI = dpi, MusicListData = musicListData, ShowAlbumName = false });
                 }
             }
-            UnShowLoading();
+            LoadingTipControl.UnShowLoading();
             Debug.WriteLine("[ItemListViewAlbum] 加载完成");
-        }
-
-        private void ShowLoading()
-        {
-            LoadingRingBaseGrid.Visibility = Visibility.Visible;
-            LoadingRingBaseGrid.Opacity = 1;
-            LoadingRing.IsIndeterminate = true;
-        }
-
-        private async void UnShowLoading()
-        {
-            LoadingRingBaseGrid.Opacity = 0;
-            await Task.Delay(500);
-            LoadingRing.IsIndeterminate = false;
-            LoadingRingBaseGrid.Visibility = Visibility.Collapsed;
+            await Task.Delay(1000);
+            UpdateShyHeader();
         }
 
         private async void LoadImage()
@@ -210,7 +204,7 @@ namespace znMusicPlayerWUI.Pages
                 logoShadowVisual = ElementCompositionPreview.GetElementVisual(AlbumLogo_DropShadowBase);
                 commandbarVisual = ElementCompositionPreview.GetElementVisual(ToolsCommandBar);
                 describeeRootVisual = ElementCompositionPreview.GetElementVisual(DescribeeTextRoot);
-                CreatShadow();
+                CrateShadow();
             }
 
             logoVisual.CenterPoint = new(0, logoVisual.Size.Y, 1);
@@ -282,7 +276,7 @@ namespace znMusicPlayerWUI.Pages
 
             UpdateCommandToolBarWidth();
             Result_BaseGrid_SizeChanged(null, null);
-            CreatShadow();
+            CrateShadow();
         }
 
         private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
@@ -310,7 +304,7 @@ namespace znMusicPlayerWUI.Pages
             //catch { }
             //ImageClip.Rect = new(0, 0, ActualWidth, ActualHeight);
             ScrollViewer_ViewChanging(null, null);
-            CreatShadow();
+            CrateShadow();
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)

@@ -61,7 +61,7 @@ namespace znMusicPlayerWUI.Pages
             UnloadObject(this);
         }
 /*
-        private void CreatShadow()
+        private void CrateShadow()
         {
             var visual = ElementCompositionPreview.GetElementVisual(Artist_Image);
             compositor = visual.Compositor;
@@ -93,7 +93,7 @@ namespace znMusicPlayerWUI.Pages
             DownloadSelectedButton.Visibility = Visibility.Collapsed;
             SelectReverseButton.Visibility = Visibility.Collapsed;
             SelectAllButton.Visibility = Visibility.Collapsed;
-            ShowLoading();
+            LoadingTipControl.ShowLoading();
             var obj = await App.metingServices.NeteaseServices.GetArtist(NavToObj.ID);
             if (obj == null)
             {
@@ -120,22 +120,7 @@ namespace znMusicPlayerWUI.Pages
                     MusicDataList.Add(new() { MusicData = i, MusicListData = musicListData, ImageScaleDPI = dpi });
                 }
             }
-            UnShowLoading();
-        }
-
-        private void ShowLoading()
-        {
-            LoadingRingBaseGrid.Visibility = Visibility.Visible;
-            LoadingRingBaseGrid.Opacity = 1;
-            LoadingRing.IsIndeterminate = true;
-        }
-        
-        private async void UnShowLoading()
-        {
-            LoadingRingBaseGrid.Opacity = 0;
-            await Task.Delay(500);
-            LoadingRing.IsIndeterminate = false;
-            LoadingRingBaseGrid.Visibility= Visibility.Collapsed;
+            LoadingTipControl.UnShowLoading();
         }
 
         private async void LoadImage()

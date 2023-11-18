@@ -42,7 +42,26 @@ namespace znMusicPlayerWUI.Windowed
 {
     public sealed partial class NotifyIconWindow : Window
     {
-        public System.Windows.Forms.NotifyIcon notifyIcon;
+        static bool isVisible = true;
+        public static bool IsVisible
+        {
+            get { return isVisible; }
+            set
+            {
+                isVisible = value;
+                if (App.NotifyIconWindow != null)
+                {
+                    App.NotifyIconWindow.notifyIcon.Visible = value;
+                }
+            }
+        }
+
+        public void HideIcon()
+        {
+            notifyIcon.Visible = false;
+        }
+
+        private System.Windows.Forms.NotifyIcon notifyIcon;
         OverlappedPresenter presenter;
         nint hwnd = 0;
         public NotifyIconWindow()
@@ -52,7 +71,7 @@ namespace znMusicPlayerWUI.Windowed
             notifyIcon = new System.Windows.Forms.NotifyIcon();
             notifyIcon.Text = App.AppName;
             notifyIcon.Icon = new(Path.Combine(Directory.GetCurrentDirectory(), "icon.ico"));
-            notifyIcon.Visible = true;
+            notifyIcon.Visible = isVisible;
 
             #region others
             if (MicaController.IsSupported())

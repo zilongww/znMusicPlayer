@@ -43,14 +43,15 @@
                             BorderThickness="0" CornerRadius="0,0,8,8">
                         <Grid SizeChanged="Result_BaseGrid_SizeChanged" Name="Album_ImageBaseGrid">
 
-                            <Border x:Name="BackColorBaseRectangle" CornerRadius="8"
-                                    Background="{ThemeResource AcrylicNormal}" Visibility="Visible"/>
-                            
                             <Grid CornerRadius="0" Background="Transparent"
                                   BorderThickness="0" Visibility="Visible"
                                   Margin="0"
                                   x:Name="Album_ImageBaseBorder">
-                                <controlszn:Imagezn x:Name="Album_Image" Loaded="menu_border_Loaded" SizeChanged="Result_BaseGrid_SizeChanged" IsHitTestVisible="False" Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <controlszn:Imagezn x:Name="Album_Image"
+                                                    Loaded="menu_border_Loaded"
+                                                    SizeChanged="Result_BaseGrid_SizeChanged"
+                                                    IsHitTestVisible="False" Stretch="UniformToFill"
+                                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 <Rectangle x:Name="MassAlbumRoot" Fill="{ThemeResource BackgroundImageMass}"/>
                                 <Rectangle x:Name="BlurAlbumRoot" Fill="{ThemeResource AcrylicNormal}"/>
                             </Grid>
@@ -63,7 +64,7 @@
                                 <Rectangle x:Name="AlbumLogo_DropShadowBase"/>
                                 <Grid x:Name="AlbumLogoRoot"
                                       Margin="0,0,12,0" HorizontalAlignment="Left"
-                                      CornerRadius="8" BorderThickness="0">
+                                      CornerRadius="0" BorderThickness="0">
                                     <controlszn:Imagezn x:Name="AlbumLogo" CornerRadius="8"/>
                                 </Grid>
                                 <Border x:Name="InfoTextsRoot" HorizontalAlignment="Left">
@@ -78,8 +79,10 @@
                                             <RowDefinition/>
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
-                                        <TextBlock x:Name="AlbumTitle_Text" TextWrapping="WrapWholeWords" Style="{ThemeResource SubTBHeader}"
-                                                   MaxHeight="70" TextTrimming="CharacterEllipsis" Text="{Binding NavToObj.Title}"/>
+                                        <controlszn:AutoScrollViewer x:Name="AutoScrollViewerControl">
+                                            <TextBlock x:Name="AlbumTitle_Text" Style="{ThemeResource SubTBHeader}" Text="{Binding NavToObj.Title}"
+                                                       IsTextSelectionEnabled="True"/>
+                                        </controlszn:AutoScrollViewer>
                                         <ScrollView x:Name="DescribeeTextRoot" Grid.Row="1" VerticalScrollBarVisibility="Hidden" Margin="0,4,0,0">
                                             <StackPanel Orientation="Vertical">
                                                 <TextBlock x:Name="Title2_Text"
@@ -199,19 +202,9 @@
                 </Border>
             </ListView.Header>
         </ListView>
-        <Grid x:Name="LoadingRingBaseGrid"
-              VerticalAlignment="Bottom"
-              HorizontalAlignment="Center"
-              Padding="24" Opacity="1" Margin="0,0,0,12"
-              CornerRadius="8" BorderThickness="1"
-              BorderBrush="{ThemeResource ControlElevationBorderBrush}"
-              Background="{ThemeResource AcrylicNormal}">
-            <Grid.OpacityTransition>
-                <ScalarTransition/>
-            </Grid.OpacityTransition>
-            <ProgressRing x:Name="LoadingRing"
-                      Width="48" Height="48"/>
-        </Grid>
+        <controlszn:LoadingTip x:Name="LoadingTipControl"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Center"/>
         <Grid VerticalAlignment="Bottom"
               HorizontalAlignment="Right"
               CornerRadius="4" Margin="0,0,16,8">

@@ -22,6 +22,7 @@
     <None Remove="Controls\ItemListViewArtist.xaml" />
     <None Remove="Controls\ItemListViewPlayList.xaml" />
     <None Remove="Controls\ItemListViewSearch.xaml" />
+    <None Remove="Controls\LoadingTip.xaml" />
     <None Remove="Controls\LyricItem.xaml" />
     <None Remove="Controls\MediaPlayStateViewer.xaml" />
     <None Remove="Controls\PlayListCard.xaml" />
@@ -79,7 +80,7 @@
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.18-beta">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.231008000" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.231115000" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PInvoke.BCrypt" Version="0.7.124" />
@@ -117,6 +118,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\LoadingTip.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\SongHistoryInfo.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

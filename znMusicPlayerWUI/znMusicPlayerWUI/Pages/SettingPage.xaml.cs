@@ -711,10 +711,12 @@ namespace znMusicPlayerWUI.Pages
 
         }
 
-        private void Button_Click_7(object sender, RoutedEventArgs e)
+        private async void Button_Click_7(object sender, RoutedEventArgs e)
         {
             DataFolderBase.JSettingData = DataFolderBase.SettingDefault;
             App.LoadSettings(DataFolderBase.JSettingData);
+            await MainWindow.ShowDialog("恢复成功", "已将设置恢复到默认。");
+            MainWindow.SetNavViewContent(typeof(SearchPage));
         }
 
         private void NumberBox_ValueChanged_1(NumberBox sender, NumberBoxValueChangedEventArgs args)
@@ -746,6 +748,53 @@ namespace znMusicPlayerWUI.Pages
                 b.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
                 b.ZoomToFactor(1);
             }
+        }
+
+        private void ToggleSwitch_Loaded(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch toggleSwitch = sender as ToggleSwitch;
+            switch (toggleSwitch.Tag as string)
+            {
+                case "0":
+                    toggleSwitch.IsOn = NotifyIconWindow.IsVisible;
+                    break;
+                case "1":
+                    toggleSwitch.IsOn = MainWindow.RunInBackground;
+                    break;
+            }
+        }
+
+        private void ToggleSwitch_Toggled_2(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch toggleSwitch = sender as ToggleSwitch;
+            switch (toggleSwitch.Tag as string)
+            {
+                case "0":
+                    NotifyIconWindow.IsVisible = toggleSwitch.IsOn;
+                    break;
+                case "1":
+                    MainWindow.RunInBackground = toggleSwitch.IsOn;
+                    break;
+            }
+        }
+
+        private void Button_Click_8(object sender, RoutedEventArgs e)
+        {
+            App.Current.Exit();
+            App.Current.Exit();
+            App.Current.Exit();
+        }
+
+        private void ToggleSwitch_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            var ts = sender as ToggleSwitch;
+            ts.IsOn = Controls.Imagezn.ImageDarkMass;
+        }
+
+        private void ToggleSwitch_Toggled_3(object sender, RoutedEventArgs e)
+        {
+            var ts = sender as ToggleSwitch;
+            Controls.Imagezn.ImageDarkMass = ts.IsOn;
         }
     }
 }

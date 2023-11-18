@@ -86,7 +86,7 @@ namespace znMusicPlayerWUI.DataEditor
             { SettingParams.AudioCacheFolderPath.ToString(), AudioCacheFolder },
             { SettingParams.ImageCacheFolderPath.ToString(), ImageCacheFolder },
             { SettingParams.LyricCacheFolderPath.ToString(), LyricCacheFolder },
-            { SettingParams.DownloadOptions.ToString(), new JArray(){ true, true, true, true } },
+            { SettingParams.DownloadOptions.ToString(), new JArray(){ true, false , true, true } },
             { SettingParams.DownloadNamedMethod.ToString(), (int)DownloadNamedMethod.t_ar_al },
             { SettingParams.DownloadQuality.ToString(), (int)DownloadQuality.lossless },
             { SettingParams.DownloadMaximum.ToString(), 3 },
@@ -122,6 +122,9 @@ namespace znMusicPlayerWUI.DataEditor
                     (int)LyricTranslateTextPosition.Center
                 }
             },
+            { SettingParams.TaskbarShowIcon.ToString(), true },
+            { SettingParams.BackgroundRun.ToString(), false },
+            { SettingParams.ImageDarkMass.ToString(), true },
             { SettingParams.HotKeySettings.ToString(), JArray.FromObject(HotKeyManager.DefaultRegisterHotKeysList) }
         };
         
@@ -179,6 +182,9 @@ namespace znMusicPlayerWUI.DataEditor
             DesktopLyricOptions,
             DesktopLyricText,
             DesktopLyricTranslateText,
+            TaskbarShowIcon,
+            BackgroundRun,
+            ImageDarkMass,
             HotKeySettings
         }
 

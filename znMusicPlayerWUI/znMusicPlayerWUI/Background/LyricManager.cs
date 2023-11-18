@@ -47,7 +47,7 @@ namespace znMusicPlayerWUI.Background
         private void InovkeLyricChangeEvent(LyricData lyricData)
         {
             PlayingLyricSelectedChange?.Invoke(lyricData);
-            Debug.WriteLine($"[LyricManager]: 当前歌词已设置为：\"{lyricData?.Lyric.FirstOrDefault()}\"");
+            Debug.WriteLine($"[LyricManager]: 当前歌词已设置为：\"{lyricData?.Lyric?.FirstOrDefault()}\"");
         }
 
         public LyricManager()
@@ -162,8 +162,8 @@ namespace znMusicPlayerWUI.Background
 
             if (f.Length < 10)
             {
-                Debug.WriteLine($"[LyricManager]: 歌词文件大小未超过 10 字节，不保存歌词缓存");
-                System.IO.File.Delete(lyricPath);
+                Debug.WriteLine($"[LyricManager]: 歌词文件大小未超过 10 字节，不会使用此歌词文件");
+                //System.IO.File.Delete(lyricPath);
                 return;
             }
 

@@ -251,6 +251,10 @@
                         <x:String>深色</x:String>
                     </ComboBox>
                 </cc:SettingsCard>
+                <cc:SettingsCard Header="深色模式时为图片添加灰色透明遮罩">
+                    <ToggleSwitch Loaded="ToggleSwitch_Loaded_1"
+                                  Toggled="ToggleSwitch_Toggled_3"/>
+                </cc:SettingsCard>
                 <cc:SettingsCard Header="主题色">
                     <cc:SettingsCard.Description>
                         <community:WrapPanel HorizontalSpacing="12"
@@ -408,11 +412,34 @@
                 <FontIcon Glyph="&#xE712;"/>
             </cc:SettingsExpander.HeaderIcon>
             <cc:SettingsExpander.Items>
+                <cc:SettingsCard Header="显示托盘图标"
+                                 Description="在 Windows 任务栏托盘中显示此程序的图标">
+                    <cc:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xECAA;"/>
+                    </cc:SettingsCard.HeaderIcon>
+                    <ToggleSwitch Loaded="ToggleSwitch_Loaded" Tag="0"
+                                  Toggled="ToggleSwitch_Toggled_2"/>
+                </cc:SettingsCard>
+                <cc:SettingsCard Header="后台运行"
+                                 Description="此程序将在关闭主窗口后在后台运行，&#x000A;可以使用托盘图标和热键恢复主窗口。">
+                    <cc:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xEF1F;"/>
+                    </cc:SettingsCard.HeaderIcon>
+                    <ToggleSwitch Loaded="ToggleSwitch_Loaded" Tag="1"
+                                  Toggled="ToggleSwitch_Toggled_2"/>
+                </cc:SettingsCard>
+                <cc:SettingsCard Header="关闭此程序"
+                                 Description="结束此程序的进程">
+                    <cc:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE7E8;"/>
+                    </cc:SettingsCard.HeaderIcon>
+                    <Button Click="Button_Click_8" Content="关闭此程序"/>
+                </cc:SettingsCard>
                 <cc:SettingsCard Header="恢复默认设置"
-                                   Description="将程序的设置恢复默认"
+                                 Description="将程序的设置恢复默认"
                             Background="{ThemeResource SystemFillColorCriticalBackgroundBrush}">
                     <cc:SettingsCard.HeaderIcon>
-                        <FontIcon Glyph="&#xE895;"/>
+                        <FontIcon Glyph="&#xE777;"/>
                     </cc:SettingsCard.HeaderIcon>
                     <Button Content="恢复" Click="Button_Click_7"/>
                 </cc:SettingsCard>

@@ -56,7 +56,6 @@ namespace znMusicPlayerWUI.Windowed
                 __.Cancel = true;
                 App.AppWindowLocalOverlappedPresenter.Restore();
                 App.WindowLocal.Activate();
-                MainWindow.AppWindow_Closing(App.AppWindowLocal, __);
             };
         }
 

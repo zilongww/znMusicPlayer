@@ -43,7 +43,7 @@ namespace znMusicPlayerWUI.Controls
 
         Compositor compositor;
         DropShadow dropShadow;
-        private void CreatShadow()
+        private void CrateShadow()
         {
             var visual = ElementCompositionPreview.GetElementVisual(ShadowBaseRectangle);
             compositor = visual.Compositor;
@@ -62,7 +62,7 @@ namespace znMusicPlayerWUI.Controls
 
         private async void UILoaded(object sender, RoutedEventArgs e)
         {
-            CreatShadow();
+            CrateShadow();
             if (Artist != null)
                 PlayListImage.Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(Artist.PicturePath));
         }
