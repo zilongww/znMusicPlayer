@@ -54,7 +54,7 @@ namespace znMusicPlayerWUI.Helpers
         bool _showAlbumName = true;
         public bool ShowAlbumName
         {
-            get=> _showAlbumName;
+            get => _showAlbumName;
             set
             {
                 _showAlbumName = value;

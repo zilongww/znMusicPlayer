@@ -138,7 +138,7 @@
         <Grid>
             <Border x:Name="BackgroundBaseGrid"
                     CornerRadius="8"
-                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    Background="{ThemeResource ControlFillColorDefault}"
                     BorderBrush="{ThemeResource ControlElevationBorderBrush}"
                     BorderThickness="1"
                     VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
@@ -186,7 +186,10 @@
                                                CornerRadius="4"
                                                BorderThickness="1"
                                                BorderBrush="{ThemeResource ControlElevationBorderBrush}"/>
-                                <Grid Width="58" Height="58" x:Name="FileNotExistsRoot" Visibility="Collapsed">
+                                <Grid Width="58" Height="58" x:Name="FileNotExistsRoot" Visibility="Collapsed"
+                                      CornerRadius="4"
+                                      BorderThickness="1"
+                                      BorderBrush="{ThemeResource ControlElevationBorderBrush}">
                                     <Rectangle Fill="{ThemeResource SystemFillColorCriticalBackgroundBrush}"/>
                                     <StackPanel VerticalAlignment="Center">
                                         <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xf167;" FontSize="24" VerticalAlignment="Bottom" Margin="0,0,0,2"/>

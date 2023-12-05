@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:znMusicPlayerWUI"
     xmlns:controls="using:znMusicPlayerWUI.Controls"
+    xmlns:dm="using:znMusicPlayerWUI.Background"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" SizeChanged="Page_SizeChanged" NavigationCacheMode="Required">
@@ -22,5 +23,10 @@
             </Grid>
         </ListView.Header>
 
+        <ListView.ItemTemplate>
+            <DataTemplate x:DataType="dm:DownloadData">
+                <controls:DownloadCard Margin="0,0,4,2"/>
+            </DataTemplate>
+        </ListView.ItemTemplate>
     </ListView>
 </Page>

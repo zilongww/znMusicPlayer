@@ -218,6 +218,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             {
                 BackgroundBaseImage.Dispose();
                 AlbumImageBase.Dispose();
+                //BackgroundFillBase.Opacity = 0;
                 return;
             }
             if (imageSource == ImageSources) return;
@@ -225,6 +226,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             BackgroundBaseImage.Source = ImageSources;
             AlbumImageBase.Source = imageSource;
             AlbumImageBase.SaveName = $"{MusicData.Title} · {MusicData.Album.Title}";
+            //BackgroundFillBase.Opacity = 1;
 #if DEBUG
             Debug.WriteLine($"[MusicPage]: 图片已被更改.");
 #endif

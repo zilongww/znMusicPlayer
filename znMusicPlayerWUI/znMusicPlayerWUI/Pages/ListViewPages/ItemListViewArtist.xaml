@@ -224,9 +224,6 @@
                 </Border>
             </ListView.Header>
         </ListView>
-        <controlszn:LoadingTip x:Name="LoadingTipControl"
-                               VerticalAlignment="Bottom"
-                               HorizontalAlignment="Center"/>
         <Grid VerticalAlignment="Bottom"
               HorizontalAlignment="Right"
               CornerRadius="4" Margin="0,0,16,8">
@@ -278,5 +275,9 @@
                 </Button>
             </Border>
         </Grid>
+        <controlszn:LoadingTip x:Name="LoadingTipControl"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,54"/>
     </Grid>
 </Page>

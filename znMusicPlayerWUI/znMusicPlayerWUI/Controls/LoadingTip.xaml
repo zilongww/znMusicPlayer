@@ -8,7 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Padding="24" Opacity="1" Margin="0,0,0,12"
+    Padding="24" Opacity="1"
     CornerRadius="8" BorderThickness="1"
     BorderBrush="{ThemeResource ControlElevationBorderBrush}"
     Background="{ThemeResource AcrylicNormal}"

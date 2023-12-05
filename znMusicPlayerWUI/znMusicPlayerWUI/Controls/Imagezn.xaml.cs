@@ -128,6 +128,8 @@ namespace znMusicPlayerWUI.Controls
                 {
                     if (ImageDarkMass)
                         ImageMass.Visibility = Visibility.Visible;
+                    else
+                        ImageMass.Visibility = Visibility.Collapsed;
                 }
                 else
                     ImageMass.Visibility = Visibility.Collapsed;

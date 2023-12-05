@@ -290,6 +290,14 @@ namespace znMusicPlayerWUI.Controls
             try
             {
                 bool err = false;
+                if (musicData.From == MusicFrom.localMusic)
+                {
+                    if (Path.GetExtension(musicData.InLocal) == ".mid")
+                    {
+                        a = null;
+                        err = true;
+                    }
+                }
                 /* 性能低下
                 if (musicData.From == MusicFrom.localMusic)
                 {

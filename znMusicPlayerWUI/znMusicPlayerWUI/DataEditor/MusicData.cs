@@ -156,6 +156,7 @@ namespace znMusicPlayerWUI.DataEditor
         public int Count { get; set; }
 
         string _artistName = null;
+        [JsonIgnore]
         public string ArtistName
         {
             get
@@ -170,6 +171,7 @@ namespace znMusicPlayerWUI.DataEditor
         }
 
         string _buttonName = null;
+        [JsonIgnore]
         public string ButtonName
         {
             get
@@ -212,7 +214,7 @@ namespace znMusicPlayerWUI.DataEditor
 
         public override string GetMD5()
         {
-            return CodeHelper.ToMD5($"{Title}{(Artists.Any() ? $"{Artists[0]?.Name}{Artists[0]?.ID}" : "")}{Artists.Count}{Album?.Title}{ID}{Album?.ID}{From}{InLocal}{(CUETrackData != null ? $"{CUETrackData.StartDuration}{CUETrackData.EndDuration}" : "")}");
+            return $"{Title}{(Artists.Any() ? $"{Artists[0]?.Name}{Artists[0]?.ID}" : "")}{Artists.Count}{Album?.Title}{ID}{Album?.ID}{From}{InLocal}{(CUETrackData != null ? $"{CUETrackData.StartDuration}{CUETrackData.EndDuration}" : "")}";
         }
 
         public override string ToString()
@@ -247,7 +249,7 @@ namespace znMusicPlayerWUI.DataEditor
 
         public override string GetMD5()
         {
-            return CodeHelper.ToMD5($"{ListShowName}{ListName}{PicturePath}{ListFrom}{ListDataType}{ID}{Songs.Count}");
+            return $"{ListShowName}{ListName}{PicturePath}{ListFrom}{ListDataType}{ID}";
         }
     }
 
@@ -276,7 +278,7 @@ namespace znMusicPlayerWUI.DataEditor
         public override string GetMD5()
         {
             if (Lyric == null) return null;
-            return CodeHelper.ToMD5($"{string.Join<string>(' ', Lyric)}{Lyric.Count}{LyricTimeSpan.Ticks}");
+            return $"{string.Join<string>(' ', Lyric)}{Lyric.Count}{LyricTimeSpan.Ticks}";
         }
     }
 

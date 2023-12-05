@@ -17,7 +17,7 @@ namespace znMusicPlayerWUI.DataEditor
 
         public override string GetMD5()
         {
-            return CodeHelper.ToMD5($"{MusicData}{Time}");
+            return $"{MusicData}{Time}";
         }
     }
 

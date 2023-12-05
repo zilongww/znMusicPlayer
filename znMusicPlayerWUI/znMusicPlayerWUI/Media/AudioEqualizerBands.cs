@@ -91,7 +91,7 @@ namespace znMusicPlayerWUI.Media
                 }
             }
 
-            return Helpers.CodeHelper.ToMD5(strs);
+            return strs;
         }
 
         public static List<float[]> NormalBands = new()

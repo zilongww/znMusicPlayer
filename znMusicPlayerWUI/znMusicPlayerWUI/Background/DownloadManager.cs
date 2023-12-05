@@ -15,18 +15,18 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace znMusicPlayerWUI.Background
 {
+    public enum DownloadStates { Waiting, Downloading, DownloadedPreview, Downloaded, Error }
+    public class DownloadData
+    {
+        public MusicData MusicData;
+        public long FileSize;
+        public long DownloadedSize;
+        public decimal DownloadPercent;
+        public DownloadStates DownloadState;
+    }
+
     public class DownloadManager
     {
-        public class DownloadData
-        {
-            public MusicData MusicData;
-            public long FileSize;
-            public long DownloadedSize;
-            public decimal DownloadPercent;
-            //public DownloadStates DownloadState;
-        }
-
-        //public enum DownloadStates { Waiting, Downloading, DownloadedPreview, Downloaded, Error  }
         public List<DownloadData> AllDownloadData { get; set; } = new();
         public List<DownloadData> WaitingDownloadData { get; set; } = new();
         public List<DownloadData> DownloadingData { get; set; } = new();
@@ -65,6 +65,7 @@ namespace znMusicPlayerWUI.Background
             var dm = new DownloadData() { MusicData = musicData };
             if (!DownloadingData.Contains(dm) || !DownloadedData.Contains(dm) || !WaitingDownloadData.Contains(dm))
             {
+                dm.DownloadState = DownloadStates.Waiting;
                 AllDownloadData.Add(dm);
                 WaitingDownloadData.Add(dm);
                 AddDownload?.Invoke(dm);
@@ -102,6 +103,7 @@ namespace znMusicPlayerWUI.Background
 #endif
                     DownloadingData.Remove(dm);
                     DownloadErrorData.Add(dm);
+                    dm.DownloadState = DownloadStates.Error;
                     OnDownloadError?.Invoke(dm);
                 }
             }
@@ -110,6 +112,7 @@ namespace znMusicPlayerWUI.Background
         public async void StartDownload(DownloadData dm)
         {
             System.Diagnostics.Debug.WriteLine($"d:{dm.MusicData.Title}");
+            dm.DownloadState = DownloadStates.Downloading;
 
             string downloadPath1 = null;
             switch (DownloadNamedMethod)
@@ -159,6 +162,7 @@ namespace znMusicPlayerWUI.Background
             }
             if (string.IsNullOrEmpty(addressPath) || isErr)
             {
+                dm.DownloadState = DownloadStates.Error;
                 DownloadingData.Remove(dm);
                 DownloadErrorData.Add(dm);
                 OnDownloadError?.Invoke(dm);
@@ -172,8 +176,27 @@ namespace znMusicPlayerWUI.Background
             });
             string downloadPath = downloadPath1 + lastName;
             string lyricPath = downloadPath1 + ".lrc";
-            await WebHelper.DownloadFileAsync(addressPath, downloadPath);
-            
+            //await WebHelper.DownloadFileAsync(addressPath, downloadPath);
+
+            System.Net.WebClient TheDownloader = new System.Net.WebClient(); 
+            TheDownloader.DownloadProgressChanged += (s, e) =>
+            {
+                if (e == null) return;
+                dm.DownloadPercent = e.ProgressPercentage;
+                dm.FileSize = e.TotalBytesToReceive;
+                dm.DownloadedSize = e.BytesReceived;
+                dm.DownloadState = DownloadStates.Downloading;
+                OnDownloading?.Invoke(dm);
+                //System.Diagnostics.Debug.WriteLine(e.ProgressPercentage);
+                //Set1(e.ProgressPercentage, (Convert.ToDouble(e.BytesReceived) / Convert.ToDouble(e.TotalBytesToReceive) * 100).ToString("0.0") + "%", zilongcn.Others.GetAutoSizeString(e.BytesReceived, 2) + "/" + zilongcn.Others.GetAutoSizeString(e.TotalBytesToReceive, 2));
+            };
+            TheDownloader.DownloadFileCompleted += (s, e) =>
+            {
+                TheDownloader?.Dispose();
+            };
+            await TheDownloader.DownloadFileTaskAsync(new Uri(addressPath), downloadPath);
+
+            dm.DownloadState = DownloadStates.DownloadedPreview;
             OnDownloadedPreview?.Invoke(dm);
 
             List<Tuple<string, byte[]>> artistsPictureData = new();
@@ -289,6 +312,7 @@ namespace znMusicPlayerWUI.Background
                 tagFile.Save();
                 tagFile.Dispose();
             });
+            dm.DownloadState = DownloadStates.Downloaded;
             DownloadingData.Remove(dm);
             DownloadedData.Add(dm);
             OnDownloaded?.Invoke(dm);

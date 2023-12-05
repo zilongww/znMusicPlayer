@@ -18,7 +18,7 @@ namespace znMusicPlayerWUI.DataEditor
         public static async Task<MusicListData[]> ReadAllPlayList()
         {
             var datas = new List<MusicListData>();
-            await Task.Run(() =>
+            return await Task.Run(() =>
             {
                 JObject jdatas = JObject.Parse(File.ReadAllText(DataFolderBase.PlayListDataPath));
                 foreach (var list in jdatas)
@@ -26,8 +26,8 @@ namespace znMusicPlayerWUI.DataEditor
                     var a = JsonNewtonsoft.FromJSON<MusicListData>(list.Value.ToString());
                     datas.Add(a);
                 }
+                return datas.ToArray();
             });
-            return datas.ToArray();
         }
 
         public static async Task AddPlayList(MusicListData musicListData)
@@ -50,30 +50,26 @@ namespace znMusicPlayerWUI.DataEditor
             await SaveData(jdata);
         }
 
+        public static MusicListData AddMusicDataToPlayList(MusicData musicData, MusicListData musicListData)
+        {
+            if (musicListData.Songs == null)
+            {
+                musicListData.Songs = new();
+            }
+
+            if (!musicListData.Songs.Contains(musicData))
+            {
+                musicListData.Songs.Insert(0, musicData);
+            }
+
+            return musicListData;
+        }
+
         public static JObject AddMusicDataToPlayList(string listName, MusicData musicData, JObject jdata)
         {
             var ml = JsonNewtonsoft.FromJSON<MusicListData>(jdata[listName].ToString());
-
-            if (ml.Songs == null)
-            {
-                ml.Songs = new();
-            }
-
-            // List.Contains不起作用
-            bool contains = false;
-            foreach (var i in ml.Songs)
-            {
-                if (i == musicData)
-                {
-                    contains = true;
-                }
-            }
-            if (!contains)
-            {
-                ml.Songs.Insert(0, musicData);
-                jdata[listName] = JObject.FromObject(ml);
-            }
-
+            AddMusicDataToPlayList(musicData, ml);
+            jdata[listName] = JObject.FromObject(ml);
             return jdata;
         }
 

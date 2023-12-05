@@ -22,23 +22,86 @@ namespace znMusicPlayerWUI.Controls
 {
     public partial class DownloadCard : Grid
     {
-        public DownloadManager.DownloadData downloadData { get; set; } = null;
+        public DownloadData downloadData { get; set; } = null;
 
-        public DownloadCard(DownloadManager.DownloadData dm)
+        public DownloadCard()
         {
-            downloadData = dm;
             InitializeComponent();
-            DataContext = this;
-            TitleTb.Text = dm.MusicData.Title;
-            ButtonNameTb.Text = dm.MusicData.ButtonName;
+            DataContextChanged += DownloadCard_DataContextChanged;
+            App.downloadManager.OnDownloading += DownloadManager_OnDownloading;
+            App.downloadManager.OnDownloadedPreview += DownloadManager_OnDownloadedPreview;
+            App.downloadManager.OnDownloaded += DownloadManager_OnDownloaded;
+            App.downloadManager.OnDownloadError += DownloadManager_OnDownloadError;
+        }
+
+        private void DownloadManager_OnDownloaded(DownloadData data)
+        {
+            if (data != downloadData) return;
+            SetDownloaded();
+        }
+
+        private void DownloadManager_OnDownloadedPreview(DownloadData data)
+        {
+            if (data != downloadData) return;
+            SetDownloadedPreview();
+        }
+
+        private void DownloadManager_OnDownloading(DownloadData data)
+        {
+            if (data != downloadData) return;
+            SetProgressValue(data.DownloadPercent);
+        }
+        private void DownloadManager_OnDownloadError(DownloadData data)
+        {
+            if (data != downloadData) return;
+            SetError();
+        }
+
+
+        private void DownloadCard_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            downloadData = DataContext as DownloadData;
+            if (downloadData is null) return;
+            TitleTb.Text = downloadData.MusicData.Title;
+            ButtonNameTb.Text = downloadData.MusicData.ButtonName;
+            switch (downloadData.DownloadState)
+            {
+                case DownloadStates.Downloading:
+                    SetProgressValue();
+                    break;
+                case DownloadStates.DownloadedPreview:
+                    SetDownloadedPreview();
+                    break;
+                case DownloadStates.Downloaded:
+                    SetDownloaded();
+                    break;
+                case DownloadStates.Error:
+                    SetError();
+                    break;
+                default:
+                    SetWaiting();
+                    break;
+            }
+        }
+
+        public void SetWaiting()
+        {
+            DownloadProgress.IsIndeterminate = true;
+            CompletedBackgroundBase.Fill = null;
+            CoverRectangle.Rect = new();
+            DownloadProgress.Value = 0;
+            MessageTb.Text = "正在等待";
+            FontIconBase.Glyph = "";
         }
 
         public void SetProgressValue(decimal value)
         {
-            DownloadProgress.Foreground = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
             DownloadProgress.IsIndeterminate = false;
+            CompletedBackgroundBase.Fill = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
+            CoverRectangle.Rect = new(0, 0, CompletedBackgroundBase.ActualWidth * ((double)value / 100), CompletedBackgroundBase.ActualHeight);
             DownloadProgress.Value = (double)value;
-            MessageTb.Text = value.ToString() + "%";
+            MessageTb.Text = $"{CodeHelper.GetAutoSizeString(downloadData.DownloadedSize, 2)}/{CodeHelper.GetAutoSizeString(downloadData.FileSize, 2)} | {value}%";
+            FontIconBase.Glyph = "";
         }
 
         public void SetProgressValue()
@@ -48,28 +111,33 @@ namespace znMusicPlayerWUI.Controls
 
         public void SetDownloadedPreview()
         {
-            DownloadProgress.Foreground = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
+            CompletedBackgroundBase.Fill = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
             DownloadProgress.IsIndeterminate = false;
             DownloadProgress.Value = 100;
             MessageTb.Text = "即将完成";
+            FontIconBase.Glyph = "";
         }
         
         public async void SetDownloaded()
         {
-            DownloadProgress.Foreground = new SolidColorBrush(Color.FromArgb(255, 0, 200, 0));
+            CompletedBackgroundBase.Fill = App.Current.Resources["SystemFillColorSuccessBrush"] as SolidColorBrush;
             DownloadProgress.IsIndeterminate = false;
+            CoverRectangle.Rect = new(0, 0, CompletedBackgroundBase.ActualWidth, CompletedBackgroundBase.ActualHeight);
             DownloadProgress.Value = 100;
             await Task.Delay(10);
             MessageTb.Text = "下载完成";
+            FontIconBase.Glyph = "\uE73E";
         }
         
         public async void SetError()
         {
-            DownloadProgress.Foreground = new SolidColorBrush(Color.FromArgb(255, 200, 0, 0));
+            CompletedBackgroundBase.Fill = App.Current.Resources["SystemFillColorCriticalBrush"] as SolidColorBrush;
             DownloadProgress.IsIndeterminate = false;
+            CoverRectangle.Rect = new(0, 0, CompletedBackgroundBase.ActualWidth, CompletedBackgroundBase.ActualHeight);
             DownloadProgress.Value = 100;
             await Task.Delay(10);
             MessageTb.Text = "下载错误";
+            FontIconBase.Glyph = "\uE711";
         }
 
         private void UILoaded(object sender, RoutedEventArgs e)
@@ -106,6 +174,29 @@ namespace znMusicPlayerWUI.Controls
             {
             }
             isPressed = false;
+        }
+
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (downloadData is null) return;
+            switch (downloadData.DownloadState)
+            {
+                case DownloadStates.Downloading:
+                    SetProgressValue();
+                    break;
+                case DownloadStates.DownloadedPreview:
+                    SetDownloadedPreview();
+                    break;
+                case DownloadStates.Downloaded:
+                    SetDownloaded();
+                    break;
+                case DownloadStates.Error:
+                    SetError();
+                    break;
+                default:
+                    SetWaiting();
+                    break;
+            }
         }
     }
 }

@@ -12,101 +12,50 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
+using System.Collections.ObjectModel;
+using znMusicPlayerWUI.Background;
+using static znMusicPlayerWUI.Background.DownloadManager;
 
 namespace znMusicPlayerWUI.Pages
 {
     public partial class DownloadPage : Page
     {
+        ObservableCollection<DownloadData> downloadDatas = new();
         public DownloadPage()
         {
             InitializeComponent();
+            ListViewBase.ItemsSource = downloadDatas;
             int allDownload = 0;
             int downloaded = 0;
 
-            var UpdateTextTB = () => HeaderBaseTextBlock.Text = $"下载（{App.downloadManager.DownloadedData.Count}/{App.downloadManager.AllDownloadData.Count} - {App.downloadManager.DownloadErrorData.Count} 错误）";
+            var UpdateTextTB = () => HeaderBaseTextBlock.Text = $"下载（{App.downloadManager.DownloadedData.Count}/{App.downloadManager.AllDownloadData.Count} - {App.downloadManager.DownloadingData.Count} 下载中，{App.downloadManager.DownloadErrorData.Count} 错误）";
             App.downloadManager.AddDownload += (dm) =>
             {
-                bool noContains = true;
-                foreach (DownloadCard downloadCard in ListViewBase.Items)
-                {
-                    if (downloadCard.downloadData == dm)
-                    {
-                        noContains = false;
-                    }
-                }
-
-                if (noContains)
-                {
-                    ListViewBase.Items.Add(new DownloadCard(dm));
-                    allDownload++;
-                    UpdateTextTB();
-                }
+                downloadDatas.Add(dm);
+                allDownload++;
+                UpdateTextTB();
             };
             App.downloadManager.OnDownloading += (dm) =>
             {
-                foreach (DownloadCard downloadCard in ListViewBase.Items)
-                {
-                    if (downloadCard != null)
-                    {
-                        if (downloadCard.downloadData == dm)
-                        {
-                            downloadCard.downloadData.DownloadPercent = dm.DownloadPercent;
-                            downloadCard.SetProgressValue();
-                            break;
-                        }
-                    }
-                }
+                UpdateTextTB();
             };
             App.downloadManager.OnDownloadedPreview += (dm) =>
             {
-                foreach (DownloadCard downloadCard in ListViewBase.Items)
-                {
-                    if (downloadCard != null)
-                    {
-                        if (downloadCard.downloadData == dm)
-                        {
-                            downloadCard.SetDownloadedPreview();
-                            break;
-                        }
-                    }
-                }
+                UpdateTextTB();
             };
             App.downloadManager.OnDownloaded += (dm) =>
             {
-                foreach (DownloadCard downloadCard in ListViewBase.Items)
-                {
-                    if (downloadCard != null)
-                    {
-                        if (downloadCard.downloadData == dm)
-                        {
-                            downloadCard.SetDownloaded();
-                            downloaded++;
-                            UpdateTextTB();
-                            break;
-                        }
-                    }
-                }
+                UpdateTextTB();
             };
             App.downloadManager.OnDownloadError += (dm) =>
             {
-                foreach (DownloadCard downloadCard in ListViewBase.Items)
-                {
-                    if (downloadCard != null)
-                    {
-                        if (downloadCard.downloadData == dm)
-                        {
-                            downloadCard.SetError();
-                            UpdateTextTB();
-                            break;
-                        }
-                    }
-                }
+                UpdateTextTB();
             };
 
             // 当第一次初始化时加载
             foreach (var dm in App.downloadManager.AllDownloadData)
             {
-                ListViewBase.Items.Add(new DownloadCard(dm));
+                downloadDatas.Add(dm);
                 allDownload++;
             }
             foreach (var dm in App.downloadManager.DownloadingData)
