@@ -128,13 +128,20 @@ namespace znMusicPlayerWUI
             };
             playingList.NowPlayingImageLoaded += async (_, __) =>
             {
-                if (__ == null) return;
-                try
+                if (string.IsNullOrEmpty(__))
                 {
-                    SMTC.DisplayUpdater.Thumbnail = RandomAccessStreamReference.CreateFromFile(await StorageFile.GetFileFromPathAsync(__));
-                    SMTC.DisplayUpdater.Update();
+                    SMTC.DisplayUpdater.Thumbnail = null;
                 }
-                catch { }
+                else
+                {
+                    try
+                    {
+                        SMTC.DisplayUpdater.Thumbnail = RandomAccessStreamReference.CreateFromFile(await StorageFile.GetFileFromPathAsync(__));
+                    }
+                    catch { }
+                }
+
+                SMTC.DisplayUpdater.Update();
             };
 
             TaskScheduler.UnobservedTaskException +=
@@ -242,12 +249,24 @@ namespace znMusicPlayerWUI
             {
                 MainWindow.DesktopLyricWindow.Close();
             }
+            SaveNowPlaying();
             WindowLocal.Close();
             SMTC.DisplayUpdater.ClearAll();
             SMTC.DisplayUpdater.Update();
             audioPlayer.DisposeAll();
             SaveSettings();
             Exit();
+        }
+
+        public static async void ShowErrorDialog()
+        {
+            MessageDialog messageDialog = new("设置文件出现了一些错误，且程序尝试 5 次后也无法恢复默认配置。\n" +
+                "请尝试删除 文档->znMusicPlayerDatas->UserData 里的 Setting 文件。\n" +
+                "如果仍然出现问题，请到 GitHub 里向项目提出 Issues。", "znMusicPlayer - 程序无法启动");
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(WindowLocal);
+            WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, hwnd);
+            await messageDialog.ShowAsync();
+            App.Current.Exit();
         }
 
         static bool loadFailed = false;
@@ -310,6 +329,7 @@ namespace znMusicPlayerWUI
                 NotifyIconWindow.IsVisible = (bool)b[DataFolderBase.SettingParams.TaskbarShowIcon.ToString()];
                 MainWindow.RunInBackground = (bool)b[DataFolderBase.SettingParams.BackgroundRun.ToString()];
                 Controls.Imagezn.ImageDarkMass = (bool)b[DataFolderBase.SettingParams.ImageDarkMass.ToString()];
+                LoadLastExitPlayingSongAndSongList = (bool)b[DataFolderBase.SettingParams.LoadLastExitPlayingSongAndSongList.ToString()];
 
                 JArray hkd = (JArray)b[DataFolderBase.SettingParams.HotKeySettings.ToString()];
                 HotKeyManager.WillRegisterHotKeysList = hkd.ToObject<List<HotKey>>();
@@ -328,17 +348,6 @@ namespace znMusicPlayerWUI
                 DataFolderBase.JSettingData = DataFolderBase.SettingDefault;
                 LoadSettings(DataFolderBase.JSettingData);
             }
-        }
-
-        public static async void ShowErrorDialog()
-        {
-            MessageDialog messageDialog = new("设置文件出现了一些错误，且程序尝试 5 次后也无法恢复默认配置。\n" +
-                "请尝试删除 文档->znMusicPlayerDatas->UserData 里的 Setting 文件。\n" +
-                "如果仍然出现问题，请到 GitHub 里向项目提出 Issues。", "znMusicPlayer - 程序无法启动");
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(WindowLocal);
-            WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, hwnd);
-            await messageDialog.ShowAsync();
-            App.Current.Exit();
         }
 
         public static Windows.UI.Color AccentColor = Windows.UI.Color.FromArgb(0, 0, 0, 0);
@@ -391,6 +400,7 @@ namespace znMusicPlayerWUI
             a[DataFolderBase.SettingParams.TaskbarShowIcon.ToString()] = NotifyIconWindow.IsVisible;
             a[DataFolderBase.SettingParams.BackgroundRun.ToString()] = MainWindow.RunInBackground;
             a[DataFolderBase.SettingParams.ImageDarkMass.ToString()] = Controls.Imagezn.ImageDarkMass;
+            a[DataFolderBase.SettingParams.LoadLastExitPlayingSongAndSongList.ToString()] = LoadLastExitPlayingSongAndSongList;
 
             a[DataFolderBase.SettingParams.HotKeySettings.ToString()] = JArray.FromObject(App.hotKeyManager.RegistedHotKeys);
 
@@ -407,6 +417,60 @@ namespace znMusicPlayerWUI
 #if DEBUG
             Debug.WriteLine("[SaveSettingData]: 设置配置已存储！");
 #endif
+        }
+
+        public static bool LoadLastExitPlayingSongAndSongList = true;
+        private static void SaveNowPlaying()
+        {
+            if (audioPlayer.MusicData is null) return;
+
+            var path = Path.Combine(DataFolderBase.UserDataFolder, "LastPlaying");
+            if (!LoadLastExitPlayingSongAndSongList)
+            {
+                File.Delete(path);
+                return;
+            }
+            
+            if (!File.Exists(path)) File.Create(path).Close();
+
+            JArray array = new JArray();
+            foreach (var a in (playingList.PlayBehavior == PlayBehavior.随机播放 ? playingList.RandomSavePlayingList : playingList.NowPlayingList))
+                array.Add(JObject.FromObject(a));
+            JObject jobject = new JObject() {
+                { "music", JObject.FromObject(audioPlayer.MusicData) },
+                { "list", array }
+            };
+            File.WriteAllText(path, jobject.ToString());
+        }
+
+        public static async void LoadLastPlaying()
+        {
+            if (!LoadLastExitPlayingSongAndSongList) return;
+
+            var path = Path.Combine(DataFolderBase.UserDataFolder, "LastPlaying");
+            if (!File.Exists(path)) return;
+
+            MusicData musicData = null;
+            await Task.Run(() =>
+            {
+                var texts = File.ReadAllText(path);
+                JObject jobject = JObject.Parse(texts);
+                musicData = JsonNewtonsoft.FromJSON<MusicData>(jobject["music"].ToString());
+
+                foreach(var m in jobject["list"])
+                {
+                    var md = JsonNewtonsoft.FromJSON<MusicData>(m.ToString());
+                    playingList.NowPlayingList.Add(md);
+                }
+            });
+
+            if (musicData is null) return;
+            if (playingList.PlayBehavior == PlayBehavior.随机播放)
+            {
+                playingList.SetRandomPlay(PlayBehavior.随机播放);
+            }
+            await playingList.Play(musicData, false);
+            audioPlayer.SetPause();
         }
 
         private Window m_window;

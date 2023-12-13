@@ -27,13 +27,18 @@ namespace znMusicPlayerWUI.Windowed
 
         public TaskBarInfoWindow()
         {
+            Handle = WindowHelperzn.WindowHelper.GetWindowHandle(this);
             InitializeComponent();
-            InitTaskbarInfo();
             InitCallBack();
-            App.audioPlayer.PlayStateChanged += (_) =>
-            {
-                SetTaskbarButtonIcon(_.PlaybackState);
-            };
+            InitTaskbarInfo();
+            ShowTaskBarButtons();
+
+            AppWindow.SetIcon("icon.ico");
+            SetTaskbarImage(Path.Combine(localPath, "SugarAndSalt.jpg"));
+
+            MainWindow.WindowViewStateChanged += MainWindow_WindowViewStateChanged;
+            App.audioPlayer.PlayStateChanged += (_) => SetTaskbarButtonIcon(_.PlaybackState);
+            App.playingList.NowPlayingImageLoaded += (_, __) => IconPath = __;
             App.audioPlayer.SourceChanged += (_) =>
             {
                 if (_.MusicData == null)
@@ -43,10 +48,14 @@ namespace znMusicPlayerWUI.Windowed
                     Title = $"{_.MusicData.Title} - {_.MusicData.ArtistName} · {App.AppName}";
                 }
             };
-            App.playingList.NowPlayingImageLoaded += (_, __) =>
+            if (App.audioPlayer.MusicData == null)
+                Title = App.AppName;
+            else
             {
-                IconPath = __;
-            };
+                Title = $"{App.audioPlayer.MusicData.Title} - {App.audioPlayer.MusicData.ArtistName} · {App.AppName}";
+            }
+            IconPath = App.playingList.NowPlayingImagePath;
+
             Activated += (_, __) =>
             {
                 App.WindowLocal.Activate();
@@ -59,48 +68,15 @@ namespace znMusicPlayerWUI.Windowed
             };
         }
 
-        static string localPath = Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), "Images");
-        nint pauseIconHandle = (Bitmap.FromFile(Path.Combine(localPath, "任务栏暂停.png")) as Bitmap).GetHicon();
-        nint playIconHandle = (Bitmap.FromFile(Path.Combine(localPath, "任务栏播放.png")) as Bitmap).GetHicon();
-        System.Drawing.Image bmp = null;
-        public async void SetTaskbarImage(string filePath)
+        bool lastIsBackground = false;
+        private void MainWindow_WindowViewStateChanged(bool isView)
         {
-            if (string.IsNullOrEmpty(filePath)) return;
-            if (IconPathUsing == filePath) return;
-            bool canBreak = false;
-            bmp = await Task.Run(() => Bitmap.FromFile(filePath));
-            int size = 160;
-            for (int i = 0; i < 50; i++)
-            {
-                if (canBreak) break;
-                var hBitmap = bmp.GetThumbnailImage(size, size, null, 0) as Bitmap;
-                var hBitmapNint = hBitmap.GetHbitmap();
-                try
-                {
-                    var a = await Task.Run(() => NativeMethods.DwmSetIconicThumbnail(Handle, hBitmapNint, NativeMethods.DWM_SIT.None));
-                    if (a != 0)
-                    {
-                        //Debug.WriteLine($"{size}x{size} failed.");
-                        size -= 2;
-                        canBreak = false;
-                    }
-                    else
-                    {
-                        Debug.WriteLine($"[TaskBarInfoWindow]: TaskBar Image {size}x{size} completed.");
-                        IconPathUsing = filePath;
-                        canBreak = true;
-                    }
-                }
-                catch
-                {
-                }
-            }
+            ShowTaskBarButtons();
         }
 
         public async void InitTaskbarInfo()
         {
             Title = App.AppName;
-            Handle = WindowHelperzn.WindowHelper.GetWindowHandle(this);
             AppWindow.Hide();
 
             int attributeTrue = (int)NativeMethods.TRUE;
@@ -112,20 +88,8 @@ namespace znMusicPlayerWUI.Windowed
                 throw Marshal.GetExceptionForHR(hresult);
 
             Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.HrInit();
-            await Task.Delay(100);
-
             Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.RegisterTab(Handle, App.AppWindowLocalHandle);
             Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetTabOrder(Handle, App.AppWindowLocalHandle);
-            Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] taskbarInfoButtonPauseStyle = new Helpers.SDKs.TaskbarProgress.THUMBBUTTON[]
-            {
-                new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 1, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = (Bitmap.FromFile(Path.Combine(localPath, "上一首.png")) as Bitmap).GetHicon(), szTip = "上一首" },
-                new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = playIconHandle, szTip = "播放" },
-                new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 3, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = (Bitmap.FromFile(Path.Combine(localPath, "下一首.png")) as Bitmap).GetHicon(), szTip = "下一首" },
-            };
-            Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarAddButtons(Handle, 3, taskbarInfoButtonPauseStyle);
-            Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarUpdateButtons(Handle, 3, taskbarInfoButtonPauseStyle);
-            AppWindow.SetIcon("icon.ico");
-            SetTaskbarImage(Path.Combine(localPath, "SugarAndSalt.jpg"));
         }
 
         private void InitCallBack()
@@ -165,6 +129,58 @@ namespace znMusicPlayerWUI.Windowed
             catch(Exception ex)
             {
                 DataEditor.LogHelper.WriteLog(nameof(ex), ex.ToString());
+            }
+        }
+
+        static string localPath = Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), "Images");
+        nint pauseIconHandle = (Bitmap.FromFile(Path.Combine(localPath, "任务栏暂停.png")) as Bitmap).GetHicon();
+        nint playIconHandle = (Bitmap.FromFile(Path.Combine(localPath, "任务栏播放.png")) as Bitmap).GetHicon();
+        nint nextPlayIconHandle = (Bitmap.FromFile(Path.Combine(localPath, "下一首.png")) as Bitmap).GetHicon();
+        nint perviousPlayIconHandle = (Bitmap.FromFile(Path.Combine(localPath, "上一首.png")) as Bitmap).GetHicon();
+        private void ShowTaskBarButtons()
+        {
+            Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] taskbarInfoButtonPauseStyle = new Helpers.SDKs.TaskbarProgress.THUMBBUTTON[]
+            {
+                new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 1, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = perviousPlayIconHandle, szTip = "上一首" },
+                new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing ? pauseIconHandle : playIconHandle, szTip = "播放" },
+                new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 3, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = nextPlayIconHandle, szTip = "下一首" },
+            };
+            Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarAddButtons(Handle, 3, taskbarInfoButtonPauseStyle);
+            Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarUpdateButtons(Handle, 3, taskbarInfoButtonPauseStyle);
+        }
+
+        System.Drawing.Image bmp = null;
+        public async void SetTaskbarImage(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath)) return;
+            if (IconPathUsing == filePath) return;
+            bool canBreak = false;
+            bmp = await Task.Run(() => Bitmap.FromFile(filePath));
+            int size = 160;
+            for (int i = 0; i < 50; i++)
+            {
+                if (canBreak) break;
+                var hBitmap = bmp.GetThumbnailImage(size, size, null, 0) as Bitmap;
+                var hBitmapNint = hBitmap.GetHbitmap();
+                try
+                {
+                    var a = await Task.Run(() => NativeMethods.DwmSetIconicThumbnail(Handle, hBitmapNint, NativeMethods.DWM_SIT.None));
+                    if (a != 0)
+                    {
+                        //Debug.WriteLine($"{size}x{size} failed.");
+                        size -= 2;
+                        canBreak = false;
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"[TaskBarInfoWindow]: TaskBar Image {size}x{size} completed.");
+                        IconPathUsing = filePath;
+                        canBreak = true;
+                    }
+                }
+                catch
+                {
+                }
             }
         }
 

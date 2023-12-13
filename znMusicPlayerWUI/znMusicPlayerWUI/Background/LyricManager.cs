@@ -31,6 +31,7 @@ namespace znMusicPlayerWUI.Background
             set
             {
                 //if (_nowLyricsData == null || value == null) return;
+                if (value == _nowLyricsData) return;
                 if (value == null)
                 {
                     _nowLyricsData = value;

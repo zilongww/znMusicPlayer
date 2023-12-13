@@ -63,22 +63,43 @@ namespace znMusicPlayerWUI.Media
         {
             ImageSource source = null;
             string resultPath = null;
+            resultPath = await FileHelper.GetImageCache(musicData);
+
             if (musicData.From == DataEditor.MusicFrom.localMusic)
             {
-                source = await CodeHelper.GetCover(musicData.InLocal, decodePixelWidth, decodePixelHeight);
-                if (source == null)
+                if (string.IsNullOrEmpty(resultPath))
                 {
-                    string coverPath = await Task.Run(() =>
+                    var imageByte = await CodeHelper.GetLocalImageByte(musicData);
+                    if (imageByte != null)
                     {
-                        FileInfo fileInfo = new FileInfo(musicData.InLocal);
-                        string coverPath = $"{fileInfo.DirectoryName}\\Cover.jpg";
-                        if (File.Exists(coverPath)) return coverPath;
-                        else return null;
-                    });
-                    if (coverPath != null)
-                    {
-                        source = await FileHelper.GetImageSource(coverPath, decodePixelWidth, decodePixelHeight, useBitmapImage);
+                        string b = $@"{DataEditor.DataFolderBase.ImageCacheFolder}\{musicData.From}{musicData.MD5.Replace(@"/", "#")}";
+                        await Task.Run(() =>
+                        {
+                            var f = File.Create(b);
+                            f.Write(imageByte);
+                            f.Close();
+                            f.Dispose();
+                        });
+                        source = await CodeHelper.ImageFromBytes(imageByte);
                     }
+                    else
+                    {
+                        string coverPath = await Task.Run(() =>
+                        {
+                            FileInfo fileInfo = new FileInfo(musicData.InLocal);
+                            string coverPath = $"{fileInfo.DirectoryName}\\Cover.jpg";
+                            if (File.Exists(coverPath)) return coverPath;
+                            else return null;
+                        });
+                        if (coverPath != null)
+                        {
+                            source = await FileHelper.GetImageSource(coverPath, decodePixelWidth, decodePixelHeight, useBitmapImage);
+                        }
+                    }
+                }
+                else
+                {
+                    source = await FileHelper.GetImageSource(resultPath, decodePixelWidth, decodePixelHeight, useBitmapImage);
                 }
             }
             else
@@ -87,7 +108,6 @@ namespace znMusicPlayerWUI.Media
                 {
                     await Task.Delay(1000);
                 }
-                resultPath = await FileHelper.GetImageCache(musicData);
                 if (resultPath == null)
                 {
                     while (loadNum > maxLoadNum)
@@ -109,11 +129,6 @@ namespace znMusicPlayerWUI.Media
                         {
                             a = await WebHelper.GetPicturePathAsync(musicData);
                         }
-/*
-                        System.Diagnostics.Debug.WriteLine("");
-                        System.Diagnostics.Debug.WriteLine("md: " + musicData.Title + musicData.ButtonName);
-                        System.Diagnostics.Debug.WriteLine("1: " + a);
-                        System.Diagnostics.Debug.WriteLine("2: " + b);*/
                         bool error = await DownloadPic(a, b);
                         if (!error) resultPath = b;
                     }

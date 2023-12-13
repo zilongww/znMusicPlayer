@@ -276,6 +276,7 @@ namespace znMusicPlayerWUI.Controls
             if (AlbumImage.Source != null)
             {
                 AlbumImage.Dispose();
+                AlbumImage.Dispose();
             }
 
             if (MusicListData?.ListDataType == DataType.专辑)

@@ -125,6 +125,7 @@ namespace znMusicPlayerWUI.DataEditor
             { SettingParams.TaskbarShowIcon.ToString(), true },
             { SettingParams.BackgroundRun.ToString(), false },
             { SettingParams.ImageDarkMass.ToString(), true },
+            { SettingParams.LoadLastExitPlayingSongAndSongList.ToString(), true },
             { SettingParams.HotKeySettings.ToString(), JArray.FromObject(HotKeyManager.DefaultRegisterHotKeysList) }
         };
         
@@ -185,6 +186,7 @@ namespace znMusicPlayerWUI.DataEditor
             TaskbarShowIcon,
             BackgroundRun,
             ImageDarkMass,
+            LoadLastExitPlayingSongAndSongList,
             HotKeySettings
         }
 

@@ -48,6 +48,17 @@ namespace znMusicPlayerWUI.Background
         public bool IDv3WriteLyric { get; set; } = true;
         public bool SaveLyricToLrcFile { get; set; } = true;
 
+        bool _pasueDownload = false;
+        public bool PauseDownload
+        {
+            get => _pasueDownload;
+            set
+            {
+                _pasueDownload = value;
+                UpdateDownload();
+            }
+        }
+
         public DownloadManager()
         {
             OnDownloaded += (_) =>
@@ -84,7 +95,7 @@ namespace znMusicPlayerWUI.Background
 
         public void UpdateDownload()
         {
-            while (DownloadingData.Count < DownloadingMaximum && WaitingDownloadData.Any())
+            while (DownloadingData.Count < DownloadingMaximum && WaitingDownloadData.Any() && !PauseDownload)
             {
                 var dm = WaitingDownloadData[0];
                 WaitingDownloadData.Remove(dm);
@@ -169,16 +180,20 @@ namespace znMusicPlayerWUI.Background
                 return;
             }
 
-            string lastName = null;
-            await Task.Run(() =>
-            {
-                lastName = new FileInfo(addressPath).Extension;
-            });
+            string lastName = Path.GetExtension(addressPath);
             string downloadPath = downloadPath1 + lastName;
             string lyricPath = downloadPath1 + ".lrc";
             //await WebHelper.DownloadFileAsync(addressPath, downloadPath);
 
-            System.Net.WebClient TheDownloader = new System.Net.WebClient(); 
+            await Task.Run(() =>
+            {
+                if (!File.Exists(downloadPath))
+                {
+                    File.Create(downloadPath).Dispose();
+                }
+            });
+
+            System.Net.WebClient TheDownloader = await Task.Run(() => new System.Net.WebClient());
             TheDownloader.DownloadProgressChanged += (s, e) =>
             {
                 if (e == null) return;

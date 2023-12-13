@@ -165,26 +165,49 @@ namespace znMusicPlayerWUI.Background
             path = _.Item2;
 
             NowPlayingImage = a;
+            NowPlayingImagePath = path;
             NowPlayingImageLoaded?.Invoke(NowPlayingImage, path);
             //System.Diagnostics.Debug.WriteLine(NowPlayingImageLoaded.GetInvocationList().Length);
         }
+        public string NowPlayingImagePath = null;
 
-
-        public void Add(MusicData musicData, bool invoke = true)
+        public void Add(MusicData musicData, bool invoke = true, bool insert = false)
         {
             Debug.WriteLine($"[PlayingList]: 播放列表已添加：\"{musicData.Title}\"");
             bool isFind = Find(musicData);
             if (!isFind)
-                NowPlayingList.Add(musicData);
-            if (PlayBehavior == PlayBehavior.随机播放)
-                RandomSavePlayingList.Add(musicData);
+            {
+                if (insert)
+                {
+                    int index = 0;
+                    if (App.audioPlayer.MusicData != null) index = NowPlayingList.IndexOf(musicData) + 1;
+                    NowPlayingList.Insert(index, musicData);
+                }
+                else
+                {
+                    NowPlayingList.Add(musicData);
+                }
+                if (PlayBehavior == PlayBehavior.随机播放)
+                {
+                    if (insert)
+                    {
+                        int index = 0;
+                        if (App.audioPlayer.MusicData is not null) index = RandomSavePlayingList.IndexOf(musicData);
+                        RandomSavePlayingList.Insert(index, musicData);
+                    }
+                    else
+                    {
+                        RandomSavePlayingList.Add(musicData);
+                    }
+                }
+            }
             if (invoke)
                 PlayingListItemChange?.Invoke(NowPlayingList);
         }
 
         public async Task<bool> Play(MusicData musicData, bool isAutoPlay = false, SetPlayInfo isNextPlay = default)
         {
-            Add(musicData);
+            Add(musicData, true, true);
 
             Debug.WriteLine($"[PlayingList]: 正在设置播放：\"{musicData.Title}\"");
             NAudio.Wave.PlaybackState playState;
@@ -317,15 +340,7 @@ namespace znMusicPlayerWUI.Background
 
         public bool Find(MusicData musicData)
         {
-            foreach (var item in NowPlayingList)
-            {
-                if (item == musicData)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return NowPlayingList.Contains(musicData);
         }
 
         public void ClearAll()

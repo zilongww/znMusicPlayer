@@ -53,7 +53,7 @@
         </ListView.Header>
 
         <cc:SettingsExpander Header="缓存" CornerRadius="8"
-                                   Description="管理缓存文件"
+                                   Description="文件路径、清理缓存"
                                    x:Name="CacheEpd">
             <cc:SettingsExpander.HeaderIcon>
                 <FontIcon Glyph="&#xE81E;"/>
@@ -115,7 +115,7 @@
         </cc:SettingsExpander>
 
         <cc:SettingsExpander Header="下载" CornerRadius="8"
-                                   Description="管理下载"
+                                   Description="下载路径、质量、文件命名方式"
                                    x:Name="DownloadEpd">
                 <cc:SettingsExpander.HeaderIcon>
                     <FontIcon Glyph="&#xE896;"/>
@@ -175,7 +175,8 @@
             </cc:SettingsExpander.Items>
         </cc:SettingsExpander>
 
-        <cc:SettingsExpander Header="播放">
+        <cc:SettingsExpander Header="播放"
+                             Description="播放行为、定时关闭">
             <cc:SettingsExpander.HeaderIcon>
                 <FontIcon Glyph="&#xE768;"/>
             </cc:SettingsExpander.HeaderIcon>
@@ -222,6 +223,9 @@
                     </cc:SettingsCard.Description>
                     <ToggleSwitch Toggled="ToggleSwitch_Toggled"/>
                 </cc:SettingsCard>
+                <cc:SettingsCard Header="退出时保存正在播放的歌曲和列表并在下次启动时加载">
+                    <ToggleSwitch Loaded="ToggleSwitch_Loaded_2" Toggled="ToggleSwitch_Toggled_4"/>
+                </cc:SettingsCard>
                 <cc:SettingsCard>
                     <cc:SettingsCard.Header>
                         <StackPanel Loaded="StackPanel_Loaded">
@@ -232,7 +236,8 @@
                 </cc:SettingsCard>
             </cc:SettingsExpander.Items>
         </cc:SettingsExpander>
-        <cc:SettingsExpander Header="主题">
+        <cc:SettingsExpander Header="主题"
+                             Description="颜色、图片遮罩、主题色、背景效果">
             <cc:SettingsExpander.HeaderIcon>
                 <FontIcon Glyph="&#xE790;"/>
             </cc:SettingsExpander.HeaderIcon>
@@ -302,7 +307,8 @@
             </cc:SettingsExpander.Items>
         </cc:SettingsExpander>
 
-        <cc:SettingsExpander Header="桌面歌词">
+        <cc:SettingsExpander Header="桌面歌词"
+                             Description="暂停时显示暂停图标、显示进度条、显示进度条百分比、切换歌曲时显示当前的歌曲标题">
             <cc:SettingsExpander.HeaderIcon>
                 <FontIcon Glyph="&#xED1E;"/>
             </cc:SettingsExpander.HeaderIcon>
@@ -365,6 +371,46 @@
             </cc:SettingsExpander.Items>
         </cc:SettingsExpander>
 
+        <cc:SettingsExpander Header="其它设置"
+                             Description="显示托盘图标、后台运行、恢复默认设置">
+            <cc:SettingsExpander.HeaderIcon>
+                <FontIcon Glyph="&#xE712;"/>
+            </cc:SettingsExpander.HeaderIcon>
+            <cc:SettingsExpander.Items>
+                <cc:SettingsCard Header="显示托盘图标"
+                                 Description="在 Windows 任务栏托盘中显示此程序的图标">
+                    <cc:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xECAA;"/>
+                    </cc:SettingsCard.HeaderIcon>
+                    <ToggleSwitch Loaded="ToggleSwitch_Loaded" Tag="0"
+                                  Toggled="ToggleSwitch_Toggled_2"/>
+                </cc:SettingsCard>
+                <cc:SettingsCard Header="后台运行"
+                                 Description="此程序将在关闭主窗口后在后台运行，&#x000A;可以使用托盘图标和热键恢复主窗口。">
+                    <cc:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xEF1F;"/>
+                    </cc:SettingsCard.HeaderIcon>
+                    <ToggleSwitch Loaded="ToggleSwitch_Loaded" Tag="1"
+                                  Toggled="ToggleSwitch_Toggled_2"/>
+                </cc:SettingsCard>
+                <cc:SettingsCard Header="关闭此程序"
+                                 Description="结束此程序的进程">
+                    <cc:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE7E8;"/>
+                    </cc:SettingsCard.HeaderIcon>
+                    <Button Click="Button_Click_8" Content="关闭此程序"/>
+                </cc:SettingsCard>
+                <cc:SettingsCard Header="恢复默认设置"
+                                 Description="将程序的设置恢复默认"
+                            Background="{ThemeResource SystemFillColorCriticalBackgroundBrush}">
+                    <cc:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE777;"/>
+                    </cc:SettingsCard.HeaderIcon>
+                    <Button Content="恢复" Click="Button_Click_7"/>
+                </cc:SettingsCard>
+            </cc:SettingsExpander.Items>
+        </cc:SettingsExpander>
+
         <Expander x:Name="HotKeySettings"
                   BorderBrush="{ThemeResource ControlElevationBorderBrush}">
             <Expander.Transitions>
@@ -406,45 +452,6 @@
                 <control:HotKeyPresenter Margin="-18,-4"/>
             </StackPanel>
         </Expander>
-
-        <cc:SettingsExpander Header="其它设置">
-            <cc:SettingsExpander.HeaderIcon>
-                <FontIcon Glyph="&#xE712;"/>
-            </cc:SettingsExpander.HeaderIcon>
-            <cc:SettingsExpander.Items>
-                <cc:SettingsCard Header="显示托盘图标"
-                                 Description="在 Windows 任务栏托盘中显示此程序的图标">
-                    <cc:SettingsCard.HeaderIcon>
-                        <FontIcon Glyph="&#xECAA;"/>
-                    </cc:SettingsCard.HeaderIcon>
-                    <ToggleSwitch Loaded="ToggleSwitch_Loaded" Tag="0"
-                                  Toggled="ToggleSwitch_Toggled_2"/>
-                </cc:SettingsCard>
-                <cc:SettingsCard Header="后台运行"
-                                 Description="此程序将在关闭主窗口后在后台运行，&#x000A;可以使用托盘图标和热键恢复主窗口。">
-                    <cc:SettingsCard.HeaderIcon>
-                        <FontIcon Glyph="&#xEF1F;"/>
-                    </cc:SettingsCard.HeaderIcon>
-                    <ToggleSwitch Loaded="ToggleSwitch_Loaded" Tag="1"
-                                  Toggled="ToggleSwitch_Toggled_2"/>
-                </cc:SettingsCard>
-                <cc:SettingsCard Header="关闭此程序"
-                                 Description="结束此程序的进程">
-                    <cc:SettingsCard.HeaderIcon>
-                        <FontIcon Glyph="&#xE7E8;"/>
-                    </cc:SettingsCard.HeaderIcon>
-                    <Button Click="Button_Click_8" Content="关闭此程序"/>
-                </cc:SettingsCard>
-                <cc:SettingsCard Header="恢复默认设置"
-                                 Description="将程序的设置恢复默认"
-                            Background="{ThemeResource SystemFillColorCriticalBackgroundBrush}">
-                    <cc:SettingsCard.HeaderIcon>
-                        <FontIcon Glyph="&#xE777;"/>
-                    </cc:SettingsCard.HeaderIcon>
-                    <Button Content="恢复" Click="Button_Click_7"/>
-                </cc:SettingsCard>
-            </cc:SettingsExpander.Items>
-        </cc:SettingsExpander>
 
         <cc:SettingsExpander Header="DEBUG">
             <cc:SettingsExpander.HeaderIcon>

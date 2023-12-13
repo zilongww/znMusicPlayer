@@ -27,11 +27,25 @@ namespace znMusicPlayerWUI.Controls
         public DownloadCard()
         {
             InitializeComponent();
+            Loaded += DownloadCard_Loaded;
+            Unloaded += DownloadCard_Unloaded;
             DataContextChanged += DownloadCard_DataContextChanged;
+        }
+
+        private void DownloadCard_Loaded(object sender, RoutedEventArgs e)
+        {
             App.downloadManager.OnDownloading += DownloadManager_OnDownloading;
             App.downloadManager.OnDownloadedPreview += DownloadManager_OnDownloadedPreview;
             App.downloadManager.OnDownloaded += DownloadManager_OnDownloaded;
             App.downloadManager.OnDownloadError += DownloadManager_OnDownloadError;
+        }
+
+        private void DownloadCard_Unloaded(object sender, RoutedEventArgs e)
+        {
+            App.downloadManager.OnDownloading -= DownloadManager_OnDownloading;
+            App.downloadManager.OnDownloadedPreview -= DownloadManager_OnDownloadedPreview;
+            App.downloadManager.OnDownloaded -= DownloadManager_OnDownloaded;
+            App.downloadManager.OnDownloadError -= DownloadManager_OnDownloadError;
         }
 
         private void DownloadManager_OnDownloaded(DownloadData data)
@@ -56,7 +70,6 @@ namespace znMusicPlayerWUI.Controls
             if (data != downloadData) return;
             SetError();
         }
-
 
         private void DownloadCard_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
@@ -112,9 +125,9 @@ namespace znMusicPlayerWUI.Controls
         public void SetDownloadedPreview()
         {
             CompletedBackgroundBase.Fill = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
-            DownloadProgress.IsIndeterminate = false;
+            DownloadProgress.IsIndeterminate = true;
             DownloadProgress.Value = 100;
-            MessageTb.Text = "即将完成";
+            MessageTb.Text = $"{CodeHelper.GetAutoSizeString(downloadData.DownloadedSize, 2)} | 即将完成";
             FontIconBase.Glyph = "";
         }
         
@@ -125,7 +138,7 @@ namespace znMusicPlayerWUI.Controls
             CoverRectangle.Rect = new(0, 0, CompletedBackgroundBase.ActualWidth, CompletedBackgroundBase.ActualHeight);
             DownloadProgress.Value = 100;
             await Task.Delay(10);
-            MessageTb.Text = "下载完成";
+            MessageTb.Text = $"{CodeHelper.GetAutoSizeString(downloadData.DownloadedSize, 2)} | 下载完成";
             FontIconBase.Glyph = "\uE73E";
         }
         

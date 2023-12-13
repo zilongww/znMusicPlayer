@@ -133,8 +133,6 @@ namespace znMusicPlayerWUI
             m_wsdqHelper.EnsureWindowsSystemDispatcherQueueController();
             SetDragRegionForCustomTitleBar(App.AppWindowLocal);
 
-            NavView.SelectedItem = NavView.MenuItems[1];
-            NavView.IsBackEnabled = false;
             //Windows.UI.Core.SystemNavigationManager.GetForCurrentView().BackRequested += (_, __) => { TryGoBack(); };
 
             Activated += MainWindow_Activated;
@@ -150,9 +148,12 @@ namespace znMusicPlayerWUI
             loadingst.Children.Add(loadingtextBlock);
             // 第一次点击不会响应动画。。。
             App.LoadSettings(App.StartingSettings);
+            App.LoadLastPlaying();
             SetBackdrop(m_currentBackdrop);
             ReadLAE();
-            
+
+            NavView.SelectedItem = NavView.MenuItems[1];
+            NavView.IsBackEnabled = false;
             //PlayingListBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
             //VolumeBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
         }
@@ -310,7 +311,7 @@ namespace znMusicPlayerWUI
                 if (!CodeHelper.IsIconic(App.AppWindowLocalHandle))
                 {
                     isMinSize = false;
-                    //WindowViewStateChanged?.Invoke(true);
+                    WindowViewStateChanged?.Invoke(true);
                     if (InOpenMusicPage) SMusicPage.MusicPageViewStateChange(MusicPageViewState.View);
                     else
                     {
@@ -323,7 +324,7 @@ namespace znMusicPlayerWUI
                 if (CodeHelper.IsIconic(App.AppWindowLocalHandle))
                 {
                     isMinSize = true;
-                    //WindowViewStateChanged?.Invoke(false);
+                    WindowViewStateChanged?.Invoke(false);
                     if (InOpenMusicPage) SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
                     else RemoveEvents();
                 }

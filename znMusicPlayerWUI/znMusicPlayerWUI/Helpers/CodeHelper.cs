@@ -25,6 +25,9 @@ using static System.Net.Mime.MediaTypeNames;
 using Windows.UI.ViewManagement;
 using ATL;
 using FFmpeg.AutoGen;
+using znMusicPlayerWUI.DataEditor;
+using Meting4Net.Core.Models.Netease;
+using Microsoft.UI.Xaml.Shapes;
 
 namespace znMusicPlayerWUI.Helpers
 {
@@ -311,7 +314,6 @@ namespace znMusicPlayerWUI.Helpers
                         f = TagLib.File.Create(path);
                     }
                     catch { }
-
                     if (f == null) return null;
                     if (f.Tag.Pictures == null) return null;
                     if (f.Tag.Pictures.Length == 0) return null;
@@ -337,6 +339,53 @@ namespace znMusicPlayerWUI.Helpers
             }
             catch { result = null; }
 
+            return result;
+        }
+
+        public static async Task<byte[]> GetLocalImageByte(MusicData musicData)
+        {
+            byte[] result;
+            TagLib.File f = null;
+            if (musicData == null) return null;
+            if (musicData.From != MusicFrom.localMusic) return null;
+            if (string.IsNullOrEmpty(musicData.InLocal)) return null;
+
+            try
+            {
+                var a = await Task.Run(() =>
+                {
+                    try
+                    {
+                        f = TagLib.File.Create(musicData.InLocal);
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                    if (f == null) return null;
+                    if (f.Tag.Pictures == null) return null;
+                    if (f.Tag.Pictures.Length == 0) return null;
+
+                    foreach (var data in f.Tag.Pictures)
+                    {
+                        switch (data.Type)
+                        {
+                            case TagLib.PictureType.FrontCover:
+                            case TagLib.PictureType.BackCover:
+                                if (data.Data.Data.Length == 0) continue;
+                                f.Dispose();
+                                return data.Data.Data;
+                        }
+                    }
+
+                    var bin = f.Tag.Pictures[0].Data.Data;
+                    f.Dispose();
+                    return bin;
+                });
+                if (a == null) return null;
+                result = a;
+            }
+            catch { result = null; }
             return result;
         }
 

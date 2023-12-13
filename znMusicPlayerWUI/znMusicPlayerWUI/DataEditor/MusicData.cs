@@ -214,7 +214,7 @@ namespace znMusicPlayerWUI.DataEditor
 
         public override string GetMD5()
         {
-            return $"{Title}{(Artists.Any() ? $"{Artists[0]?.Name}{Artists[0]?.ID}" : "")}{Artists.Count}{Album?.Title}{ID}{Album?.ID}{From}{InLocal}{(CUETrackData != null ? $"{CUETrackData.StartDuration}{CUETrackData.EndDuration}" : "")}";
+            return CodeHelper.ToMD5($"{Title}{(Artists.Any() ? $"{Artists[0]?.Name}{Artists[0]?.ID}" : "")}{Artists.Count}{Album?.Title}{ID}{Album?.ID}{From}{InLocal}{(CUETrackData != null ? $"{CUETrackData.StartDuration}{CUETrackData.EndDuration}" : "")}");
         }
 
         public override string ToString()

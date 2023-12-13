@@ -81,8 +81,10 @@ namespace znMusicPlayerWUI.Helpers
         /// </returns>
         public static async Task<string> GetImageCache(DataEditor.MusicData musicData)
         {
-            var path = $"{musicData.From}{(string.IsNullOrEmpty(musicData.Album?.ID) ? musicData.MD5.Replace(@"/", "#") : musicData.Album.ID)}";
-            return await GetImageCache(path);
+            var filename = musicData.From == DataEditor.MusicFrom.localMusic ?
+                $"{musicData.From}{musicData.MD5.Replace(@"/", "#")}" :
+                $"{musicData.From}{(string.IsNullOrEmpty(musicData.Album?.ID) ? musicData.MD5.Replace(@"/", "#") : musicData.Album.ID)}";
+            return await GetImageCache(filename);
         }
         
         /// <summary>
@@ -95,7 +97,7 @@ namespace znMusicPlayerWUI.Helpers
         /// </returns>
         public static async Task<string> GetImageCache(DataEditor.MusicListData musicListData)
         {
-            return await GetImageCache(musicListData.ListFrom.ToString() + musicListData.ListDataType.ToString() + musicListData.ID);
+            return await GetImageCache($"{musicListData.ListFrom}{musicListData.ListDataType}{musicListData.ID}");
         }
         
         /// <summary>

@@ -796,5 +796,15 @@ namespace znMusicPlayerWUI.Pages
             var ts = sender as ToggleSwitch;
             Controls.Imagezn.ImageDarkMass = ts.IsOn;
         }
+
+        private void ToggleSwitch_Loaded_2(object sender, RoutedEventArgs e)
+        {
+            (sender as ToggleSwitch).IsOn = App.LoadLastExitPlayingSongAndSongList;
+        }
+
+        private void ToggleSwitch_Toggled_4(object sender, RoutedEventArgs e)
+        {
+            App.LoadLastExitPlayingSongAndSongList = (sender as ToggleSwitch).IsOn;
+        }
     }
 }
