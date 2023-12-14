@@ -546,7 +546,7 @@ namespace znMusicPlayerWUI
         {
             SetLoadingText("");
             SetLoadingProgressRingValue(100, 0);
-            await ShowDialog(title, loadingst, null, null);
+            await ShowDialog(title, loadingst, "后台", null);
         }
 
         public static void SetLoadingText(string text)
@@ -1076,7 +1076,7 @@ namespace znMusicPlayerWUI
 
         public static void SetNavViewContent(Type type, object param = null, NavigationTransitionInfo navigationTransitionInfo = null)
         {
-            if (navigationTransitionInfo == null) navigationTransitionInfo = new DrillInNavigationTransitionInfo();
+            if (navigationTransitionInfo == null) navigationTransitionInfo = new EntranceNavigationTransitionInfo();
             SContentFrame.Navigate(type, param, navigationTransitionInfo);
             SNavView.IsBackEnabled = SContentFrame.CanGoBack;
             UpdateNavViewSelectedItem(true);

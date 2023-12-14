@@ -37,6 +37,7 @@
     <None Remove="Pages\DialogPages\EqualizerPage.xaml" />
     <None Remove="Pages\DialogPages\HotKeyEditor.xaml" />
     <None Remove="Pages\DialogPages\HotKeyPage.xaml" />
+    <None Remove="Pages\DialogPages\InsertPlayListPage.xaml" />
     <None Remove="Pages\DownloadPage.xaml" />
     <None Remove="Pages\EmptyPage.xaml" />
     <None Remove="Pages\HistoryPage.xaml" />
@@ -80,7 +81,7 @@
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.18-beta">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.231115000" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.231202003-experimental1" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PInvoke.BCrypt" Version="0.7.124" />
@@ -124,6 +125,10 @@
     </Page>
     <Page Update="Controls\SongHistoryInfo.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Pages\DialogPages\InsertPlayListPage.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
     </Page>
     <Page Update="Pages\DialogPages\EditPlayListPage.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

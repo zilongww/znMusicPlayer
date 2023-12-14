@@ -132,7 +132,7 @@ namespace znMusicPlayerWUI.DataEditor
 
         public override string GetMD5()
         {
-            return $"{Title}{Title2}{ID}{PicturePath}{RelaseTime}";
+            return $"{Title}{Title2}{ID}{Artists?.Count}{Describee}{RelaseTime}";
         }
 
         public override string ToString()

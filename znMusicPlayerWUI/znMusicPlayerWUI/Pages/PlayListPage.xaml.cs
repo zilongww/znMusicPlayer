@@ -175,5 +175,10 @@ namespace znMusicPlayerWUI.Pages
         {
             UpdateShyHeader();
         }
+
+        private async void AppBarButton_Click_2(object sender, RoutedEventArgs e)
+        {
+            await DialogPages.InsertPlayListPage.ShowDialog();
+        }
     }
 }

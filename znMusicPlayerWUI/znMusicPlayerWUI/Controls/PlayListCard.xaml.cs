@@ -65,6 +65,10 @@ namespace znMusicPlayerWUI.Controls
             {
                 RefreshPlayListButton.Visibility = Visibility.Collapsed;
             }
+            else
+            {
+                RefreshPlayListButton.Visibility = Visibility.Visible;
+            }
             if (musicListData.ListDataType == DataType.本地歌单)
             {
                 EditPlayListButton.Visibility = Visibility.Visible;
@@ -294,6 +298,11 @@ namespace znMusicPlayerWUI.Controls
         private async void EditPlayListButton_Click(object sender, RoutedEventArgs e)
         {
             await Pages.DialogPages.EditPlayListPage.ShowDialog(MusicListData);
+        }
+
+        private async void InsertButton_Click(object sender, RoutedEventArgs e)
+        {
+            await MainWindow.ShowDialog("排序播放列表", "");
         }
     }
 }

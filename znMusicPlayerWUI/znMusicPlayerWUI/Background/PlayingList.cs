@@ -180,7 +180,7 @@ namespace znMusicPlayerWUI.Background
                 if (insert)
                 {
                     int index = 0;
-                    if (App.audioPlayer.MusicData != null) index = NowPlayingList.IndexOf(musicData) + 1;
+                    if (App.audioPlayer.MusicData != null) index = NowPlayingList.IndexOf(App.audioPlayer.MusicData) + 1;
                     NowPlayingList.Insert(index, musicData);
                 }
                 else
@@ -192,7 +192,7 @@ namespace znMusicPlayerWUI.Background
                     if (insert)
                     {
                         int index = 0;
-                        if (App.audioPlayer.MusicData is not null) index = RandomSavePlayingList.IndexOf(musicData);
+                        if (App.audioPlayer.MusicData is not null) index = RandomSavePlayingList.IndexOf(App.audioPlayer.MusicData) + 1;
                         RandomSavePlayingList.Insert(index, musicData);
                     }
                     else

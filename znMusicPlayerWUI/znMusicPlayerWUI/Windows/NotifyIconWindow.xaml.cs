@@ -495,6 +495,9 @@ namespace znMusicPlayerWUI.Windowed
                     break;
                 case "off":
                     notifyIcon.Visible = false;
+                    // :(
+                    App.Current.Exit();
+                    App.Current.Exit();
                     App.Current.Exit();
                     break;
                 case "returnBack":
