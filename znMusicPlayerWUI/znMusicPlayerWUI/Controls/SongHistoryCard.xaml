@@ -27,7 +27,7 @@
             <Border Margin="0,0,12,0" Width="38">
                 <TextBlock Text="{Binding Count}" HorizontalAlignment="Center"/>
             </Border>
-            <TextBlock Text="{Binding MusicData.Title}" Margin="0,0,12,0" Grid.Column="1"/>
+            <TextBlock x:Name="countTb" Text="{Binding MusicData.Title}" Margin="0,0,12,0" Grid.Column="1"/>
             <Button Grid.Column="2" Margin="0,0,12,0" Padding="8,12" Background="Transparent" BorderThickness="0"
                                 HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                 <TextBlock Text="{Binding MusicData.ArtistName}"/>

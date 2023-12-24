@@ -38,8 +38,8 @@ namespace znMusicPlayerWUI.Pages.DialogPages
 
         private async void InsertPlayListPage_ResultEvent(ContentDialogResult contentDialogResult)
         {
-            if (contentDialogResult != ContentDialogResult.Primary) return;
             ResultEvent -= InsertPlayListPage_ResultEvent;
+            if (contentDialogResult != ContentDialogResult.Primary) return;
             MainWindow.ShowLoadingDialog("正在更改...");
 
             JObject data = await Task.Run(() =>
