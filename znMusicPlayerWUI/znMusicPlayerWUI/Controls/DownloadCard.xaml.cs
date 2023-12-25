@@ -35,6 +35,7 @@ namespace znMusicPlayerWUI.Controls
         private void DownloadCard_Loaded(object sender, RoutedEventArgs e)
         {
             App.downloadManager.OnDownloading += DownloadManager_OnDownloading;
+            App.downloadManager.OnDownloadedSaving += DownloadManager_OnDownloadedSaving;
             App.downloadManager.OnDownloadedPreview += DownloadManager_OnDownloadedPreview;
             App.downloadManager.OnDownloaded += DownloadManager_OnDownloaded;
             App.downloadManager.OnDownloadError += DownloadManager_OnDownloadError;
@@ -52,6 +53,12 @@ namespace znMusicPlayerWUI.Controls
         {
             if (data != downloadData) return;
             SetDownloaded();
+        }
+
+        private void DownloadManager_OnDownloadedSaving(DownloadData data)
+        {
+            if (data != downloadData) return;
+            SetDownloadedSaving();
         }
 
         private void DownloadManager_OnDownloadedPreview(DownloadData data)
@@ -81,6 +88,9 @@ namespace znMusicPlayerWUI.Controls
             {
                 case DownloadStates.Downloading:
                     SetProgressValue();
+                    break;
+                case DownloadStates.DownloadedSaving:
+                    SetDownloadedSaving();
                     break;
                 case DownloadStates.DownloadedPreview:
                     SetDownloadedPreview();
@@ -122,10 +132,21 @@ namespace znMusicPlayerWUI.Controls
             SetProgressValue(downloadData.DownloadPercent);
         }
 
+        public void SetDownloadedSaving()
+        {
+            CompletedBackgroundBase.Fill = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
+            DownloadProgress.IsIndeterminate = true;
+            CoverRectangle.Rect = new(0, 0, CompletedBackgroundBase.ActualWidth, CompletedBackgroundBase.ActualHeight);
+            DownloadProgress.Value = 100;
+            MessageTb.Text = $"{CodeHelper.GetAutoSizeString(downloadData.DownloadedSize, 2)} | 正在保存";
+            FontIconBase.Glyph = "";
+        }
+        
         public void SetDownloadedPreview()
         {
             CompletedBackgroundBase.Fill = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
             DownloadProgress.IsIndeterminate = true;
+            CoverRectangle.Rect = new(0, 0, CompletedBackgroundBase.ActualWidth, CompletedBackgroundBase.ActualHeight);
             DownloadProgress.Value = 100;
             MessageTb.Text = $"{CodeHelper.GetAutoSizeString(downloadData.DownloadedSize, 2)} | 即将完成";
             FontIconBase.Glyph = "";
@@ -196,6 +217,9 @@ namespace znMusicPlayerWUI.Controls
             {
                 case DownloadStates.Downloading:
                     SetProgressValue();
+                    break;
+                case DownloadStates.DownloadedSaving:
+                    SetDownloadedSaving();
                     break;
                 case DownloadStates.DownloadedPreview:
                     SetDownloadedPreview();

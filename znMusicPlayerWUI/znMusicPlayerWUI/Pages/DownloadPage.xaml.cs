@@ -40,6 +40,7 @@ namespace znMusicPlayerWUI.Pages
 
             App.downloadManager.AddDownload += DownloadManager_AddDownload;
             App.downloadManager.OnDownloading += DownloadManager_OnDownloading;
+            App.downloadManager.OnDownloadedSaving += DownloadManager_OnDownloadedSaving;
             App.downloadManager.OnDownloadedPreview += DownloadManager_OnDownloading;
             App.downloadManager.OnDownloaded += DownloadManager_OnDownloading;
             App.downloadManager.OnDownloadError += DownloadManager_OnDownloading;
@@ -72,6 +73,11 @@ namespace znMusicPlayerWUI.Pages
             }
         }
 
+        private void DownloadManager_OnDownloadedSaving(DownloadData data)
+        {
+            UpdateTextTB();
+        }
+
         private void DownloadManager_OnDownloading(DownloadData data)
         {
             UpdateTextTB();
@@ -89,6 +95,7 @@ namespace znMusicPlayerWUI.Pages
             App.downloadManager.AddDownload -= DownloadManager_AddDownload;
             App.downloadManager.OnDownloading -= DownloadManager_OnDownloading;
             App.downloadManager.OnDownloadedPreview -= DownloadManager_OnDownloading;
+            App.downloadManager.OnDownloadedSaving -= DownloadManager_OnDownloadedSaving;
             App.downloadManager.OnDownloaded -= DownloadManager_OnDownloading;
             App.downloadManager.OnDownloadError -= DownloadManager_OnDownloading;
         }

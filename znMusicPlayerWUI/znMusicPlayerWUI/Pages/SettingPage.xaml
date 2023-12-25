@@ -140,7 +140,7 @@
                     </ComboBox>
                 </cc:SettingsCard>
                 <cc:SettingsCard Header="同时下载最大数量">
-                    <NumberBox Minimum="1" Maximum="6" SpinButtonPlacementMode="Compact"
+                    <NumberBox Minimum="1" Maximum="10" SpinButtonPlacementMode="Compact"
                                Loaded="DownloadMaximumBaseGrid_Loaded"
                                ValueChanged="NumberBox_ValueChanged"/>
                 </cc:SettingsCard>

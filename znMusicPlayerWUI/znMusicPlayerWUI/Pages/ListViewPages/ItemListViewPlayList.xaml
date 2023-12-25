@@ -276,33 +276,35 @@
             </ListView.Header>
             <ListView.Footer>
                 <Grid>
-                    <TextBlock Text="到底了~"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Bottom"
-                               Margin="4,4,4,52"
-                               Foreground="{ThemeResource TextFillColorSecondary}"/>
+                    <Grid>
+                        <TextBlock Text="到底了~"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Bottom"
+                                   Margin="4,4,4,52"
+                                   Foreground="{ThemeResource TextFillColorSecondary}"/>
+                    </Grid>
+                    <Grid VerticalAlignment="Bottom"
+                          HorizontalAlignment="Center"
+                          Background="{ThemeResource AcrylicNormal}"
+                          BorderThickness="1" CornerRadius="4"
+                          BorderBrush="{ThemeResource ControlElevationBorderBrush}"
+                          Margin="12,12,12,54" x:Name="ListEmptyPopup" Visibility="Collapsed">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Glyph="&#xE728;" FontSize="24" Margin="12"
+                                      Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                            <TextBlock Text="播放列表里没有歌曲，去添加歌曲吧！"
+                                       VerticalAlignment="Center" Grid.Column="1"
+                                       FontSize="16" TextWrapping="WrapWholeWords"
+                                       Margin="0,12,12,12"/>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </ListView.Footer>
         </ListView>
-        <Grid VerticalAlignment="Bottom"
-              HorizontalAlignment="Center"
-              Background="{ThemeResource AcrylicNormal}"
-              BorderThickness="1" CornerRadius="4"
-              BorderBrush="{ThemeResource ControlElevationBorderBrush}"
-              Margin="12,12,12,54" x:Name="ListEmptyPopup" Visibility="Collapsed">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <FontIcon Glyph="&#xE728;" FontSize="24" Margin="12"
-                          Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
-                <TextBlock Text="播放列表里没有歌曲，去添加歌曲吧！"
-                           VerticalAlignment="Center" Grid.Column="1"
-                           FontSize="16" TextWrapping="WrapWholeWords"
-                           Margin="0,12,12,12"/>
-            </Grid>
-        </Grid>
         <controlszn:LoadingTip x:Name="LoadingTipControl"
                                VerticalAlignment="Bottom"
                                HorizontalAlignment="Center"

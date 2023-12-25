@@ -10,29 +10,30 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" Loaded="Page_Loaded">
 
-    <ListView x:Name="ListBaseViewer"
+    <GridView x:Name="ListBaseViewer"
               CanDragItems="True" AllowDrop="True"
               CanReorderItems="True" SelectionMode="None">
-        <ListView.Header>
+        <GridView.Header>
             <TextBlock Text="拖动以重新排序" FontSize="12" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
-        </ListView.Header>
-        <ListView.ItemTemplate>
+        </GridView.Header>
+        <GridView.ItemTemplate>
             <DataTemplate x:DataType="datas:MusicListData">
                 <Grid DataContextChanged="Grid_DataContextChanged"
                       Background="{ThemeResource LayerFillColorDefault}"
                       BorderBrush="{ThemeResource ControlElevationBorderBrush}"
-                      BorderThickness="1" CornerRadius="4" Padding="8,6" Margin="0,8,0,0">
-                    <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <c1:Imagezn VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill" MaxWidth="70"
-                                CornerRadius="4" Margin="0,0,8,0"/>
-                    <TextBlock Text="{Binding ListShowName}" Grid.Column="1" VerticalAlignment="Center"/>
-                    <FontIcon Glyph="&#xE700;" FontSize="14" Grid.Column="2" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                      BorderThickness="1" CornerRadius="8" Padding="8,6" Margin="0,8,0,0">
+                    <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <c1:Imagezn VerticalAlignment="Center" HorizontalAlignment="Center"
+                                Stretch="UniformToFill" MaxWidth="90" MaxHeight="90"
+                                CornerRadius="4" Margin="0"/>
+                    <TextBlock Text="{Binding ListShowName}" Grid.Row="1" HorizontalAlignment="Center"/>
+                    <FontIcon Glyph="&#xE700;" FontSize="14" Grid.Row="2" HorizontalAlignment="Center" Margin="0,0,0,0"/>
                 </Grid>
             </DataTemplate>
-        </ListView.ItemTemplate>
-    </ListView>
+        </GridView.ItemTemplate>
+    </GridView>
 </Page>

@@ -15,7 +15,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace znMusicPlayerWUI.Background
 {
-    public enum DownloadStates { Waiting, Downloading, DownloadedPreview, Downloaded, Error }
+    public enum DownloadStates { Waiting, Downloading, DownloadedSaving, DownloadedPreview, Downloaded, Error }
     public class DownloadData
     {
         public MusicData MusicData;
@@ -36,6 +36,7 @@ namespace znMusicPlayerWUI.Background
         public delegate void DownloadHandler(DownloadData data);
         public event DownloadHandler AddDownload;
         public event DownloadHandler OnDownloading;
+        public event DownloadHandler OnDownloadedSaving;
         public event DownloadHandler OnDownloadedPreview;
         public event DownloadHandler OnDownloaded;
         public event DownloadHandler OnDownloadError;
@@ -185,14 +186,6 @@ namespace znMusicPlayerWUI.Background
             string lyricPath = downloadPath1 + ".lrc";
             //await WebHelper.DownloadFileAsync(addressPath, downloadPath);
 
-            await Task.Run(() =>
-            {
-                if (!File.Exists(downloadPath))
-                {
-                    File.Create(downloadPath).Dispose();
-                }
-            });
-
             System.Net.WebClient TheDownloader = await Task.Run(() => new System.Net.WebClient());
             TheDownloader.DownloadProgressChanged += (s, e) =>
             {
@@ -209,7 +202,18 @@ namespace znMusicPlayerWUI.Background
             {
                 TheDownloader?.Dispose();
             };
-            await TheDownloader.DownloadFileTaskAsync(new Uri(addressPath), downloadPath);
+            var bytes = await TheDownloader.DownloadDataTaskAsync(new Uri(addressPath));
+            dm.DownloadState = DownloadStates.DownloadedSaving;
+            OnDownloadedSaving?.Invoke(dm);
+            await Task.Run(() =>
+            {
+                if (!File.Exists(downloadPath))
+                {
+                    File.Create(downloadPath).Dispose();
+                }
+                File.WriteAllBytes(downloadPath, bytes);
+            });
+
 
             dm.DownloadState = DownloadStates.DownloadedPreview;
             OnDownloadedPreview?.Invoke(dm);
@@ -300,25 +304,28 @@ namespace znMusicPlayerWUI.Background
             });
 
             var lyric = await App.metingServices.NeteaseServices.GetLyric(dm.MusicData.ID);
-            if (!lyric.Item1.Contains("纯音乐，请欣赏"))
+            if (lyric != null)
             {
-                if (lyric.Item1.Length >= 10)
+                if (!lyric.Item1.Contains("纯音乐，请欣赏"))
                 {
-                    await Task.Run(() =>
+                    if (lyric.Item1.Length >= 10)
                     {
-                        if (saveLyric)
+                        await Task.Run(() =>
                         {
-                            File.Create(lyricPath).Dispose();
-                            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                            File.WriteAllText(lyricPath, $"{lyric.Item1}\n{lyric.Item2}", Encoding.GetEncoding("GB2312"));
-                        }
-                        
-                        if (writeLyric) tag.Lyrics = $"{lyric.Item1}\n{lyric.Item2}";
-                    });
-                }
-                else
-                {
+                            if (saveLyric)
+                            {
+                                File.Create(lyricPath).Dispose();
+                                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                                File.WriteAllText(lyricPath, $"{lyric.Item1}\n{lyric.Item2}", Encoding.GetEncoding("GB2312"));
+                            }
 
+                            if (writeLyric) tag.Lyrics = $"{lyric.Item1}\n{lyric.Item2}";
+                        });
+                    }
+                    else
+                    {
+
+                    }
                 }
             }
 

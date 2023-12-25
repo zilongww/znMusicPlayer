@@ -270,6 +270,7 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
+        int showCount = 0;
         public async void UpdateImageInterface(MusicData musicData)
         {
             if (isDisposed) return;
@@ -278,6 +279,11 @@ namespace znMusicPlayerWUI.Controls
                 AlbumImage.Dispose();
                 AlbumImage.Dispose();
             }
+
+            showCount++;
+            await Task.Delay(200);
+            showCount--;
+            if (showCount != 0) return;
 
             if (MusicListData?.ListDataType == DataType.专辑)
             {
