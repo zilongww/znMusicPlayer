@@ -82,7 +82,8 @@ namespace znMusicPlayerWUI.Controls
         public async void UpdateImage()
         {
             /*ExitMass();
-            CrateShadow();*/
+            CrateShadow();
+            */
             if (MusicListData != null)
             {
                 int size = 0;//(int)(200 * ImageScaleDPI);
@@ -106,7 +107,7 @@ namespace znMusicPlayerWUI.Controls
         Compositor compositor;
         DropShadow dropShadow;
         private void CrateShadow()
-        {
+        {/*
             var visual = ElementCompositionPreview.GetElementVisual(ShadowBaseRectangle);
             compositor = visual.Compositor;
 
@@ -120,7 +121,7 @@ namespace znMusicPlayerWUI.Controls
             dropShadow.Offset = new Vector3(0, 2, 0);
 
             basicRectVisual.Shadow = dropShadow;
-            ElementCompositionPreview.SetElementChildVisual(ShadowBaseRectangle, basicRectVisual);
+            ElementCompositionPreview.SetElementChildVisual(ShadowBaseRectangle, basicRectVisual);*/
         }
 
         private async void UILoaded(object sender, RoutedEventArgs e)
@@ -152,14 +153,14 @@ namespace znMusicPlayerWUI.Controls
                     0.2f, 1f, 0.22f, 1f,
                     out Visual visual, out Compositor compositor, out Vector3KeyFrameAnimation animation);
                 visual.StartAnimation(nameof(visual.Offset), animation);
-
+/*
                 AnimateHelper.AnimateScalar(
                     ABackColorBaseRectAngle,
                     1f, 0.2,
                     0.2f, 1, 0.22f, 1,
                     out Visual visual2, out Compositor compositor2, out ScalarKeyFrameAnimation animation2);
                 visual2.StartAnimation(nameof(visual2.Opacity), animation2);
-
+*/
                 if (dropShadow != null)
                 {
                     ScalarKeyFrameAnimation blurAnimation = compositor.CreateScalarKeyFrameAnimation();
@@ -196,14 +197,14 @@ namespace znMusicPlayerWUI.Controls
         }
 
         private void ExitMass()
-        {
+        {/*
             AnimateHelper.AnimateScalar(
                 ABackColorBaseRectAngle,
                 0, 0.2,
                 0.2f, 1, 0.22f, 1,
                 out Visual visual2, out Compositor compositor2, out ScalarKeyFrameAnimation animation2);
             visual2.StartAnimation(nameof(visual2.Opacity), animation2);
-
+*/
         }
 
         bool isPressed = false;

@@ -65,6 +65,37 @@
                                             Margin="22,0,16,0"
                                             AccessKey="Z"
                                             Background="Transparent">
+                                    <AppBarButton Click="Button_Click"
+                                                  Label="播放全部（Alt+Q）"
+                                                  AccessKey="Q"
+                                                  Background="{ThemeResource AccentAAFillColorTertiaryBrush}"
+                                                  Foreground="{ThemeResource SystemControlForegroundAltHighBrush}"
+                                                  ToolTipService.ToolTip="播放全部"
+                                                  x:Name="PlayAllButton">
+                                        <AppBarButton.Icon>
+                                            <FontIcon Glyph="&#xEE4A;"/>
+                                        </AppBarButton.Icon>
+                                    </AppBarButton>
+                                    <AppBarButton Click="Button_Click_1"
+                                                  Label="刷新"
+                                                  AccessKey="R" x:Name="RefreshButton"
+                                                  ToolTipService.ToolTip="刷新">
+                                        <AppBarButton.Icon>
+                                            <FontIcon Glyph="&#xE72C;"/>
+                                        </AppBarButton.Icon>
+                                    </AppBarButton>
+                                    <AppBarToggleButton Click="Button_Click_2"
+                                                  Label="多选"
+                                                  AccessKey="S"
+                                                  ToolTipService.ToolTip="多选"
+                                                  x:Name="SelectItemButton">
+                                        <AppBarToggleButton.Icon>
+                                            <FontIcon Glyph="&#xE762;"/>
+                                        </AppBarToggleButton.Icon>
+                                    </AppBarToggleButton>
+                                    
+                                    <AppBarSeparator x:Name="SelectorSeparator"/>
+
                                     <AppBarButton x:Name="SelectAllButton"
                                                   Click="SelectAllButton_Click"
                                                   Label="选中全部"
@@ -124,37 +155,6 @@
                                                             VerticalAlignment="Bottom"/>
                                             </Grid>
                                         </Viewbox>
-                                    </AppBarButton>
-
-                                    <AppBarSeparator x:Name="SelectorSeparator"/>
-
-                                    <AppBarButton Click="Button_Click"
-                                                  Label="播放全部（Alt+Q）"
-                                                  AccessKey="Q"
-                                                  Background="{ThemeResource AccentAAFillColorTertiaryBrush}"
-                                                  Foreground="{ThemeResource SystemControlForegroundAltHighBrush}"
-                                                  ToolTipService.ToolTip="播放全部"
-                                                  x:Name="PlayAllButton">
-                                        <AppBarButton.Icon>
-                                            <FontIcon Glyph="&#xEE4A;"/>
-                                        </AppBarButton.Icon>
-                                    </AppBarButton>
-                                    <AppBarButton Click="Button_Click_1"
-                                                  Label="刷新"
-                                                  AccessKey="R"
-                                                  ToolTipService.ToolTip="刷新">
-                                        <AppBarButton.Icon>
-                                            <FontIcon Glyph="&#xE72C;"/>
-                                        </AppBarButton.Icon>
-                                    </AppBarButton>
-                                    <AppBarButton Click="Button_Click_2"
-                                                  Label="多选"
-                                                  AccessKey="S"
-                                                  ToolTipService.ToolTip="多选"
-                                                  x:Name="SelectItemButton">
-                                        <AppBarButton.Icon>
-                                            <FontIcon Glyph="&#xE762;"/>
-                                        </AppBarButton.Icon>
                                     </AppBarButton>
 
                                     <AppBarSeparator x:Name="SearchPageSelectorSeparator"/>

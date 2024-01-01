@@ -75,7 +75,8 @@
                                                         VerticalAlignment="Top"
                                                         AccessKey="Z">
                                                 <CommandBar.SecondaryCommands>
-                                                    <AppBarElementContainer AllowFocusOnInteraction="True">
+                                                    <AppBarElementContainer AllowFocusOnInteraction="True"
+                                                                            x:Name="SortComboBoxParent">
                                                         <ComboBox x:Name="SortComboBox"
                                                                   SelectionChanged="SortComboBox_SelectionChanged"
                                                                   Header="排序方式"
@@ -83,7 +84,8 @@
                                                                   Margin="12, 4">
                                                         </ComboBox>
                                                     </AppBarElementContainer>
-                                                    <AppBarElementContainer AllowFocusOnInteraction="True">
+                                                    <AppBarElementContainer AllowFocusOnInteraction="True"
+                                                                            x:Name="SearchBoxParent">
                                                         <AutoSuggestBox Header="搜索歌曲"
                                                                         PlaceholderText="搜索列表歌曲"
                                                                         TextChanged="AutoSuggestBox_TextChanged"
@@ -105,6 +107,61 @@
                                                         </AutoSuggestBox>
                                                     </AppBarElementContainer>
                                                 </CommandBar.SecondaryCommands>
+                                                <AppBarButton Click="Button_Click"
+                                                              AccessKey="Q"
+                                                              Label="播放全部（Alt+Q）"
+                                                              Background="{ThemeResource SystemAccentColorLight1}"
+                                                              ToolTipService.ToolTip="播放全部"
+                                                              x:Name="PlayAllButton">
+                                                    <AppBarButton.Icon>
+                                                        <FontIcon Glyph="&#xEE4A;"/>
+                                                    </AppBarButton.Icon>
+                                                </AppBarButton>
+                                                <AppBarButton x:Name="AddLocalFilesButton"
+                                                              AccessKey="W"
+                                                              Click="AddLocalFilesButton_Click"
+                                                              Label="添加本地文件"
+                                                              ToolTipService.ToolTip="添加本地文件">
+                                                    <AppBarButton.Icon>
+                                                        <FontIcon Glyph="&#xE8E5;"/>
+                                                    </AppBarButton.Icon>
+                                                </AppBarButton>
+                                                <AppBarButton Click="Button_Click_1"
+                                                              AccessKey="R"
+                                                              Label="刷新" x:Name="RefreshButton"
+                                                              ToolTipService.ToolTip="刷新">
+                                                    <AppBarButton.Icon>
+                                                        <FontIcon Glyph="&#xE72C;"/>
+                                                    </AppBarButton.Icon>
+                                                </AppBarButton>
+                                                <AppBarToggleButton Click="Button_Click_2"
+                                                              Label="多选"
+                                                              AccessKey="S"
+                                                              ToolTipService.ToolTip="多选"
+                                                              x:Name="SelectItemButton">
+                                                    <AppBarToggleButton.Icon>
+                                                        <FontIcon Glyph="&#xE762;"/>
+                                                    </AppBarToggleButton.Icon>
+                                                </AppBarToggleButton>
+                                                <AppBarToggleButton Click="MoveItemButton_Click"
+                                                                    Label="排序"
+                                                                    AccessKey="S"
+                                                                    ToolTipService.ToolTip="拖动音乐控件以重新排序"
+                                                                    x:Name="MoveItemButton">
+                                                    <AppBarToggleButton.Icon>
+                                                        <FontIcon Glyph="&#xEA37;"/>
+                                                    </AppBarToggleButton.Icon>
+                                                </AppBarToggleButton>
+                                                <AppBarButton Click="CancelMoveItemButton_Click"
+                                                              Label="取消" Visibility="Collapsed"
+                                                              x:Name="CancelMoveItemButton">
+                                                    <AppBarButton.Icon>
+                                                        <FontIcon Glyph="&#xE711;"/>
+                                                    </AppBarButton.Icon>
+                                                </AppBarButton>
+                                                
+                                                <AppBarSeparator x:Name="SelectorSeparator"/>
+                                                
                                                 <AppBarButton x:Name="SelectAllButton"
                                                               Click="SelectAllButton_Click"
                                                               Label="选中全部"
@@ -165,54 +222,6 @@
                                                         </Grid>
                                                     </Viewbox>
                                                 </AppBarButton>
-
-                                                <AppBarSeparator x:Name="SelectorSeparator"/>
-
-                                                <AppBarButton Click="Button_Click"
-                                                              AccessKey="Q"
-                                                              Label="播放全部（Alt+Q）"
-                                                              Background="{ThemeResource SystemAccentColorLight1}"
-                                                              ToolTipService.ToolTip="播放全部"
-                                                              x:Name="PlayAllButton">
-                                                    <AppBarButton.Icon>
-                                                        <FontIcon Glyph="&#xEE4A;"/>
-                                                    </AppBarButton.Icon>
-                                                </AppBarButton>
-                                                <AppBarButton x:Name="AddLocalFilesButton"
-                                                              AccessKey="W"
-                                                              Click="AddLocalFilesButton_Click"
-                                                              Label="添加本地文件"
-                                                              ToolTipService.ToolTip="添加本地文件">
-                                                    <AppBarButton.Icon>
-                                                        <FontIcon Glyph="&#xE8E5;"/>
-                                                    </AppBarButton.Icon>
-                                                </AppBarButton>
-                                                <AppBarButton Click="Button_Click_1"
-                                                              AccessKey="R"
-                                                              Label="刷新"
-                                                              ToolTipService.ToolTip="刷新">
-                                                    <AppBarButton.Icon>
-                                                        <FontIcon Glyph="&#xE72C;"/>
-                                                    </AppBarButton.Icon>
-                                                </AppBarButton>
-                                                <AppBarToggleButton Click="Button_Click_2"
-                                                              Label="多选"
-                                                              AccessKey="S"
-                                                              ToolTipService.ToolTip="多选"
-                                                              x:Name="SelectItemButton">
-                                                    <AppBarToggleButton.Icon>
-                                                        <FontIcon Glyph="&#xE762;"/>
-                                                    </AppBarToggleButton.Icon>
-                                                </AppBarToggleButton>
-                                                <AppBarToggleButton Click="MoveItemButton_Click"
-                                                                    Label="排序"
-                                                                    AccessKey="S"
-                                                                    ToolTipService.ToolTip="拖动音乐控件以重新排序"
-                                                                    x:Name="MoveItemButton">
-                                                    <AppBarToggleButton.Icon>
-                                                        <FontIcon Glyph="&#xEA37;"/>
-                                                    </AppBarToggleButton.Icon>
-                                                </AppBarToggleButton>
                                             </CommandBar>
                                         </Grid>
                                     </Grid>
@@ -280,7 +289,7 @@
                         <TextBlock Text="到底了~"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Bottom"
-                                   Margin="4,4,4,52"
+                                   Margin="4,4,4,52" x:Name="AtListBottomTb"
                                    Foreground="{ThemeResource TextFillColorSecondary}"/>
                     </Grid>
                     <Grid VerticalAlignment="Bottom"

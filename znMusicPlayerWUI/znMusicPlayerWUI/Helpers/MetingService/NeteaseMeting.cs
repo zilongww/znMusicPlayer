@@ -157,7 +157,9 @@ namespace znMusicPlayerWUI.Helpers.MetingService
                             {
                                 MusicListData ld = new(keyword, keyword, null, MusicFrom.neteaseMusic, null, null);
                                 ld.Songs = UnpackMusicData(a["result"]["songs"]);
-                                return ld;
+                                if (ld.Songs != null)
+                                    return ld;
+                                else return null;
                             }
                             else if (type == (int)SearchDataType.歌单)
                             {
@@ -206,6 +208,7 @@ namespace znMusicPlayerWUI.Helpers.MetingService
 
         public List<MusicData> UnpackMusicData(JToken token)
         {
+            if (token == null) return null;
             var datas = new List<MusicData>();
             foreach (JObject md in token)
             {

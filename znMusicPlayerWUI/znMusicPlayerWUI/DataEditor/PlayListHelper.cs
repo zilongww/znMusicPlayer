@@ -204,15 +204,18 @@ namespace znMusicPlayerWUI.DataEditor
                     {
                         track = new(localFile.FullName);
                     });*/
-                    
-                    await Task.Run(() =>
+                    if (localFile.Extension != ".mid")
                     {
-                        tagFile = TagLib.File.Create(localFile.FullName);
-                        tag = tagFile.Tag;
-                        if (tag.IsEmpty) isError = true;
-                        if (string.IsNullOrEmpty(tag.Title)) isError = true;
-                        if (tag.Performers == null) isError = true;
-                    });
+                        await Task.Run(() =>
+                        {
+                            tagFile = TagLib.File.Create(localFile.FullName);
+                            tag = tagFile.Tag;
+                            if (tag.IsEmpty) isError = true;
+                            if (string.IsNullOrEmpty(tag.Title)) isError = true;
+                            if (tag.Performers == null) isError = true;
+                        });
+                    }
+                    else isError = true;
                 }
                 catch
                 {

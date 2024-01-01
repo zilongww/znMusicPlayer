@@ -12,19 +12,19 @@
         <ScrollViewer HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentRenderOutsideBounds="True" ScrollViewer.ZoomMode="Enabled">
             <StackPanel HorizontalAlignment="Stretch"
                     Orientation="Vertical"
-                    Margin="0,14,0,0">
+                    Margin="14">
                 <StackPanel Orientation="Horizontal">
-                    <Border CornerRadius="6">
-                        <controls:ImageEx x:Name="abcd"
+                    <Border CornerRadius="6" BorderBrush="{ThemeResource ControlElevationBorderBrush}" BorderThickness="1">
+                        <control:Imagezn x:Name="abcd"
                                       Source="/Images/SugarAndSalt.jpg"
-                                      Width="120" Height="120"
+                                      MaxWidth="220" MaxHeight="220" CornerRadius="5"
                                       Opacity="1" Loaded="Image_Loaded"/>
                     </Border>
                     <StackPanel VerticalAlignment="Center"
                             Margin="10,0,0,0">
                         <TextBlock Text="znMusicPlayer"
                                FontSize="28"/>
-                        <TextBlock Text="Copyright © 2018-2023 znMusicPlayer by zilongcn"
+                        <TextBlock Text="Copyright © 2018-2024 znMusicPlayer by zilongww"
                                FontSize="12"/>
                     </StackPanel>
                 </StackPanel>
@@ -41,8 +41,5 @@
                     Click="Button_Click"/>
             </StackPanel>
         </ScrollViewer>
-        <control:AutoScrollViewer Width="600" Background="{ThemeResource AcrylicInAppFillColorBaseBrush}" RequestedTheme="Dark" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12">
-            <TextBlock Text="Auto Scroll To View Control Test llllllllllasdjkfsdjkhadfshjkadfshjkadfsjkhadfshjkladfshjkdfsiouycdfsvghijcvxzbjvndfsbmn erhjdfsfghjcvxghjcvxbnvdfsbjnesghjcdsvxzftucvxghjvds abnvm adfsjhcvxzftuycxzfgtuybjnvebnmv cdvxzghjgiuydshjvadfsbmn dfshjcvxzuyfgdfshghvjadfsbncdsxhjvcvxzghjvdfsa mn adfsasdasdasdaskhjfdgbsdhjkfgsdhjabfgjkhsagbfhjbeajkbfhjwsef" HorizontalAlignment="Left"/>
-        </control:AutoScrollViewer>
     </Grid>
 </Page>

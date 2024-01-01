@@ -400,6 +400,20 @@
                     </cc:SettingsCard.HeaderIcon>
                     <Button Click="Button_Click_8" Content="关闭此程序"/>
                 </cc:SettingsCard>
+                <cc:SettingsCard Header="保存设置"
+                                 Description="立即保存设置数据">
+                    <cc:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE74E;"/>
+                    </cc:SettingsCard.HeaderIcon>
+                    <Button Content="保存" Click="Button_Click_9"/>
+                </cc:SettingsCard>
+                <cc:SettingsCard Header="读取设置"
+                                 Description="立即读取设置数据">
+                    <cc:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE752;"/>
+                    </cc:SettingsCard.HeaderIcon>
+                    <Button Content="读取" Click="Button_Click_10"/>
+                </cc:SettingsCard>
                 <cc:SettingsCard Header="恢复默认设置"
                                  Description="将程序的设置恢复默认"
                             Background="{ThemeResource SystemFillColorCriticalBackgroundBrush}">

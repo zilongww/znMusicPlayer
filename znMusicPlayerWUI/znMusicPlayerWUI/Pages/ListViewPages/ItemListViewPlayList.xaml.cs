@@ -133,6 +133,11 @@ namespace znMusicPlayerWUI.Pages
         public ObservableCollection<SongItemBindBase> MusicDataList = new();
         public async void InitData()
         {
+            if (NavToObj is null)
+            {
+                LoadingTipControl.UnShowLoading();
+                return;
+            }
             if (isLoading) return;
             isLoading = true;
 
@@ -151,10 +156,19 @@ namespace znMusicPlayerWUI.Pages
             if (Children.SelectionMode != ListViewSelectionMode.None)
                 Button_Click_2(null, null);
             #endregion
+
             PlayList_TitleTextBlock.Text = NavToObj.ListShowName;
             PlayList_OtherTextBlock.Text = $"共{NavToObj.Songs.Count}首歌曲";
-            if (NavToObj.Songs.Count == 0) ListEmptyPopup.Visibility = Visibility.Visible;
-            else ListEmptyPopup.Visibility = Visibility.Collapsed;
+            if (NavToObj.Songs.Count == 0)
+            {
+                AtListBottomTb.Visibility = Visibility.Collapsed;
+                ListEmptyPopup.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                AtListBottomTb.Visibility = Visibility.Visible;
+                ListEmptyPopup.Visibility = Visibility.Collapsed;
+            }
 
             LoadingTipControl.ShowLoading();
 
@@ -529,7 +543,14 @@ namespace znMusicPlayerWUI.Pages
             {
                 Children.SelectionMode = ListViewSelectionMode.Multiple;
 
+                SortComboBoxParent.Visibility = Visibility.Collapsed;
+                SearchBoxParent.Visibility = Visibility.Collapsed;
+                PlayAllButton.Visibility = Visibility.Collapsed;
+                AddLocalFilesButton.Visibility = Visibility.Collapsed;
+                RefreshButton.Visibility = Visibility.Collapsed;
                 MoveItemButton.Visibility = Visibility.Collapsed;
+
+                SelectItemButton.Visibility = Visibility.Visible;
                 SelectorSeparator.Visibility = Visibility.Visible;
                 AddSelectedToPlayingListButton.Visibility = Visibility.Visible;
                 AddSelectedToPlayListButton.Visibility = Visibility.Visible;
@@ -545,8 +566,13 @@ namespace znMusicPlayerWUI.Pages
             }
             else
             {
+                SortComboBoxParent.Visibility = Visibility.Visible;
+                SearchBoxParent.Visibility = Visibility.Visible;
+                PlayAllButton.Visibility = Visibility.Visible;
+                AddLocalFilesButton.Visibility = Visibility.Visible;
+                RefreshButton.Visibility = Visibility.Visible;
                 MoveItemButton.Visibility = Visibility.Visible;
-                Children.SelectionMode = ListViewSelectionMode.None;
+                SelectItemButton.Visibility = Visibility.Visible;
 
                 SelectorSeparator.Visibility = Visibility.Collapsed;
                 AddSelectedToPlayingListButton.Visibility = Visibility.Collapsed;
@@ -582,28 +608,33 @@ namespace znMusicPlayerWUI.Pages
                 var result = await MainWindow.ShowDialog("移除歌曲", $"真的要从歌单中移除这{Children.SelectedItems.Count}首歌曲吗？", "取消", "确定");
                 if (result == ContentDialogResult.Primary)
                 {
-                    var jdata = await PlayListHelper.ReadData();
                     MainWindow.ShowLoadingDialog("正在移除");
+                    var jdata = await PlayListHelper.ReadData();
                     int num = 0;
+                    string listName = NavToObj.ListName;
                     foreach (SongItemBindBase item in Children.SelectedItems)
                     {
                         num++;
                         MainWindow.SetLoadingText($"正在移除：{item.MusicData.Title} - {item.MusicData.ButtonName}");
                         MainWindow.SetLoadingProgressRingValue(Children.SelectedItems.Count, num);
-                        jdata = PlayListHelper.DeleteMusicDataFromPlayList(NavToObj.ListName, item.MusicData, jdata);
+                        await Task.Run(() => jdata = PlayListHelper.DeleteMusicDataFromPlayList(listName, item.MusicData, jdata));
                     }
                     await PlayListHelper.SaveData(jdata);
                     await App.playListReader.Refresh();
-                    foreach (var m in App.playListReader.NowMusicListDatas)
+
+                    if (NavToObj != null)
                     {
-                        if (m.MD5 == NavToObj.MD5)
+                        foreach (var m in App.playListReader.NowMusicListDatas)
                         {
-                            NavToObj = m;
-                            break;
+                            if (m.MD5 == NavToObj.MD5)
+                            {
+                                NavToObj = m;
+                                break;
+                            }
                         }
+                        InitData();
                     }
                     MainWindow.HideDialog();
-                    InitData();
                 }
             }
         }
@@ -654,26 +685,30 @@ namespace znMusicPlayerWUI.Pages
                     MainWindow.HideDialog();
                     MainWindow.ShowLoadingDialog("正在添加...");
                     int count = 0;
+                    string listName = NavToObj.ListName;
                     foreach (var i in files)
                     {
                         MainWindow.SetLoadingText(i.Name);
                         FileInfo fi = null;
                         await Task.Run(() => fi = new FileInfo(i.Path));
-                        jdata = await PlayListHelper.AddLocalMusicDataToPlayList(NavToObj.ListName, fi, jdata);
+                        jdata = await PlayListHelper.AddLocalMusicDataToPlayList(listName, fi, jdata);
                         count++;
                         MainWindow.SetLoadingProgressRingValue(files.Count, count);
                     }
                     await PlayListHelper.SaveData(jdata);
                     await App.playListReader.Refresh();
-                    foreach (var m in App.playListReader.NowMusicListDatas)
+                    if (NavToObj != null)
                     {
-                        if (m.MD5 == NavToObj.MD5)
+                        foreach (var m in App.playListReader.NowMusicListDatas)
                         {
-                            NavToObj = m;
-                            break;
+                            if (m.MD5 == NavToObj.MD5)
+                            {
+                                NavToObj = m;
+                                break;
+                            }
                         }
+                        InitData();
                     }
-                    InitData();
                     await Task.Delay(500);
                     MainWindow.HideDialog();
                     await MainWindow.ShowDialog("添加本地歌曲", "添加完成。");
@@ -887,6 +922,15 @@ namespace znMusicPlayerWUI.Pages
 
             if ((bool)MoveItemButton.IsChecked)
             {
+                SortComboBoxParent.Visibility = Visibility.Collapsed;
+                SearchBoxParent.Visibility = Visibility.Collapsed;
+                PlayAllButton.Visibility = Visibility.Collapsed;
+                AddLocalFilesButton.Visibility = Visibility.Collapsed;
+                RefreshButton.Visibility = Visibility.Collapsed;
+                SelectItemButton.Visibility = Visibility.Collapsed;
+                CancelMoveItemButton.Visibility = Visibility.Visible;
+                MoveItemButton.Label = "完成排序";
+
                 foreach (var i in SongItem.StaticSongItems) i.RemoveUnloadedEvent();
                 Children.AllowDrop = true;
                 Children.CanDragItems = true;
@@ -896,6 +940,15 @@ namespace znMusicPlayerWUI.Pages
             }
             else
             {
+                SortComboBoxParent.Visibility = Visibility.Visible;
+                SearchBoxParent.Visibility = Visibility.Visible;
+                PlayAllButton.Visibility = Visibility.Visible;
+                AddLocalFilesButton.Visibility = Visibility.Visible;
+                RefreshButton.Visibility = Visibility.Visible;
+                SelectItemButton.Visibility = Visibility.Visible;
+                CancelMoveItemButton.Visibility = Visibility.Collapsed;
+                MoveItemButton.Label = "排序";
+
                 Children.AllowDrop = false;
                 Children.CanDragItems = false;
                 Children.CanReorderItems = false;
@@ -913,6 +966,26 @@ namespace znMusicPlayerWUI.Pages
                 await PlayListHelper.SaveData(data);
                 await App.playListReader.Refresh();
             }
+        }
+
+        private void CancelMoveItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            MoveItemButton.IsChecked = false;
+            SortComboBoxParent.Visibility = Visibility.Visible;
+            SearchBoxParent.Visibility = Visibility.Visible;
+            PlayAllButton.Visibility = Visibility.Visible;
+            AddLocalFilesButton.Visibility = Visibility.Visible;
+            RefreshButton.Visibility = Visibility.Visible;
+            SelectItemButton.Visibility = Visibility.Visible;
+            CancelMoveItemButton.Visibility = Visibility.Collapsed;
+            MoveItemButton.Label = "排序";
+
+            Children.AllowDrop = false;
+            Children.CanDragItems = false;
+            Children.CanReorderItems = false;
+            Children.SelectionMode = ListViewSelectionMode.None;
+            SelectItemButton.Visibility = Visibility.Visible;
+            foreach (var i in SongItem.StaticSongItems) i.AddUnloadedEvent();
         }
     }
 }

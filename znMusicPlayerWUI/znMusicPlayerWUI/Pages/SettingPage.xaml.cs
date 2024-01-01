@@ -806,5 +806,18 @@ namespace znMusicPlayerWUI.Pages
         {
             App.LoadLastExitPlayingSongAndSongList = (sender as ToggleSwitch).IsOn;
         }
+
+        private async void Button_Click_9(object sender, RoutedEventArgs e)
+        {
+            App.SaveSettings();
+            await MainWindow.ShowDialog("保存设置成功", "已将设置数据写入设置文件中。");
+        }
+
+        private async void Button_Click_10(object sender, RoutedEventArgs e)
+        {
+            App.LoadSettings(DataEditor.DataFolderBase.JSettingData);
+            await MainWindow.ShowDialog("读取设置成功", "已从设置文件中读取设置。");
+            MainWindow.SetNavViewContent(typeof(SearchPage));
+        }
     }
 }

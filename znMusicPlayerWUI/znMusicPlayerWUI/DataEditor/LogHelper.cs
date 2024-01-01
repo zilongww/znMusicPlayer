@@ -19,7 +19,7 @@ namespace znMusicPlayerWUI.DataEditor
                     ShowDialog(title, message);
                 }
                 var last = File.ReadAllText(DataFolderBase.LogDataPath, Encoding.UTF8);
-                string log = $"{last}----------{DateTime.Now}|{title}----------\n{message}\n";
+                string log = $"{last}[{DateTime.Now} | {title}] {message}\n";
                 File.WriteAllText(DataFolderBase.LogDataPath, log);
             }
         }

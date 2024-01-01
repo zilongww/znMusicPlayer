@@ -31,6 +31,7 @@ using znMusicPlayerWUI.DataEditor;
 using PInvoke;
 using znMusicPlayerWUI.Media;
 using static Vanara.PInvoke.User32;
+using System.Diagnostics.Eventing.Reader;
 
 namespace znMusicPlayerWUI.Windowed
 {
@@ -180,6 +181,9 @@ namespace znMusicPlayerWUI.Windowed
 
         private void SetLyric(LyricData nowLyricsData, bool isNext = false)
         {
+            T11.Text = null;
+            T21.Text = null;
+
             if (nowLyricsData == null)
             {
                 if (App.audioPlayer.MusicData != null)
@@ -230,10 +234,7 @@ namespace znMusicPlayerWUI.Windowed
                 }
                 catch { }
 
-                string t1text = tcount == 1
-                    ? nowLyricsData?.Lyric?.FirstOrDefault()
-                    : $"{nowLyricsData?.Lyric?.FirstOrDefault()} (x{tcount})";
-
+                string t1text = nowLyricsData?.Lyric?.FirstOrDefault();
                 if (LyricTranslateTextPosition == LyricTranslateTextPosition.Center)
                 {
                     V1.HorizontalAlignment = HorizontalAlignment.Center;
@@ -254,21 +255,33 @@ namespace znMusicPlayerWUI.Windowed
                 }
                 if (LyricTranslateTextBehavior == LyricTranslateTextBehavior.MainLyric)
                 {
+                    if (tcount == 1) T11.Text = null;
+                    else T11.Text = $"x{tcount}";
+
                     T1.Text = t1text;
                     T2.Text = nowLyricsData?.Lyric[1];
                 }
                 else if (LyricTranslateTextBehavior == LyricTranslateTextBehavior.TranslateLyric)
                 {
+                    if (tcount == 1) T21.Text = null;
+                    else T21.Text = $"x{tcount}";
+
                     T1.Text = nowLyricsData?.Lyric[1];
                     T2.Text = t1text;
                 }
                 else if (LyricTranslateTextBehavior == LyricTranslateTextBehavior.OnlyMainLyric)
                 {
+                    if (tcount == 1) T11.Text = null;
+                    else T11.Text = $"x{tcount}";
+
                     T1.Text = t1text;
                     T2.Text = null;
                 }
                 else
                 {
+                    if (tcount == 1) T11.Text = null;
+                    else T11.Text = $"x{tcount}";
+
                     T1.Text = nowLyricsData?.Lyric[1];
                     T2.Text = null;
                 }
@@ -330,12 +343,8 @@ namespace znMusicPlayerWUI.Windowed
                     }
                 }
                 catch { }
-                string t1text = tcount == 1
-                    ? nowLyricsData?.Lyric?.FirstOrDefault()
-                    : $"{nowLyricsData?.Lyric?.FirstOrDefault()} (x{tcount})";
-                string t2text = tcount == 1
-                    ? nextData?.Lyric?.FirstOrDefault()
-                    : $"{nextData?.Lyric?.FirstOrDefault()}{(tcount - 1 == 1 ? "" : $" (x{tcount - 1})")}";
+                string t1text = nowLyricsData?.Lyric?.FirstOrDefault();
+                string t2text = nextData?.Lyric?.FirstOrDefault();
 
                 if (LyricTextBehavior == LyricTextBehavior.Exchange)
                 {
@@ -486,6 +495,8 @@ namespace znMusicPlayerWUI.Windowed
                 SizeInt32 sizeInt32_1 = new(AppWindow.Size.Width + 1, AppWindow.Size.Height);
                 AppWindow.Resize(sizeInt32);
                 AppWindow.Resize(sizeInt32_1);
+
+                ShowInfo("关闭桌面歌词后会解除锁定状态");
             }
         }
 

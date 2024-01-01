@@ -691,7 +691,7 @@ namespace znMusicPlayerWUI
         {
             if (SPlayContent.Content is not Imagezn)
             {
-                SPlayContent.Content = new Imagezn() { MinWidth = 0, CornerRadius = new(4) };
+                SPlayContent.Content = new Imagezn() { MinWidth = 0, CornerRadius = new(3) };
             }
         }
 

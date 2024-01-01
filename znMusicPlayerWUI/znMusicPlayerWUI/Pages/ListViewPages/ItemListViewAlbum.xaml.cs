@@ -330,10 +330,10 @@ namespace znMusicPlayerWUI.Pages
         DropShadow dropShadow;
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            if (Children.SelectionMode == ListViewSelectionMode.None)
+            if (SelectItemButton.IsChecked == true)
             {
-                SelectItemButton.Background = App.Current.Resources["AccentAAFillColorTertiaryBrush"] as Brush;
-                Children.SelectionMode = ListViewSelectionMode.Multiple;
+                PlayAllButton.Visibility = Visibility.Collapsed;
+                RefreshButton.Visibility = Visibility.Collapsed;
 
                 SelectorSeparator.Visibility = Visibility.Visible;
                 AddSelectedToPlayingListButton.Visibility = Visibility.Visible;
@@ -343,13 +343,14 @@ namespace znMusicPlayerWUI.Pages
                 SelectReverseButton.Visibility = Visibility.Visible;
                 SelectAllButton.Visibility = Visibility.Visible;
 
+                Children.SelectionMode = ListViewSelectionMode.Multiple;
                 Children.AllowDrop = true;
                 Children.CanReorderItems = true;
             }
             else
             {
-                SelectItemButton.Background = new SolidColorBrush(Colors.Transparent);
-                Children.SelectionMode = ListViewSelectionMode.None;
+                PlayAllButton.Visibility = Visibility.Visible;
+                RefreshButton.Visibility = Visibility.Visible;
 
                 SelectorSeparator.Visibility = Visibility.Collapsed;
                 AddSelectedToPlayingListButton.Visibility = Visibility.Collapsed;
@@ -359,6 +360,7 @@ namespace znMusicPlayerWUI.Pages
                 SelectReverseButton.Visibility = Visibility.Collapsed;
                 SelectAllButton.Visibility = Visibility.Collapsed;
 
+                Children.SelectionMode = ListViewSelectionMode.None;
                 Children.AllowDrop = false;
                 Children.CanReorderItems = false;
             }

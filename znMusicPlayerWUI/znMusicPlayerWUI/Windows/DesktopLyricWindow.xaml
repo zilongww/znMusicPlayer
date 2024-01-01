@@ -26,30 +26,26 @@
                 <ui:DropShadowPanel x:Name="ShadowTarget"
                                     OffsetX="0" OffsetY="0.5"
                                     BlurRadius="6" Color="#AA000000">
-                    <ui:DropShadowPanel.Transitions>
-                        <TransitionCollection>
-                            <ContentThemeTransition/>
-                        </TransitionCollection>
-                    </ui:DropShadowPanel.Transitions>
-                    <TextBlock x:Name="T1" Text="znMusicPlayer" Foreground="{ThemeResource LrcForeground}"/>
+                    <TextBlock>
+                        <Run x:Name="T1" Text="znMusicPlayer" Foreground="{ThemeResource LrcForeground}"/>
+                        <Run x:Name="T11" Text="x5" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
+                    </TextBlock>
                 </ui:DropShadowPanel>
             </Viewbox>
             <Viewbox x:Name="V2" Grid.Row="1" HorizontalAlignment="Stretch">
                 <ui:DropShadowPanel x:Name="ShadowTarget1"
                                     OffsetX="0" OffsetY="0.5"
                                     BlurRadius="6" Color="#AA000000">
-                    <ui:DropShadowPanel.Transitions>
-                        <TransitionCollection>
-                            <ContentThemeTransition/>
-                        </TransitionCollection>
-                    </ui:DropShadowPanel.Transitions>
-                    <TextBlock x:Name="T2" Text="无歌词" Foreground="{ThemeResource LrcForeground}"/>
+                    <TextBlock>
+                        <Run x:Name="T2" Text="无歌词" Foreground="{ThemeResource LrcForeground}"/>
+                        <Run x:Name="T21" Text="" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
+                    </TextBlock>
                 </ui:DropShadowPanel>
             </Viewbox>
         </Grid>
         <Border x:Name="InfoTBBorder"
                 HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0"
-                CornerRadius="4" BorderThickness="1" Background="#90000000" BorderBrush="#88666666">
+                CornerRadius="4" BorderThickness="1" Background="#90000000" BorderBrush="{ThemeResource ControlElevationBorderBrush}">
             <Border.OpacityTransition>
                 <ScalarTransition/>
             </Border.OpacityTransition>
@@ -60,7 +56,7 @@
         </Border>
         <Border Padding="20" CornerRadius="8" BorderThickness="1"
                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                Background="#90000000" BorderBrush="#88666666"
+                Background="#90000000" BorderBrush="{ThemeResource ControlElevationBorderBrush}"
                 x:Name="InfoBorder" Opacity="0">
             <Border.OpacityTransition>
                 <ScalarTransition/>

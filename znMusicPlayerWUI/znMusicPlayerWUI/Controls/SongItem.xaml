@@ -181,11 +181,14 @@
                                 IsHitTestVisible="False" x:FieldModifier="Public"
                                 CornerRadius="0">
                             <Grid>
-                                <local:Imagezn x:Name="AlbumImage"
-                                               ShowMenuBehavior="None"
-                                               CornerRadius="4"
-                                               BorderThickness="1"
-                                               BorderBrush="{ThemeResource ControlElevationBorderBrush}"/>
+                                <Border Visibility="{Binding ElementName=AlbumImage, Path=Visibility}"
+                                        BorderThickness="1"
+                                        BorderBrush="{ThemeResource ControlElevationBorderBrush}"
+                                        CornerRadius="4">
+                                    <local:Imagezn x:Name="AlbumImage"
+                                                   ShowMenuBehavior="None"
+                                                   CornerRadius="3"/>
+                                </Border>
                                 <Grid Width="58" Height="58" x:Name="FileNotExistsRoot" Visibility="Collapsed"
                                       CornerRadius="4"
                                       BorderThickness="1"

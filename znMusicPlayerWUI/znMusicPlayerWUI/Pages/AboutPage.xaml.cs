@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using Melanchall.DryWetMidi.Multimedia;
 using Microsoft.VisualBasic.Devices;
 using NAudio.Wave;
+using znMusicPlayerWUI.Media;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -89,6 +90,12 @@ namespace znMusicPlayerWUI.Pages
 
             //CueSharp.CueSheet cueSheet = new CueSharp.CueSheet("E:\\vedio\\anime\\[170816] TVアニメ「Fate／Apocrypha」OPテーマ「英雄 運命の詩」／EGOIST [通常盤] [FLAC+CUE]\\VVCL-1080.cue");
 
+            try
+            {
+                if (App.playingList.NowPlayingList.Any())
+                    abcd.Source = (await ImageManage.GetImageSource(App.playingList.NowPlayingList[new Random().Next(0, App.playingList.NowPlayingList.Count - 1)])).Item1;
+            }
+            catch { }
             GC.Collect();/*
             var f = await FileHelper.UserSelectFile();
             Play(f.Path);

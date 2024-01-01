@@ -228,9 +228,8 @@ namespace znMusicPlayerWUI.Controls
 
         public async void TestFileExists()
         {
-            bool isExists = true;
             string local = MusicData.InLocal;
-            await Task.Run(() => { isExists = File.Exists(local); });
+            bool isExists = await Task.Run(() => File.Exists(local));
             if (!isExists)
             {
                 FileNotExistsRoot.Visibility = Visibility.Visible;
