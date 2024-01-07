@@ -32,7 +32,7 @@
                   SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="helper:SongItemBindBase">
-                    <controlszn:SongItem Margin="4,0"/>
+                    <controlszn:SongItem Margin="0,0,4,2"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Header>
