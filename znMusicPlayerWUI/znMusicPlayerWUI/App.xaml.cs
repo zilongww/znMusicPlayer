@@ -66,7 +66,7 @@ namespace znMusicPlayerWUI
         public static TaskBarInfoWindow taskBarInfoWindow;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.3.1 Preview";
+        public static readonly string AppVersion = "0.3.11 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -202,10 +202,10 @@ namespace znMusicPlayerWUI
 
             var displayArea = CodeHelper.GetDisplayArea(m_window);
             var dpi = CodeHelper.GetScaleAdjustment(m_window);
-            var width = 1140;
-            var height = 640;
-            if (displayArea.WorkArea.Width <= width ||
-                displayArea.WorkArea.Height <= height)
+            var width = (int)(1140 * dpi);
+            var height = (int)(640 * dpi);
+            if (displayArea.WorkArea.Width * dpi <= width ||
+                displayArea.WorkArea.Height * dpi <= height)
             {
                 AppWindowLocalOverlappedPresenter.Maximize();
             }

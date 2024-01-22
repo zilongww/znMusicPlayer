@@ -566,6 +566,8 @@ namespace znMusicPlayerWUI.Pages
             }
             else
             {
+                Children.SelectionMode = ListViewSelectionMode.None;
+
                 SortComboBoxParent.Visibility = Visibility.Visible;
                 SearchBoxParent.Visibility = Visibility.Visible;
                 PlayAllButton.Visibility = Visibility.Visible;
