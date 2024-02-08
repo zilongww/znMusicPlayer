@@ -111,7 +111,7 @@ namespace znMusicPlayerWUI.Helpers.SDKs
             void MarkFullscreenWindow(IntPtr hWnd, int fFullscreen);
 
             /// <summary>
-            /// Displays or updates a progress bar hosted in a taskbar button to show the specific percentage
+            /// Displays or Updates a progress bar hosted in a taskbar button to show the specific percentage
             /// completed of the full operation.
             /// </summary>
             /// <param name="hWnd">The handle of the window whose associated taskbar button is being used as
@@ -200,7 +200,7 @@ namespace znMusicPlayerWUI.Helpers.SDKs
             /// window in a taskbar button flyout.
             /// </summary>
             /// <param name="hWnd">The handle of the window whose thumbnail representation contains the toolbar to be
-            /// updated. This handle must belong to the calling process.</param>
+            /// Updated. This handle must belong to the calling process.</param>
             /// <param name="himl">The handle of the image list that contains all button images to be used in the toolbar.</param>
             void ThumbBarSetImageList(IntPtr hWnd, IntPtr himl);
 
@@ -218,7 +218,7 @@ namespace znMusicPlayerWUI.Helpers.SDKs
             void SetOverlayIcon(IntPtr hWnd, IntPtr hIcon, string pszDescription);
 
             /// <summary>
-            /// Specifies or updates the text of the tooltip that is displayed when the mouse pointer rests on an
+            /// Specifies or Updates the text of the tooltip that is displayed when the mouse pointer rests on an
             /// individual preview thumbnail in a taskbar button flyout.
             /// </summary>
             /// <param name="hWnd">The handle to the window whose thumbnail displays the tooltip. This handle must

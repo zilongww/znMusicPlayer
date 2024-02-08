@@ -506,7 +506,7 @@ int av_opt_set_dict2(void *obj, struct AVDictionary **options, int search_flags)
 /**
  * Extract a key-value pair from the beginning of a string.
  *
- * @param ropts        pointer to the options string, will be updated to
+ * @param ropts        pointer to the options string, will be Updated to
  *                     point to the rest of the string (one of the pairs_sep
  *                     or the final NUL)
  * @param key_val_sep  a 0-terminated list of characters used to separate

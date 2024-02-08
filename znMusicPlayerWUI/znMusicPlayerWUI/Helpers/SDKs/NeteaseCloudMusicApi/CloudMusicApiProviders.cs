@@ -732,10 +732,10 @@ namespace NeteaseCloudMusicApi {
 		/// <summary>
 		/// 更新歌单描述
 		/// </summary>
-		public static readonly CloudMusicApiProvider PlaylistDescUpdate = new CloudMusicApiProvider("/playlist/desc/update", HttpMethod.Post, "http://interface3.music.163.com/eapi/playlist/desc/update", new ParameterInfo[] {
+		public static readonly CloudMusicApiProvider PlaylistDescUpdate = new CloudMusicApiProvider("/playlist/desc/Update", HttpMethod.Post, "http://interface3.music.163.com/eapi/playlist/desc/Update", new ParameterInfo[] {
 			new ParameterInfo("id"),
 			new ParameterInfo("desc")
-		}, BuildOptions("eapi", null, null, "/api/playlist/desc/update"));
+		}, BuildOptions("eapi", null, null, "/api/playlist/desc/Update"));
 
 		/// <summary>
 		/// 获取歌单详情
@@ -754,10 +754,10 @@ namespace NeteaseCloudMusicApi {
 		/// <summary>
 		/// 更新歌单名
 		/// </summary>
-		public static readonly CloudMusicApiProvider PlaylistNameUpdate = new CloudMusicApiProvider("/playlist/name/update", HttpMethod.Post, "http://interface3.music.163.com/eapi/playlist/update/name", new ParameterInfo[] {
+		public static readonly CloudMusicApiProvider PlaylistNameUpdate = new CloudMusicApiProvider("/playlist/name/Update", HttpMethod.Post, "http://interface3.music.163.com/eapi/playlist/Update/name", new ParameterInfo[] {
 			new ParameterInfo("id"),
 			new ParameterInfo("name")
-		}, BuildOptions("eapi", null, null, "/api/playlist/update/name"));
+		}, BuildOptions("eapi", null, null, "/api/playlist/Update/name"));
 
 		/// <summary>
 		/// 收藏/取消收藏歌单
@@ -778,10 +778,10 @@ namespace NeteaseCloudMusicApi {
 		/// <summary>
 		/// 更新歌单标签
 		/// </summary>
-		public static readonly CloudMusicApiProvider PlaylistTagsUpdate = new CloudMusicApiProvider("/playlist/tags/update", HttpMethod.Post, "http://interface3.music.163.com/eapi/playlist/tags/update", new ParameterInfo[] {
+		public static readonly CloudMusicApiProvider PlaylistTagsUpdate = new CloudMusicApiProvider("/playlist/tags/Update", HttpMethod.Post, "http://interface3.music.163.com/eapi/playlist/tags/Update", new ParameterInfo[] {
 			new ParameterInfo("id"),
 			new ParameterInfo("tags")
-		}, BuildOptions("eapi", null, null, "/api/playlist/tags/update"));
+		}, BuildOptions("eapi", null, null, "/api/playlist/tags/Update"));
 
 		/// <summary>
 		/// 对歌单添加或删除歌曲
@@ -795,11 +795,11 @@ namespace NeteaseCloudMusicApi {
 		/// <summary>
 		/// 更新歌单
 		/// </summary>
-		public static readonly CloudMusicApiProvider PlaylistUpdate = new CloudMusicApiProvider("/playlist/update", HttpMethod.Post, "https://music.163.com/weapi/batch", Array.Empty<ParameterInfo>(), BuildOptions("weapi", new Cookie[] { new Cookie("os", "pc") })) {
+		public static readonly CloudMusicApiProvider PlaylistUpdate = new CloudMusicApiProvider("/playlist/Update", HttpMethod.Post, "https://music.163.com/weapi/batch", Array.Empty<ParameterInfo>(), BuildOptions("weapi", new Cookie[] { new Cookie("os", "pc") })) {
 			DataProvider = queries => new Dictionary<string, object> {
-				["/api/playlist/update/name"] = $"{{\"id\":{queries["id"]},\"name\":\"{queries["name"]}\"}}",
-				["/api/playlist/desc/update"] = $"{{\"id\":{queries["id"]},\"desc\":\"{queries["desc"]}\"}}",
-				["/api/playlist/tags/update"] = $"{{\"id\":{queries["id"]},\"tags\":\"{queries["tags"]}\"}}"
+				["/api/playlist/Update/name"] = $"{{\"id\":{queries["id"]},\"name\":\"{queries["name"]}\"}}",
+				["/api/playlist/desc/Update"] = $"{{\"id\":{queries["id"]},\"desc\":\"{queries["desc"]}\"}}",
+				["/api/playlist/tags/Update"] = $"{{\"id\":{queries["id"]},\"tags\":\"{queries["tags"]}\"}}"
 			}
 		};
 
@@ -1204,7 +1204,7 @@ namespace NeteaseCloudMusicApi {
 		/// <summary>
 		/// 更新用户信息
 		/// </summary>
-		public static readonly CloudMusicApiProvider UserUpdate = new CloudMusicApiProvider("/user/update", HttpMethod.Post, "https://music.163.com/weapi/user/profile/update", new ParameterInfo[] {
+		public static readonly CloudMusicApiProvider UserUpdate = new CloudMusicApiProvider("/user/Update", HttpMethod.Post, "https://music.163.com/weapi/user/profile/Update", new ParameterInfo[] {
 			new ParameterInfo("birthday"),
 			new ParameterInfo("city"),
 			new ParameterInfo("gender"),

@@ -252,7 +252,7 @@ namespace ATL.AudioData.IO
                 if (source.Position < limit) source.Read(aByte, 0, 1);
             }
 
-            // Update zone size (remove and replace zone with updated size)
+            // Update zone size (remove and replace zone with Updated size)
             if (previousChunkId.Length > 0 && previousChunkSizeCorrection > 0)
             {
                 FileStructureHelper sHelper = (previousChunkId == CHUNKTYPE_ID3TAG) ? id3v2StructureHelper : structureHelper;

@@ -475,7 +475,7 @@ namespace ATL.AudioData.IO
             if (doWritePicture)
             {
                 bool pictureExists = false;
-                // Check if the picture to write is already there ('neutral update' use case)
+                // Check if the picture to write is already there ('neutral Update' use case)
                 if (existingPictures.Count > existingPictureIndex)
                 {
                     PictureInfo existingPic = existingPictures[existingPictureIndex++];

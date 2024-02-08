@@ -14,7 +14,10 @@
               CanDragItems="True" AllowDrop="True"
               CanReorderItems="True" SelectionMode="None">
         <GridView.Header>
-            <TextBlock Text="拖动以重新排序" FontSize="12" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+            <StackPanel Orientation="Horizontal" Spacing="2">
+                <FontIcon Glyph="&#xE7BA;" FontSize="14" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" VerticalAlignment="Center"/>
+                <TextBlock Text="拖动以重新排序" FontSize="12" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" VerticalAlignment="Center"/>
+            </StackPanel>
         </GridView.Header>
         <GridView.ItemTemplate>
             <DataTemplate x:DataType="datas:MusicListData">

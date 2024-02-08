@@ -191,7 +191,7 @@ void *av_realloc(void *ptr, size_t size) av_alloc_size(2);
  *
  * @param[in,out] ptr  Pointer to a pointer to a memory block already allocated
  *                     with av_realloc(), or a pointer to `NULL`. The pointer
- *                     is updated on success, or freed on failure.
+ *                     is Updated on success, or freed on failure.
  * @param[in]     size Size in bytes for the memory block to be allocated or
  *                     reallocated
  *
@@ -247,7 +247,7 @@ av_alloc_size(2, 3) void *av_realloc_array(void *ptr, size_t nmemb, size_t size)
  *
  * @param[in,out] ptr   Pointer to a pointer to a memory block already
  *                      allocated with av_realloc(), or a pointer to `NULL`.
- *                      The pointer is updated on success, or freed on failure.
+ *                      The pointer is Updated on success, or freed on failure.
  * @param[in]     nmemb Number of elements
  * @param[in]     size  Size of the single element
  *
@@ -281,7 +281,7 @@ int av_reallocp_array(void *ptr, size_t nmemb, size_t size);
  *
  * @param[in,out] ptr      Already allocated buffer, or `NULL`
  * @param[in,out] size     Pointer to the size of buffer `ptr`. `*size` is
- *                         updated to the new allocated size, in particular 0
+ *                         Updated to the new allocated size, in particular 0
  *                         in case of failure.
  * @param[in]     min_size Desired minimal size of buffer `ptr`
  * @return `ptr` if the buffer is large enough, a pointer to newly reallocated
@@ -315,7 +315,7 @@ void *av_fast_realloc(void *ptr, unsigned int *size, size_t min_size);
  *                         `*ptr` will be overwritten with pointer to new
  *                         buffer on success or `NULL` on failure
  * @param[in,out] size     Pointer to the size of buffer `*ptr`. `*size` is
- *                         updated to the new allocated size, in particular 0
+ *                         Updated to the new allocated size, in particular 0
  *                         in case of failure.
  * @param[in]     min_size Desired minimal size of buffer `*ptr`
  * @see av_realloc()
@@ -336,7 +336,7 @@ void av_fast_malloc(void *ptr, unsigned int *size, size_t min_size);
  *                         `*ptr` will be overwritten with pointer to new
  *                         buffer on success or `NULL` on failure
  * @param[in,out] size     Pointer to the size of buffer `*ptr`. `*size` is
- *                         updated to the new allocated size, in particular 0
+ *                         Updated to the new allocated size, in particular 0
  *                         in case of failure.
  * @param[in]     min_size Desired minimal size of buffer `*ptr`
  * @see av_fast_malloc()
@@ -512,7 +512,7 @@ void av_memcpy_backptr(uint8_t *dst, int back, int cnt);
  * The array is reallocated when its size reaches powers of 2.
  * Therefore, the amortized cost of adding an element is constant.
  *
- * In case of success, the pointer to the array is updated in order to
+ * In case of success, the pointer to the array is Updated in order to
  * point to the new grown array, and the number pointed to by `nb_ptr`
  * is incremented.
  * In case of failure, the array is freed, `*tab_ptr` is set to `NULL` and
@@ -544,7 +544,7 @@ int av_dynarray_add_nofree(void *tab_ptr, int *nb_ptr, void *elem);
  * The array is reallocated when its number of elements reaches powers of 2.
  * Therefore, the amortized cost of adding an element is constant.
  *
- * In case of success, the pointer to the array is updated in order to
+ * In case of success, the pointer to the array is Updated in order to
  * point to the new grown array, and the number pointed to by `nb_ptr`
  * is incremented.
  * In case of failure, the array is freed, `*tab_ptr` is set to `NULL` and

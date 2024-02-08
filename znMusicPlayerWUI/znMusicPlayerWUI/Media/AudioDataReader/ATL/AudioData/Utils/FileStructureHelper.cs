@@ -409,10 +409,10 @@ namespace ATL.AudioData
         /// Update all headers at the given position to the given value
         /// (useful when multiple zones refer to the very same header)
         /// </summary>
-        /// <param name="position">Position of header to be updated</param>
-        /// <param name="type">Type of header to be updated</param>
+        /// <param name="position">Position of header to be Updated</param>
+        /// <param name="type">Type of header to be Updated</param>
         /// <param name="newValue">New value to be assigned to header</param>
-        private void updateAllHeadersAtPosition(long position, FrameHeader.TYPE type, object newValue)
+        private void UpdateAllHeadersAtPosition(long position, FrameHeader.TYPE type, object newValue)
         {
             // NB : this method should perform quite badly -- evolve to using position-based dictionary if any performance issue arise
             foreach (Zone frame in zones.Values)
@@ -432,55 +432,55 @@ namespace ATL.AudioData
         /// </summary>
         /// <param name="value">Reference value</param>
         /// <param name="delta">Value to add</param>
-        /// <param name="updatedValue">Updated value (out parameter; will be returned as same type as reference value)</param>
+        /// <param name="UpdatedValue">Updated value (out parameter; will be returned as same type as reference value)</param>
         /// <returns>Resulting value after the addition, encoded into an array of bytes, as the same type of the reference value</returns>
-        private static byte[] addToValue(object value, long delta, out object updatedValue)
+        private static byte[] addToValue(object value, long delta, out object UpdatedValue)
         {
             if (value is byte)
             {
-                updatedValue = (byte)((byte)value + delta);
-                return new byte[1] { (byte)updatedValue };
+                UpdatedValue = (byte)((byte)value + delta);
+                return new byte[1] { (byte)UpdatedValue };
             }
             else if (value is short)
             {
-                updatedValue = (short)((short)value + delta);
-                return BitConverter.GetBytes((short)updatedValue);
+                UpdatedValue = (short)((short)value + delta);
+                return BitConverter.GetBytes((short)UpdatedValue);
             }
             else if (value is ushort)
             {
-                updatedValue = (ushort)((ushort)value + delta);
-                return BitConverter.GetBytes((ushort)updatedValue);
+                UpdatedValue = (ushort)((ushort)value + delta);
+                return BitConverter.GetBytes((ushort)UpdatedValue);
             }
             else if (value is int)
             {
-                updatedValue = (int)((int)value + delta);
-                return BitConverter.GetBytes((int)updatedValue);
+                UpdatedValue = (int)((int)value + delta);
+                return BitConverter.GetBytes((int)UpdatedValue);
             }
             else if (value is uint)
             {
-                updatedValue = (uint)((uint)value + delta);
-                return BitConverter.GetBytes((uint)updatedValue);
+                UpdatedValue = (uint)((uint)value + delta);
+                return BitConverter.GetBytes((uint)UpdatedValue);
             }
             else if (value is long)
             {
-                updatedValue = (long)value + delta;
-                return BitConverter.GetBytes((long)updatedValue);
+                UpdatedValue = (long)value + delta;
+                return BitConverter.GetBytes((long)UpdatedValue);
             }
             else if (value is ulong) // Need to tweak because ulong + int is illegal according to the compiler
             {
                 if (delta > 0)
                 {
-                    updatedValue = (ulong)value + (ulong)delta;
+                    UpdatedValue = (ulong)value + (ulong)delta;
                 }
                 else
                 {
-                    updatedValue = (ulong)value - (ulong)(-delta);
+                    UpdatedValue = (ulong)value - (ulong)(-delta);
                 }
-                return BitConverter.GetBytes((ulong)updatedValue);
+                return BitConverter.GetBytes((ulong)UpdatedValue);
             }
             else
             {
-                updatedValue = value;
+                UpdatedValue = value;
                 return null;
             }
         }
@@ -566,7 +566,7 @@ namespace ATL.AudioData
             long offsetPositionCorrection;
             long offsetValueCorrection;
             byte[] value;
-            object updatedValue;
+            object UpdatedValue;
             bool passedParentZone;
             bool passedValueZone;
 
@@ -646,12 +646,12 @@ namespace ATL.AudioData
 
                     s.Seek(header.Position + offsetPositionCorrection, SeekOrigin.Begin);
 
-                    value = addToValue(header.Value, delta, out updatedValue);
+                    value = addToValue(header.Value, delta, out UpdatedValue);
 
                     if (null == value) throw new NotSupportedException("Value type not supported for " + zoneName + "@" + header.Position + " : " + header.Value.GetType());
 
-                    // The very same frame header is referenced from another frame and must be updated to its new value
-                    updateAllHeadersAtPosition(header.Position, header.Type, updatedValue);
+                    // The very same frame header is referenced from another frame and must be Updated to its new value
+                    UpdateAllHeadersAtPosition(header.Position, header.Type, UpdatedValue);
 
                     if (!header.IsLittleEndian) Array.Reverse(value);
 
@@ -711,7 +711,7 @@ namespace ATL.AudioData
                 if (!localDynamicOffsetCorrection.ContainsKey(zoneInfo))
                     localDynamicOffsetCorrection.Add(zoneInfo, new KeyValuePair<long, long>(currentZone.Offset + currentZone.Size, deltaSize));
 
-                // If working with local dynamic offset correction, update global dynamic offset correction
+                // If working with local dynamic offset correction, Update global dynamic offset correction
                 if (regionId > -1)
                 {
                     IDictionary<ZoneInfo, KeyValuePair<long, long>> globalRegion = dynamicOffsetCorrection[-1];

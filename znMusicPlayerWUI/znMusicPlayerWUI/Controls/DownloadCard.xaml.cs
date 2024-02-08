@@ -170,7 +170,14 @@ namespace znMusicPlayerWUI.Controls
             CoverRectangle.Rect = new(0, 0, CompletedBackgroundBase.ActualWidth, CompletedBackgroundBase.ActualHeight);
             DownloadProgress.Value = 100;
             await Task.Delay(10);
-            MessageTb.Text = "下载错误";
+            if (downloadData.ErrorMessage != null)
+            {
+                MessageTb.Text = $"{downloadData.ErrorMessage} | 下载错误";
+            }
+            else
+            {
+                MessageTb.Text = "下载错误";
+            }
             FontIconBase.Glyph = "\uE711";
         }
 

@@ -73,7 +73,7 @@
  *
  * // Update the hash context with data
  * while (data_left) {
- *     av_hash_update(ctx, data, size);
+ *     av_hash_Update(ctx, data, size);
  * }
  *
  * // Now we have no more data, so it is time to finalize the hash and get the
@@ -180,7 +180,7 @@ void av_hash_init(struct AVHashContext *ctx);
  * @param[in]     src Data to be added to the hash context
  * @param[in]     len Size of the additional data
  */
-void av_hash_update(struct AVHashContext *ctx, const uint8_t *src, size_t len);
+void av_hash_Update(struct AVHashContext *ctx, const uint8_t *src, size_t len);
 
 /**
  * Finalize a hash context and compute the actual hash value.
@@ -188,7 +188,7 @@ void av_hash_update(struct AVHashContext *ctx, const uint8_t *src, size_t len);
  * The minimum size of `dst` buffer is given by av_hash_get_size() or
  * #AV_HASH_MAX_SIZE. The use of the latter macro is discouraged.
  *
- * It is not safe to update or finalize a hash context again, if it has already
+ * It is not safe to Update or finalize a hash context again, if it has already
  * been finalized.
  *
  * @param[in,out] ctx Hash context
@@ -201,7 +201,7 @@ void av_hash_final(struct AVHashContext *ctx, uint8_t *dst);
 /**
  * Finalize a hash context and store the actual hash value in a buffer.
  *
- * It is not safe to update or finalize a hash context again, if it has already
+ * It is not safe to Update or finalize a hash context again, if it has already
  * been finalized.
  *
  * If `size` is smaller than the hash size (given by av_hash_get_size()), the
@@ -217,7 +217,7 @@ void av_hash_final_bin(struct AVHashContext *ctx, uint8_t *dst, int size);
  * Finalize a hash context and store the hexadecimal representation of the
  * actual hash value as a string.
  *
- * It is not safe to update or finalize a hash context again, if it has already
+ * It is not safe to Update or finalize a hash context again, if it has already
  * been finalized.
  *
  * The string is always 0-terminated.
@@ -235,7 +235,7 @@ void av_hash_final_hex(struct AVHashContext *ctx, uint8_t *dst, int size);
  * Finalize a hash context and store the Base64 representation of the
  * actual hash value as a string.
  *
- * It is not safe to update or finalize a hash context again, if it has already
+ * It is not safe to Update or finalize a hash context again, if it has already
  * been finalized.
  *
  * The string is always 0-terminated.

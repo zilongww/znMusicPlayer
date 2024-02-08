@@ -610,7 +610,7 @@ struct AVFilterLink {
      *
      * Sources should set it to the best estimation of the real frame rate.
      * If the source frame rate is unknown or variable, set this to 1/0.
-     * Filters should update it if necessary depending on their function.
+     * Filters should Update it if necessary depending on their function.
      * Sinks can use it to set a default output frame rate.
      * It is similar to the r_frame_rate field in AVStream.
      */
@@ -1071,10 +1071,10 @@ int avfilter_graph_parse(AVFilterGraph *graph, const char *filters,
  * @param graph   the filter graph where to link the parsed graph context
  * @param filters string to be parsed
  * @param inputs  pointer to a linked list to the inputs of the graph, may be NULL.
- *                If non-NULL, *inputs is updated to contain the list of open inputs
+ *                If non-NULL, *inputs is Updated to contain the list of open inputs
  *                after the parsing, should be freed with avfilter_inout_free().
  * @param outputs pointer to a linked list to the outputs of the graph, may be NULL.
- *                If non-NULL, *outputs is updated to contain the list of open outputs
+ *                If non-NULL, *outputs is Updated to contain the list of open outputs
  *                after the parsing, should be freed with avfilter_inout_free().
  * @return non negative on success, a negative AVERROR code on error
  */

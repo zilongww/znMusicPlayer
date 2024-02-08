@@ -249,7 +249,7 @@ typedef struct AVIOContext {
                                  before flushing it. */
     unsigned long checksum;
     unsigned char *checksum_ptr;
-    unsigned long (*update_checksum)(unsigned long checksum, const uint8_t *buf, unsigned int size);
+    unsigned long (*Update_checksum)(unsigned long checksum, const uint8_t *buf, unsigned int size);
     /**
      * Pause or resume playback for network streaming protocols - e.g. MMS.
      */
@@ -748,7 +748,7 @@ int avio_close_dyn_buf(AVIOContext *s, uint8_t **pbuffer);
  *
  * @param opaque A private pointer representing current protocol.
  *        It must be a pointer to NULL on first iteration and will
- *        be updated by successive calls to avio_enum_protocols.
+ *        be Updated by successive calls to avio_enum_protocols.
  * @param output If set to 1, iterate over output protocols,
  *               otherwise over input protocols.
  *

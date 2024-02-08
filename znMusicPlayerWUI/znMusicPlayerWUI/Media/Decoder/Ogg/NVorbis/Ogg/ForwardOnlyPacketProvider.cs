@@ -107,7 +107,7 @@ namespace NVorbis.Ogg
                 return this;
             }
 
-            // use a local variable to throw away the updated position
+            // use a local variable to throw away the Updated position
             _lastWasPeek = true;
             if (GetPacket())
             {
@@ -212,7 +212,7 @@ namespace NVorbis.Ogg
                     {
                         // we're in the right spot!
 
-                        // update the overhead count
+                        // Update the overhead count
                         contOverhead += 27 + pageBuf[26];
 
                         // save off the previous buffer data
@@ -226,7 +226,7 @@ namespace NVorbis.Ogg
                         prevBuf.CopyTo(packetBuf);
                         (new Memory<byte>(pageBuf, dataStart, contSz)).CopyTo(packetBuf.Slice(prevBuf.Length));
 
-                        // now that we've read, update our start position
+                        // now that we've read, Update our start position
                         dataStart += contSz;
                     }
                     else

@@ -65,7 +65,7 @@
                                    HorizontalAlignment="Right"
                                    Margin="0,5,12,0"/>
                     </Grid>
-                    <TextBlock Text="播放列表里没有歌曲，去添加歌曲吧！"
+                    <TextBlock Text="没有正在下载的歌曲，去添加歌曲吧！"
                            VerticalAlignment="Center" Grid.Column="1"
                            FontSize="16" TextWrapping="WrapWholeWords"
                            Margin="0,12,12,12"/>

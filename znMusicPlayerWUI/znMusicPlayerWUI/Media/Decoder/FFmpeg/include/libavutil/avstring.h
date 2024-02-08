@@ -37,7 +37,7 @@
  *
  * @param str input string
  * @param pfx prefix to test
- * @param ptr updated if the prefix is matched inside str
+ * @param ptr Updated if the prefix is matched inside str
  * @return non-zero if the prefix matches, zero otherwise
  */
 int av_strstart(const char *str, const char *pfx, const char **ptr);
@@ -49,7 +49,7 @@ int av_strstart(const char *str, const char *pfx, const char **ptr);
  *
  * @param str input string
  * @param pfx prefix to test
- * @param ptr updated if the prefix is matched inside str
+ * @param ptr Updated if the prefix is matched inside str
  * @return non-zero if the prefix matches, zero otherwise
  */
 int av_stristart(const char *str, const char *pfx, const char **ptr);
@@ -165,7 +165,7 @@ char *av_asprintf(const char *fmt, ...) av_printf_format(1, 2);
  * whitespaces are removed, unless they are escaped with '\' or are
  * enclosed between ''.
  *
- * @param buf the buffer to parse, buf will be updated to point to the
+ * @param buf the buffer to parse, buf will be Updated to point to the
  * terminating char
  * @param term a 0-terminated list of terminating chars
  * @return the malloced unescaped string, which must be av_freed by
@@ -191,7 +191,7 @@ char *av_get_token(const char **buf, const char *term);
  * @param delim 0-terminated list of token delimiters, must be non-NULL
  * @param saveptr user-provided pointer which points to stored
  * information necessary for av_strtok() to continue scanning the same
- * string. saveptr is updated to point to the next character after the
+ * string. saveptr is Updated to point to the next character after the
  * first delimiter found, or to NULL if the string was terminated
  * @return the found token, or NULL when no token is found
  */
@@ -379,10 +379,10 @@ int av_escape(char **dst, const char *src, const char *special_chars,
 
 /**
  * Read and decode a single UTF-8 code point (character) from the
- * buffer in *buf, and update *buf to point to the next byte to
+ * buffer in *buf, and Update *buf to point to the next byte to
  * decode.
  *
- * In case of an invalid byte sequence, the pointer will be updated to
+ * In case of an invalid byte sequence, the pointer will be Updated to
  * the next byte after the invalid sequence and the function will
  * return an error code.
  *
@@ -395,7 +395,7 @@ int av_escape(char **dst, const char *src, const char *special_chars,
  * @param codep   pointer used to return the parsed code in case of success.
  *                The value in *codep is set even in case the range check fails.
  * @param bufp    pointer to the address the first byte of the sequence
- *                to decode, updated by the function to point to the
+ *                to decode, Updated by the function to point to the
  *                byte next after the decoded sequence
  * @param buf_end pointer to the end of the buffer, points to the next
  *                byte past the last in the buffer. This is used to

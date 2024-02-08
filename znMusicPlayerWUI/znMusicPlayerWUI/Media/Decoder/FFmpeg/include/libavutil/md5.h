@@ -60,10 +60,10 @@ void av_md5_init(struct AVMD5 *ctx);
  * Update hash value.
  *
  * @param ctx hash function context
- * @param src input data to update hash with
+ * @param src input data to Update hash with
  * @param len input data length
  */
-void av_md5_update(struct AVMD5 *ctx, const uint8_t *src, size_t len);
+void av_md5_Update(struct AVMD5 *ctx, const uint8_t *src, size_t len);
 
 /**
  * Finish hashing and output digest value.

@@ -469,7 +469,7 @@ namespace ATL.AudioData.IO
 
             // Update tag information without calling Read
             /* TODO - this implementation is too risky : 
-             *   - if one of the writing operations fails, data is updated as if everything went right
+             *   - if one of the writing operations fails, data is Updated as if everything went right
              *   - any picture slot with a markForDeletion flag is recorded as-is in the tag
              */
             tagData = dataToWrite;
@@ -487,7 +487,7 @@ namespace ATL.AudioData.IO
 
             // Update tag information without calling Read
             /* TODO - this implementation is too risky : 
-             *   - if one of the writing operations fails, data is updated as if everything went right
+             *   - if one of the writing operations fails, data is Updated as if everything went right
              *   - any picture slot with a markForDeletion flag is recorded as-is in the tag
              */
             tagData = dataToWrite;

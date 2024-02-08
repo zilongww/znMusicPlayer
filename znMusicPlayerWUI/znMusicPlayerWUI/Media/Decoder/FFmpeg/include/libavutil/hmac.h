@@ -66,7 +66,7 @@ void av_hmac_init(AVHMAC *ctx, const uint8_t *key, unsigned int keylen);
  * @param data The data to hash
  * @param len  The length of the data, in bytes
  */
-void av_hmac_update(AVHMAC *ctx, const uint8_t *data, unsigned int len);
+void av_hmac_Update(AVHMAC *ctx, const uint8_t *data, unsigned int len);
 
 /**
  * Finish hashing and output the HMAC digest.

@@ -52,7 +52,7 @@ typedef struct AVFifo AVFifo;
  *            av_fifo_*_cb function is called
  * @param nb_elems On entry contains the maximum number of elements that can be
  *                 read from / written into buf. On success, the callback should
- *                 update it to contain the number of elements actually written.
+ *                 Update it to contain the number of elements actually written.
  *
  * @return 0 on success, a negative error code on failure (will be returned from
  *         the invoking av_fifo_*_cb() function)
@@ -147,7 +147,7 @@ int av_fifo_write(AVFifo *f, const void *buf, size_t nb_elems);
  *                multiple times.
  * @param opaque opaque user data to be provided to read_cb
  * @param nb_elems Should point to the maximum number of elements that can be
- *                 written. Will be updated to contain the number of elements
+ *                 written. Will be Updated to contain the number of elements
  *                 actually written.
  *
  * @return non-negative number on success, a negative error code on failure
@@ -178,7 +178,7 @@ int av_fifo_read(AVFifo *f, void *buf, size_t nb_elems);
  *                 multiple times.
  * @param opaque opaque user data to be provided to write_cb
  * @param nb_elems Should point to the maximum number of elements that can be
- *                 read. Will be updated to contain the total number of elements
+ *                 read. Will be Updated to contain the total number of elements
  *                 actually sent to the callback.
  *
  * @return non-negative number on success, a negative error code on failure
@@ -210,7 +210,7 @@ int av_fifo_peek(AVFifo *f, void *buf, size_t nb_elems, size_t offset);
  *                 multiple times.
  * @param opaque opaque user data to be provided to write_cb
  * @param nb_elems Should point to the maximum number of elements that can be
- *                 read. Will be updated to contain the total number of elements
+ *                 read. Will be Updated to contain the total number of elements
  *                 actually sent to the callback.
  * @param offset number of initial elements to skip; offset + *nb_elems must not
  *               be larger than av_fifo_can_read(f).

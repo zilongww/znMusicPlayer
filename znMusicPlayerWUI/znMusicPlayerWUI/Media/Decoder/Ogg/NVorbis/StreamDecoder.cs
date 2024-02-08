@@ -378,10 +378,10 @@ namespace NVorbis
                 }
             }
 
-            // update the count of floats written
+            // Update the count of floats written
             count = idx - offset;
 
-            // update the position
+            // Update the position
             _currentPosition += count / _channels;
 
             // return count of floats written
@@ -449,7 +449,7 @@ namespace NVorbis
                 _prevPacketStart = validLen;
             }
 
-            // update stats
+            // Update stats
             _stats.AddPacket(validLen - _prevPacketStart, bitsRead, bitsRemaining, containerOverheadBits);
 
             // keep the old buffer so the GC doesn't have to reallocate every packet

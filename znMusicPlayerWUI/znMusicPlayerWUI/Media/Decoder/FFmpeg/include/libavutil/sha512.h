@@ -72,10 +72,10 @@ int av_sha512_init(struct AVSHA512* context, int bits);
  * Update hash value.
  *
  * @param context hash function context
- * @param data    input data to update hash with
+ * @param data    input data to Update hash with
  * @param len     input data length
  */
-void av_sha512_update(struct AVSHA512* context, const uint8_t* data, size_t len);
+void av_sha512_Update(struct AVSHA512* context, const uint8_t* data, size_t len);
 
 /**
  * Finish hashing and output digest value.

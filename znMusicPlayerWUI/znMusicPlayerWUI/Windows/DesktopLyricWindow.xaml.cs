@@ -80,6 +80,7 @@ namespace znMusicPlayerWUI.Windowed
                 AppWindow.TitleBar.ButtonInactiveForegroundColor = Colors.Transparent;
                 AppWindow.TitleBar.IconShowOptions = IconShowOptions.HideIconAndSystemMenu;
 
+                var dpi = CodeHelper.GetScaleAdjustment(this);
                 if (IsMoved)
                 {
                     AppWindow.Move(lastWindowPosition);
@@ -87,7 +88,7 @@ namespace znMusicPlayerWUI.Windowed
                 }
                 else
                 {
-                    AppWindow.Resize(new SizeInt32() { Width = 450, Height = 100 });
+                    AppWindow.Resize(new SizeInt32() { Width = (int)(450 * dpi), Height = (int)(100 * dpi) });
                     if (!MainWindow.isMinSize)
                     {
                         PointInt32 pointInt32 = new(
@@ -184,6 +185,7 @@ namespace znMusicPlayerWUI.Windowed
             T11.Text = null;
             T21.Text = null;
 
+            // nice coding
             if (nowLyricsData == null)
             {
                 if (App.audioPlayer.MusicData != null)
@@ -193,8 +195,22 @@ namespace znMusicPlayerWUI.Windowed
                 }
                 T1.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
                 T2.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
-                V1.HorizontalAlignment = HorizontalAlignment.Center;
-                V2.HorizontalAlignment = HorizontalAlignment.Center;
+
+                if (LyricTranslateTextPosition == LyricTranslateTextPosition.Left)
+                {
+                    V1.HorizontalAlignment = HorizontalAlignment.Left;
+                    V2.HorizontalAlignment = HorizontalAlignment.Left;
+                }
+                else if (LyricTranslateTextPosition == LyricTranslateTextPosition.Right)
+                {
+                    V1.HorizontalAlignment = HorizontalAlignment.Right;
+                    V2.HorizontalAlignment = HorizontalAlignment.Right;
+                }
+                else
+                {
+                    V1.HorizontalAlignment = HorizontalAlignment.Center;
+                    V2.HorizontalAlignment = HorizontalAlignment.Center;
+                }
                 return;
             }
             if (nowLyricsData.Lyric == null)
@@ -203,11 +219,24 @@ namespace znMusicPlayerWUI.Windowed
                 T2.Text = App.audioPlayer.MusicData.ButtonName;
                 T1.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
                 T2.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
-                V1.HorizontalAlignment = HorizontalAlignment.Center;
-                V2.HorizontalAlignment = HorizontalAlignment.Center;
+
+                if (LyricTranslateTextPosition == LyricTranslateTextPosition.Left)
+                {
+                    V1.HorizontalAlignment = HorizontalAlignment.Left;
+                    V2.HorizontalAlignment = HorizontalAlignment.Left;
+                }
+                else if (LyricTranslateTextPosition == LyricTranslateTextPosition.Right)
+                {
+                    V1.HorizontalAlignment = HorizontalAlignment.Right;
+                    V2.HorizontalAlignment = HorizontalAlignment.Right;
+                }
+                else
+                {
+                    V1.HorizontalAlignment = HorizontalAlignment.Center;
+                    V2.HorizontalAlignment = HorizontalAlignment.Center;
+                }
                 return;
             }
-
             if (nowLyricsData.Lyric.First() == LyricHelper.NoneLyricString)
             {
                 if (App.lyricManager.NowPlayingLyrics.Any())
@@ -218,7 +247,6 @@ namespace znMusicPlayerWUI.Windowed
                 }
                 return;
             }
-
             if (nowLyricsData?.Lyric.Count > 1)
             {
                 IsT1Focus = true;

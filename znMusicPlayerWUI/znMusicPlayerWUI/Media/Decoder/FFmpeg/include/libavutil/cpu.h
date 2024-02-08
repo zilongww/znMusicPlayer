@@ -103,7 +103,7 @@ int av_get_cpu_flags(void);
 void av_force_cpu_flags(int flags);
 
 /**
- * Parse CPU caps from a string and update the given AV_CPU_* flags based on that.
+ * Parse CPU caps from a string and Update the given AV_CPU_* flags based on that.
  *
  * @return negative on error.
  */

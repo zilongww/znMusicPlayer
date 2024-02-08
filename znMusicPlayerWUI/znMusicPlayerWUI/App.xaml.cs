@@ -249,6 +249,8 @@ namespace znMusicPlayerWUI
             {
                 MainWindow.DesktopLyricWindow.Close();
             }
+
+            NotifyIconWindow.HideIcon();
             SaveNowPlaying();
             WindowLocal.Close();
             SMTC.DisplayUpdater.ClearAll();
@@ -412,15 +414,13 @@ namespace znMusicPlayerWUI
             string b = string.Join(",", c.ToArray());
             a[DataFolderBase.SettingParams.EqualizerCustomData.ToString()] = b;
             DataFolderBase.JSettingData = a;
-
-            NotifyIconWindow.HideIcon();
 #if DEBUG
             Debug.WriteLine("[SaveSettingData]: 设置配置已存储！");
 #endif
         }
 
         public static bool LoadLastExitPlayingSongAndSongList = true;
-        private static void SaveNowPlaying()
+        public static void SaveNowPlaying()
         {
             if (audioPlayer.MusicData is null) return;
 

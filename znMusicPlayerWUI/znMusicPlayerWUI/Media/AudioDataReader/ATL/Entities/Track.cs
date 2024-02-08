@@ -397,17 +397,17 @@ namespace ATL
             isYearExplicit = metadata.IsDateYearOnly;
             if (metadata.IsDateYearOnly)
             {
-                Year = update(metadata.Date.Year);
+                Year = Update(metadata.Date.Year);
             }
             else
             {
-                Date = update(metadata.Date);
+                Date = Update(metadata.Date);
             }
-            PublishingDate = update(metadata.PublishingDate);
-            TrackNumber = update(metadata.TrackNumber);
-            TrackTotal = update(metadata.TrackTotal);
-            DiscNumber = update(metadata.DiscNumber);
-            DiscTotal = update(metadata.DiscTotal);
+            PublishingDate = Update(metadata.PublishingDate);
+            TrackNumber = Update(metadata.TrackNumber);
+            TrackTotal = Update(metadata.TrackTotal);
+            DiscNumber = Update(metadata.DiscNumber);
+            DiscTotal = Update(metadata.DiscTotal);
             Popularity = metadata.Popularity;
 
             Chapters = metadata.Chapters;
@@ -575,7 +575,7 @@ namespace ATL
         /// <summary>
         /// Save Track to disk
         /// Use SaveAsync instead of Save if you need progress feedback
-        /// (e.g. Windows Forms app with progress bar that updates one file at a time)
+        /// (e.g. Windows Forms app with progress bar that Updates one file at a time)
         /// </summary>
         /// <param name="writeProgress">Callback that will be called multiple times when saving changes, as saving progresses (default : null = no callback)</param>
         /// <returns>True if save succeeds; false if it fails
@@ -609,7 +609,7 @@ namespace ATL
         /// <summary>
         /// Remove the given tag type from the Track
         /// Use RemoveAsync instead of Remove if you need progress feedback
-        /// (e.g. Windows Forms app with progress bar that updates one file at a time)
+        /// (e.g. Windows Forms app with progress bar that Updates one file at a time)
         /// </summary>
         /// <param name="tagType">Tag type to remove</param>
         /// <param name="writeProgress">Callback that will be called multiple times when saving changes, as saving progresses (default : null = no callback)</param>
@@ -631,13 +631,13 @@ namespace ATL
             return value.Replace(Settings.InternalValueSeparator, Settings.DisplayValueSeparator);
         }
 
-        private DateTime? update(DateTime value)
+        private DateTime? Update(DateTime value)
         {
             if (value > DateTime.MinValue || !Settings.NullAbsentValues) return value;
             else return null;
         }
 
-        private int? update(int value)
+        private int? Update(int value)
         {
             if (value != 0 || !Settings.NullAbsentValues) return value;
             else return null;

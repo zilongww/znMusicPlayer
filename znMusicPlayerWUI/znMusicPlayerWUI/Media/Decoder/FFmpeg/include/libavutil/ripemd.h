@@ -63,10 +63,10 @@ int av_ripemd_init(struct AVRIPEMD* context, int bits);
  * Update hash value.
  *
  * @param context hash function context
- * @param data    input data to update hash with
+ * @param data    input data to Update hash with
  * @param len     input data length
  */
-void av_ripemd_update(struct AVRIPEMD* context, const uint8_t* data, size_t len);
+void av_ripemd_Update(struct AVRIPEMD* context, const uint8_t* data, size_t len);
 
 /**
  * Finish hashing and output digest value.

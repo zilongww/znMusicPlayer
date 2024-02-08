@@ -95,10 +95,10 @@ void av_murmur3_init(struct AVMurMur3 *c);
  * Update hash context with new data.
  *
  * @param[out] c    Hash context
- * @param[in]  src  Input data to update hash with
+ * @param[in]  src  Input data to Update hash with
  * @param[in]  len  Number of bytes to read from `src`
  */
-void av_murmur3_update(struct AVMurMur3 *c, const uint8_t *src, size_t len);
+void av_murmur3_Update(struct AVMurMur3 *c, const uint8_t *src, size_t len);
 
 /**
  * Finish hashing and output digest value.

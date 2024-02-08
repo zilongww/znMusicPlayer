@@ -70,10 +70,10 @@ int av_sha_init(struct AVSHA* context, int bits);
  * Update hash value.
  *
  * @param ctx     hash function context
- * @param data    input data to update hash with
+ * @param data    input data to Update hash with
  * @param len     input data length
  */
-void av_sha_update(struct AVSHA *ctx, const uint8_t *data, size_t len);
+void av_sha_Update(struct AVSHA *ctx, const uint8_t *data, size_t len);
 
 /**
  * Finish hashing and output digest value.

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -23,6 +24,7 @@ namespace znMusicPlayerWUI.Background
         public long DownloadedSize;
         public decimal DownloadPercent;
         public DownloadStates DownloadState;
+        public string ErrorMessage = null;
     }
 
     public class DownloadManager
@@ -49,13 +51,13 @@ namespace znMusicPlayerWUI.Background
         public bool IDv3WriteLyric { get; set; } = true;
         public bool SaveLyricToLrcFile { get; set; } = true;
 
-        bool _pasueDownload = false;
+        bool _pauseDownload = false;
         public bool PauseDownload
         {
-            get => _pasueDownload;
+            get => _pauseDownload;
             set
             {
-                _pasueDownload = value;
+                _pauseDownload = value;
                 UpdateDownload();
             }
         }
@@ -87,6 +89,8 @@ namespace znMusicPlayerWUI.Background
                 }
                 catch (Exception err)
                 {
+                    dm.ErrorMessage = err.Message;
+                    OnDownloadError?.Invoke(dm);
 #if DEBUG
                     System.Diagnostics.Debug.WriteLine(err.Message);
 #endif
@@ -104,7 +108,7 @@ namespace znMusicPlayerWUI.Background
                 try
                 {
 #if DEBUG
-                    System.Diagnostics.Debug.WriteLine($"下载中：{dm.MusicData.Title}");
+                    System.Diagnostics.Debug.WriteLine($"[DownloadManager] 下载中：{dm.MusicData.Title}");
 #endif
                     StartDownload(dm);
                 }
@@ -116,6 +120,7 @@ namespace znMusicPlayerWUI.Background
                     DownloadingData.Remove(dm);
                     DownloadErrorData.Add(dm);
                     dm.DownloadState = DownloadStates.Error;
+                    dm.ErrorMessage = err.Message;
                     OnDownloadError?.Invoke(dm);
                 }
             }
@@ -123,8 +128,17 @@ namespace znMusicPlayerWUI.Background
 
         public async void StartDownload(DownloadData dm)
         {
-            System.Diagnostics.Debug.WriteLine($"d:{dm.MusicData.Title}");
             dm.DownloadState = DownloadStates.Downloading;
+            bool exists = await Task.Run(() => Directory.Exists(DataFolderBase.DownloadFolder));
+            if (!exists)
+            {
+                dm.DownloadState = DownloadStates.Error;
+                dm.ErrorMessage = "下载路径不存在";
+                DownloadingData.Remove(dm);
+                DownloadErrorData.Add(dm);
+                OnDownloadError?.Invoke(dm);
+                return;
+            }
 
             string downloadPath1 = null;
             switch (DownloadNamedMethod)
@@ -175,6 +189,7 @@ namespace znMusicPlayerWUI.Background
             if (string.IsNullOrEmpty(addressPath) || isErr)
             {
                 dm.DownloadState = DownloadStates.Error;
+                dm.ErrorMessage = "找不到音频的服务器地址";
                 DownloadingData.Remove(dm);
                 DownloadErrorData.Add(dm);
                 OnDownloadError?.Invoke(dm);
@@ -338,7 +353,7 @@ namespace znMusicPlayerWUI.Background
             DownloadingData.Remove(dm);
             DownloadedData.Add(dm);
             OnDownloaded?.Invoke(dm);
-            System.Diagnostics.Debug.WriteLine($"下载完成：{dm.MusicData.Title}");
+            System.Diagnostics.Debug.WriteLine($"[DownloadManager] 下载完成：{dm.MusicData.Title}");
         }
 
         public void CallOnDownloadingEvent(DownloadData dm)

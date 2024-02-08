@@ -181,13 +181,13 @@ namespace ATL.AudioData.IO
         /// <summary>
         /// Rewrites zones that have to be rewritten
         ///     - Works region after region, buffering them if needed
-        ///     - Put each zone into memory and update them using the given WriteDelegate
+        ///     - Put each zone into memory and Update them using the given WriteDelegate
         ///     - Adjust file size and region headers accordingly
         /// </summary>
         /// <param name="fullScopeWriter">BinaryWriter opened on the data stream (usually, contents of an audio file) to be rewritten</param>
-        /// <param name="write">Delegate to the write method of the <see cref="IMetaDataIO"/> to be used to update the data stream</param>
+        /// <param name="write">Delegate to the write method of the <see cref="IMetaDataIO"/> to be used to Update the data stream</param>
         /// <param name="zones">Zones to rewrite</param>
-        /// <param name="dataToWrite">Metadata to update the zones with</param>
+        /// <param name="dataToWrite">Metadata to Update the zones with</param>
         /// <param name="tagExists">True if the tag already exists on the current data stream; false if not</param>
         /// <param name="useBuffer">True if I/O has to be buffered. Makes I/O faster but consumes more RAM.</param>
         /// <returns>True if the operation succeeded; false if it something unexpected happened during the processing</returns>

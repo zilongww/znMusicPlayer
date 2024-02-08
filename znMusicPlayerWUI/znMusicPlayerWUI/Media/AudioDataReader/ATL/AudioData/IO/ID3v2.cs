@@ -545,7 +545,7 @@ namespace ATL.AudioData.IO
 
                 Tag.ExtendedFlags = SourceFile.ReadByte();
 
-                if ((Tag.ExtendedFlags & 64) > 0) // Tag is an update
+                if ((Tag.ExtendedFlags & 64) > 0) // Tag is an Update
                 {
                     // This flag is informative and has no corresponding data
                 }

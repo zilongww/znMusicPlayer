@@ -56,7 +56,7 @@ namespace ATL.AudioData
         /// </summary>
         /// <param name="s">Stream for the resource to edit</param>
         /// <param name="tag">Tag information to be added</param>
-        /// <param name="writeProgress">Progress to be updated during write operations</param>
+        /// <param name="writeProgress">Progress to be Updated during write operations</param>
         /// <returns>true if the operation suceeded; false if not</returns>
         bool Write(Stream s, TagData tag, Action<float> writeProgress = null);
 
@@ -67,7 +67,7 @@ namespace ATL.AudioData
         /// </summary>
         /// <param name="s">Stream for the resource to edit</param>
         /// <param name="tag">Tag information to be added</param>
-        /// <param name="writeProgress">Progress to be updated during write operations</param>
+        /// <param name="writeProgress">Progress to be Updated during write operations</param>
         /// <returns>true if the operation suceeded; false if not</returns>
         Task<bool> WriteAsync(Stream s, TagData tag, IProgress<float> writeProgress = null);
 

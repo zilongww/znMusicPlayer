@@ -275,7 +275,7 @@ namespace ATL.AudioData.IO
                         // Align to the correct position
                         source.Seek(-1, SeekOrigin.Current);
 
-                        // Update zone size (remove and replace zone with updated size), if it exists
+                        // Update zone size (remove and replace zone with Updated size), if it exists
                         FileStructureHelper sHelper = (subChunkId == CHUNK_ID3) ? id3v2StructureHelper : structureHelper;
                         FileStructureHelper.Zone previousZone = sHelper.GetZone(subChunkId);
                         if (previousZone != null)

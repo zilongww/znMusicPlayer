@@ -28,7 +28,7 @@
                                     BlurRadius="6" Color="#AA000000">
                     <TextBlock>
                         <Run x:Name="T1" Text="znMusicPlayer" Foreground="{ThemeResource LrcForeground}"/>
-                        <Run x:Name="T11" Text="x5" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
+                        <Run x:Name="T11" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
                     </TextBlock>
                 </ui:DropShadowPanel>
             </Viewbox>

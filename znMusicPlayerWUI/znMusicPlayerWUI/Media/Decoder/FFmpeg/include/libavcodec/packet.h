@@ -205,9 +205,9 @@ enum AVPacketSideDataType {
     /**
      * A list of zero terminated key/value strings. There is no end marker for
      * the list, so it is required to rely on the side data size to stop. This
-     * side data includes updated metadata which appeared in the stream.
+     * side data includes Updated metadata which appeared in the stream.
      */
-    AV_PKT_DATA_METADATA_UPDATE,
+    AV_PKT_DATA_METADATA_Update,
 
     /**
      * MPEGTS stream ID as uint8_t, this is required to pass the stream ID
@@ -305,7 +305,7 @@ enum AVPacketSideDataType {
      * change when new side data types are added.
      * This must stay the last enum value.
      * If its value becomes huge, some code using it
-     * needs to be updated as it assumes it to be smaller than other limits.
+     * needs to be Updated as it assumes it to be smaller than other limits.
      */
     AV_PKT_DATA_NB
 };
@@ -326,7 +326,7 @@ typedef struct AVPacketSideData {
  * For video, it should typically contain one compressed frame. For audio it may
  * contain several compressed frames. Encoders are allowed to output empty
  * packets, with no compressed data, containing only side data
- * (e.g. to update some stream parameters at the end of encoding).
+ * (e.g. to Update some stream parameters at the end of encoding).
  *
  * The semantics of data ownership depends on the buf field.
  * If it is set, the packet data is dynamically allocated and is

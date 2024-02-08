@@ -2141,7 +2141,7 @@ typedef struct AVHWAccel {
      * Callback for parameter data (SPS/PPS/VPS etc).
      *
      * Useful for hardware decoders which keep persistent state about the
-     * video parameters, and need to receive any changes to update that state.
+     * video parameters, and need to receive any changes to Update that state.
      *
      * @param avctx the codec context
      * @param type the nal unit type

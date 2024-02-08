@@ -365,9 +365,9 @@ struct AVDeviceInfoList;
  *    -  sorting  -- a modified version of a tag that should be used for
  *       sorting will have '-sort' appended. E.g. artist="The Beatles",
  *       artist-sort="Beatles, The".
- * - Some protocols and demuxers support metadata updates. After a successful
+ * - Some protocols and demuxers support metadata Updates. After a successful
  *   call to av_read_frame(), AVFormatContext.event_flags or AVStream.event_flags
- *   will be updated to indicate if metadata changed. In order to detect metadata
+ *   will be Updated to indicate if metadata changed. In order to detect metadata
  *   changes on a stream, you need to loop through all streams in the AVFormatContext
  *   and check their individual event_flags.
  *
@@ -974,12 +974,12 @@ typedef struct AVStream {
      */
     int event_flags;
 /**
- * - demuxing: the demuxer read new metadata from the file and updated
+ * - demuxing: the demuxer read new metadata from the file and Updated
  *     AVStream.metadata accordingly
- * - muxing: the user updated AVStream.metadata and wishes the muxer to write
+ * - muxing: the user Updated AVStream.metadata and wishes the muxer to write
  *     it into the file
  */
-#define AVSTREAM_EVENT_FLAG_METADATA_UPDATED 0x0001
+#define AVSTREAM_EVENT_FLAG_METADATA_UpdateD 0x0001
 /**
  * - demuxing: new packets for this stream were read from the file. This
  *   event is informational only and does not guarantee that new packets
@@ -1412,12 +1412,12 @@ typedef struct AVFormatContext {
      */
     int event_flags;
 /**
- * - demuxing: the demuxer read new metadata from the file and updated
+ * - demuxing: the demuxer read new metadata from the file and Updated
  *   AVFormatContext.metadata accordingly
- * - muxing: the user updated AVFormatContext.metadata and wishes the muxer to
+ * - muxing: the user Updated AVFormatContext.metadata and wishes the muxer to
  *   write it into the file
  */
-#define AVFMT_EVENT_FLAG_METADATA_UPDATED 0x0001
+#define AVFMT_EVENT_FLAG_METADATA_UpdateD 0x0001
 
     /**
      * Maximum number of packets to read while waiting for the first timestamp.

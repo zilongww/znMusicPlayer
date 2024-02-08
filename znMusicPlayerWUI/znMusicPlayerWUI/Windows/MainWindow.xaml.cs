@@ -162,6 +162,9 @@ namespace znMusicPlayerWUI
         static bool isShowClosingDialog = false;
         public async void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
+            App.SaveNowPlaying();
+            App.SaveSettings();
+
             if (RunInBackground)
             {
                 args.Cancel = true;
@@ -176,17 +179,17 @@ namespace znMusicPlayerWUI
             if (isShowClosingDialog) return;
             isShowClosingDialog = true;
             HideDialog();
-            var result = await ShowDialog("再确认一次", "你真的要退出程序吗？", "取消", "确定", null, ContentDialogButton.Primary);
-            if (result == ContentDialogResult.Primary)
-            {
+            //var result = await ShowDialog("再确认一次", "你真的要退出程序吗？", "取消", "确定", null, ContentDialogButton.Primary);
+            //if (result == ContentDialogResult.Primary)
+            //{
                 App.Current.Exit();
                 App.Current.Exit();
                 App.Current.Exit();
-            }
-            else
-            {
-                HideDialog();
-            }
+            //}
+            //else
+            //{
+            //    HideDialog();
+            //}
             isShowClosingDialog = false;
         }
 
@@ -323,6 +326,9 @@ namespace znMusicPlayerWUI
             {
                 if (CodeHelper.IsIconic(App.AppWindowLocalHandle))
                 {
+                    App.SaveNowPlaying();
+                    App.SaveSettings();
+
                     isMinSize = true;
                     WindowViewStateChanged?.Invoke(false);
                     if (InOpenMusicPage) SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
