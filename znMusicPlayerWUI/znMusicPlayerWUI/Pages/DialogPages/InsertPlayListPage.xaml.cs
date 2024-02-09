@@ -33,7 +33,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
             bindingMusicListData = new();
             ListBaseViewer.ItemsSource = bindingMusicListData;
 
-            foreach (var l in App.playListReader.NowMusicListDatas) bindingMusicListData.Add(l);
+            foreach (var l in App.playListReader.NowMusicListData) bindingMusicListData.Add(l);
         }
 
         private async void InsertPlayListPage_ResultEvent(ContentDialogResult contentDialogResult)

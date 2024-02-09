@@ -11,13 +11,13 @@ namespace znMusicPlayerWUI.Background
         public delegate void PlayListChanged();
         public event PlayListChanged Updated;
 
-        DataEditor.MusicListData[] nowMusicListDatas;
-        public DataEditor.MusicListData[] NowMusicListDatas
+        DataEditor.MusicListData[] nowMusicListData;
+        public DataEditor.MusicListData[] NowMusicListData
         {
-            get => nowMusicListDatas;
+            get => nowMusicListData;
             private set
             {
-                nowMusicListDatas = value;
+                nowMusicListData = value;
             }
         }
 
@@ -28,7 +28,7 @@ namespace znMusicPlayerWUI.Background
         {
             if (inRefresh) return;
             inRefresh = true;
-            NowMusicListDatas = await DataEditor.PlayListHelper.ReadAllPlayList();
+            NowMusicListData = await DataEditor.PlayListHelper.ReadAllPlayList();
             Updated?.Invoke();
             inRefresh = false;
         }

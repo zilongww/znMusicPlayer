@@ -91,7 +91,7 @@ namespace znMusicPlayerWUI.DataEditor
             { SettingParams.DownloadQuality.ToString(), (int)DownloadQuality.lossless },
             { SettingParams.DownloadMaximum.ToString(), 3 },
             { SettingParams.PlayBehavior.ToString(), (int)PlayBehavior.循环播放 },
-            { SettingParams.PlayPauseWhenPreviousPause.ToString(), true },
+            { SettingParams.PlayPauseWhenPreviousPause.ToString(), false },
             { SettingParams.PlayNextWhenPlayError.ToString(), true },
             { SettingParams.EqualizerEnable.ToString(), false },
             { SettingParams.EqualizerString.ToString(), nameof(Media.AudioEqualizerBands.CustomBands) },

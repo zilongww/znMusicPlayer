@@ -53,11 +53,11 @@ namespace znMusicPlayerWUI.Pages
                 animation.TryStart(PlayList_ImageBaseBorder);
             }
 
-            PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
+            //PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
             App.playListReader.Updated += PlayListReader_Updated;
             App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
 
-            foreach (var mld in App.playListReader.NowMusicListDatas)
+            foreach (var mld in App.playListReader.NowMusicListData)
             {
                 if (mld == (MusicListData)e.Parameter)
                 {
@@ -242,7 +242,7 @@ namespace znMusicPlayerWUI.Pages
 
         private void PlayListReader_Updated()
         {
-            foreach (var data in App.playListReader.NowMusicListDatas)
+            foreach (var data in App.playListReader.NowMusicListData)
             {
                 if (data == NavToObj)
                 {
@@ -626,7 +626,7 @@ namespace znMusicPlayerWUI.Pages
 
                     if (NavToObj != null)
                     {
-                        foreach (var m in App.playListReader.NowMusicListDatas)
+                        foreach (var m in App.playListReader.NowMusicListData)
                         {
                             if (m.MD5 == NavToObj.MD5)
                             {
@@ -701,7 +701,7 @@ namespace znMusicPlayerWUI.Pages
                     await App.playListReader.Refresh();
                     if (NavToObj != null)
                     {
-                        foreach (var m in App.playListReader.NowMusicListDatas)
+                        foreach (var m in App.playListReader.NowMusicListData)
                         {
                             if (m.MD5 == NavToObj.MD5)
                             {
@@ -733,7 +733,7 @@ namespace znMusicPlayerWUI.Pages
                     }
                     await PlayListHelper.SaveData(jdata);
                     await App.playListReader.Refresh();
-                    foreach (var m in App.playListReader.NowMusicListDatas)
+                    foreach (var m in App.playListReader.NowMusicListData)
                     {
                         if (m.MD5 == NavToObj.MD5)
                         {
@@ -968,6 +968,7 @@ namespace znMusicPlayerWUI.Pages
                 await PlayListHelper.SaveData(data);
                 await App.playListReader.Refresh();
             }
+            UpdateCommandToolBarWidth();
         }
 
         private void CancelMoveItemButton_Click(object sender, RoutedEventArgs e)
@@ -988,6 +989,7 @@ namespace znMusicPlayerWUI.Pages
             Children.SelectionMode = ListViewSelectionMode.None;
             SelectItemButton.Visibility = Visibility.Visible;
             foreach (var i in SongItem.StaticSongItems) i.AddUnloadedEvent();
+            UpdateCommandToolBarWidth();
         }
     }
 }

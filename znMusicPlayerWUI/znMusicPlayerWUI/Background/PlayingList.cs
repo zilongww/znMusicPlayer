@@ -164,6 +164,7 @@ namespace znMusicPlayerWUI.Background
             a = _.Item1;
             path = _.Item2;
 
+            if (a == null) { lastMusicData = null; }
             NowPlayingImage = a;
             NowPlayingImagePath = path;
             NowPlayingImageLoaded?.Invoke(NowPlayingImage, path);
@@ -302,7 +303,7 @@ namespace znMusicPlayerWUI.Background
         {
             if (NowPlayingList.Any())
             {
-                var a = NowPlayingList.IndexOf(App.audioPlayer.MusicData) + 1;
+                var a = NowPlayingList.IndexOf(App.audioPlayer.pointMusicData) + 1;
                 if (a > NowPlayingList.Count - 1)
                 {
                     a = 0;
@@ -318,7 +319,7 @@ namespace znMusicPlayerWUI.Background
         {
             if (NowPlayingList.Any())
             {
-                var a = NowPlayingList.IndexOf(App.audioPlayer.MusicData) - 1;
+                var a = NowPlayingList.IndexOf(App.audioPlayer.pointMusicData) - 1;
                 if (a < 0)
                 {
                     a = NowPlayingList.Count - 1;

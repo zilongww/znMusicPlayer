@@ -201,7 +201,7 @@ namespace znMusicPlayerWUI.Background
             string lyricPath = downloadPath1 + ".lrc";
             //await WebHelper.DownloadFileAsync(addressPath, downloadPath);
 
-            System.Net.WebClient TheDownloader = await Task.Run(() => new System.Net.WebClient());
+            System.Net.WebClient TheDownloader = new System.Net.WebClient();
             TheDownloader.DownloadProgressChanged += (s, e) =>
             {
                 if (e == null) return;

@@ -110,7 +110,10 @@
                                                 <AppBarButton Click="Button_Click"
                                                               AccessKey="Q"
                                                               Label="播放全部（Alt+Q）"
-                                                              Background="{ThemeResource SystemAccentColorLight1}"
+                                                              Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                                              BorderBrush="{ThemeResource ControlElevationBorderBrush}"
+                                                              Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                                                              BorderThickness="1,0,1,1"
                                                               ToolTipService.ToolTip="播放全部"
                                                               x:Name="PlayAllButton">
                                                     <AppBarButton.Icon>

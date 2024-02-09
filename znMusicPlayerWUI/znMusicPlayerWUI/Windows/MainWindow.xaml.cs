@@ -214,7 +214,7 @@ namespace znMusicPlayerWUI
                 nvi.Tag = null;
             }
             MusicPlayListButton.MenuItems.Clear();
-            foreach (var i in App.playListReader.NowMusicListDatas)
+            foreach (var i in App.playListReader.NowMusicListData)
             {
                 var nvi = new NavigationViewItem() { Content = i.ListShowName, Tag = i };
                 MusicPlayListButton.MenuItems.Add(nvi);
@@ -676,20 +676,33 @@ namespace znMusicPlayerWUI
             }
         }
 
+        bool doNotChangeTiming = false;
         private void AudioPlayer_CacheLoadedChanged(Media.AudioPlayer audioPlayer)
         {
             PlayRing.Value = 0;
             PlayRing.IsIndeterminate = false;
             PlayingListBaseView.SelectedItem = audioPlayer.MusicData;
             isCodeChangedSilderValue = false;
+            doNotChangeTiming = false;
+            PlayRing.Foreground = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
         }
 
         private void AudioPlayer_CacheLoadingChanged(Media.AudioPlayer audioPlayer, object data)
         {
-            isCodeChangedSilderValue = true;
-
-            PlayRing.IsIndeterminate = true;
+            doNotChangeTiming = true;
             PlayRing.Foreground = App.Current.Resources["SystemFillColorCautionBrush"] as SolidColorBrush;
+            isCodeChangedSilderValue = true;
+            PlayRing.Maximum = 100;
+            if (data == null)
+            {
+                PlayRing.IsIndeterminate = true;
+                PlayRing.Value = 0;
+            }
+            else
+            {
+                PlayRing.IsIndeterminate = false;
+                PlayRing.Value = (int)data;
+            }
         }
 
         static bool isDeleteImage = true;
@@ -792,12 +805,11 @@ namespace znMusicPlayerWUI
 
         private void AudioPlayer_TimingChanged(Media.AudioPlayer audioPlayer)
         {
-            if (audioPlayer.FileReader != null)
-            {
-                PlayRing.Minimum = 0;
-                PlayRing.Maximum = audioPlayer.TotalTime.Ticks;
-                PlayRing.Value = audioPlayer.CurrentTime.Ticks;
-            }
+            if (doNotChangeTiming) return;
+            if (audioPlayer.FileReader == null) return;
+            PlayRing.Minimum = 0;
+            PlayRing.Maximum = audioPlayer.TotalTime.Ticks;
+            PlayRing.Value = audioPlayer.CurrentTime.Ticks;
         }
         #endregion
 

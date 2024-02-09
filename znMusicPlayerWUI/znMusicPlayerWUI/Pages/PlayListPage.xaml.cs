@@ -70,11 +70,11 @@ namespace znMusicPlayerWUI.Pages
             playListCards.Clear();
             var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
 
-            if (App.playListReader.NowMusicListDatas == null)
+            if (App.playListReader.NowMusicListData == null)
                 await App.playListReader.Refresh();
 
             int count = 0;
-            foreach (var item in App.playListReader.NowMusicListDatas)
+            foreach (var item in App.playListReader.NowMusicListData)
             {
                 count++;
                 playListCards.Add(item);
