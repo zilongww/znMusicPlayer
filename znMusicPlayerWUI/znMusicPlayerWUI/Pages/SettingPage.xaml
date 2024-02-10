@@ -80,7 +80,7 @@
                     </StackPanel>
                 </cc:SettingsCard>
                 <cc:SettingsCard Header="图片缓存路径"
-                                   Description="{Binding ImageCachePath}">
+                                 Description="{Binding ImageCachePath}">
                     <cc:SettingsCard.HeaderIcon>
                         <FontIcon Glyph="&#xE91B;"/>
                     </cc:SettingsCard.HeaderIcon>

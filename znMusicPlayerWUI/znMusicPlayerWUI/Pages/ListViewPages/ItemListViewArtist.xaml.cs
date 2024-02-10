@@ -40,7 +40,7 @@ namespace znMusicPlayerWUI.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
+            //PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
             Artist a = (Artist)e.Parameter;
             NavToObj = a;
             InitData();

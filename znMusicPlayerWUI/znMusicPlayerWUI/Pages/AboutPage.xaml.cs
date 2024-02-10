@@ -33,6 +33,8 @@ using Melanchall.DryWetMidi.Multimedia;
 using Microsoft.VisualBasic.Devices;
 using NAudio.Wave;
 using znMusicPlayerWUI.Media;
+using Windows.System;
+using CommunityToolkit.WinUI.Controls;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -43,7 +45,7 @@ namespace znMusicPlayerWUI.Pages
         public AboutPage()
         {
             InitializeComponent();
-            VersionRun.Text = App.AppVersion;
+            VersionRun.Text = $"v{App.AppVersion}";
             waveOut = new WaveOut();
             bufferedWaveProvider = new BufferedWaveProvider(new WaveFormat());
             waveOut.Init(bufferedWaveProvider);
@@ -132,6 +134,22 @@ namespace znMusicPlayerWUI.Pages
 
         private void Image_Loaded(object sender, RoutedEventArgs e)
         {
+        }
+
+        private async void Hyperlink_Click(Microsoft.UI.Xaml.Documents.Hyperlink sender, Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs args)
+        {
+            await Launcher.LaunchUriAsync(new Uri($"https://github.com/dotnet/sdk"));
+        }
+
+        private async void Hyperlink_Click_1(Microsoft.UI.Xaml.Documents.Hyperlink sender, Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs args)
+        {
+            await Launcher.LaunchUriAsync(new Uri($"https://github.com/microsoft/WindowsAppSDK"));
+        }
+
+        private async void SettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+
+            await Launcher.LaunchUriAsync(new Uri((sender as SettingsCard).Tag as string));
         }
     }
 }
