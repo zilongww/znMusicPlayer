@@ -58,7 +58,7 @@
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
-                                        <StackPanel Background="red">
+                                        <StackPanel>
                                             <controlszn:AutoScrollViewer x:Name="AutoScrollViewerControl">
                                                 <TextBlock x:Name="PlayList_TitleTextBlock"
                                                            Style="{ThemeResource SubTBHeader}"/>

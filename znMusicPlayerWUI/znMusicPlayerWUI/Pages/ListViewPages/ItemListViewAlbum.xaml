@@ -79,7 +79,7 @@
                                             <RowDefinition/>
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
-                                        <controlszn:AutoScrollViewer x:Name="AutoScrollViewerControl" Background="red">
+                                        <controlszn:AutoScrollViewer x:Name="AutoScrollViewerControl">
                                             <TextBlock x:Name="AlbumTitle_Text" Style="{ThemeResource SubTBHeader}" Text="{Binding NavToObj.Title}"
                                                        IsTextSelectionEnabled="True"/>
                                         </controlszn:AutoScrollViewer>
