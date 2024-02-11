@@ -104,13 +104,13 @@ namespace znMusicPlayerWUI.Pages
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    await MainWindow.ShowDialog("不支持的平台", "当前不支持此平台搜索。");
+                    MainWindow.AddNotify("不支持的平台", "当前不支持此平台搜索。", InfoBarSeverity.Error);
                     searchDatas = null;
                     break;
                 }
                 catch (NullReferenceException)
                 {
-                    await MainWindow.ShowDialog("搜索失败", "无相关结果。");
+                    MainWindow.AddNotify("搜索失败", "无相关结果。", InfoBarSeverity.Error);
                     searchDatas = null;
                     break;
                 }
@@ -158,7 +158,7 @@ namespace znMusicPlayerWUI.Pages
             }
             else
             {
-                await MainWindow.ShowDialog("搜索失败", "无相关结果。");
+                MainWindow.AddNotify("搜索失败", "无相关结果。", InfoBarSeverity.Error);
             }
 
             System.Diagnostics.Debug.WriteLine("加载完成。");

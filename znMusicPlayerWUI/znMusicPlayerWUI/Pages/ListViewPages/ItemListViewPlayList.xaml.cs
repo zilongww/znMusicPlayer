@@ -713,7 +713,7 @@ namespace znMusicPlayerWUI.Pages
                     }
                     await Task.Delay(500);
                     MainWindow.HideDialog();
-                    await MainWindow.ShowDialog("添加本地歌曲", "添加完成。");
+                    MainWindow.AddNotify("添加本地歌曲成功。", null, InfoBarSeverity.Success);
                 }
             };
             bb.Click += async (_, __) =>
@@ -742,7 +742,7 @@ namespace znMusicPlayerWUI.Pages
                         }
                     }
                     InitData();
-                    await MainWindow.ShowDialog("添加本地歌曲", "添加完成。");
+                    MainWindow.AddNotify("添加本地歌曲成功。", null, InfoBarSeverity.Success);
                 }
             };
 
@@ -918,7 +918,7 @@ namespace znMusicPlayerWUI.Pages
             if (NavToObj.PlaySort != PlaySort.默认升序)
             {
                 MoveItemButton.IsChecked = false;
-                await MainWindow.ShowDialog("无法使用排序", "排序功能只能在此列表排序方式为 \"默认升序\" 时可使用。");
+                MainWindow.AddNotify("无法使用排序", "排序功能只能在此列表排序方式为 \"默认升序\" 时可使用。", InfoBarSeverity.Error);
                 return;
             }
 

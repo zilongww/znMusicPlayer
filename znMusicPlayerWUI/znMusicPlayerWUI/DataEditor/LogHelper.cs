@@ -24,9 +24,9 @@ namespace znMusicPlayerWUI.DataEditor
             }
         }
 
-        private static async void ShowDialog(string title, string message)
+        private static void ShowDialog(string title, string message)
         {
-            await MainWindow.ShowDialog(title, message);
+            MainWindow.AddNotify(title, message);
         }
     }
 }

@@ -36,6 +36,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                 data[MusicListData.ListName]["PicturePath"] = ImagePath_TB.Text;
                 await PlayListHelper.SaveData(data);
                 await App.playListReader.Refresh();
+                MainWindow.AddNotify("编辑列表成功。", null, InfoBarSeverity.Success);
             }
             ResultEvent -= AddPlayListPage_ResultEvent;
         }

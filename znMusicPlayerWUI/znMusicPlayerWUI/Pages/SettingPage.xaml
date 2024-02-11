@@ -52,7 +52,7 @@
             </Grid>
         </ListView.Header>
 
-        <cc:SettingsExpander Header="缓存" CornerRadius="8"
+        <cc:SettingsExpander Header="缓存"
                                    Description="文件路径、清理缓存"
                                    x:Name="CacheEpd">
             <cc:SettingsExpander.HeaderIcon>
@@ -114,7 +114,7 @@
             </cc:SettingsExpander.Items>
         </cc:SettingsExpander>
 
-        <cc:SettingsExpander Header="下载" CornerRadius="8"
+        <cc:SettingsExpander Header="下载"
                                    Description="下载路径、质量、文件命名方式"
                                    x:Name="DownloadEpd">
                 <cc:SettingsExpander.HeaderIcon>
@@ -236,6 +236,7 @@
                 </cc:SettingsCard>
             </cc:SettingsExpander.Items>
         </cc:SettingsExpander>
+        
         <cc:SettingsExpander Header="主题"
                              Description="颜色、图片遮罩、主题色、背景效果">
             <cc:SettingsExpander.HeaderIcon>

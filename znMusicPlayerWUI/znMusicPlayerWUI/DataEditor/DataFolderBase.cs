@@ -19,7 +19,7 @@ namespace znMusicPlayerWUI.DataEditor
         /// <summary>
         /// 程序数据文件夹路径
         /// </summary>
-        public static string BaseFolder { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"{App.AppName}Datas");
+        public static string BaseFolder { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"{App.AppName}");
 
         /// <summary>
         /// 数据文件夹路径
@@ -107,7 +107,7 @@ namespace znMusicPlayerWUI.DataEditor
             { SettingParams.ThemeBackdropImageMassOpacity.ToString(), 0.5 },
             { SettingParams.DesktopLyricOptions.ToString(),
                 new JArray(){
-                    true, true, true, true
+                    true, true, false, true
                 }
             },
             { SettingParams.DesktopLyricText.ToString(),
@@ -124,7 +124,7 @@ namespace znMusicPlayerWUI.DataEditor
             },
             { SettingParams.TaskbarShowIcon.ToString(), true },
             { SettingParams.BackgroundRun.ToString(), false },
-            { SettingParams.ImageDarkMass.ToString(), true },
+            { SettingParams.ImageDarkMass.ToString(), false },
             { SettingParams.LoadLastExitPlayingSongAndSongList.ToString(), true },
             { SettingParams.HotKeySettings.ToString(), JArray.FromObject(HotKeyManager.DefaultRegisterHotKeysList) }
         };

@@ -109,7 +109,8 @@ namespace znMusicPlayerWUI.Pages
             var obj = await App.metingServices.NeteaseServices.GetAlbum(NavToObj.ID);
             if (obj == null)
             {
-                await MainWindow.ShowDialog("加载专辑信息时出现错误", "无法加载专辑信息，请重试。");
+                MainWindow.AddNotify("加载专辑信息时出现错误", "无法加载专辑信息，请重试。",
+                    InfoBarSeverity.Error);
                 return;
             }
             NavToObj = obj;

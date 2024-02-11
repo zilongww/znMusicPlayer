@@ -15,12 +15,15 @@
           KeyDown="Grid_KeyDown" KeyUp="Grid_KeyUp"
           PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
           Tapped="Grid_Tapped" Loaded="WindowGridBase_Loaded"  RequestedTheme="Default">
+        
         <Rectangle x:Name="BackgroundColor" Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" Visibility="Collapsed"/>
+        
         <Grid x:Name="BackgroundImageRoot" Visibility="Collapsed">
             <Image x:Name="BackgroundImage" x:FieldModifier="Public" Stretch="UniformToFill"
                VerticalAlignment="Center" HorizontalAlignment="Center"/>
             <Rectangle x:Name="BackgroundMass" Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" Opacity="0.6"/>
         </Grid>
+        
         <Grid x:Name="GridBase">
             <Rectangle VerticalAlignment="Top"
                        HorizontalAlignment="Stretch"
@@ -51,7 +54,6 @@
                     </TextBlock>
                 </Grid>
             </Grid>
-
             <NavigationView x:Name="NavView"
                             Margin="0,0,0,0"
                             IsBackButtonVisible="Visible"
@@ -285,8 +287,13 @@
             </NavigationView>
         </Grid>
 
+        <Grid x:Name="MusicPageBaseGrid">
+            <Frame x:Name="MusicPageBaseFrame"/>
+        </Grid>
+
         <Grid x:Name="TopControlsBaseGrid"
-              IsHitTestVisible="False"
+              IsHitTestVisible="True"
+              Background="{x:Null}"
               SizeChanged="Grid_SizeChanged">
             <Grid.Resources>
                 <Flyout x:Name="PlayingListBasePopup"
@@ -377,7 +384,6 @@
                         </Grid>
                     </Grid>
                 </Flyout>
-
                 <Flyout x:Name="VolumeBasePopup"
                         ShouldConstrainToRootBounds="True">
                     <Flyout.FlyoutPresenterStyle>
@@ -440,9 +446,65 @@
                 </Flyout>
             </Grid.Resources>
         </Grid>
-
-        <Grid x:Name="MusicPageBaseGrid">
-            <Frame x:Name="MusicPageBaseFrame"/>
+        
+        <Grid x:Name="NotifyArea"
+              Opacity="1" IsHitTestVisible="False"
+              Loaded="NotifyArea_Loaded">
+            <!--
+            <ListView x:Name="NotifyListView"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Padding="0,0,0,96"
+                      Margin="0,0,0,84"
+                      SelectionMode="None"
+                      Background="Transparent"
+                      ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                <ListView.ItemContainerTransitions>
+                    <TransitionCollection>
+                        <ContentThemeTransition/>
+                    </TransitionCollection>
+                </ListView.ItemContainerTransitions>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:NotifyItemData">
+                        <InfoBar IsOpen="True"
+                                 Title="{Binding Title}"
+                                 Message="{Binding Message}"
+                                 Severity="{Binding Severity}"
+                                 IsClosable="False"
+                                 HorizontalAlignment="Center"
+                                 Margin="0,4" CornerRadius="8"
+                                 BorderBrush="{ThemeResource ControlElevationBorderBrush}"
+                                 BorderThickness="1" DataContextChanged="InfoBar_DataContextChanged">
+                            <InfoBar.OpacityTransition>
+                                <ScalarTransition Duration="0:0:0.250"/>
+                            </InfoBar.OpacityTransition>
+                            <InfoBar.Transitions>
+                                <TransitionCollection>
+                                    <RepositionThemeTransition/>
+                                </TransitionCollection>
+                            </InfoBar.Transitions>
+                        </InfoBar>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>-->
+            <StackPanel x:Name="NotifyStackPanel"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Bottom"
+                        Background="Transparent"
+                        IsHitTestVisible="False"
+                        Margin="0,0,0,96" Spacing="4">
+                <StackPanel.Transitions>
+                    <TransitionCollection>
+                        <RepositionThemeTransition/>
+                    </TransitionCollection>
+                </StackPanel.Transitions>
+                <StackPanel.ChildrenTransitions>
+                    <TransitionCollection>
+                        <PopupThemeTransition/>
+                    </TransitionCollection>
+                </StackPanel.ChildrenTransitions>
+            </StackPanel>
         </Grid>
+        
     </Grid>
 </Window>

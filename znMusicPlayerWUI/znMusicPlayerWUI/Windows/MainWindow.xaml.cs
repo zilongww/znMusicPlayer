@@ -34,7 +34,6 @@ using znMusicPlayerWUI.Windowed;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using znMusicPlayerWUI.DataEditor;
-using CommunityToolkit.WinUI.UI;
 using Vanara.PInvoke;
 using ColorCode.Compilation.Languages;
 using CommunityToolkit.WinUI.UI.Animations;
@@ -42,6 +41,8 @@ using Microsoft.UI.Xaml.Shapes;
 using Windows.UI.Shell;
 using Windows.ApplicationModel.Background;
 using Windows.Devices.Enumeration;
+using System.Security.Policy;
+using CommunityToolkit.WinUI;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -77,15 +78,20 @@ namespace znMusicPlayerWUI
         public static Flyout teachingTipVolume;
         public static Flyout teachingTipPlayingList;
         public static ContentDialog AsyncDialog = null;
+        public static StackPanel SNotifyStackPanel;
+        public static ListView SNotifyListView;
+        public static ScrollViewer SNotifyListViewScrollViewer;
 
         public delegate void WindowViewStateChangedDelegate(bool isView);
         public static event WindowViewStateChangedDelegate WindowViewStateChanged;
-        
+
         public delegate void MainViewStateChangedDelegate(bool isView);
         public static event MainViewStateChangedDelegate MainViewStateChanged;
-        
+
         public delegate void MusicPageViewStateChangedDelegate(MusicPageViewState musicPageViewState);
         public static event MusicPageViewStateChangedDelegate MusicPageViewStateChanged;
+
+        private static ObservableCollection<NotifyItemData> NotifyList = new();
 
         public MainWindow()
         {
@@ -114,6 +120,8 @@ namespace znMusicPlayerWUI
             teachingTipPlayingList = PlayingListBasePopup;
             teachingTipVolume = VolumeBasePopup;
             SPlayContent = PlayContent;
+            SNotifyStackPanel = NotifyStackPanel;
+            //SNotifyListView = NotifyListView;
             AsyncDialog = new ContentDialog()
             {
                 XamlRoot = SContent.XamlRoot,
@@ -126,7 +134,7 @@ namespace znMusicPlayerWUI
             App.AppWindowLocal = WindowHelperzn.WindowHelper.GetAppWindowForCurrentWindow(this);
             App.AppWindowLocal.Title = App.AppName;
             App.AppWindowLocal.SetIcon("icon.ico");
-            
+
             InitializeTitleBar(SWindowGridBaseTop.RequestedTheme);
 
             m_wsdqHelper = new WindowHelperzn.WindowsSystemDispatcherQueueHelper();
@@ -154,10 +162,12 @@ namespace znMusicPlayerWUI
 
             NavView.SelectedItem = NavView.MenuItems[1];
             NavView.IsBackEnabled = false;
+
+            //NotifyListView.ItemsSource = NotifyList;
             //PlayingListBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
             //VolumeBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
         }
-        
+
         bool isBackground = false;
         static bool isShowClosingDialog = false;
         public async void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
@@ -174,7 +184,7 @@ namespace znMusicPlayerWUI
                 isBackground = true;
                 return;
             }
-            
+
             args.Cancel = true;
             if (isShowClosingDialog) return;
             isShowClosingDialog = true;
@@ -182,9 +192,9 @@ namespace znMusicPlayerWUI
             //var result = await ShowDialog("再确认一次", "你真的要退出程序吗？", "取消", "确定", null, ContentDialogButton.Primary);
             //if (result == ContentDialogResult.Primary)
             //{
-                App.Current.Exit();
-                App.Current.Exit();
-                App.Current.Exit();
+            App.Current.Exit();
+            App.Current.Exit();
+            App.Current.Exit();
             //}
             //else
             //{
@@ -394,9 +404,16 @@ namespace znMusicPlayerWUI
             m_configurationSource = null;
         }
 
-        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        private async void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             SetDragRegionForCustomTitleBar(App.AppWindowLocal);
+            //NotifyListView.Padding = new(0, SWindowGridBase.ActualHeight, 0, 12);
+            /*
+            if (NotifyList.Any())
+            {
+                await Task.Delay(1);
+                SNotifyListViewScrollViewer.ChangeView(null, SNotifyListViewScrollViewer.ScrollableHeight, null, true);
+            }*/
         }
 
         private void ContentFrame_Loaded(object sender, RoutedEventArgs e)
@@ -404,6 +421,12 @@ namespace znMusicPlayerWUI
             SContentFrame = ContentFrame;
         }
 
+        private void NotifyArea_Loaded(object sender, RoutedEventArgs e)
+        {
+            //SNotifyListViewScrollViewer = (VisualTreeHelper.GetChild(NotifyListView, 0) as Border).Child as ScrollViewer;
+            //AddNotify("测试版本", "此应用程序是一份内测版本。", InfoBarSeverity.Warning, TimeSpan.MaxValue);
+        }
+        
         public static void UpdatePlayListFlyoutHeight()
         {
             try
@@ -572,6 +595,40 @@ namespace znMusicPlayerWUI
         {
             AsyncDialog.Hide();
         }
+
+        public static void AddNotify(string title, string message, InfoBarSeverity severity = InfoBarSeverity.Informational, TimeSpan? residenceTime = null)
+        {
+            AddNotify(new(title, message, severity, residenceTime));
+        }
+
+        public static InfoBar AddNotify(NotifyItemData notifyItemData)
+        {
+            var infoBar = new InfoBar()
+            {
+                Title = notifyItemData.Title,
+                Message = notifyItemData.Message,
+                Severity = notifyItemData.Severity,
+                IsOpen = true,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                IsClosable = false,
+                BorderBrush = App.Current.Resources["ControlElevationBorderBrush"] as Brush,
+                CornerRadius = new(8)
+            };
+            if (notifyItemData.Severity == InfoBarSeverity.Informational)
+            {
+                infoBar.Background = App.Current.Resources["AcrylicNormal"] as AcrylicBrush;
+            }
+            SNotifyStackPanel.Children.Add(infoBar);
+            if (notifyItemData.ResidenceTime != TimeSpan.MaxValue)
+                NotifyCountDown(notifyItemData, infoBar);
+            return infoBar;
+        }
+
+        private static async void NotifyCountDown(NotifyItemData notifyItemData, InfoBar infoBar)
+        {
+            await Task.Delay(notifyItemData.ResidenceTime);
+            SNotifyStackPanel.Children.Remove(infoBar);
+        }
         #endregion
 
         #region AudioPlayer Events
@@ -652,7 +709,7 @@ namespace znMusicPlayerWUI
         {
             float volume = (float)data;
             VolumeSlider.Value = (int)volume;
-            
+
             if (volume == 0)
             {
                 VolumeIconBase.Glyph = "\xE198";
@@ -820,7 +877,7 @@ namespace znMusicPlayerWUI
             MicaAlt,
             DesktopAcrylic,
             Image,
-            DefaultColor         
+            DefaultColor
         }
 
         static WindowHelperzn.WindowsSystemDispatcherQueueHelper m_wsdqHelper;
@@ -892,7 +949,7 @@ namespace znMusicPlayerWUI
                 m_currentBackdrop = BackdropType.Image;
                 SBackgroundImageRoot.Visibility = Visibility.Visible;
                 var image = new BitmapImage();
-                if (ImagePath  != null)
+                if (ImagePath != null)
                     image.UriSource = new Uri(ImagePath);
                 SBackgroundImage.Source = image;
             }
@@ -1147,7 +1204,7 @@ namespace znMusicPlayerWUI
                     }
                     else
                     {
-                        await ShowDialog("未添加此功能", $"未添加 \"{(sender.SelectedItem as NavigationViewItem).Content}\" 功能。");
+                        AddNotify("未添加此功能", $"未添加 \"{(sender.SelectedItem as NavigationViewItem).Content}\" 功能。", InfoBarSeverity.Error);
                     }
                     break;
             }
@@ -1181,7 +1238,7 @@ namespace znMusicPlayerWUI
                 case "HistoryPage":
                     SNavView.SelectedItem = SNavView.MenuItems[6];
                     break;
-                    
+
                 case "LocalAudioPage":
                     SNavView.SelectedItem = SNavView.MenuItems[7];
                     break;
@@ -1217,7 +1274,7 @@ namespace znMusicPlayerWUI
                     break;
 
                 default:
-                    await ShowDialog("未添加此功能", $"未添加 \"{"未知"}\" 功能。");
+                    AddNotify("未添加此功能", $"未添加 \"未知\" 功能。", InfoBarSeverity.Error);
                     break;
             }
             IsJustUpdate = false;
@@ -1823,5 +1880,57 @@ namespace znMusicPlayerWUI
             }
         }
         #endregion
+
+        private async void InfoBar_Loaded(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private async void InfoBar_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            var infoBar = sender as InfoBar;
+            if (infoBar.DataContext == null) return;
+            infoBar.Opacity = 1;
+            try
+            {
+                await Task.Delay((infoBar.DataContext as NotifyItemData).ResidenceTime - TimeSpan.FromMilliseconds(250));
+                infoBar.Opacity = 0;
+            }
+            catch { }
+        }
+    }
+
+    /// <summary>
+    /// 显示通知的数据类型
+    /// </summary>
+    public class NotifyItemData
+    {
+        /// <summary>
+        /// 通知标题
+        /// </summary>
+        public string Title { get; set; }
+        /// <summary>
+        /// 通知信息
+        /// </summary>
+        public string Message { get; set; }
+        /// <summary>
+        /// 通知类型
+        /// </summary>
+        public InfoBarSeverity Severity { get; set; }
+        /// <summary>
+        /// 通知滞留时间，默认5秒
+        /// </summary>
+        public TimeSpan ResidenceTime { get; set; } = TimeSpan.FromSeconds(5);
+
+        public NotifyItemData(
+            string title,
+            string message,
+            InfoBarSeverity severity = InfoBarSeverity.Informational,
+            TimeSpan? residenceTime = null)
+        {
+            Title = title;
+            Message = message;
+            Severity = severity;
+            ResidenceTime = residenceTime == null ? TimeSpan.FromSeconds(5) : (TimeSpan)residenceTime;
+        }
     }
 }

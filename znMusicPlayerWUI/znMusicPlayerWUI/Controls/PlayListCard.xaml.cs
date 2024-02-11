@@ -247,16 +247,16 @@ namespace znMusicPlayerWUI.Controls
             var isDelete = await MainWindow.ShowDialog("确认删除列表", $"真的要删除列表 \"{MusicListData.ListShowName}\" 吗？\n此操作不可逆。", "取消", "确定");
             if (isDelete == ContentDialogResult.Primary)
             {
-                MainWindow.ShowLoadingDialog("正在删除");
+                MainWindow.AddNotify("正在删除", $"正在删除列表 \"{MusicListData.ListShowName}\"。");
                 await PlayListHelper.DeletePlayList(MusicListData);
                 await App.playListReader.Refresh();
-                MainWindow.HideDialog();
+                MainWindow.AddNotify("删除列表成功。", null, InfoBarSeverity.Success);
             }
         }
 
         private async void MenuFlyoutItem_Click_1(object sender, RoutedEventArgs e)
         {
-            MainWindow.ShowLoadingDialog("正在更新歌单...");
+            MainWindow.AddNotify("正在更新歌单...", null);
 
             try
             {
@@ -279,14 +279,12 @@ namespace znMusicPlayerWUI.Controls
                 await PlayListHelper.SaveData(data);
 
                 await App.playListReader.Refresh();
-
-                MainWindow.HideDialog();
+                MainWindow.AddNotify("更新歌单成功。", null, InfoBarSeverity.Success);
             }
             catch (Exception ex)
             {
                 LogHelper.WriteLog("PlayingList Update Error", ex.ToString(), false);
-                MainWindow.HideDialog();
-                await MainWindow.ShowDialog("更新歌单失败", $"更新歌单时遇到错误，请重试。\n错误信息：{ex}");
+                MainWindow.AddNotify("更新歌单失败", $"更新歌单时遇到错误，请重试。\n错误信息：{ex}", InfoBarSeverity.Error);
             }
         }
 

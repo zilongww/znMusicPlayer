@@ -40,7 +40,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
         {
             ResultEvent -= InsertPlayListPage_ResultEvent;
             if (contentDialogResult != ContentDialogResult.Primary) return;
-            MainWindow.ShowLoadingDialog("正在更改...");
+            MainWindow.AddNotify("正在更改歌单排序...", null);
 
             JObject data = await Task.Run(() =>
             {
@@ -54,7 +54,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
 
             await PlayListHelper.SaveData(data);
             await App.playListReader.Refresh();
-            MainWindow.HideDialog();
+            MainWindow.AddNotify("歌单排序更改成功。", null, InfoBarSeverity.Success);
         }
 
         public static async Task ShowDialog()

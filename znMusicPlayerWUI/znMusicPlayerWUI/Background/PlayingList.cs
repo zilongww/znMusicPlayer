@@ -247,22 +247,20 @@ namespace znMusicPlayerWUI.Background
                 App.audioPlayer.Latency = (int)data[DataFolderBase.SettingParams.AudioLatency.ToString()];
                 DataFolderBase.JSettingData = data;
 
-                var retryPlay = await MainWindow.ShowDialog("播放失败",
+                MainWindow.AddNotify(
+                    "播放失败",
                     $"播放音频时出现错误，可能是播放延迟设置不正确导致的。\n" +
-                    $"已将播放延迟设置到默认值，请尝试重新播放.");
-                if (retryPlay == Microsoft.UI.Xaml.Controls.ContentDialogResult.Secondary)
-                {
-                    await Play(musicData, true);
-                }
+                        $"已将播放延迟设置到默认值，请尝试重新播放。",
+                    Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error);
             }
             catch (NotEnoughBytesException err)
             {
                 LogHelper.WriteLog("PlayingList Play Midi Error", err.ToString(), false);
-                await MainWindow.ShowDialog("播放Midi音频时出现错误", $"似乎不支持此Midi音频文件。\n错误信息：{err.Message}");
+                MainWindow.AddNotify("播放Midi音频时出现错误", $"似乎不支持此Midi音频文件。\n错误信息：{err.Message}", Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error);
             }
             catch (MmException err)
             {
-                await MainWindow.ShowDialog("无法初始化音频输出", $"请尝试重新播放音频，如果仍然无法初始化，请检查是否有其它应用程序独占此音频设备。\n错误信息：{err.Message}");
+                MainWindow.AddNotify("无法初始化音频输出", $"请尝试重新播放音频，如果仍然无法初始化，请检查是否有其它应用程序独占此音频设备。\n错误信息：{err.Message}", Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error);
             }
             catch (Exception e)
             {
@@ -285,9 +283,9 @@ namespace znMusicPlayerWUI.Background
                     }
                 }
 #if DEBUG
-                await MainWindow.ShowDialog("播放音频时出现错误", e.ToString());
+                MainWindow.AddNotify("播放音频时出现错误", e.ToString(), Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error);
 #else
-                await MainWindow.ShowDialog("播放音频时出现错误", e.Message);
+                MainWindow.AddNotify("播放音频时出现错误", e.Message, Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error);
 #endif
             }
 

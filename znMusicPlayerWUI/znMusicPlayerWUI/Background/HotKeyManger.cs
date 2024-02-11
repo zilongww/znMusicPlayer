@@ -337,10 +337,13 @@ namespace znMusicPlayerWUI.Background.HotKeys
                         }
                         break;
                     default:
-                        MainWindow.ShowDialog("未知热键", "未知的热键：\n" +
-                            $"●uMsg：{uMsg}\n" +
-                            $"●wParam.Value：{wParam.Value}\n" +
-                            $"●lParam.Value：{lParam.Value}");
+                        MainWindow.AddNotify(
+                            "未知热键",
+                            "未知的热键：\n" +
+                                $"●uMsg：{uMsg}\n" +
+                                $"●wParam.Value：{wParam.Value}\n" +
+                                $"●lParam.Value：{lParam.Value}",
+                            Microsoft.UI.Xaml.Controls.InfoBarSeverity.Warning);
                         break;
                 }
 
