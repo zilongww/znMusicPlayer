@@ -251,16 +251,16 @@ namespace znMusicPlayerWUI.Background
                     "播放失败",
                     $"播放音频时出现错误，可能是播放延迟设置不正确导致的。\n" +
                         $"已将播放延迟设置到默认值，请尝试重新播放。",
-                    Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error);
+                    NotifySeverity.Error);
             }
             catch (NotEnoughBytesException err)
             {
                 LogHelper.WriteLog("PlayingList Play Midi Error", err.ToString(), false);
-                MainWindow.AddNotify("播放Midi音频时出现错误", $"似乎不支持此Midi音频文件。\n错误信息：{err.Message}", Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error);
+                MainWindow.AddNotify("播放Midi音频时出现错误", $"似乎不支持此Midi音频文件。\n错误信息：{err.Message}", NotifySeverity.Error);
             }
             catch (MmException err)
             {
-                MainWindow.AddNotify("无法初始化音频输出", $"请尝试重新播放音频，如果仍然无法初始化，请检查是否有其它应用程序独占此音频设备。\n错误信息：{err.Message}", Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error);
+                MainWindow.AddNotify("无法初始化音频输出", $"请尝试重新播放音频，如果仍然无法初始化，请检查是否有其它应用程序独占此音频设备。\n错误信息：{err.Message}", NotifySeverity.Error);
             }
             catch (Exception e)
             {
@@ -283,9 +283,9 @@ namespace znMusicPlayerWUI.Background
                     }
                 }
 #if DEBUG
-                MainWindow.AddNotify("播放音频时出现错误", e.ToString(), Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error);
+                MainWindow.AddNotify("播放音频时出现错误", e.ToString(), NotifySeverity.Error);
 #else
-                MainWindow.AddNotify("播放音频时出现错误", e.Message, Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error);
+                MainWindow.AddNotify("播放音频时出现错误", e.Message, NotifySeverity.Error);
 #endif
             }
 

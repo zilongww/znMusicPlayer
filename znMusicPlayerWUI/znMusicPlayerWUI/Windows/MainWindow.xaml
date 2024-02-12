@@ -374,7 +374,7 @@
                                                 <TextBlock Text="{x:Bind ButtonName}" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource SystemChromeDisabledLowColor}" FontSize="12"/>
                                             </StackPanel>
                                             <Button Grid.Column="1" Background="Transparent" BorderThickness="0"
-                                                    Click="Button_Click_7" Height="36">
+                                                    Click="Button_Click_7" Height="36" Margin="0,0,4,0">
                                                 <FontIcon Glyph="&#xE711;" FontSize="14" VerticalAlignment="Center"/>
                                             </Button>
                                         </Grid>

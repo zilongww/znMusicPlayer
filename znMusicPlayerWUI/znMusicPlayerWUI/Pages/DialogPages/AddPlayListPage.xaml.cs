@@ -71,14 +71,14 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                     {
                         await PlayListHelper.AddPlayList(musicListData);
                         await App.playListReader.Refresh();
-                        MainWindow.AddNotify("添加列表成功", null, InfoBarSeverity.Success);
+                        MainWindow.AddNotify("添加列表成功", null, NotifySeverity.Complete);
                     }
                     catch (ArgumentException)
                     {
                         MainWindow.AddNotify(
                             "已存在一个同名的列表",
                             "无法添加这个播放列表，因为填写的属性已被其它播放列表占用。\n请尝试换一个播放列表名称或图片地址试试。",
-                            InfoBarSeverity.Error);
+                            NotifySeverity.Error);
                     }
                     catch (Exception err)
                     {

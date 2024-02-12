@@ -66,10 +66,12 @@ namespace znMusicPlayerWUI.Pages
             if (!downloadDatas.Any())
             {
                 ListEmptyPopup.Visibility = Visibility.Visible;
+                AtListBottomTb.Visibility = Visibility.Collapsed;
             }
             else
             {
                 ListEmptyPopup.Visibility = Visibility.Collapsed;
+                AtListBottomTb.Visibility = Visibility.Visible;
             }
         }
 

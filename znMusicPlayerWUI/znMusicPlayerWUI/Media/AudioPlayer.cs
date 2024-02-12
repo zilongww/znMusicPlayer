@@ -582,7 +582,7 @@ namespace znMusicPlayerWUI.Media
                     MainWindow.AddNotify("无音频输出设备", "似乎所有音频输出设备都已被拔出，程序找不到音频输出设备。\n" +
                         "请检查音频驱动是否正常工作，或检查音频输出设备的接口是否松动或拔出。\n" +
                         "如果检查完毕后仍然无法正常播放，请到 GitHub 里向项目提出 Issues。",
-                        Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error);
+                        NotifySeverity.Error);
                     isInErrorDialog = false;
                 });
                 return;

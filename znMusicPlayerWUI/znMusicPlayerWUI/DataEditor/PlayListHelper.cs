@@ -208,8 +208,13 @@ namespace znMusicPlayerWUI.DataEditor
                     {
                         await Task.Run(() =>
                         {
-                            tagFile = TagLib.File.Create(localFile.FullName);
-                            tag = tagFile.Tag;
+                            try
+                            {
+                                tagFile = TagLib.File.Create(localFile.FullName);
+                                tag = tagFile.Tag;
+                            }
+                            catch { }
+                            if (tag == null) { isError = true; return; }
                             if (tag.IsEmpty) isError = true;
                             if (string.IsNullOrEmpty(tag.Title)) isError = true;
                             if (tag.Performers == null) isError = true;

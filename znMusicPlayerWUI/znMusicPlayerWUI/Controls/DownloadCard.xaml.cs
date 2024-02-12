@@ -120,7 +120,7 @@ namespace znMusicPlayerWUI.Controls
         public void SetProgressValue(decimal value)
         {
             DownloadProgress.IsIndeterminate = false;
-            CompletedBackgroundBase.Fill = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
+            CompletedBackgroundBase.Fill = App.Current.Resources["SystemFillColorCriticalBackgroundBrush"] as SolidColorBrush;
             CoverRectangle.Rect = new(0, 0, CompletedBackgroundBase.ActualWidth * ((double)value / 100), CompletedBackgroundBase.ActualHeight);
             DownloadProgress.Value = (double)value;
             MessageTb.Text = $"{CodeHelper.GetAutoSizeString(downloadData.DownloadedSize, 2)}/{CodeHelper.GetAutoSizeString(downloadData.FileSize, 2)} | {value}%";
@@ -134,7 +134,7 @@ namespace znMusicPlayerWUI.Controls
 
         public void SetDownloadedSaving()
         {
-            CompletedBackgroundBase.Fill = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
+            CompletedBackgroundBase.Fill = App.Current.Resources["SystemFillColorCriticalBackgroundBrush"] as SolidColorBrush;
             DownloadProgress.IsIndeterminate = true;
             CoverRectangle.Rect = new(0, 0, CompletedBackgroundBase.ActualWidth, CompletedBackgroundBase.ActualHeight);
             DownloadProgress.Value = 100;
@@ -144,7 +144,7 @@ namespace znMusicPlayerWUI.Controls
         
         public void SetDownloadedPreview()
         {
-            CompletedBackgroundBase.Fill = App.Current.Resources["AccentAAFillColorDefaultBrush"] as SolidColorBrush;
+            CompletedBackgroundBase.Fill = App.Current.Resources["SystemFillColorCriticalBackgroundBrush"] as SolidColorBrush;
             DownloadProgress.IsIndeterminate = true;
             CoverRectangle.Rect = new(0, 0, CompletedBackgroundBase.ActualWidth, CompletedBackgroundBase.ActualHeight);
             DownloadProgress.Value = 100;
@@ -154,7 +154,7 @@ namespace znMusicPlayerWUI.Controls
         
         public async void SetDownloaded()
         {
-            CompletedBackgroundBase.Fill = App.Current.Resources["SystemFillColorSuccessBrush"] as SolidColorBrush;
+            CompletedBackgroundBase.Fill = App.Current.Resources["SystemFillColorSuccessBackgroundBrush"] as SolidColorBrush;
             DownloadProgress.IsIndeterminate = false;
             CoverRectangle.Rect = new(0, 0, CompletedBackgroundBase.ActualWidth, CompletedBackgroundBase.ActualHeight);
             DownloadProgress.Value = 100;
@@ -165,7 +165,7 @@ namespace znMusicPlayerWUI.Controls
         
         public async void SetError()
         {
-            CompletedBackgroundBase.Fill = App.Current.Resources["SystemFillColorCriticalBrush"] as SolidColorBrush;
+            CompletedBackgroundBase.Fill = App.Current.Resources["SystemFillColorCautionBackgroundBrush"] as SolidColorBrush;
             DownloadProgress.IsIndeterminate = false;
             CoverRectangle.Rect = new(0, 0, CompletedBackgroundBase.ActualWidth, CompletedBackgroundBase.ActualHeight);
             DownloadProgress.Value = 100;

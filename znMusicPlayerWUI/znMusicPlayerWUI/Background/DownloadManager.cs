@@ -68,6 +68,10 @@ namespace znMusicPlayerWUI.Background
             {
                 UpdateDownload();
             };
+            OnDownloadError += (_) =>
+            {
+                UpdateDownload();
+            };
         }
 
         /// <summary>

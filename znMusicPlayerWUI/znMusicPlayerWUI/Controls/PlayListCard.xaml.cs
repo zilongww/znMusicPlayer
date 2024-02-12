@@ -250,7 +250,7 @@ namespace znMusicPlayerWUI.Controls
                 MainWindow.AddNotify("正在删除", $"正在删除列表 \"{MusicListData.ListShowName}\"。");
                 await PlayListHelper.DeletePlayList(MusicListData);
                 await App.playListReader.Refresh();
-                MainWindow.AddNotify("删除列表成功。", null, InfoBarSeverity.Success);
+                MainWindow.AddNotify("删除列表成功。", null, NotifySeverity.Complete);
             }
         }
 
@@ -279,12 +279,12 @@ namespace znMusicPlayerWUI.Controls
                 await PlayListHelper.SaveData(data);
 
                 await App.playListReader.Refresh();
-                MainWindow.AddNotify("更新歌单成功。", null, InfoBarSeverity.Success);
+                MainWindow.AddNotify("更新歌单成功。", null, NotifySeverity.Complete);
             }
             catch (Exception ex)
             {
                 LogHelper.WriteLog("PlayingList Update Error", ex.ToString(), false);
-                MainWindow.AddNotify("更新歌单失败", $"更新歌单时遇到错误，请重试。\n错误信息：{ex}", InfoBarSeverity.Error);
+                MainWindow.AddNotify("更新歌单失败", $"更新歌单时遇到错误，请重试。\n错误信息：{ex}", NotifySeverity.Error);
             }
         }
 

@@ -343,7 +343,7 @@ namespace znMusicPlayerWUI.Background.HotKeys
                                 $"●uMsg：{uMsg}\n" +
                                 $"●wParam.Value：{wParam.Value}\n" +
                                 $"●lParam.Value：{lParam.Value}",
-                            Microsoft.UI.Xaml.Controls.InfoBarSeverity.Warning);
+                            NotifySeverity.Warning);
                         break;
                 }
 

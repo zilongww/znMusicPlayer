@@ -54,7 +54,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
 
             await PlayListHelper.SaveData(data);
             await App.playListReader.Refresh();
-            MainWindow.AddNotify("歌单排序更改成功。", null, InfoBarSeverity.Success);
+            MainWindow.AddNotify("歌单排序更改成功。", null, NotifySeverity.Complete);
         }
 
         public static async Task ShowDialog()

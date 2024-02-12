@@ -42,15 +42,28 @@
                                       Value="{Binding ElementName=DownloadProgress,Path=Value}"
                                       Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
                                       Width="12" Height="12"/>
-                        <FontIcon x:Name="FontIconBase1" FontSize="8"/>
+                        <FontIcon x:Name="FontIconBase1" FontSize="8"
+                                  Glyph="{Binding ElementName=FontIconBase,Path=Glyph}"/>
                     </Grid>
                 </StackPanel>
             </Grid>
             <Grid>
+
                 <Grid.Resources>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="Foreground" Value="{ThemeResource TextOnAccentFillColorPrimaryBrush}"/>
+                    <Style TargetType="ProgressRing">
+                        <Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
                     </Style>
+                    <!--
+                    <StaticResource x:Key="FontColor" ResourceKey="ApplicationForegroundThemeBrush"/>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="{ThemeResource FontColor}"/>
+                    </Style>
+                    <Style TargetType="ProgressRing">
+                        <Setter Property="Foreground" Value="{ThemeResource FontColor}"/>
+                    </Style>
+                    <Style TargetType="FontIcon">
+                        <Setter Property="Foreground" Value="{ThemeResource FontColor}"/>
+                    </Style>-->
                 </Grid.Resources>
                 <Grid.Clip>
                     <RectangleGeometry Rect="0,0,180,100" x:Name="CoverRectangle"/>
@@ -72,15 +85,13 @@
                                 Orientation="Horizontal" Spacing="12"
                                 Grid.Column="1">
                         <TextBlock Text="{Binding ElementName=MessageTb,Path=Text}" x:Name="MessageTb1"
-                               VerticalAlignment="Center"/>
+                                   VerticalAlignment="Center"/>
                         <Grid>
                             <ProgressRing x:Name="DownloadProgress"
                                           IsIndeterminate="{Binding ElementName=DownloadProgress,Path=IsIndeterminate}"
                                           Value="{Binding ElementName=DownloadProgress,Path=Value}"
-                                          Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
                                           Width="12" Height="12"/>
-                            <FontIcon x:Name="FontIconBase" FontSize="8"
-                                      Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"/>
+                            <FontIcon x:Name="FontIconBase" FontSize="8"/>
                         </Grid>
                     </StackPanel>
                 </Grid>

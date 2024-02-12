@@ -110,7 +110,7 @@ namespace znMusicPlayerWUI.Pages
             if (obj == null)
             {
                 MainWindow.AddNotify("加载专辑信息时出现错误", "无法加载专辑信息，请重试。",
-                    InfoBarSeverity.Error);
+                    NotifySeverity.Error);
                 return;
             }
             NavToObj = obj;

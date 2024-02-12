@@ -424,7 +424,7 @@ namespace znMusicPlayerWUI
         private void NotifyArea_Loaded(object sender, RoutedEventArgs e)
         {
             //SNotifyListViewScrollViewer = (VisualTreeHelper.GetChild(NotifyListView, 0) as Border).Child as ScrollViewer;
-            //AddNotify("测试版本", "此应用程序是一份内测版本。", InfoBarSeverity.Warning, TimeSpan.MaxValue);
+            //AddNotify("测试版本", "此应用程序是一份内测版本。", NotifySeverity.Warning, TimeSpan.MaxValue);
         }
         
         public static void UpdatePlayListFlyoutHeight()
@@ -596,15 +596,16 @@ namespace znMusicPlayerWUI
             AsyncDialog.Hide();
         }
 
-        public static void AddNotify(string title, string message, InfoBarSeverity severity = InfoBarSeverity.Informational, TimeSpan? residenceTime = null)
+        public static NotifyItem AddNotify(string title, string message, NotifySeverity severity = NotifySeverity.Info, TimeSpan? residenceTime = null)
         {
-            AddNotify(new(title, message, severity, residenceTime));
+            return AddNotify(new(title, message, severity, residenceTime));
         }
 
-        public static InfoBar AddNotify(NotifyItemData notifyItemData)
+        public static NotifyItem AddNotify(NotifyItemData notifyItemData)
         {
-            var infoBar = new InfoBar()
-            {
+            var notifyItem = new NotifyItem();
+            notifyItem.SetNotifyItemData(notifyItemData);
+            /*{
                 Title = notifyItemData.Title,
                 Message = notifyItemData.Message,
                 Severity = notifyItemData.Severity,
@@ -613,21 +614,34 @@ namespace znMusicPlayerWUI
                 IsClosable = false,
                 BorderBrush = App.Current.Resources["ControlElevationBorderBrush"] as Brush,
                 CornerRadius = new(8)
-            };
-            if (notifyItemData.Severity == InfoBarSeverity.Informational)
-            {
-                infoBar.Background = App.Current.Resources["AcrylicNormal"] as AcrylicBrush;
-            }
-            SNotifyStackPanel.Children.Add(infoBar);
+            };*/
+            SNotifyStackPanel.Children.Add(notifyItem);
             if (notifyItemData.ResidenceTime != TimeSpan.MaxValue)
-                NotifyCountDown(notifyItemData, infoBar);
-            return infoBar;
+                NotifyCountDown(notifyItem);
+            return notifyItem;
         }
 
-        private static async void NotifyCountDown(NotifyItemData notifyItemData, InfoBar infoBar)
+        public static void NotifyItemSetData(NotifyItem notifyItemData, string title, string message, NotifySeverity severity = NotifySeverity.Info)
         {
+            notifyItemData.SetNotifyItemData(new(title, message, severity));
+        }
+
+        public static void RemoveNotifyItem(NotifyItem notifyItem)
+        {
+            if (SNotifyStackPanel.Children.Contains(notifyItem))
+                SNotifyStackPanel.Children.Remove(notifyItem);
+        }
+
+        public static void NotifyCountDown(NotifyItem notifyItem)
+        {
+            NotifyCountDown(notifyItem.GetNotifyItemData(), notifyItem);
+        }
+
+        public static async void NotifyCountDown(NotifyItemData notifyItemData, NotifyItem notifyItem)
+        {
+            if (notifyItemData.ResidenceTime == TimeSpan.MaxValue) return;
             await Task.Delay(notifyItemData.ResidenceTime);
-            SNotifyStackPanel.Children.Remove(infoBar);
+            SNotifyStackPanel.Children.Remove(notifyItem);
         }
         #endregion
 
@@ -1204,7 +1218,7 @@ namespace znMusicPlayerWUI
                     }
                     else
                     {
-                        AddNotify("未添加此功能", $"未添加 \"{(sender.SelectedItem as NavigationViewItem).Content}\" 功能。", InfoBarSeverity.Error);
+                        AddNotify("未添加此功能", $"未添加 \"{(sender.SelectedItem as NavigationViewItem).Content}\" 功能。", NotifySeverity.Error);
                     }
                     break;
             }
@@ -1274,7 +1288,7 @@ namespace znMusicPlayerWUI
                     break;
 
                 default:
-                    AddNotify("未添加此功能", $"未添加 \"未知\" 功能。", InfoBarSeverity.Error);
+                    AddNotify("未添加此功能", $"未添加 \"未知\" 功能。", NotifySeverity.Error);
                     break;
             }
             IsJustUpdate = false;
@@ -1899,6 +1913,7 @@ namespace znMusicPlayerWUI
         }
     }
 
+    public enum NotifySeverity { Info, Error, Warning, Complete, Loading }
     /// <summary>
     /// 显示通知的数据类型
     /// </summary>
@@ -1915,7 +1930,7 @@ namespace znMusicPlayerWUI
         /// <summary>
         /// 通知类型
         /// </summary>
-        public InfoBarSeverity Severity { get; set; }
+        public NotifySeverity Severity { get; set; }
         /// <summary>
         /// 通知滞留时间，默认5秒
         /// </summary>
@@ -1924,7 +1939,7 @@ namespace znMusicPlayerWUI
         public NotifyItemData(
             string title,
             string message,
-            InfoBarSeverity severity = InfoBarSeverity.Informational,
+            NotifySeverity severity = NotifySeverity.Info,
             TimeSpan? residenceTime = null)
         {
             Title = title;

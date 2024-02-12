@@ -715,7 +715,7 @@ namespace znMusicPlayerWUI.Pages
         {
             DataFolderBase.JSettingData = DataFolderBase.SettingDefault;
             App.LoadSettings(DataFolderBase.JSettingData);
-            MainWindow.AddNotify("恢复成功", "已将设置恢复到默认。", InfoBarSeverity.Success);
+            MainWindow.AddNotify("恢复成功", "已将设置恢复到默认。", NotifySeverity.Complete);
             MainWindow.SetNavViewContent(typeof(SearchPage));
         }
 
@@ -810,13 +810,13 @@ namespace znMusicPlayerWUI.Pages
         private async void Button_Click_9(object sender, RoutedEventArgs e)
         {
             App.SaveSettings();
-            MainWindow.AddNotify("保存设置成功", "已将设置数据写入设置文件中。", InfoBarSeverity.Success);
+            MainWindow.AddNotify("保存设置成功", "已将设置数据写入设置文件中。", NotifySeverity.Complete);
         }
 
         private async void Button_Click_10(object sender, RoutedEventArgs e)
         {
             App.LoadSettings(DataEditor.DataFolderBase.JSettingData);
-            MainWindow.AddNotify("读取设置成功", "已从设置文件中读取设置。", InfoBarSeverity.Success);
+            MainWindow.AddNotify("读取设置成功", "已从设置文件中读取设置。", NotifySeverity.Complete);
             MainWindow.SetNavViewContent(typeof(SearchPage));
         }
     }

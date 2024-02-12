@@ -607,22 +607,30 @@ namespace znMusicPlayerWUI.Pages
         {
             if (Children.SelectedItems.Any())
             {
-                var result = await MainWindow.ShowDialog("移除歌曲", $"真的要从歌单中移除这{Children.SelectedItems.Count}首歌曲吗？", "取消", "确定");
+                var result = await MainWindow.ShowDialog("删除歌曲", $"真的要从歌单中删除这{Children.SelectedItems.Count}首歌曲吗？", "取消", "确定");
                 if (result == ContentDialogResult.Primary)
                 {
-                    MainWindow.ShowLoadingDialog("正在移除");
+                    ToolsCommandBar.IsEnabled = false;
+                    var item = MainWindow.AddNotify("删除歌曲", "正在准备删除歌曲...", NotifySeverity.Loading, TimeSpan.MaxValue);
                     var jdata = await PlayListHelper.ReadData();
                     int num = 0;
                     string listName = NavToObj.ListName;
-                    foreach (SongItemBindBase item in Children.SelectedItems)
+                    foreach (SongItemBindBase data in Children.SelectedItems)
                     {
                         num++;
-                        MainWindow.SetLoadingText($"正在移除：{item.MusicData.Title} - {item.MusicData.ButtonName}");
-                        MainWindow.SetLoadingProgressRingValue(Children.SelectedItems.Count, num);
-                        await Task.Run(() => jdata = PlayListHelper.DeleteMusicDataFromPlayList(listName, item.MusicData, jdata));
+                        item.HorizontalAlignment = HorizontalAlignment.Stretch;
+                        MainWindow.NotifyItemSetData(item, "删除歌曲", $"进度：{Math.Round(((decimal)num / Children.SelectedItems.Count) * 100, 1)}%\n正在删除：{data.MusicData.Title} - {data.MusicData.ButtonName}", NotifySeverity.Loading);
+                        item.SetProcess(Children.SelectedItems.Count, num);
+                        await Task.Run(() => jdata = PlayListHelper.DeleteMusicDataFromPlayList(listName, data.MusicData, jdata));
                     }
+                    item.HorizontalAlignment = HorizontalAlignment.Center;
+                    MainWindow.NotifyItemSetData(item, "删除歌曲", "正在保存...", NotifySeverity.Loading);
+                    item.SetProcess(0, 0);
                     await PlayListHelper.SaveData(jdata);
                     await App.playListReader.Refresh();
+                    MainWindow.NotifyItemSetData(item, "删除歌曲", "删除歌曲成功。", NotifySeverity.Complete);
+                    MainWindow.NotifyCountDown(item);
+                    ToolsCommandBar.IsEnabled = true;
 
                     if (NavToObj != null)
                     {
@@ -636,7 +644,6 @@ namespace znMusicPlayerWUI.Pages
                         }
                         InitData();
                     }
-                    MainWindow.HideDialog();
                 }
             }
         }
@@ -683,20 +690,25 @@ namespace znMusicPlayerWUI.Pages
                     App.SupportedMediaFormats);
                 if (files.Any())
                 {
-                    var jdata = await PlayListHelper.ReadData();
                     MainWindow.HideDialog();
-                    MainWindow.ShowLoadingDialog("正在添加...");
+                    ToolsCommandBar.IsEnabled = false;
+                    var item = MainWindow.AddNotify("添加本地歌曲", "正在准备添加本地歌曲...", NotifySeverity.Loading, TimeSpan.MaxValue);
+                    var jdata = await PlayListHelper.ReadData();
                     int count = 0;
                     string listName = NavToObj.ListName;
                     foreach (var i in files)
                     {
-                        MainWindow.SetLoadingText(i.Name);
+                        item.HorizontalAlignment = HorizontalAlignment.Stretch;
+                        MainWindow.NotifyItemSetData(item, "添加本地歌曲", $"进度：{count}/{files.Count}，{Math.Round(((decimal)count / files.Count) * 100, 1)}%\n正在添加：{i.Name}", NotifySeverity.Loading);
+                        item.SetProcess(files.Count, count);
                         FileInfo fi = null;
                         await Task.Run(() => fi = new FileInfo(i.Path));
                         jdata = await PlayListHelper.AddLocalMusicDataToPlayList(listName, fi, jdata);
                         count++;
-                        MainWindow.SetLoadingProgressRingValue(files.Count, count);
                     }
+                    item.SetProcess(0, 0);
+                    item.HorizontalAlignment = HorizontalAlignment.Center;
+                    MainWindow.NotifyItemSetData(item, "添加本地歌曲", "正在保存...", NotifySeverity.Loading);
                     await PlayListHelper.SaveData(jdata);
                     await App.playListReader.Refresh();
                     if (NavToObj != null)
@@ -711,9 +723,9 @@ namespace znMusicPlayerWUI.Pages
                         }
                         InitData();
                     }
-                    await Task.Delay(500);
-                    MainWindow.HideDialog();
-                    MainWindow.AddNotify("添加本地歌曲成功。", null, InfoBarSeverity.Success);
+                    ToolsCommandBar.IsEnabled = true;
+                    MainWindow.NotifyItemSetData(item, "添加本地歌曲", "添加本地歌曲成功。", NotifySeverity.Complete);
+                    MainWindow.NotifyCountDown(item);
                 }
             };
             bb.Click += async (_, __) =>
@@ -742,7 +754,7 @@ namespace znMusicPlayerWUI.Pages
                         }
                     }
                     InitData();
-                    MainWindow.AddNotify("添加本地歌曲成功。", null, InfoBarSeverity.Success);
+                    MainWindow.AddNotify("添加本地歌曲成功。", null, NotifySeverity.Complete);
                 }
             };
 
@@ -918,7 +930,7 @@ namespace znMusicPlayerWUI.Pages
             if (NavToObj.PlaySort != PlaySort.默认升序)
             {
                 MoveItemButton.IsChecked = false;
-                MainWindow.AddNotify("无法使用排序", "排序功能只能在此列表排序方式为 \"默认升序\" 时可使用。", InfoBarSeverity.Error);
+                MainWindow.AddNotify("无法使用排序", "排序功能只能在此列表排序方式为 \"默认升序\" 时可使用。", NotifySeverity.Error);
                 return;
             }
 
@@ -958,6 +970,7 @@ namespace znMusicPlayerWUI.Pages
                 SelectItemButton.Visibility = Visibility.Visible;
                 foreach (var i in SongItem.StaticSongItems) i.AddUnloadedEvent();
 
+                var item = MainWindow.AddNotify("正在保存排序...", null, NotifySeverity.Loading, TimeSpan.MaxValue);
                 var data = await PlayListHelper.ReadData();
                 NavToObj.Songs.Clear();
                 foreach (var i in MusicDataList)
@@ -967,6 +980,8 @@ namespace znMusicPlayerWUI.Pages
                 data[NavToObj.ListName] = JObject.FromObject(NavToObj);
                 await PlayListHelper.SaveData(data);
                 await App.playListReader.Refresh();
+                MainWindow.NotifyItemSetData(item, "保存排序完成。", null, NotifySeverity.Complete);
+                MainWindow.NotifyCountDown(item);
             }
             UpdateCommandToolBarWidth();
         }
