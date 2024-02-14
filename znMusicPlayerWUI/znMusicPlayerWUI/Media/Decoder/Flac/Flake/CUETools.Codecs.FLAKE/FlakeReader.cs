@@ -77,8 +77,8 @@ namespace CUETools.Codecs.FLAKE
 
 		public void Close()
 		{
-			_IO.Close();
-			_IO.Dispose();
+			_IO?.Close();
+			_IO?.Dispose();
 			_IO = null;
 		}
 
@@ -144,10 +144,28 @@ namespace CUETools.Codecs.FLAKE
 					_sampleOffset += _samplesInBuffer;
 				};
 				int diff = _samplesInBuffer - (int)(_sampleOffset - value);
-				_samplesInBuffer -= diff;
-				_samplesBufferOffset += diff;
+				if (diff > 0)
+				{
+					_samplesInBuffer -= diff;
+					_samplesBufferOffset += diff;
+				}
+				else
+				{
+					SetPositionFailedReload();
+				}
 			}
 		}
+
+		static int isReloadFreeze = 0;
+		private static async void SetPositionFailedReload()
+		{
+			// badly bug :(
+            isReloadFreeze++;
+			await System.Threading.Tasks.Task.Delay(200);
+			isReloadFreeze--;
+			if (isReloadFreeze > 0) return;
+            await znMusicPlayerWUI.App.audioPlayer.Reload(znMusicPlayerWUI.Media.AudioPlayer.ct += TimeSpan.FromMilliseconds(100));
+        }
 
         public AudioPCMConfig PCM { get; private set; }
 
@@ -157,8 +175,12 @@ namespace CUETools.Codecs.FLAKE
 		{
 			if (PCM.ChannelCount == 2)
 			{
-				fixed (int* src = &Samples[_samplesBufferOffset])
-					buff.Interlace(offset, src, src + Flake.MAX_BLOCKSIZE, count);
+				try
+				{
+					fixed (int* src = &Samples[_samplesBufferOffset])
+						buff.Interlace(offset, src, src + Flake.MAX_BLOCKSIZE, count);
+				}
+				catch { }
 			}
 			else
 			{

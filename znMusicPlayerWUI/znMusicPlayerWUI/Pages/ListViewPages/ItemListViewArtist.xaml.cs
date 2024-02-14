@@ -97,7 +97,7 @@ namespace znMusicPlayerWUI.Pages
             var obj = await App.metingServices.NeteaseServices.GetArtist(NavToObj.ID);
             if (obj == null)
             {
-                MainWindow.AddNotify("加载艺术家信息时出现错误", "无法加载艺术家信息，请重试。", NotifySeverity.Complete);
+                MainWindow.AddNotify("加载艺术家信息时出现错误", "无法加载艺术家信息，请重试。", NotifySeverity.Error);
                 return;
             }
             NavToObj = obj;

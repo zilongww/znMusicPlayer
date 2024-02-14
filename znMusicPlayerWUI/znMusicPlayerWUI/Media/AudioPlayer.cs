@@ -347,6 +347,7 @@ namespace znMusicPlayerWUI.Media
             }
         }
 
+        public static TimeSpan ct = TimeSpan.Zero;
         public TimeSpan CurrentTime
         {
             get
@@ -386,6 +387,7 @@ namespace znMusicPlayerWUI.Media
                     }
                     else
                     {
+                        ct = value;
                         if (MusicData.CUETrackData != null)
                         {
                             FileReader.CurrentTime = MusicData.CUETrackData.StartDuration + value;
@@ -839,12 +841,12 @@ namespace znMusicPlayerWUI.Media
         {
         }
 
-        public async Task Reload()
+        public async Task Reload(TimeSpan? reloadedStreamPosition = null)
         {
             if (FileReader != null)
             {
                 if (FileReader.isMidi) return;
-                TimeSpan nowPosition = FileReader.CurrentTime;
+                TimeSpan nowPosition = reloadedStreamPosition == null ? FileReader.CurrentTime : (TimeSpan)reloadedStreamPosition;
                 var nowPlayState = NowOutObj?.PlaybackState;
                 string filePath = FileReader.FileName;
 
