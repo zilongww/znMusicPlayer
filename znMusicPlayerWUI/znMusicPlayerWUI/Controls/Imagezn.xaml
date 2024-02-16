@@ -16,9 +16,6 @@
     <Grid.Clip>
         <RectangleGeometry x:Name="RGClip"/>
     </Grid.Clip>
-    <Image x:Name="ImageSourceBefore" Stretch="{Binding ElementName=ImageSource, Path=Stretch}"
-           HorizontalAlignment="{Binding ElementName=RootGrid,Path=HorizontalAlignment}"
-           VerticalAlignment="{Binding ElementName=RootGrid,Path=VerticalAlignment}"/>
     <Grid x:Name="ImageSourceRoot" CornerRadius="{Binding ElementName=RootGrid,Path=CornerRadius}">
         <Image x:Name="ImageSource" Stretch="Uniform"
                HorizontalAlignment="{Binding ElementName=RootGrid,Path=HorizontalAlignment}"

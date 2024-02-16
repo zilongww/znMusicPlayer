@@ -256,6 +256,7 @@ namespace znMusicPlayerWUI.DataEditor
     public class LyricData : OnlyClass
     {
         public List<string> Lyric { get; set; }
+        public string Romaji { get; set; }
         public TimeSpan LyricTimeSpan { get; set; }
         string lyricAllString = null;
         public string LyricAllString

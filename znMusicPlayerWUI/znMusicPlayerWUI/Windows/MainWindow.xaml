@@ -4,6 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:znMusicPlayerWUI"
     xmlns:cc="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     xmlns:data="using:znMusicPlayerWUI.DataEditor"
     xmlns:controls="using:znMusicPlayerWUI.Controls"
     xmlns:m="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
@@ -296,6 +298,7 @@
               Background="{x:Null}"
               SizeChanged="Grid_SizeChanged">
             <Grid.Resources>
+                
                 <Flyout x:Name="PlayingListBasePopup"
                         ShouldConstrainToRootBounds="True">
                     <Flyout.FlyoutPresenterStyle>
@@ -312,56 +315,61 @@
                         </Style>
                     </Flyout.FlyoutPresenterStyle>
                     <Grid x:Name="PlayingListBaseGrid"
-                              Margin="-12"
-                              MaxWidth="400"
-                              MaxHeight="800"
+                          Margin="-12"
+                          MaxWidth="400"
+                          MaxHeight="800"
                           VerticalAlignment="Stretch"
-                              HorizontalAlignment="Stretch">
+                          HorizontalAlignment="Stretch">
                         <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid Background="Transparent" x:Name="PlayingListHeader">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="当前播放列表"
-                                           Style="{ThemeResource SubTBHeader}"
-                                           Margin="12"/>
-                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right"
-                                            Orientation="Horizontal"
-                                            Grid.Column="1"
-                                            Margin="0,0,8,0">
-                                    <Button Content="定位" ToolTipService.ToolTip="定位到当前播放的歌曲"
-                                            Margin="0,0,4,0" AccessKey="V"
-                                            Click="Button_Click_5"/>
-                                    <Button Width="52"
-                                            Height="32"
-                                            Padding="0"
-                                            Click="Button_Click_5"
-                                            AccessKey="C"
-                                            ToolTipService.ToolTip="清除所有"
-                                            Visibility="Visible">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding ElementName=PlayingListBaseView,Path=ItemsSource.Count}"
-                                                   FontSize="12" Margin="0,0,4,0"
-                                                   VerticalAlignment="Center"/>
-                                            <FontIcon Glyph="&#xE711;" FontSize="14" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </Button>
-                                </StackPanel>
-                            </Grid>
-                            <Rectangle Fill="{ThemeResource CardStrokeColorDefault}"
-                                            VerticalAlignment="Bottom" Height="1"/>
                             <ListView x:Name="PlayingListBaseView"
-                                      Grid.Row="1"
                                       SelectionChanged="PlayingListBaseView_SelectionChanged"
                                       Background="Transparent"
                                       AllowDrop="True"
-                                      CanReorderItems="True"
-                                      Padding="0,0,0,2">
+                                      CanReorderItems="True">
+                                <interactivity:Interaction.Behaviors>
+                                    <behaviors:StickyHeaderBehavior/>
+                                </interactivity:Interaction.Behaviors>
+                                <ListView.Header>
+                                    <Grid Background="{ThemeResource AcrylicNormal}" x:Name="PlayingListHeader"
+                                          BorderBrush="{ThemeResource CardStrokeColorDefault}" BorderThickness="0,0,0,1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="当前播放列表"
+                                                   Style="{ThemeResource SubTBHeader}"
+                                                   Margin="12"/>
+                                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right"
+                                                    Orientation="Horizontal"
+                                                    Grid.Column="1" Spacing="4"
+                                                    Margin="0,0,16,0">
+                                            <Button Content="定位" ToolTipService.ToolTip="定位到当前播放的歌曲"
+                                                    AccessKey="V"
+                                                    Click="Button_Click_5"/>
+                                            <Button Width="52"
+                                                    Height="32"
+                                                    Padding="0"
+                                                    Click="Button_Click_5"
+                                                    AccessKey="C"
+                                                    ToolTipService.ToolTip="清除所有"
+                                                    Visibility="Visible">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding ElementName=PlayingListBaseView,Path=ItemsSource.Count}"
+                                                               FontSize="12" Margin="0,0,4,0"
+                                                               VerticalAlignment="Center"/>
+                                                    <FontIcon Glyph="&#xE711;" FontSize="14" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </ListView.Header>
+                                <ListView.Footer>
+                                    <TextBlock Text="到底了~"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Bottom"
+                                               Margin="12" x:Name="AtListBottomTb"
+                                               Foreground="{ThemeResource TextFillColorSecondary}"/>
+                                </ListView.Footer>
                                 <ListView.ItemTemplate>
                                     <DataTemplate x:DataType="data:MusicData">
                                         <Grid>
@@ -370,7 +378,9 @@
                                                 <ColumnDefinition Width="auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Padding="0,8,0,8" Tag="{x:Bind MD5}">
-                                                <TextBlock Text="{x:Bind Title}" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock TextTrimming="CharacterEllipsis">
+                                                    <Run Text="{Binding Title}"/>
+                                                </TextBlock>
                                                 <TextBlock Text="{x:Bind ButtonName}" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource SystemChromeDisabledLowColor}" FontSize="12"/>
                                             </StackPanel>
                                             <Button Grid.Column="1" Background="Transparent" BorderThickness="0"
@@ -384,6 +394,7 @@
                         </Grid>
                     </Grid>
                 </Flyout>
+                
                 <Flyout x:Name="VolumeBasePopup"
                         ShouldConstrainToRootBounds="True">
                     <Flyout.FlyoutPresenterStyle>
@@ -444,6 +455,7 @@
                         </StackPanel>
                     </Grid>
                 </Flyout>
+                
             </Grid.Resources>
         </Grid>
         

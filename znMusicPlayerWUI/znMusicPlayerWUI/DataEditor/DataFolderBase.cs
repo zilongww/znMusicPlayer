@@ -122,11 +122,12 @@ namespace znMusicPlayerWUI.DataEditor
                     (int)LyricTranslateTextPosition.Center
                 }
             },
+            { SettingParams.DesktopLyricOpacity.ToString(), 1 },
             { SettingParams.TaskbarShowIcon.ToString(), true },
             { SettingParams.BackgroundRun.ToString(), false },
             { SettingParams.ImageDarkMass.ToString(), false },
             { SettingParams.LoadLastExitPlayingSongAndSongList.ToString(), true },
-            { SettingParams.HotKeySettings.ToString(), JArray.FromObject(HotKeyManager.DefaultRegisterHotKeysList) }
+            { SettingParams.HotKeySettings.ToString(), JArray.FromObject(HotKeyManager.DefaultRegisterHotKeysList) },
         };
         
         /// <summary>
@@ -183,11 +184,12 @@ namespace znMusicPlayerWUI.DataEditor
             DesktopLyricOptions,
             DesktopLyricText,
             DesktopLyricTranslateText,
+            DesktopLyricOpacity,
             TaskbarShowIcon,
             BackgroundRun,
             ImageDarkMass,
             LoadLastExitPlayingSongAndSongList,
-            HotKeySettings
+            HotKeySettings,
         }
 
         /// <summary>

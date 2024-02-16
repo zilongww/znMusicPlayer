@@ -123,7 +123,7 @@ namespace znMusicPlayerWUI.Media
             switch (addr)
             {
                 case "10276":
-                    if (!cueFile && false)
+                    if (!cueFile)
                     {
                         readerStream = new FlakeNAudioAdapter.FlakeFileReader(fileName);
                         System.Diagnostics.Debug.WriteLine("[AudioFileReader]: 正在使用 FlakeFlac 解码器");

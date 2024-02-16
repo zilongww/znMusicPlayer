@@ -5,6 +5,7 @@
     xmlns:local="using:znMusicPlayerWUI"
     xmlns:ui="using:CommunityToolkit.WinUI.UI.Controls"    
     xmlns:data="using:znMusicPlayerWUI.DataEditor"
+    xmlns:binding="using:znMusicPlayerWUI.Helpers"
     xmlns:controls="using:znMusicPlayerWUI.Controls"
     xmlns:m="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:brush="using:CommunityToolkit.WinUI.UI.Media"
@@ -17,46 +18,34 @@
     <Page.Resources>
         <StaticResource x:Key="TextForeground" ResourceKey="ButtonForegroundThemeBrush"/>
         <DataTemplate x:Key="LyricTemplate" x:DataType="data:LyricData">
-            <StackPanel Background="Transparent">
-                <TextBlock TextAlignment="{Binding ElementName=BridgeTb, Path=TextAlignment}"
-                                               TextWrapping="Wrap"
-                                               FontSize="24"
-                                               Text="{x:Bind LyricAllString}"/>
-            </StackPanel>
+            <controls:LyricItem/>
         </DataTemplate>
         <Style TargetType="ListViewItem">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListViewItem">
                         <ListViewItemPresenter
-                             BorderBrush="Transparent"
-                             Background="{x:Null}"
-                             Foreground="{ThemeResource MusicPageLrcForeground}"
-                             SelectedForeground="{ThemeResource MusicPageSelectLyricForeground}"
-                             ContentTransitions="{TemplateBinding ContentTransitions}"
-                             SelectionCheckMarkVisualEnabled="True"
-                             CheckBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
-                             CheckBoxBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
-                             DragBackground="{ThemeResource ListViewItemDragBackgroundThemeBrush}"
-                             DragForeground="{ThemeResource ListViewItemDragForegroundThemeBrush}"
-                             FocusBorderBrush="{ThemeResource SystemControlForegroundAltHighBrush}"
-                             FocusSecondaryBorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
-                             PlaceholderBackground="Transparent"
-                             PointerOverBackground="Transparent"
-                             PointerOverBorderBrush="Transparent"
-                             SelectedBackground="Transparent"
-                             SelectedPointerOverBackground="Transparent"
-                             SelectedPressedBackground="Transparent"
-                             PressedBackground="Transparent"
-                             DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
-                             DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
-                             ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}"
-                             HorizontalContentAlignment="Stretch"
-                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                             ContentMargin="{TemplateBinding Padding}"
-                             CheckMode="Overlay"
-                             MinWidth="0"
-                             Margin="0,0,0,40">
+                            BorderBrush="Transparent"
+                            Background="{x:Null}"
+                            Foreground="{ThemeResource MusicPageLrcForeground}"
+                            SelectedForeground="{ThemeResource MusicPageSelectLyricForeground}"
+                            ContentTransitions="{TemplateBinding ContentTransitions}"
+                            SelectionCheckMarkVisualEnabled="False"
+                            PlaceholderBackground="Transparent"
+                            PointerOverBackground="Transparent"
+                            PointerOverBorderBrush="Transparent"
+                            SelectedBackground="Transparent"
+                            SelectedPointerOverBackground="Transparent"
+                            SelectedPressedBackground="Transparent"
+                            PressedBackground="Transparent"
+                            DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
+                            ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            ContentMargin="{TemplateBinding Padding}"
+                            CheckMode="Inline"
+                            MinWidth="0"
+                            Margin="0,0,0,40">
                         </ListViewItemPresenter>
                     </ControlTemplate>
                 </Setter.Value>
@@ -69,7 +58,7 @@
                           VerticalAlignment="Center" HorizontalAlignment="Center"
                           Stretch="UniformToFill" Loaded="BackgroundBaseImage_Loaded"/>
         <TextBlock x:Name="BridgeTb" TextAlignment="Left" HorizontalAlignment="Left"/>
-        <Grid Name="BackgroundFillBase">
+        <Grid Name="BackgroundFillBase" Opacity="1">
             <Grid.OpacityTransition>
                 <ScalarTransition/>
             </Grid.OpacityTransition>
@@ -382,7 +371,7 @@
                 HorizontalContentAlignment="Left" CornerRadius="0,0,4,0"
                 Width="84" Height="48" Padding="12" BorderThickness="0,1,1,1"
                 AccessKey="B"
-                ToolTipService.ToolTip="一目了然，不言而喻。">
+                ToolTipService.ToolTip="关闭音乐界面">
             <AnimatedIcon>
                 <AnimatedIcon.Source>
                     <m:AnimatedChevronDownSmallVisualSource/>

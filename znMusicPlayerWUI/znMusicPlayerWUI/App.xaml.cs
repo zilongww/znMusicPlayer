@@ -67,7 +67,7 @@ namespace znMusicPlayerWUI
         public static TaskBarInfoWindow taskBarInfoWindow;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.3.21 Preview";
+        public static readonly string AppVersion = "0.3.3 Preview";
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -328,6 +328,7 @@ namespace znMusicPlayerWUI
                 DesktopLyricWindow.LyricTextPosition = (LyricTextPosition)(int)b[DataFolderBase.SettingParams.DesktopLyricText.ToString()][1];
                 DesktopLyricWindow.LyricTranslateTextBehavior = (LyricTranslateTextBehavior)(int)b[DataFolderBase.SettingParams.DesktopLyricTranslateText.ToString()][0];
                 DesktopLyricWindow.LyricTranslateTextPosition = (LyricTranslateTextPosition)(int)b[DataFolderBase.SettingParams.DesktopLyricTranslateText.ToString()][1];
+                DesktopLyricWindow.LyricOpacity = (double)b[DataFolderBase.SettingParams.DesktopLyricOpacity.ToString()];
 
                 NotifyIconWindow.IsVisible = (bool)b[DataFolderBase.SettingParams.TaskbarShowIcon.ToString()];
                 MainWindow.RunInBackground = (bool)b[DataFolderBase.SettingParams.BackgroundRun.ToString()];
@@ -399,6 +400,7 @@ namespace znMusicPlayerWUI
                 DesktopLyricWindow.LyricTranslateTextBehavior,
                 DesktopLyricWindow.LyricTranslateTextPosition
             };
+            a[DataFolderBase.SettingParams.DesktopLyricOpacity.ToString()] = DesktopLyricWindow.LyricOpacity;
 
             a[DataFolderBase.SettingParams.TaskbarShowIcon.ToString()] = NotifyIconWindow.IsVisible;
             a[DataFolderBase.SettingParams.BackgroundRun.ToString()] = MainWindow.RunInBackground;
@@ -421,7 +423,7 @@ namespace znMusicPlayerWUI
         }
 
         public static bool LoadLastExitPlayingSongAndSongList = true;
-        public static void SaveNowPlaying()
+        public static async void SaveNowPlaying()
         {
             if (audioPlayer.MusicData is null) return;
 
@@ -441,7 +443,8 @@ namespace znMusicPlayerWUI
                 { "music", JObject.FromObject(audioPlayer.MusicData) },
                 { "list", array }
             };
-            File.WriteAllText(path, jobject.ToString());
+            await File.WriteAllTextAsync(path, jobject.ToString());
+            Debug.WriteLine("[SavePlayingList]: 正在播放列表已保存！");
         }
 
         public static async void LoadLastPlaying()

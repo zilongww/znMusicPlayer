@@ -276,7 +276,6 @@ namespace znMusicPlayerWUI.Controls
             if (AlbumImage.Source != null)
             {
                 AlbumImage.Dispose();
-                AlbumImage.Dispose();
             }
 
             showCount++;

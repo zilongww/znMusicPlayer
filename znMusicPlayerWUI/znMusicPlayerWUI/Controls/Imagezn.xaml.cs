@@ -105,8 +105,6 @@ namespace znMusicPlayerWUI.Controls
         {
             Source = null;
             ImageSource.Source = null;
-            ImageSourceBefore.Source = null;
-            firstLoad = true;
         }
 
         private async void UpdateDatas()
@@ -140,58 +138,25 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
-        bool firstLoad = true;
         public void UpdateSource()
         {
-            UpdateTheme();
-            if (!firstLoad)
-            {
-                ImageSourceBefore.Source = ImageSource.Source;
-                AnimateHelper.AnimateScalar(
-                    ImageSource, 1, 2,
-                    0.2f, 1, 0.22f, 1f,
-                    out var visual, out var compositor, out var scalarKeyFrameAnimation);
-                visual.Opacity = 0;
-                visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
-                ImageSource.Source = Source;
+            UpdateTheme();/*
+            AnimateHelper.AnimateScalar(
+                ImageSource, 1f, 0.4,
+                0.2f, 1, 0.22f, 1f,
+                out var scaleVisual, out var compositor1, out var animation);
+            scaleVisual.CenterPoint = new(scaleVisual.Size.X / 2, scaleVisual.Size.Y / 2, 1);
+            scaleVisual.Scale = new(1.25f);
+            scaleVisual.StartAnimation("Scale.X", animation);
+            scaleVisual.StartAnimation("Scale.Y", animation);*/
 
-                AnimateHelper.AnimateScalar(
-                    ImageSourceBefore, 0, 2,
-                    0.2f, 1, 0.22f, 1f,
-                    out var visual1, out var compositor1, out var scalarKeyFrameAnimation1);
-                visual1.Opacity = 1;
-                compositor1.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
-                {
-                    try
-                    {
-                        ImageSourceBefore.Source = null;
-                        //3System.Diagnostics.Debug.WriteLine("www");
-                    }
-                    catch(Exception err) { System.Diagnostics.Debug.WriteLine(err); }
-                };
-                visual1.StartAnimation("Opacity", scalarKeyFrameAnimation1);
-            }
-            else
-            {
-                AnimateHelper.AnimateScalar(
-                    ImageSource, 1, 2,
-                    0.2f, 1, 0.22f, 1f,
-                    out var visual, out var compositor, out var scalarKeyFrameAnimation);
-                visual.Opacity = 0;
-                visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
-                ImageSource.Source = Source;
-                firstLoad = false;
-            }
-            RefreshImageSource();
-        }
-
-        private async void RefreshImageSource()
-        {
-            await Task.Delay(1100);
-            if (ImageSource.Source == null)
-            {
-                ImageSourceBefore.Source = null;
-            }
+            AnimateHelper.AnimateScalar(
+                ImageSource, 1, 02,
+                0.2f, 1, 0.22f, 1f,
+                out var visual, out var compositor, out var scalarKeyFrameAnimation);
+            visual.Opacity = 0;
+            visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
+            ImageSource.Source = Source;
         }
 
         private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)

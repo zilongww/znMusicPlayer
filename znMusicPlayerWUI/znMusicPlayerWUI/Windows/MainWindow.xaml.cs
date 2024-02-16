@@ -434,7 +434,7 @@ namespace znMusicPlayerWUI
                 if (InOpenMusicPage)
                     SPlayingListBaseGrid.Height = SWindowGridBaseTop.ActualHeight - 130;
                 else
-                    SPlayingListBaseGrid.Height = SWindowGridBaseTop.ActualHeight - 146;
+                    SPlayingListBaseGrid.Height = SWindowGridBaseTop.ActualHeight - 155;
             }
             catch { }
         }
@@ -1436,7 +1436,7 @@ namespace znMusicPlayerWUI
             UpdatePlayListFlyoutHeight();
             STopControlsBaseGrid.HorizontalAlignment = horizontalAlignment;
             STopControlsBaseGrid.VerticalAlignment = verticalAlignment;
-            STopControlsBaseGrid.Margin = placementMargin == default ? new(0, 0, 4, 94) : placementMargin;
+            STopControlsBaseGrid.Margin = placementMargin == default ? new(4, 0, 12, 96) : placementMargin;
             teachingTipPlayingList.LightDismissOverlayMode = LightDismissOverlayMode.Off;
             teachingTipPlayingList.Placement = flyoutPlacementMode;
             teachingTipPlayingList.ShowAt(STopControlsBaseGrid);
@@ -1707,7 +1707,7 @@ namespace znMusicPlayerWUI
             inSelectionChange = true;
             if (PlayingListBaseView.SelectedItem != null)
             {
-                DataEditor.MusicData data = (DataEditor.MusicData)PlayingListBaseView.SelectedItem;
+                MusicData data = (MusicData)PlayingListBaseView.SelectedItem;
                 if (App.audioPlayer.MusicData != data)
                     await App.playingList.Play(data);
             }

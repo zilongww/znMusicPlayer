@@ -44,6 +44,7 @@ namespace znMusicPlayerWUI.Windowed
         public OverlappedPresenter overlappedPresenter { get; private set; }
         private SUBCLASSPROC subClassProc;
         bool transparent = true;
+        public static double LyricOpacity { get; set; } = 1.0;
         public static bool PauseButtonVisible { get; set; } = true;
         public static bool ProgressUIVisible { get; set; } = true;
         public static bool ProgressUIPercentageVisible { get; set; } = true;
@@ -99,6 +100,7 @@ namespace znMusicPlayerWUI.Windowed
                 }
             }
             TrySetAcrylicBackdrop();
+            //SystemBackdrop = new DesktopAcrylicBackdrop();
             AddEvents();
             AppWindow.Closing += AppWindow_Closing;
         }
@@ -117,6 +119,7 @@ namespace znMusicPlayerWUI.Windowed
             App.audioPlayer.TimingChanged += AudioPlayer_TimingChanged;
             AudioPlayer_PlayStateChanged(App.audioPlayer);
             App.audioPlayer.ReCallTiming();
+            SetLyricOpacity(LyricOpacity);
         }
 
         public void RemoveEvents()
@@ -126,6 +129,11 @@ namespace znMusicPlayerWUI.Windowed
             App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
             App.audioPlayer.VolumeChanged -= AudioPlayer_VolumeChanged;
             App.audioPlayer.TimingChanged -= AudioPlayer_TimingChanged;
+        }
+
+        public void SetLyricOpacity(double value)
+        {
+            root.Opacity = value;
         }
 
         int showBorderCount = 0;

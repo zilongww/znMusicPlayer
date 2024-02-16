@@ -18,45 +18,65 @@ namespace znMusicPlayerWUI.Controls
 {
     public partial class LyricItem : Grid
     {
-        static TextAlignment _textAlignments = TextAlignment.Left;
-        public static TextAlignment TextAlignments
+        private static List<LyricItem> Items = new List<LyricItem>();
+
+        public static void SetTextAlignmentS(TextAlignment textAlignment)
         {
-            get => _textAlignments;
-            set
+            foreach (var item in Items)
             {
-                _textAlignments = value;
-                foreach (var item in SLItems)
-                {
-                    item.LyricTextBlock.HorizontalTextAlignment = value;
-                    item.TranslateTextBlock.HorizontalTextAlignment = value;
-                }
+                if (item == null) continue;
+                item.SetTextAlignment(textAlignment);
             }
         }
 
-        public static List<LyricItem> SLItems = new();
         public LyricItem()
         {
             InitializeComponent();
-            SLItems.Add(this);
         }
 
-        public async void UpdateHeight()
+        static TextAlignment alignment = TextAlignment.Left;
+        public void SetTextAlignment(TextAlignment textAlignment)
         {
-            int num = 0;
-            while (num < 10)
+            if (LyricTextBlock == null) return;
+            alignment = textAlignment;
+            LyricTextBlock.TextAlignment = textAlignment;
+            RomajiTextBlock.TextAlignment = textAlignment;
+        }
+
+        private void Grid_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            if (DataContext == null)
             {
-                if (!string.IsNullOrEmpty(TranslateTextBlock.Text))
-                {
-                    TranslateTextBlock.Visibility = Visibility.Visible;
-                    break;
-                }
-                else
-                {
-                    TranslateTextBlock.Visibility = Visibility.Collapsed;
-                }
-                await Task.Delay(10);
+                Items.Remove(this);
+                return;
             }
-            System.Diagnostics.Debug.WriteLine(num);
+            if (DataContext.GetType() != typeof(LyricData))
+            {
+                Items.Remove(this);
+                return;
+            }
+            Items.Add(this);
+            SetTextAlignment(alignment);
+            LyricData lyricData = (LyricData)DataContext;
+            LyricTextBlock.Text = lyricData.LyricAllString;
+            if (!string.IsNullOrEmpty(lyricData.Romaji))
+            {
+                RomajiTextBlock.Text = lyricData.Romaji;
+                RomajiTextBlock.Height = double.NaN;
+            }
+            else
+            {
+                RomajiTextBlock.Text = null;
+                RomajiTextBlock.Height = 0;
+            }
+        }
+
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void Grid_Unloaded(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

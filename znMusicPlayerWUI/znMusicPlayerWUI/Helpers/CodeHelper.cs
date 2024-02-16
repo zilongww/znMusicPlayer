@@ -28,6 +28,7 @@ using FFmpeg.AutoGen;
 using znMusicPlayerWUI.DataEditor;
 using Meting4Net.Core.Models.Netease;
 using Microsoft.UI.Xaml.Shapes;
+using static System.Resources.ResXFileRef;
 
 namespace znMusicPlayerWUI.Helpers
 {
@@ -435,9 +436,10 @@ namespace znMusicPlayerWUI.Helpers
     public static class LyricHelper
     {
         public static string NoneLyricString = "·········";
-        public async static Task<DataEditor.LyricData[]> LyricToLrcData(string lyricText)
+        public async static Task<LyricData[]> LyricToLrcData(string lyricText)
         {
-            Dictionary<TimeSpan, DataEditor.LyricData> lyricDictionary = new();
+            Dictionary<TimeSpan, LyricData> lyricDictionary = new();
+            IOrderedEnumerable<KeyValuePair<TimeSpan, LyricData>> sorter = null;
             await Task.Run(() =>
             {
                 foreach (var lyric in lyricText.Split('\n'))
@@ -463,7 +465,7 @@ namespace znMusicPlayerWUI.Helpers
                                 case 1: timeMillsStr += "00"; break;
                                 case 2: timeMillsStr += "0"; break;
                                 case 3: break;
-                                default: System.Diagnostics.Debug.WriteLine("Warning：歌词精度可能会降低。"); break;
+                                default: System.Diagnostics.Debug.WriteLine("[LyricHelper][Warning] 歌词精度可能会降低。"); break;
                             }
                             var timeMills = TimeSpan.FromMilliseconds(int.Parse(timeMillsStr));
                             var timesResult = timesb + timeMills;
@@ -500,7 +502,7 @@ namespace znMusicPlayerWUI.Helpers
                         var timesResult = timesb + timeMills;
 
                         var text = timesAndLyric[1];
-                        if (text == "") text = NoneLyricString;
+                        if (text == "" || text == "...") text = NoneLyricString;
 
                         //当有相同时间的歌词时
                         if (lyricDictionary.ContainsKey(timesResult))
@@ -529,12 +531,35 @@ namespace znMusicPlayerWUI.Helpers
                     lyricDictionary.Add(lyricDictionary.Last().Key + TimeSpan.FromSeconds(1),
                         new(null, null, lyricDictionary.Last().Key + TimeSpan.FromSeconds(1)));
                 }
+                sorter = from pair in lyricDictionary orderby pair.Key ascending select pair;
             });
 
-            var sorter = from pair in lyricDictionary orderby pair.Key ascending select pair;
-            List<DataEditor.LyricData> lyricList = new();
-            foreach (var l in sorter) lyricList.Add(l.Value);
-            return lyricList.ToArray();
+            List<LyricData> lyricList = new();
+            Kawazu.KawazuConverter converter = new();
+            foreach (var l in sorter)
+            {
+                if (l.Value.Lyric?.First() != null)
+                {
+                    var percent = await Task.Run(() =>
+                    {
+                        int count = 0;
+                        foreach (var c in l.Value.Lyric.First())
+                        {
+                            //if (((byte)c) % 2 == 0) count++;
+                            if (Regex.IsMatch(c.ToString(), @"^[\u0800-\u4e00]+$")) count++;
+                        }
+                        return (double)count / l.Value.Lyric.First().Length;
+                    });
+                    if (percent >= 0.15)
+                    {
+                        var romaji = await converter.Convert(l.Value.Lyric.First(), Kawazu.To.Romaji, Kawazu.Mode.Spaced, Kawazu.RomajiSystem.Nippon);
+                        l.Value.Romaji = romaji;
+                    }
+
+                }
+                lyricList.Add(l.Value);
+            }
+            return [.. lyricList];
         }
     }
 }

@@ -324,6 +324,13 @@
                         </StackPanel>
                     </cc:SettingsCard.Header>
                 </cc:SettingsCard>
+                <cc:SettingsCard Header="窗口不透明度">
+                    <StackPanel Orientation="Horizontal" Spacing="12" Loaded="StackPanel_Loaded_4">
+                        <Slider x:Name="desktoplyric_opacity_slider" Maximum="100" Minimum="0" ValueChanged="desktoplyric_opacity_slider_ValueChanged"/>
+                        <TextBlock Text="{Binding ElementName=desktoplyric_opacity_slider, Path=Value}" VerticalAlignment="Center"
+                                   Width="24" TextAlignment="Right"/>
+                    </StackPanel>
+                </cc:SettingsCard>
                 <cc:SettingsCard Header="当歌词没有翻译时">
                     <cc:SettingsCard.Description>
                         <StackPanel Margin="12,4,0,0" Spacing="4"

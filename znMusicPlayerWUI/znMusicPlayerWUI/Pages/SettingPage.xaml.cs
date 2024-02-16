@@ -123,6 +123,7 @@ namespace znMusicPlayerWUI.Pages
         {
             // 设置header为顶层
             var headerPresenter = (UIElement)VisualTreeHelper.GetParent((UIElement)ListViewBase.Header);
+            if (headerPresenter == null) return;
             var headerContainer = (UIElement)VisualTreeHelper.GetParent(headerPresenter);
             Canvas.SetZIndex(headerContainer, 1);
 
@@ -818,6 +819,17 @@ namespace znMusicPlayerWUI.Pages
             App.LoadSettings(DataEditor.DataFolderBase.JSettingData);
             MainWindow.AddNotify("读取设置成功", "已从设置文件中读取设置。", NotifySeverity.Complete);
             MainWindow.SetNavViewContent(typeof(SearchPage));
+        }
+
+        private void StackPanel_Loaded_4(object sender, RoutedEventArgs e)
+        {
+            desktoplyric_opacity_slider.Value = DesktopLyricWindow.LyricOpacity * 100;
+        }
+
+        private void desktoplyric_opacity_slider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            DesktopLyricWindow.LyricOpacity = e.NewValue / 100;
+            if (MainWindow.DesktopLyricWindow != null) MainWindow.DesktopLyricWindow.SetLyricOpacity(DesktopLyricWindow.LyricOpacity);
         }
     }
 }

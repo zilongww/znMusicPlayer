@@ -157,6 +157,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             {
                 LrcBaseListView.ItemsSource = App.lyricManager.NowPlayingLyrics;
                 AddEvents();
+                UpdateInterfaceDesign();
             }
             else
             {
@@ -278,7 +279,8 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     isMiniPage = false;
                     LyricSccondRow.Height = new(0);
                     LrcPageColumn.Width = new(1.4, GridUnitType.Star);
-                    BridgeTb.TextAlignment = TextAlignment.Left;
+                    //BridgeTb.TextAlignment = TextAlignment.Left;
+                    LyricItem.SetTextAlignmentS(TextAlignment.Left);
                     InfoBaseGrid.Margin = new(0, 0, 30, 0);
 
                     ImageVer.Height = new(1, GridUnitType.Star);
@@ -291,7 +293,8 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     isMiniPage = true;
                     LyricSccondRow.Height = new(1, GridUnitType.Star);
                     LrcPageColumn.Width = new(0);
-                    BridgeTb.TextAlignment = TextAlignment.Center;
+                    //BridgeTb.TextAlignment = TextAlignment.Center;
+                    LyricItem.SetTextAlignmentS(TextAlignment.Center);
                     InfoBaseGrid.Margin = new(0);
                     AlbumImageBorder.VerticalAlignment = VerticalAlignment.Top;
                     AlbumImageBorder.MaxWidth = InfoBaseGrid.ActualHeight;
