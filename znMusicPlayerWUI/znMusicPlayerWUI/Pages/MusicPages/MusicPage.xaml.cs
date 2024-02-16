@@ -124,6 +124,8 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             App.audioPlayer.CacheLoadedChanged += AudioPlayer_CacheLoadedChanged;
             App.playingList.NowPlayingImageLoading += PlayingList_NowPlayingImageLoading;
             App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
+            App.lyricManager.PlayingLyricSourceChange += LyricManager_PlayingLyricSourceChange;
+            App.lyricManager.PlayingLyricSelectedChange += LyricManager_PlayingLyricSelectedChange1;
             isAddEvents = true;
             UpdateWhenDataLated();
             //Debug.WriteLine("MusicPage Added Events.");
@@ -414,7 +416,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         private void AudioPlayer_PlayStateChanged(Media.AudioPlayer audioPlayer)
         {
             MediaPlayStateViewer1.PlaybackState = audioPlayer.PlaybackState;
-
+/*
             if (audioPlayer.PlaybackState == PlaybackState.Playing)
             {
                 App.lyricManager.PlayingLyricSourceChange += LyricManager_PlayingLyricSourceChange;
@@ -424,7 +426,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             {
                 App.lyricManager.PlayingLyricSourceChange -= LyricManager_PlayingLyricSourceChange;
                 App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange1;
-            }
+            }*/
         }
 
         private void AudioPlayer_VolumeChanged(Media.AudioPlayer audioPlayer, object data)
