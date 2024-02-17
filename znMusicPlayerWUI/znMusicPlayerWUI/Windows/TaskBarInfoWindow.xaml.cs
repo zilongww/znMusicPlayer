@@ -110,17 +110,17 @@ namespace znMusicPlayerWUI.Windowed
             Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] changer;
             if (playbackState == NAudio.Wave.PlaybackState.Playing)
             {
-                changer = new Helpers.SDKs.TaskbarProgress.THUMBBUTTON[]
-                {
+                changer =
+                [
                     new Helpers.SDKs.TaskbarProgress.THUMBBUTTON() { iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = pauseIconHandle, szTip = "播放" }
-                };
+                ];
             }
             else
             {
-                changer = new Helpers.SDKs.TaskbarProgress.THUMBBUTTON[]
-                {
+                changer =
+                [
                     new Helpers.SDKs.TaskbarProgress.THUMBBUTTON() { iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = playIconHandle, szTip = "播放" }
-                };
+                ];
             }
             try
             {

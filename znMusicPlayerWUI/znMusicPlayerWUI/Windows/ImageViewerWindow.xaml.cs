@@ -57,6 +57,7 @@ namespace znMusicPlayerWUI.Windowed
             InitializeComponent();
             overlappedPresenter = OverlappedPresenter.Create();
             AppWindow.SetPresenter(overlappedPresenter);
+            ImageScrollView.Focus(FocusState.Programmatic);
         }
 
         public void Maximize()
@@ -161,6 +162,22 @@ namespace znMusicPlayerWUI.Windowed
             ImageScrollView.ChangeView(
                 null, null,
                 ImageScrollView.ZoomFactor + (zoommax ? 0.1f : -0.1f));
+        }
+
+        private void ImageScrollView_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Shift)
+            {
+                ImageScrollView.VerticalScrollMode = ScrollMode.Disabled;
+            }
+        }
+
+        private void ImageScrollView_KeyUp(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Shift)
+            {
+                ImageScrollView.VerticalScrollMode = ScrollMode.Enabled;
+            }
         }
     }
 }

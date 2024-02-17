@@ -127,29 +127,68 @@ namespace Kawazu
                             Add(new JapaneseElement(surfaceBuilder.ToString(), readingBuilder.ToString(), pronunciationBuilder.ToString(), TextType.PureKanji, system));
                             break;
                         }
-                        
-                        foreach (var ch in surfaceBuilder.ToString())
+
+                        var globalIndex = 0;
+                        var surf = surfaceBuilder.ToString();
+                        for (int i = 0; i < surf.Length; ++i)
                         {
+                            var ch = surf[i];
                             if (Utilities.IsKanji(ch))
                             {
                                 if (kanaIndex >= kanaList.Count)
                                 {
-                                    Add(new JapaneseElement(ch.ToString(), readingBuilder.ToString(previousIndex + 1, readingBuilder.Length - previousIndex - 1), pronunciationBuilder.ToString(previousIndex + 1, readingBuilder.Length - previousIndex - 1), TextType.PureKanji, system));
+                                    var start = previousIndex + 1;
+                                    var end = readingBuilder.Length - previousIndex - 1;
+                                    var add = ch.ToString();
+
+                                    //double kanji
+                                    while (i + 1 < surf.Length && Utilities.IsKanji(surf[i + 1]))
+                                    {
+                                        i++;
+                                        add += surf[i].ToString();
+                                    }
+
+                                    Add(new JapaneseElement(add, readingBuilder.ToString(start, end), pronunciationBuilder.ToString(start, end), TextType.PureKanji, system));
                                     continue;
                                 }
 
-                                var index = readingBuilder.ToString()
-                                    .IndexOf(Utilities.ToRawKatakana(kanaList[kanaIndex].ToString()), StringComparison.Ordinal);
+                                if (i != surf.Length - 1)
+                                {
+                                    var index = readingBuilder.ToString()
+                                        .IndexOf(Utilities.ToRawKatakana(kanaList[kanaIndex].ToString()), StringComparison.Ordinal);
 
-                                Add(new JapaneseElement(ch.ToString(), readingBuilder.ToString(previousIndex + 1, index - previousIndex - 1), pronunciationBuilder.ToString(previousIndex + 1, index - previousIndex - 1), TextType.PureKanji, system));
-                                previousIndex = index;
-                                kanaIndex++;
+                                    if (index == 0)
+                                        index++;
+
+                                    var start = previousIndex + 1;
+                                    var length = index - previousIndex - 1;
+                                    var add = ch.ToString();
+
+                                    //double kanji
+                                    while (i + 1 < surf.Length && Utilities.IsKanji(surf[i + 1]))
+                                    {
+                                        i++;
+                                        add += surf[i].ToString();
+                                    }
+
+                                    Add(new JapaneseElement(add, readingBuilder.ToString(start, length), pronunciationBuilder.ToString(start, length), TextType.PureKanji, system));
+                                    previousIndex = index;
+                                    kanaIndex++;
+                                    globalIndex += length;
+                                }
+                                else // end one
+                                {
+                                    var start = globalIndex;
+                                    var length = readingBuilder.ToString().Length - start;
+                                    Add(new JapaneseElement(ch.ToString(), readingBuilder.ToString(start, length), pronunciationBuilder.ToString(start, length), TextType.PureKanji, system));
+                                }
                             }
 
                             if (Utilities.IsKana(ch))
                             {
                                 var kana = Utilities.ToRawKatakana(ch.ToString());
                                 Add(new JapaneseElement(ch.ToString(), kana, kana, TextType.PureKana, system));
+                                globalIndex++;
                             }
                         }
                     }

@@ -102,14 +102,15 @@
                         </ui:DropShadowPanel.Transitions>
                         <controls:Imagezn x:Name="AlbumImageBase" IsMassImage="True" CornerRadius="8"/>
                     </ui:DropShadowPanel>
-                    <Grid x:Name="LyricSecondPlaceGrid" Margin="0,8,0,0" Grid.Row="1" SizeChanged="MusicPage_SizeChanged" PointerWheelChanged="LrcBaseListView_PointerWheelChanged">
+                    <Grid x:Name="LyricSecondPlaceGrid" Margin="0,8,0,0" Grid.Row="1" SizeChanged="MusicPage_SizeChanged">
                         <ListView x:Name="LrcSecondListView"
                                   ItemsSource="{Binding ElementName=LrcBaseListView,Path=ItemsSource}"
                                   ItemTemplate="{ThemeResource LyricTemplate}"
                                   ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                   SelectionChanged="LrcBaseListView_SelectionChanged"
                                   SizeChanged="LrcBaseListView_SizeChanged"
-                                  IsFocusEngagementEnabled="True"/>
+                                  IsFocusEngagementEnabled="True"
+                                  PointerWheelChanged="LrcSecondListView_PointerWheelChanged"/>
                     </Grid>
                     <StackPanel x:Name="InfoBaseTitle" Grid.Row="2" Loaded="InfoBaseTitle_Loaded"
                                 Spacing="4" Margin="0,12,0,0">
@@ -215,7 +216,7 @@
                 </Grid>
 
                 <Grid x:Name="LyricBaseGrid" Grid.Column="1" Grid.Row="0">
-                    <Grid x:Name="LrcBaseGrid" PointerWheelChanged="LrcBaseListView_PointerWheelChanged">
+                    <Grid x:Name="LrcBaseGrid">
                         <Grid.Transitions>
                             <TransitionCollection>
                                 <RepositionThemeTransition/>
@@ -229,7 +230,8 @@
                                   IsFocusEngagementEnabled="True"
                                   SizeChanged="LrcBaseListView_SizeChanged"
                                   HorizontalContentAlignment="Stretch"
-                                  ItemTemplate="{ThemeResource LyricTemplate}">
+                                  ItemTemplate="{ThemeResource LyricTemplate}"
+                                  PointerWheelChanged="LrcSecondListView_PointerWheelChanged">
                         </ListView>
                     </Grid>
                 </Grid>

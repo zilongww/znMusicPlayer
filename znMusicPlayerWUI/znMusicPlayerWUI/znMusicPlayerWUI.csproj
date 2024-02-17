@@ -55,6 +55,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <Content Include="IpaDic\char.bin" />
+    <Content Include="IpaDic\matrix.bin" />
+    <Content Include="IpaDic\sys.dic" />
+    <Content Include="IpaDic\unk.dic" />
   </ItemGroup>
 
   <ItemGroup>

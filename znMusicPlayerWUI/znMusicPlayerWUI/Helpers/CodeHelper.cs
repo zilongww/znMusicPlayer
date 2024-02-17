@@ -559,6 +559,7 @@ namespace znMusicPlayerWUI.Helpers
                 }
                 lyricList.Add(l.Value);
             }
+            converter.Dispose();
             return [.. lyricList];
         }
     }

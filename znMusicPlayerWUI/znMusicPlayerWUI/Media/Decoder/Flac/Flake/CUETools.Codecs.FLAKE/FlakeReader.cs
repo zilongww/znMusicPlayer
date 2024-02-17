@@ -252,6 +252,7 @@ namespace CUETools.Codecs.FLAKE
 			}
 			while (_framesBufferLength < _framesBuffer.Length / 2)
 			{
+				if (_IO is null) break;
 				int read = _IO.Read(_framesBuffer, _framesBufferOffset + _framesBufferLength, _framesBuffer.Length - _framesBufferOffset - _framesBufferLength);
 				_framesBufferLength += read;
 				if (read == 0)

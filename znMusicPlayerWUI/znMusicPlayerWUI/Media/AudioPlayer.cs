@@ -637,7 +637,6 @@ namespace znMusicPlayerWUI.Media
                 {
                     resultPath = await App.cacheManager.StartCacheMusic(musicData);
                 }
-                catch (Background.CacheIsLoadingException) { return; }
                 catch (Exception e) { throw; }
             }
 

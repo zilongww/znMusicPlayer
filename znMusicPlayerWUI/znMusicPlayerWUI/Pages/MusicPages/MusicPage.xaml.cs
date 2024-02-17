@@ -103,6 +103,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             AudioPlayer_VolumeChanged(App.audioPlayer, App.audioPlayer.Volume);
             PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
             LyricManager_PlayingLyricSelectedChange1(App.lyricManager.NowLyricsData);
+            SelectedChangedDo(true);
             isCodeChangedLrcItem = false;
             App.audioPlayer.ReCallTiming();
             //Debug.WriteLine("MusicPage Updateed Events.");
@@ -358,7 +359,10 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     {
                         //ScrollViewerBehavior.(scrollViewer, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48);
                         //sv.GetAnimationBaseValue(sv.ver);
-                        sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2 , null, disableAnimation);
+                        if (disableAnimation)
+                            sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2 , null, disableAnimation);
+                        else
+                            await LrcBaseListView.SmoothScrollIntoViewWithItemAsync(App.lyricManager.NowLyricsData, ScrollItemPlacement.Center);
                     }
                     else
                     {
@@ -389,6 +393,26 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         }
 
+        bool inScroll = false;
+        int scrollCount = 0;
+        async void ScrollingLrcView()
+        {
+            scrollCount++;
+            inScroll = true;
+            await Task.Delay(2500);
+            if (scrollCount <= 1)
+            {
+                inScroll = false;
+                SelectedChangedDo();
+            }
+            scrollCount--;
+        }
+
+        private void LrcSecondListView_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        {
+            ScrollingLrcView();
+        }
+        
         private void MusicPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdateInterfaceDesign();
@@ -531,20 +555,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         static ScrollViewer scrollViewer1 = null;
         private void LrcBaseListView_Loaded(object sender, RoutedEventArgs e)
         {
-        }
 
-        private void LrcBaseListView_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
-        {
-            ScrollingLrcView();
-        }
-
-        private void LrcBaseListView_PointerMoved(object sender, PointerRoutedEventArgs e)
-        {
-            if (e.GetCurrentPoint(LrcBaseListView).PointerDeviceType != PointerDeviceType.Mouse)
-                ScrollingLrcView();
-            //e.Handled = true;
-            //System.Diagnostics.Debug.WriteLine("M");
-            //_recognizer.ProcessMoveEvents(e.GetIntermediatePoints(LrcBaseListView));
         }
 
         private void Recognizer_ManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
@@ -564,23 +575,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
             SetPlaybackDetailFrameVisibility(destY <= ActualHeight * 0.4);*/
         }
 
-        async void ScrollingLrcView()
-        {
-            scrollCount++;
-            inScroll = true;
-            await Task.Delay(2500);
-            if (scrollCount <= 1)
-            {
-                inScroll = false;
-                SelectedChangedDo();
-            }
-            scrollCount--;
-        }
-
-        bool inScroll = false;
-        int scrollCount = 0;
         bool isCodeChangedLrcItem = false;
-        bool isCodeScrollLrcViewer = false;
         int changeCount = 0;
         private void LrcBaseListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -620,8 +615,17 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 scrollViewer1 = b.Child as ScrollViewer;
             scrollViewer.CanContentRenderOutsideBounds = false;
             scrollViewer1.CanContentRenderOutsideBounds = false;
+            //scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
+            //scrollViewer1.ViewChanging += ScrollViewer_ViewChanging;
+            scrollViewer.AddHandler(ScrollViewer.PointerWheelChangedEvent, new PointerEventHandler(LrcSecondListView_PointerWheelChanged), true);
+            scrollViewer1.AddHandler(ScrollViewer.PointerWheelChangedEvent, new PointerEventHandler(LrcSecondListView_PointerWheelChanged), true);
 
             UpdateInterfaceDesign();
+        }
+
+        private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        {
+            //ScrollingLrcView();
         }
 
         private void LrcButton_Checked(object sender, RoutedEventArgs e)
