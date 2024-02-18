@@ -686,8 +686,8 @@ namespace znMusicPlayerWUI.Pages
             ab.Click += async (_, __) =>
             {
                 var files = await FileHelper.UserSelectFiles(
-                    PickerViewMode.List, PickerLocationId.MusicLibrary,
-                    App.SupportedMediaFormats);
+                    PickerViewMode.List, PickerLocationId.MusicLibrary);
+                    //App.SupportedMediaFormats);
                 if (files.Any())
                 {
                     MainWindow.HideDialog();

@@ -146,7 +146,8 @@ namespace znMusicPlayerWUI.Background
             {
                 if (audioPlayer.MusicData.Album == lastMusicData?.Album)
                 {
-                    return;
+                    if (!audioPlayer.MusicData.Album.IsNull())
+                        return;
                 }
             }
             else
