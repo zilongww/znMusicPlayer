@@ -83,7 +83,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
                     catch (Exception err)
                     {
                         LogHelper.WriteLog("AddPlayListPage", err.ToString(), false);
-                        var b = await MainWindow.ShowDialog("添加播放列表时出现错误", err.Message, "确定", "重试");
+                        var b = await MainWindow.ShowDialog("添加播放列表时出现错误", err.Message, "确定", "重试", defaultButton: ContentDialogButton.Primary);
                         if (b == ContentDialogResult.Primary)
                         {
                             AddPlayListPage_ResultEvent(contentDialogResult);
@@ -96,7 +96,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
 
         public static async Task ShowDialog()
         {
-            var a = await MainWindow.ShowDialog("", new AddPlayListPage(), "取消", "创建");
+            var a = await MainWindow.ShowDialog("", new AddPlayListPage(), "取消", "创建", defaultButton: ContentDialogButton.Primary);
             ResultEvent?.Invoke(a);
         }
 

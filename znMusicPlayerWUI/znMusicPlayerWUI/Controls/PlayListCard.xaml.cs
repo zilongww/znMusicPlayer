@@ -244,7 +244,7 @@ namespace znMusicPlayerWUI.Controls
 
         private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            var isDelete = await MainWindow.ShowDialog("确认删除列表", $"真的要删除列表 \"{MusicListData.ListShowName}\" 吗？\n此操作不可逆。", "取消", "确定");
+            var isDelete = await MainWindow.ShowDialog("确认删除列表", $"真的要删除列表 \"{MusicListData.ListShowName}\" 吗？\n此操作不可逆。", "取消", "确定", defaultButton: ContentDialogButton.Close);
             if (isDelete == ContentDialogResult.Primary)
             {
                 MainWindow.AddNotify("正在删除", $"正在删除列表 \"{MusicListData.ListShowName}\"。");

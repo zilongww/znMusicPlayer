@@ -22,25 +22,32 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Viewbox x:Name="V1" HorizontalAlignment="Stretch">
-                <ui:DropShadowPanel x:Name="ShadowTarget"
-                                    OffsetX="0" OffsetY="0.5"
-                                    BlurRadius="6" Color="#AA000000">
-                    <TextBlock>
-                        <Run x:Name="T1" Text="znMusicPlayer" Foreground="{ThemeResource LrcForeground}"/>
-                        <Run x:Name="T11" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
-                    </TextBlock>
-                </ui:DropShadowPanel>
+            <Viewbox x:Name="V1" Grid.Row="0" HorizontalAlignment="Stretch">
+                <StackPanel>
+                    <ui:DropShadowPanel x:Name="TR1DSP" OffsetX="0" OffsetY="0.5" BlurRadius="6" Color="#AA000000" Visibility="Collapsed">
+                        <TextBlock x:Name="TR1" FontSize="8" Foreground="{ThemeResource LrcForeground}"/>
+                    </ui:DropShadowPanel>
+                    <ui:DropShadowPanel x:Name="ShadowTarget" OffsetX="0" OffsetY="0.5" BlurRadius="6" Color="#AA000000">
+                        <TextBlock x:Name="T1Base">
+                            <Run x:Name="T1" Text="znMusicPlayer" Foreground="{ThemeResource LrcForeground}"/>
+                            <Run x:Name="T11" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
+                        </TextBlock>
+                    </ui:DropShadowPanel>
+                </StackPanel>
             </Viewbox>
             <Viewbox x:Name="V2" Grid.Row="1" HorizontalAlignment="Stretch">
-                <ui:DropShadowPanel x:Name="ShadowTarget1"
-                                    OffsetX="0" OffsetY="0.5"
-                                    BlurRadius="6" Color="#AA000000">
-                    <TextBlock>
-                        <Run x:Name="T2" Text="无歌词" Foreground="{ThemeResource LrcForeground}"/>
-                        <Run x:Name="T21" Text="" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
-                    </TextBlock>
-                </ui:DropShadowPanel>
+                <StackPanel>
+                    <ui:DropShadowPanel x:Name="TR2DSP" OffsetX="0" OffsetY="0.5" BlurRadius="6" Color="#AA000000" Visibility="Collapsed">
+                        <TextBlock x:Name="TR2" FontSize="8" Foreground="{ThemeResource LrcForeground}"/>
+                    </ui:DropShadowPanel>
+
+                    <ui:DropShadowPanel x:Name="ShadowTarget1" OffsetX="0" OffsetY="0.5" BlurRadius="6" Color="#AA000000">
+                        <TextBlock x:Name="T2Base">
+                            <Run x:Name="T2" Text="无歌词" Foreground="{ThemeResource LrcForeground}"/>
+                            <Run x:Name="T21" Text="" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
+                        </TextBlock>
+                    </ui:DropShadowPanel>
+                </StackPanel>
             </Viewbox>
         </Grid>
         <Border x:Name="InfoTBBorder"

@@ -265,6 +265,7 @@ namespace znMusicPlayerWUI
             PlayingList_NowPlayingImageLoaded(App.playingList.NowPlayingImage, null);
             LyricManager_PlayingLyricSelectedChange(App.lyricManager.NowLyricsData);
             PlayingList_PlayingListItemChange(App.playingList.NowPlayingList);
+            UpdataDownloadPageButtonInfoBadgeText();
             App.audioPlayer.ReCallTiming();
             Debug.WriteLine("[MainWindow]: Data Updated.");
         }
@@ -284,6 +285,13 @@ namespace znMusicPlayerWUI
             App.playingList.NowPlayingImageLoading += PlayingList_NowPlayingImageLoading;
             App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
             App.playingList.PlayingListItemChange += PlayingList_PlayingListItemChange;
+
+            App.downloadManager.AddDownload += DownloadManager_AddDownload;
+            App.downloadManager.OnDownloadedSaving += DownloadManager_AddDownload;
+            App.downloadManager.OnDownloadedPreview += DownloadManager_AddDownload;
+            App.downloadManager.OnDownloaded += DownloadManager_AddDownload;
+            App.downloadManager.OnDownloadError += DownloadManager_AddDownload;
+
             isAddEvents = true;
             UpdateWhenDataLate();
             MainViewStateChanged?.Invoke(true);
@@ -304,6 +312,13 @@ namespace znMusicPlayerWUI
             App.playingList.NowPlayingImageLoaded -= PlayingList_NowPlayingImageLoaded;
             App.lyricManager.PlayingLyricSelectedChange -= LyricManager_PlayingLyricSelectedChange;
             App.playingList.PlayingListItemChange -= PlayingList_PlayingListItemChange;
+
+            App.downloadManager.AddDownload -= DownloadManager_AddDownload;
+            App.downloadManager.OnDownloadedSaving -= DownloadManager_AddDownload;
+            App.downloadManager.OnDownloadedPreview -= DownloadManager_AddDownload;
+            App.downloadManager.OnDownloaded -= DownloadManager_AddDownload;
+            App.downloadManager.OnDownloadError -= DownloadManager_AddDownload;
+
             isAddEvents = false;
             MainViewStateChanged?.Invoke(false);
             Debug.WriteLine("[MainWindow]: Removed Events.");
@@ -646,6 +661,34 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region AudioPlayer Events
+        private void DownloadManager_AddDownload(Background.DownloadData data)
+        {
+            UpdataDownloadPageButtonInfoBadgeText();
+        }
+
+        private void UpdataDownloadPageButtonInfoBadgeText()
+        {
+            if (App.downloadManager.AllDownloadData.Any())
+            {
+                if (App.downloadManager.DownloadingData.Any())
+                {
+                    DownloadPageButtonInfoBadge.Opacity = 1;
+                    DownloadPageButtonInfoBadge.Value = App.downloadManager.AllDownloadData.Count - App.downloadManager.DownloadedData.Count;
+                }
+                else
+                {
+                    DownloadPageButtonInfoBadge.Opacity = 0;
+                    DownloadPageButtonInfoBadge.Style = App.Current.Resources["SuccessIconInfoBadgeStyle"] as Style;
+                    DownloadPageButtonInfoBadge.Value = -1;
+                    DownloadPageButtonInfoBadge.IconSource = new FontIconSource() { Glyph = "\uE73E" };
+                }
+            }
+            else
+            {
+                DownloadPageButtonInfoBadge.Opacity = 0;
+            }
+        }
+
         private void SetLyricToNormal()
         {
             AppTitleTextBlock.Text = $"{App.AppName}";
@@ -1421,7 +1464,7 @@ namespace znMusicPlayerWUI
             }
             STopControlsBaseGrid.HorizontalAlignment = horizontalAlignment;
             STopControlsBaseGrid.VerticalAlignment = verticalAlignment;
-            STopControlsBaseGrid.Margin = placementMargin == default ? new(0, 0, 4, 94) : placementMargin;
+            STopControlsBaseGrid.Margin = placementMargin == default ? new(0, 0, 12, 96) : placementMargin;
             teachingTipVolume.LightDismissOverlayMode = LightDismissOverlayMode.Off;
             teachingTipVolume.Placement = flyoutPlacementMode;
             teachingTipVolume.ShowAt(STopControlsBaseGrid);
@@ -1894,23 +1937,6 @@ namespace znMusicPlayerWUI
             }
         }
         #endregion
-
-        private async void InfoBar_Loaded(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private async void InfoBar_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-            var infoBar = sender as InfoBar;
-            if (infoBar.DataContext == null) return;
-            infoBar.Opacity = 1;
-            try
-            {
-                await Task.Delay((infoBar.DataContext as NotifyItemData).ResidenceTime - TimeSpan.FromMilliseconds(250));
-                infoBar.Opacity = 0;
-            }
-            catch { }
-        }
     }
 
     public enum NotifySeverity { Info, Error, Warning, Complete, Loading }

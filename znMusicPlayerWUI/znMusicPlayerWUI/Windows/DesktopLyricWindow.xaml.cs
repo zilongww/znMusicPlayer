@@ -255,6 +255,7 @@ namespace znMusicPlayerWUI.Windowed
                 }
                 return;
             }
+
             if (nowLyricsData?.Lyric.Count > 1)
             {
                 IsT1Focus = true;
@@ -270,29 +271,47 @@ namespace znMusicPlayerWUI.Windowed
                 }
                 catch { }
 
+                bool RomajiEnable = !string.IsNullOrEmpty(nowLyricsData.Romaji);
+                TR1DSP.Visibility = Visibility.Visible;
+                TR2DSP.Visibility = Visibility.Visible;
+                TR1.Text = null;
+                TR2.Text = null;
+
                 string t1text = nowLyricsData?.Lyric?.FirstOrDefault();
                 if (LyricTranslateTextPosition == LyricTranslateTextPosition.Center)
                 {
                     V1.HorizontalAlignment = HorizontalAlignment.Center;
                     V2.HorizontalAlignment = HorizontalAlignment.Center;
+                    TR1DSP.HorizontalAlignment = HorizontalAlignment.Center;
+                    TR2DSP.HorizontalAlignment = HorizontalAlignment.Center;
                     //progressRoot.HorizontalAlignment = HorizontalAlignment.Center;
                 }
                 else if (LyricTranslateTextPosition == LyricTranslateTextPosition.Left)
                 {
                     V1.HorizontalAlignment = HorizontalAlignment.Left;
                     V2.HorizontalAlignment = HorizontalAlignment.Left;
+                    TR1DSP.HorizontalAlignment = HorizontalAlignment.Left;
+                    TR2DSP.HorizontalAlignment = HorizontalAlignment.Left;
                     //progressRoot.HorizontalAlignment = HorizontalAlignment.Left;
                 }
                 else
                 {
                     V1.HorizontalAlignment = HorizontalAlignment.Right;
                     V2.HorizontalAlignment = HorizontalAlignment.Right;
+                    TR1DSP.HorizontalAlignment = HorizontalAlignment.Right;
+                    TR2DSP.HorizontalAlignment = HorizontalAlignment.Right;
                     //progressRoot.HorizontalAlignment = HorizontalAlignment.Right;
                 }
                 if (LyricTranslateTextBehavior == LyricTranslateTextBehavior.MainLyric)
                 {
                     if (tcount == 1) T11.Text = null;
                     else T11.Text = $"x{tcount}";
+
+                    if (RomajiEnable)
+                    {
+                        TR1DSP.Visibility = Visibility.Visible;
+                        TR1.Text = nowLyricsData.Romaji;
+                    }
 
                     T1.Text = t1text;
                     T2.Text = nowLyricsData?.Lyric[1];
@@ -302,6 +321,12 @@ namespace znMusicPlayerWUI.Windowed
                     if (tcount == 1) T21.Text = null;
                     else T21.Text = $"x{tcount}";
 
+                    if (RomajiEnable)
+                    {
+                        TR2DSP.Visibility = Visibility.Visible;
+                        TR2.Text = nowLyricsData.Romaji;
+                    }
+
                     T1.Text = nowLyricsData?.Lyric[1];
                     T2.Text = t1text;
                 }
@@ -309,6 +334,12 @@ namespace znMusicPlayerWUI.Windowed
                 {
                     if (tcount == 1) T11.Text = null;
                     else T11.Text = $"x{tcount}";
+
+                    if (RomajiEnable)
+                    {
+                        TR1DSP.Visibility = Visibility.Visible;
+                        TR1.Text = nowLyricsData.Romaji;
+                    }
 
                     T1.Text = t1text;
                     T2.Text = null;
@@ -454,6 +485,9 @@ namespace znMusicPlayerWUI.Windowed
                     T2.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
                 }
             }
+
+            TR1DSP.Visibility = Visibility.Collapsed;
+            TR2DSP.Visibility = Visibility.Collapsed;
         }
 
         private void AudioPlayer_TimingChanged(AudioPlayer audioPlayer)

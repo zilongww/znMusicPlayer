@@ -101,6 +101,7 @@ namespace znMusicPlayerWUI.Windowed
             AppWindow.Closing += AppWindow_Closing;
             notifyIcon.Click += NotifyIcon_Click;
             notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
+            notifyIcon.MouseClick += NotifyIcon_MouseClick;
             root.ActualThemeChanged += Root_ActualThemeChanged;
             Activated += NotifyIconWindow_Activated;
 
@@ -312,16 +313,29 @@ namespace znMusicPlayerWUI.Windowed
 
         private async void NotifyIcon_Click(object sender, EventArgs e)
         {
-            if (this.Visible)
-            {
-                AppWindow.Hide();
-                return;
-            }
+        }
 
-            //TrySetAcrylicBackdrop();
-            AppWindow.Show(true);
-            MoveToPosition();
-            PInvoke.User32.SetForegroundWindow(hwnd);
+        private void NotifyIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                if (this.Visible)
+                {
+                    AppWindow.Hide();
+                    return;
+                }
+
+                //TrySetAcrylicBackdrop();
+                AppWindow.Show(true);
+                MoveToPosition();
+                PInvoke.User32.SetForegroundWindow(hwnd);
+            }
+            else
+            {
+                App.AppWindowLocal.Show();
+                App.AppWindowLocalOverlappedPresenter.Restore();
+                PInvoke.User32.SetForegroundWindow(App.AppWindowLocalHandle);
+            }
         }
         #endregion
 

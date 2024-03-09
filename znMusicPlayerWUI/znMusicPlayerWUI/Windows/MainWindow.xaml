@@ -96,6 +96,13 @@
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE896;"/>
                         </NavigationViewItem.Icon>
+                        <NavigationViewItem.InfoBadge>
+                            <InfoBadge x:Name="DownloadPageButtonInfoBadge" Opacity="0" Style="{StaticResource SuccessValueInfoBadgeStyle}" >
+                                <InfoBadge.IconSource>
+                                    <SymbolIconSource Symbol="Bookmarks"/>
+                                </InfoBadge.IconSource>
+                            </InfoBadge>
+                        </NavigationViewItem.InfoBadge>
                     </NavigationViewItem>
                     <NavigationViewItem Content="历史" AccessKey="MH">
                         <NavigationViewItem.Icon>

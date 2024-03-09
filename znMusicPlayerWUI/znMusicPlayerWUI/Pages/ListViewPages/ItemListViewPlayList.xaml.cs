@@ -607,7 +607,7 @@ namespace znMusicPlayerWUI.Pages
         {
             if (Children.SelectedItems.Any())
             {
-                var result = await MainWindow.ShowDialog("删除歌曲", $"真的要从歌单中删除这{Children.SelectedItems.Count}首歌曲吗？", "取消", "确定");
+                var result = await MainWindow.ShowDialog("删除歌曲", $"真的要从歌单中删除这{Children.SelectedItems.Count}首歌曲吗？", "取消", "确定", defaultButton: ContentDialogButton.Close);
                 if (result == ContentDialogResult.Primary)
                 {
                     ToolsCommandBar.IsEnabled = false;

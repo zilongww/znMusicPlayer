@@ -485,7 +485,10 @@
                                ValueChanged="NumberBox_ValueChanged_1"/>
                 </cc:SettingsCard>
                 <cc:SettingsCard Header="允许缩放">
-                    <ToggleSwitch Toggled="ToggleSwitch_Toggled_1"/>
+                    <ToggleSwitch Toggled="ToggleSwitch_Toggled_1" Tag="0"/>
+                </cc:SettingsCard>
+                <cc:SettingsCard Header="显示帧数、GPU使用率指示器">
+                    <ToggleSwitch Toggled="ToggleSwitch_Toggled_1" Tag="1"/>
                 </cc:SettingsCard>
             </cc:SettingsExpander.Items>
         </cc:SettingsExpander>

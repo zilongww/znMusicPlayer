@@ -729,25 +729,32 @@ namespace znMusicPlayerWUI.Pages
 
         private void ToggleSwitch_Toggled_1(object sender, RoutedEventArgs e)
         {
-            var a = sender as ToggleSwitch;
-            ScrollViewer b = (ScrollViewer)VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(MainWindow.SWindowGridBaseTop)))));
-            if (a.IsOn)
+            var ts = sender as ToggleSwitch;
+            if (ts.Tag as string == "0")
             {
-                b.ZoomMode = ZoomMode.Enabled;
-                b.HorizontalScrollMode = ScrollMode.Enabled;
-                b.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
-                b.VerticalScrollMode = ScrollMode.Enabled;
-                b.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-                b.ZoomToFactor(1);
+                ScrollViewer b = (ScrollViewer)VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(MainWindow.SWindowGridBaseTop)))));
+                if (ts.IsOn)
+                {
+                    b.ZoomMode = ZoomMode.Enabled;
+                    b.HorizontalScrollMode = ScrollMode.Enabled;
+                    b.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+                    b.VerticalScrollMode = ScrollMode.Enabled;
+                    b.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                    b.ZoomToFactor(1);
+                }
+                else
+                {
+                    b.ZoomMode = ZoomMode.Disabled;
+                    b.HorizontalScrollMode = ScrollMode.Disabled;
+                    b.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                    b.VerticalScrollMode = ScrollMode.Disabled;
+                    b.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                    b.ZoomToFactor(1);
+                }
             }
             else
             {
-                b.ZoomMode = ZoomMode.Disabled;
-                b.HorizontalScrollMode = ScrollMode.Disabled;
-                b.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-                b.VerticalScrollMode = ScrollMode.Disabled;
-                b.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-                b.ZoomToFactor(1);
+                App.SetFramePerSecondViewer(ts.IsOn);
             }
         }
 

@@ -69,12 +69,14 @@ namespace znMusicPlayerWUI
         public static readonly string AppName = "znMusicPlayer";
         public static readonly string AppVersion = "0.3.3 Preview";
 
+        public static App AppStatic = null;
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public App()
         {
+            AppStatic = this;
             DataFolderBase.InitFiles();
             //Media.Decoder.FFmpeg.FFmpegBinariesHelper.InitFFmpeg();
             InitializeComponent();
@@ -475,6 +477,11 @@ namespace znMusicPlayerWUI
             }
             await playingList.Play(musicData, false);
             audioPlayer.SetPause();
+        }
+
+        public static void SetFramePerSecondViewer(bool visible = false)
+        {
+            AppStatic.DebugSettings.EnableFrameRateCounter = visible;
         }
 
         private Window m_window;
