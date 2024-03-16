@@ -84,14 +84,6 @@
                             <FontIcon Glyph="&#xE704;"/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
-                    <NavigationViewItemHeader Content="本地" Margin="0,16,0,0"/>
-                    <NavigationViewItem Content="播放列表" AccessKey="ML" x:Name="MusicPlayListButton">
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE90B;"/>
-                        </NavigationViewItem.Icon>
-                        <NavigationViewItem.MenuItems>
-                        </NavigationViewItem.MenuItems>
-                    </NavigationViewItem>
                     <NavigationViewItem Content="下载" AccessKey="MD">
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE896;"/>
@@ -103,6 +95,14 @@
                                 </InfoBadge.IconSource>
                             </InfoBadge>
                         </NavigationViewItem.InfoBadge>
+                    </NavigationViewItem>
+                    <NavigationViewItemHeader Content="本地" Margin="0,16,0,0"/>
+                    <NavigationViewItem Content="播放列表" AccessKey="ML" x:Name="MusicPlayListButton">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE90B;"/>
+                        </NavigationViewItem.Icon>
+                        <NavigationViewItem.MenuItems>
+                        </NavigationViewItem.MenuItems>
                     </NavigationViewItem>
                     <NavigationViewItem Content="历史" AccessKey="MH">
                         <NavigationViewItem.Icon>

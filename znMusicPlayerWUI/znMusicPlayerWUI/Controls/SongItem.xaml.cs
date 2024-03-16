@@ -256,6 +256,7 @@ namespace znMusicPlayerWUI.Controls
                 Menuflyout_DownloadItem.Visibility = Visibility.Visible;
                 MenuFlyout_BrowseSiteItem.Visibility = Visibility.Visible;
                 MenuFlyout_GetUriItem.Visibility = Visibility.Visible;
+                Menuflyout_CacheItem.Visibility = Visibility.Visible;
                 MenuFlyout_BrowseFileItem.Visibility = Visibility.Collapsed;
                 MenuFlyout_OpenFileItem.Visibility = Visibility.Collapsed;
             }
@@ -264,6 +265,7 @@ namespace znMusicPlayerWUI.Controls
                 Menuflyout_DownloadItem.Visibility = Visibility.Collapsed;
                 MenuFlyout_BrowseSiteItem.Visibility = Visibility.Collapsed;
                 MenuFlyout_GetUriItem.Visibility = Visibility.Collapsed;
+                Menuflyout_CacheItem.Visibility = Visibility.Collapsed;
                 MenuFlyout_BrowseFileItem.Visibility = Visibility.Visible;
                 MenuFlyout_OpenFileItem.Visibility = Visibility.Visible;
             }
@@ -712,6 +714,65 @@ namespace znMusicPlayerWUI.Controls
         private async void MenuFlyoutItem_Click_2(object sender, RoutedEventArgs e)
         {
             await App.playingList.Play(MusicData, true);
+        }
+
+        NotifyItem item = null;
+        private async void Menuflyout_CacheItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (await App.cacheManager.GetCachePath(MusicData) is not null)
+            {
+                MainWindow.AddNotify($"此歌曲已缓存！", null, NotifySeverity.Warning);
+                return;
+            }
+
+            item = MainWindow.AddNotify($"正在缓存：{MusicData.Title}", "加载中...", NotifySeverity.Loading, TimeSpan.MaxValue);
+            App.cacheManager.CachingStateChangeMusicData += CacheManager_CachingStateChangeMusicData;
+            App.cacheManager.CachedMusicData += CacheManager_CachedMusicData;
+            await App.cacheManager.StartCacheMusic(MusicData);
+        }
+
+        private void CacheManager_CachingStateChangeMusicData(MusicData musicData, object value)
+        {
+            if (musicData != MusicData) return;
+            item.SetProcess(100, (int)value);
+            item.SetNotifyItemData(item.GetNotifyItemData().Title, $"{value}%", NotifySeverity.Loading);
+        }
+
+        private void CacheManager_CachedMusicData(MusicData musicData, object value)
+        {
+            if (musicData != MusicData) return;
+            App.cacheManager.CachingStateChangeMusicData -= CacheManager_CachingStateChangeMusicData;
+            App.cacheManager.CachedMusicData -= CacheManager_CachedMusicData;
+            item.SetNotifyItemData(item.GetNotifyItemData().Title, "缓存完成。", NotifySeverity.Complete);
+            MainWindow.NotifyCountDown(item);
+            item = null;
+        }
+
+        private async void Menuflyout_DeleteCacheItem_Click(object sender, RoutedEventArgs e)
+        {
+            var path = await App.cacheManager.GetCachePath(MusicData);
+            if (string.IsNullOrEmpty(path))
+            {
+                MainWindow.AddNotify("此歌曲的缓存文件不存在。", null, NotifySeverity.Error);
+                return;
+            }
+
+            var itema = MainWindow.AddNotify($"正在删除：{MusicData.Title}", null, NotifySeverity.Loading, TimeSpan.MaxValue);
+            Exception err = null;
+            try
+            {
+                await Task.Run(() => File.Delete(path));
+            }
+            catch (Exception ex)
+            {
+                err = ex;
+                itema.SetNotifyItemData("删除失败。", null, NotifySeverity.Error);
+            }
+            if (err == null)
+            {
+                itema.SetNotifyItemData("删除成功。", null, NotifySeverity.Complete);
+            }
+            MainWindow.NotifyCountDown(itema);
         }
     }
 }

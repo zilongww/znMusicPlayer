@@ -619,16 +619,16 @@ namespace znMusicPlayerWUI.Pages
                     {
                         num++;
                         item.HorizontalAlignment = HorizontalAlignment.Stretch;
-                        MainWindow.NotifyItemSetData(item, "删除歌曲", $"进度：{Math.Round(((decimal)num / Children.SelectedItems.Count) * 100, 1)}%\n正在删除：{data.MusicData.Title} - {data.MusicData.ButtonName}", NotifySeverity.Loading);
+                        item.SetNotifyItemData("删除歌曲", $"进度：{Math.Round(((decimal)num / Children.SelectedItems.Count) * 100, 1)}%\n正在删除：{data.MusicData.Title} - {data.MusicData.ButtonName}", NotifySeverity.Loading);
                         item.SetProcess(Children.SelectedItems.Count, num);
                         await Task.Run(() => jdata = PlayListHelper.DeleteMusicDataFromPlayList(listName, data.MusicData, jdata));
                     }
                     item.HorizontalAlignment = HorizontalAlignment.Center;
-                    MainWindow.NotifyItemSetData(item, "删除歌曲", "正在保存...", NotifySeverity.Loading);
+                    item.SetNotifyItemData("删除歌曲", "正在保存...", NotifySeverity.Loading);
                     item.SetProcess(0, 0);
                     await PlayListHelper.SaveData(jdata);
                     await App.playListReader.Refresh();
-                    MainWindow.NotifyItemSetData(item, "删除歌曲", "删除歌曲成功。", NotifySeverity.Complete);
+                    item.SetNotifyItemData("删除歌曲", "删除歌曲成功。", NotifySeverity.Complete);
                     MainWindow.NotifyCountDown(item);
                     ToolsCommandBar.IsEnabled = true;
 
@@ -699,7 +699,7 @@ namespace znMusicPlayerWUI.Pages
                     foreach (var i in files)
                     {
                         item.HorizontalAlignment = HorizontalAlignment.Stretch;
-                        MainWindow.NotifyItemSetData(item, "添加本地歌曲", $"进度：{count}/{files.Count}，{Math.Round(((decimal)count / files.Count) * 100, 1)}%\n正在添加：{i.Name}", NotifySeverity.Loading);
+                        item.SetNotifyItemData("添加本地歌曲", $"进度：{count}/{files.Count}，{Math.Round(((decimal)count / files.Count) * 100, 1)}%\n正在添加：{i.Name}", NotifySeverity.Loading);
                         item.SetProcess(files.Count, count);
                         FileInfo fi = null;
                         await Task.Run(() => fi = new FileInfo(i.Path));
@@ -708,7 +708,7 @@ namespace znMusicPlayerWUI.Pages
                     }
                     item.SetProcess(0, 0);
                     item.HorizontalAlignment = HorizontalAlignment.Center;
-                    MainWindow.NotifyItemSetData(item, "添加本地歌曲", "正在保存...", NotifySeverity.Loading);
+                    item.SetNotifyItemData("添加本地歌曲", "正在保存...", NotifySeverity.Loading);
                     await PlayListHelper.SaveData(jdata);
                     await App.playListReader.Refresh();
                     if (NavToObj != null)
@@ -724,7 +724,7 @@ namespace znMusicPlayerWUI.Pages
                         InitData();
                     }
                     ToolsCommandBar.IsEnabled = true;
-                    MainWindow.NotifyItemSetData(item, "添加本地歌曲", "添加本地歌曲成功。", NotifySeverity.Complete);
+                    item.SetNotifyItemData("添加本地歌曲", "添加本地歌曲成功。", NotifySeverity.Complete);
                     MainWindow.NotifyCountDown(item);
                 }
             };
@@ -980,7 +980,7 @@ namespace znMusicPlayerWUI.Pages
                 data[NavToObj.ListName] = JObject.FromObject(NavToObj);
                 await PlayListHelper.SaveData(data);
                 await App.playListReader.Refresh();
-                MainWindow.NotifyItemSetData(item, "保存排序完成。", null, NotifySeverity.Complete);
+                item.SetNotifyItemData("保存排序完成。", null, NotifySeverity.Complete);
                 MainWindow.NotifyCountDown(item);
             }
             UpdateCommandToolBarWidth();

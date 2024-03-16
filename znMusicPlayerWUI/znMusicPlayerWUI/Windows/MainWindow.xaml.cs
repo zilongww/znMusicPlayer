@@ -636,11 +636,6 @@ namespace znMusicPlayerWUI
             return notifyItem;
         }
 
-        public static void NotifyItemSetData(NotifyItem notifyItemData, string title, string message, NotifySeverity severity = NotifySeverity.Info)
-        {
-            notifyItemData.SetNotifyItemData(new(title, message, severity));
-        }
-
         public static void RemoveNotifyItem(NotifyItem notifyItem)
         {
             if (SNotifyStackPanel.Children.Contains(notifyItem))
@@ -1228,6 +1223,8 @@ namespace znMusicPlayerWUI
                 return;
             }
 
+            if ((sender.SelectedItem as NavigationViewItem).Content is null) return;
+
             switch ((sender.SelectedItem as NavigationViewItem).Content)
             {
                 case "搜索":
@@ -1284,11 +1281,11 @@ namespace znMusicPlayerWUI
                     SNavView.SelectedItem = SNavView.MenuItems[2];
                     break;
 
-                case "PlayListPage":
-                    SNavView.SelectedItem = SNavView.MenuItems[4];
+                case "DownloadPage":
+                    SNavView.SelectedItem = SNavView.MenuItems[3];
                     break;
 
-                case "DownloadPage":
+                case "PlayListPage":
                     SNavView.SelectedItem = SNavView.MenuItems[5];
                     break;
 
@@ -1316,7 +1313,7 @@ namespace znMusicPlayerWUI
 
                 case "ItemListViewPlayList":
                     //TODO:优化写法
-                    foreach (NavigationViewItem item in (SNavView.MenuItems[4] as NavigationViewItem).MenuItems)
+                    foreach (NavigationViewItem item in (SNavView.MenuItems[5] as NavigationViewItem).MenuItems)
                     {
                         if ((SContentFrame.Content as ItemListViewPlayList).NavToObj == item.Tag as MusicListData)
                         {

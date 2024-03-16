@@ -107,6 +107,18 @@
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutSeparator Visibility="{Binding ElementName=MenuFlyout_OpenFileItem,Path=Visibility}"/>
+            <MenuFlyoutItem Text="预缓存" Click="Menuflyout_CacheItem_Click" AccessKey="A" x:Name="Menuflyout_CacheItem">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xEDA2;"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem Text="删除缓存" Click="Menuflyout_DeleteCacheItem_Click" AccessKey="A" x:Name="Menuflyout_DeleteCacheItem"
+                            Visibility="{Binding ElementName=Menuflyout_CacheItem,Path=Visibility}">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xECC9;"/>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator Visibility="{Binding ElementName=Menuflyout_CacheItem,Path=Visibility}"/>
             <MenuFlyoutItem Text="详细信息..." Click="Info_Click" AccessKey="N">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE946;"/>

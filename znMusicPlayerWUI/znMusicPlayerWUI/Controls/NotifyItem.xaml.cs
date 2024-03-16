@@ -97,6 +97,11 @@ namespace znMusicPlayerWUI.Controls
             MessageTextBlock.Text = notifyItemData.Message;
         }
 
+        public void SetNotifyItemData(string title, string message, NotifySeverity severity = NotifySeverity.Info)
+        {
+            SetNotifyItemData(new(title, message, severity));
+        }
+
         public NotifyItemData GetNotifyItemData()
         {
             return notifyItemData;
