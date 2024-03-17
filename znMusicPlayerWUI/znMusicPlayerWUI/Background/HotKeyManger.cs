@@ -26,7 +26,7 @@ namespace znMusicPlayerWUI.Background.HotKeys
         LockLyricWindow
     }
 
-    public class HotKey
+    public class HotKey : DataEditor.OnlyClass
     {
         public User32.HotKeyModifiers HotKeyModifiers { get; set; }
         public Windows.System.VirtualKey VirtualKey { get; set; }
@@ -39,6 +39,11 @@ namespace znMusicPlayerWUI.Background.HotKeys
             HotKeyModifiers = hotKeyModifiers;
             VirtualKey = virtualKey;
             HotKeyID = hotKeyID;
+        }
+
+        public override string GetMD5()
+        {
+            return ToString();
         }
 
         public override string ToString()
@@ -174,19 +179,28 @@ namespace znMusicPlayerWUI.Background.HotKeys
             InitCallBack();
         }
 
-        public bool RegisterHotKey(HotKey hotKey)
+        public bool RegisterHotKey(HotKey hotKey, int? insertIndex = null)
         {
+            if (insertIndex == -1) insertIndex = null;
             if (hotKey.IsDisabled)
             {
-                RegistedHotKeys.Add(hotKey);
+                if (insertIndex != null)
+                    RegistedHotKeys.Insert((int)insertIndex, hotKey);
+                else
+                    RegistedHotKeys.Add(hotKey);
                 return true;
             }
 
             var r = User32.RegisterHotKey(
                 RegistedWindowHandle, (int)hotKey.HotKeyID, hotKey.HotKeyModifiers, (uint)hotKey.VirtualKey);
+
             if (!r) hotKey.IsUsed = true;
             else hotKey.IsUsed = false;
-            RegistedHotKeys.Add(hotKey);
+
+            if (insertIndex != null)
+                RegistedHotKeys.Insert((int)insertIndex, hotKey);
+            else
+                RegistedHotKeys.Add(hotKey);
 
             return r;
         }
@@ -208,8 +222,17 @@ namespace znMusicPlayerWUI.Background.HotKeys
 
         public bool ChangeHotKey(HotKey hotKey)
         {
+            int index = -1;
+            foreach (var item in RegistedHotKeys)
+            {
+                if (item.HotKeyID == hotKey.HotKeyID)
+                {
+                    index = RegistedHotKeys.IndexOf(item);
+                    break;
+                }
+            }
             UnregisterHotKey(hotKey.HotKeyID);
-            return RegisterHotKey(hotKey);
+            return RegisterHotKey(hotKey, index);
         }
 
         /// <summary>

@@ -25,45 +25,40 @@ namespace znMusicPlayerWUI.Pages.DialogPages
     {
         public HotKeyEditor()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
-        bool isWinPressed = false;
-        bool isCtrlPressed = false;
-        bool isShiftPressed = false;
-        bool isAltPressed = false;
-        Windows.System.VirtualKey modeKey = Windows.System.VirtualKey.Control;
+        HotKey hotKey = null;
+        User32.HotKeyModifiers hotKeyModifiers = User32.HotKeyModifiers.MOD_NONE;
         Windows.System.VirtualKey normalKey = Windows.System.VirtualKey.A;
         private void HotKeyEditor_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine(e.Key);
-            HotKeyText.Text = "";
 
             switch (e.Key)
             {
                 case Windows.System.VirtualKey.LeftWindows:
                 case Windows.System.VirtualKey.RightWindows:
-                    isWinPressed = true;
+                    hotKeyModifiers = hotKeyModifiers | User32.HotKeyModifiers.MOD_WIN;
                     break;
                 case Windows.System.VirtualKey.Control:
-                    isCtrlPressed = true;
+                    hotKeyModifiers = hotKeyModifiers | User32.HotKeyModifiers.MOD_CONTROL;
                     break;
                 case Windows.System.VirtualKey.Shift:
-                    isShiftPressed = true;
+                    hotKeyModifiers = hotKeyModifiers | User32.HotKeyModifiers.MOD_SHIFT;
                     break;
                 case Windows.System.VirtualKey.Menu:
-                    isAltPressed = true;
+                    hotKeyModifiers = hotKeyModifiers | User32.HotKeyModifiers.MOD_ALT;
                     break;
                 default:
                     normalKey = e.Key;
                     break;
             }
-            if (isWinPressed) HotKeyText.Text += "Win + ";
-            if (isCtrlPressed) HotKeyText.Text += "Ctrl + ";
-            if (isShiftPressed) HotKeyText.Text += "Shift + ";
-            if (isAltPressed) HotKeyText.Text += "Alt + ";
-            HotKeyText.Text += normalKey;
-            if (isWinPressed == false && isCtrlPressed == false && isShiftPressed == false && isAltPressed == false)
+
+            hotKey = new HotKey(hotKeyModifiers, normalKey, default);
+            HotKeyViewer.DataContext = hotKey;
+
+            if (hotKeyModifiers == User32.HotKeyModifiers.MOD_NONE)
             {
                 MainWindow.AsyncDialog.IsPrimaryButtonEnabled = false;
             }
@@ -79,24 +74,20 @@ namespace znMusicPlayerWUI.Pages.DialogPages
             {
                 case Windows.System.VirtualKey.LeftWindows:
                 case Windows.System.VirtualKey.RightWindows:
-                    isWinPressed = false;
+                    hotKeyModifiers = hotKeyModifiers ^ User32.HotKeyModifiers.MOD_WIN;
                     break;
                 case Windows.System.VirtualKey.Control:
-                    isCtrlPressed = false;
+                    hotKeyModifiers = hotKeyModifiers ^ User32.HotKeyModifiers.MOD_CONTROL;
                     break;
                 case Windows.System.VirtualKey.Shift:
-                    isShiftPressed = false;
+                    hotKeyModifiers = hotKeyModifiers ^ User32.HotKeyModifiers.MOD_SHIFT;
                     break;
                 case Windows.System.VirtualKey.Menu:
-                    isAltPressed = false;
+                    hotKeyModifiers = hotKeyModifiers ^ User32.HotKeyModifiers.MOD_ALT;
                     break;
             }
-            if (!isWinPressed) HotKeyText.Text = HotKeyText.Text.Replace("Win + ", "");
-            if (!isCtrlPressed) HotKeyText.Text = HotKeyText.Text.Replace("Ctrl + ", "");
-            if (!isShiftPressed) HotKeyText.Text = HotKeyText.Text.Replace("Shift + ", "");
-            if (!isAltPressed) HotKeyText.Text = HotKeyText.Text.Replace("Alt + ", "");
 
-            if (isWinPressed == false && isCtrlPressed == false && isShiftPressed == false && isAltPressed == false)
+            if (hotKey.HotKeyModifiers == User32.HotKeyModifiers.MOD_NONE)
             {
                 MainWindow.AsyncDialog.IsPrimaryButtonEnabled = false;
             }
@@ -114,27 +105,25 @@ namespace znMusicPlayerWUI.Pages.DialogPages
             changedHotKey = hotKey;
 
             NowHotKeyText.Text = $"当前热键：{HotKey.GetHotKeyIDString(hotKey.HotKeyID)}";
-            HotKeyText.Text = hotKey.ToString();
+            HotKeyViewer.DataContext = changedHotKey;
             ShowDialog1();
             this.Focus(FocusState.Keyboard);
         }
 
         private async void ShowDialog1()
         {
+            if (changedHotKey == null) return;
             MainWindow.AsyncDialog.PreviewKeyDown += HotKeyEditor_KeyDown;
             MainWindow.AsyncDialog.PreviewKeyUp += AsyncDialog_PreviewKeyUp;
             MainWindow.AsyncDialog.IsPrimaryButtonEnabled = false;
             var r = await MainWindow.ShowDialog("设置热键", this, "取消", "确定", "重置", ContentDialogButton.Primary);
             if (r == ContentDialogResult.Primary)
             {
-                User32.HotKeyModifiers hotKeyModifiers = User32.HotKeyModifiers.MOD_NONE;
-                if (isWinPressed) hotKeyModifiers = hotKeyModifiers | User32.HotKeyModifiers.MOD_WIN;
-                if (isCtrlPressed) hotKeyModifiers = hotKeyModifiers | User32.HotKeyModifiers.MOD_CONTROL;
-                if (isShiftPressed) hotKeyModifiers = hotKeyModifiers | User32.HotKeyModifiers.MOD_SHIFT;
-                if (isAltPressed) hotKeyModifiers = hotKeyModifiers | User32.HotKeyModifiers.MOD_ALT;
-
-                HotKey hotKey = new(hotKeyModifiers, normalKey, changedHotKey.HotKeyID);
-                App.hotKeyManager.ChangeHotKey(hotKey);
+                if (hotKey != null)
+                {
+                    hotKey.HotKeyID = changedHotKey.HotKeyID;
+                    App.hotKeyManager.ChangeHotKey(hotKey);
+                }
             }
             else if (r == ContentDialogResult.Secondary)
             {

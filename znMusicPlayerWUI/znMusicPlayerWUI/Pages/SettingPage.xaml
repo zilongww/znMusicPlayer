@@ -24,22 +24,11 @@
                 <Setter Property="FontWeight" Value="Bold"/>
                 <Setter Property="Foreground" Value="{ThemeResource HeaderLowForeground}"/>
             </Style>
-            <Style TargetType="Expander">
-                <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="CornerRadius" Value="8"/>
-                <Setter Property="Margin" Value="0,8,6,8"/>
-                <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
-            </Style>
             <Style x:Key="ItemGridStyle" TargetType="Grid">
                 <Setter Property="Margin" Value="0,0,0,14"/>
             </Style>
             <Style TargetType="cc:SettingsExpander">
-                <Setter Property="Margin" Value="0,8,6,8"/>
-            </Style>
-            <Style TargetType="cc:SettingsCard">
-                
+                <Setter Property="Margin" Value="0,4,6,0"/>
             </Style>
         </ListView.Resources>
 
@@ -53,14 +42,14 @@
         </ListView.Header>
 
         <cc:SettingsExpander Header="缓存"
-                                   Description="文件路径、清理缓存"
-                                   x:Name="CacheEpd">
+                             Description="文件路径、清理缓存"
+                             x:Name="CacheEpd">
             <cc:SettingsExpander.HeaderIcon>
                 <FontIcon Glyph="&#xE81E;"/>
             </cc:SettingsExpander.HeaderIcon>
             <cc:SettingsExpander.Items>
                 <cc:SettingsCard Header="缓存路径"
-                                   Description="{Binding CachePath}">
+                                 Description="{Binding CachePath}">
                     <cc:SettingsCard.HeaderIcon>
                         <FontIcon Glyph="&#xE8B7;"/>
                     </cc:SettingsCard.HeaderIcon>
@@ -117,9 +106,9 @@
         <cc:SettingsExpander Header="下载"
                                    Description="下载路径、质量、文件命名方式"
                                    x:Name="DownloadEpd">
-                <cc:SettingsExpander.HeaderIcon>
-                    <FontIcon Glyph="&#xE896;"/>
-                </cc:SettingsExpander.HeaderIcon>
+            <cc:SettingsExpander.HeaderIcon>
+                <FontIcon Glyph="&#xE896;"/>
+            </cc:SettingsExpander.HeaderIcon>
             <cc:SettingsExpander.Items>
                 <cc:SettingsCard Header="音频下载路径"
                                        Description="{Binding DownloadPath}">
@@ -236,7 +225,7 @@
                 </cc:SettingsCard>
             </cc:SettingsExpander.Items>
         </cc:SettingsExpander>
-        
+
         <cc:SettingsExpander Header="主题"
                              Description="颜色、图片遮罩、主题色、背景效果">
             <cc:SettingsExpander.HeaderIcon>
@@ -424,7 +413,7 @@
                 </cc:SettingsCard>
                 <cc:SettingsCard Header="恢复默认设置"
                                  Description="将程序的设置恢复默认"
-                            Background="{ThemeResource SystemFillColorCriticalBackgroundBrush}">
+                                 Background="{ThemeResource SystemFillColorCriticalBackgroundBrush}">
                     <cc:SettingsCard.HeaderIcon>
                         <FontIcon Glyph="&#xE777;"/>
                     </cc:SettingsCard.HeaderIcon>
@@ -433,47 +422,16 @@
             </cc:SettingsExpander.Items>
         </cc:SettingsExpander>
 
-        <Expander x:Name="HotKeySettings"
-                  BorderBrush="{ThemeResource ControlElevationBorderBrush}">
-            <Expander.Transitions>
-                <TransitionCollection>
-                    <RepositionThemeTransition/>
-                </TransitionCollection>
-            </Expander.Transitions>
-            <Expander.Header>
-                <StackPanel Orientation="Horizontal">
-                    <FontIcon Glyph="&#xf210;"/>
-                    <StackPanel Style="{StaticResource STPS}">
-                        <TextBlock Text="热键设置"/>
-                    </StackPanel>
-                </StackPanel>
-            </Expander.Header>
-            <StackPanel>
-                <Grid Style="{StaticResource ItemGridStyle}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <TextBlock Text="尝试重新注册热键"/>
-                        <TextBlock Text="如果之前被其它程序占用的热键被释放，重新注册可以使之前被占用的热键恢复在此程序的功能" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
-                    </StackPanel>
-                    <Button Grid.Column="1" Click="Button_Click_5" Content="重新注册"/>
-                </Grid>
-                <Grid Style="{StaticResource ItemGridStyle}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <TextBlock Text="重置热键键位"/>
-                        <TextBlock Text="将热键键位恢复到程序默认键位" Style="{StaticResource LowTextBlock}" TextWrapping="WrapWholeWords"/>
-                    </StackPanel>
-                    <Button Grid.Column="1" Click="Button_Click_6" Content="重置"/>
-                </Grid>
-                <control:HotKeyPresenter Margin="-18,-4"/>
-            </StackPanel>
-        </Expander>
+        <cc:SettingsCard x:Name="HotKeySettings"
+                         Header="热键设置"
+                         Description="重置热键设置、重新注册热键、更改热键按键设置"
+                         IsClickEnabled="True"
+                         Click="HotKeySettings_Click"
+                         Margin="0,4,6,0">
+            <cc:SettingsCard.HeaderIcon>
+                <FontIcon Glyph="&#xf210;"/>
+            </cc:SettingsCard.HeaderIcon>
+        </cc:SettingsCard>
 
         <cc:SettingsExpander Header="DEBUG">
             <cc:SettingsExpander.HeaderIcon>

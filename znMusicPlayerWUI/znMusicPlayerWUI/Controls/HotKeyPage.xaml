@@ -6,58 +6,48 @@
     xmlns:data="using:znMusicPlayerWUI.Background.HotKeys"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    xmlns:cc="using:CommunityToolkit.WinUI.Controls"
+    mc:Ignorable="d" Margin="-16,0,-6,0">
     <Page.Resources>
-        <local:MKConverter x:Key="MKConverter"/>
         <local:HMConverter x:Key="HMConverter"/>
-        <local:VKConverter x:Key="VKConverter"/>
         <local:IsUsedConverter x:Key="IsUsedConverter"/>
+        <local:IsUsedVisibleConverter x:Key="IsUsedVisibleConverter"/>
         <local:IsDisabledConverter x:Key="IsDisabledConverter"/>
     </Page.Resources>
     <ListView x:Name="HotKeyRoot" SelectionMode="None">
         <ListView.ItemTemplate>
             <DataTemplate x:DataType="data:HotKey">
-                <Grid Margin="0,4,4,4">
-                    <Grid Background="{ThemeResource LayerOnAcrylicFillColorDefaultBrush}"
-                          BorderBrush="{ThemeResource ControlElevationBorderBrush}"
-                          BorderThickness="1" CornerRadius="8" Padding="12">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Text="{Binding HotKeyID,Converter={StaticResource HMConverter}}" FontSize="16" VerticalAlignment="center" Margin="0,0,0,6"/>
-                            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,0">
-                                <TextBlock Text="{Binding HotKeyModifiers,Converter={StaticResource MKConverter}}"/>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding VirtualKey, Converter={StaticResource VKConverter}}"/>
-                                    <TextBlock Text="{Binding IsUsed, Converter={StaticResource IsUsedConverter}}" Margin="12,0,0,0"
-                                               Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
-                                    <TextBlock Text="{Binding IsDisabled, Converter={StaticResource IsDisabledConverter}}" Margin="12,0,0,0"
-                                               Foreground="{ThemeResource SystemFillColorCautionBrush}"/>
-                                </StackPanel>
+                <cc:SettingsCard Header="{Binding HotKeyID,Converter={StaticResource HMConverter}}"
+                                 FontSize="16"
+                                 Margin="0,4,0,0">
+                    <cc:SettingsCard.Description>
+                        <TextBlock Text="{Binding IsUsed, Converter={StaticResource IsUsedConverter}}"
+                                   Visibility="{Binding IsUsed, Converter={StaticResource IsUsedVisibleConverter}}"
+                                   Foreground="{ThemeResource SystemFillColorCriticalBrush}"/>
+                    </cc:SettingsCard.Description>
+                    <StackPanel Orientation="Horizontal" Spacing="0">
+                        <Button HorizontalAlignment="Right" VerticalAlignment="Stretch"
+                                Click="Button_Click" Tag="1" ToolTipService.ToolTip="编辑热键"
+                                CornerRadius="4,0,0,4" Padding="12" IsEnabled="{Binding IsDisabled, Converter={StaticResource IsDisabledConverter}}">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <local:KeyControl/>
+                                <FontIcon Glyph="&#xe70f;" FontSize="16"/>
                             </StackPanel>
-                        </Grid>
-
-                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                            <Button Width="60"
-                                    HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="12,0,0,0"
-                                    Click="Button_Click" Tag="0" ToolTipService.ToolTip="禁用/启用">
-                                <FontIcon Glyph="&#xECC9;"/>
-                            </Button>
-                            <Button Width="60"
-                                    HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="4,0,0,0"
-                                    Click="Button_Click" Tag="1" ToolTipService.ToolTip="编辑热键">
-                                <FontIcon Glyph="&#xe70f;"/>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
+                        </Button>
+                        <Button HorizontalAlignment="Right" VerticalAlignment="Stretch"
+                                DataContextChanged="Button_DataContextChanged"
+                                Click="Button_Click" Tag="0" ToolTipService.ToolTip="禁用/启用"
+                                CornerRadius="0,4,4,0" BorderThickness="0,1,1,1" MinWidth="50">
+                            <FontIcon Glyph="&#xE733;" FontSize="16"/>
+                        </Button>
+                    </StackPanel>
+                </cc:SettingsCard>
             </DataTemplate>
         </ListView.ItemTemplate>
+        <ListView.ItemContainerTransitions>
+            <TransitionCollection>
+                <PopupThemeTransition/>
+            </TransitionCollection>
+        </ListView.ItemContainerTransitions>
     </ListView>
 </Page>

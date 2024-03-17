@@ -59,19 +59,21 @@ namespace znMusicPlayerWUI.Controls
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
         }
-    }
 
-    public class MKConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
+        private void Button_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            Vanara.PInvoke.User32.HotKeyModifiers c = (Vanara.PInvoke.User32.HotKeyModifiers)value;
-            return HotKey.GetHKMString(c);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
+            if (sender.DataContext is null) return;
+            var key = sender.DataContext as HotKey;
+            if (key.IsDisabled)
+            {
+                ToolTipService.SetToolTip(sender, "启用");
+                ((sender as Button).Content as FontIcon).Glyph = "\uE777";
+            }
+            else
+            {
+                ToolTipService.SetToolTip(sender, "禁用此热键");
+                ((sender as Button).Content as FontIcon).Glyph = "\uE733";
+            }
         }
     }
 
@@ -81,20 +83,6 @@ namespace znMusicPlayerWUI.Controls
         {
             HotKeyID c = (HotKeyID)value;
             return HotKey.GetHotKeyIDString(c);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class VKConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            Windows.System.VirtualKey c = (Windows.System.VirtualKey)value;
-            return $" + {c}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
@@ -116,13 +104,27 @@ namespace znMusicPlayerWUI.Controls
             throw new NotImplementedException();
         }
     }
+    
+    public class IsUsedVisibleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            bool c = (bool)value;
+            return c ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     public class IsDisabledConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             bool c = (bool)value;
-            return c ? "已被禁用" : "";
+            return !c;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

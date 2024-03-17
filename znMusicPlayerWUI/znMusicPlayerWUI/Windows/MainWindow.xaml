@@ -114,12 +114,15 @@
                             <FontIcon Glyph="&#xE838;"/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
+                </NavigationView.MenuItems>
+
+                <NavigationView.FooterMenuItems>
                     <NavigationViewItem Content="关于" AccessKey="MR">
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE946;"/>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
-                </NavigationView.MenuItems>
+                </NavigationView.FooterMenuItems>
 
                 <Grid x:Name="NavViewContentBase" SizeChanged="NavViewContentBase_SizeChanged">
                     <Grid.Clip>
@@ -269,14 +272,30 @@
                                               Click="Button_Click_6"
                                               AccessKey="BY">
                                     <AppBarButton.Icon>
-                                        <FontIcon Glyph="词" FontSize="20"
-                                                  FontFamily="{StaticResource ContentControlThemeFontFamily}"/>
+                                        <FontIcon Glyph="&#xED1E;"/>
                                     </AppBarButton.Icon>
                                 </AppBarButton>
                                 <AppBarButton x:Name="VolumeAppButton"
                                               Click="Button_Click"
                                               Label="音量"
-                                              AccessKey="BV">
+                                              AccessKey="BV" PointerWheelChanged="VolumeAppButton_PointerWheelChanged">
+                                    <AppBarButton.Resources>
+                                        <Flyout x:Name="VolumePopup">
+                                            <Flyout.SystemBackdrop>
+                                                <DesktopAcrylicBackdrop/>
+                                            </Flyout.SystemBackdrop>
+                                            <Flyout.FlyoutPresenterStyle>
+                                                <Style TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenterStyle}">
+                                                    <Setter Property="MinWidth" Value="0"/>
+                                                    <Setter Property="MinHeight" Value="0"/>
+                                                    <Setter Property="Padding" Value="8"/>
+                                                    <Setter Property="CornerRadius" Value="4"/>
+                                                </Style>
+                                            </Flyout.FlyoutPresenterStyle>
+                                            <TextBlock/>
+                                        </Flyout>
+
+                                    </AppBarButton.Resources>
                                     <Grid>
                                         <FontIcon Glyph="&#xE995;" Opacity="{ThemeResource VolumeOpacity}"/>
                                         <FontIcon Glyph="{Binding ElementName=VolumeIconBase,Path=Glyph}"/>

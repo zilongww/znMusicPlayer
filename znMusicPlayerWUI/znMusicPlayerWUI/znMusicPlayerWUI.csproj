@@ -22,6 +22,7 @@
     <None Remove="Controls\ItemListViewArtist.xaml" />
     <None Remove="Controls\ItemListViewPlayList.xaml" />
     <None Remove="Controls\ItemListViewSearch.xaml" />
+    <None Remove="Controls\KeyControl.xaml" />
     <None Remove="Controls\LoadingTip.xaml" />
     <None Remove="Controls\LyricItem.xaml" />
     <None Remove="Controls\MediaPlayStateViewer.xaml" />
@@ -47,6 +48,8 @@
     <None Remove="Pages\MusicPage.xaml" />
     <None Remove="Pages\PlayListPage.xaml" />
     <None Remove="Pages\SearchPage.xaml" />
+    <None Remove="Pages\SettingEqPage.xaml" />
+    <None Remove="Pages\SettingHotKeyPage.xaml" />
     <None Remove="Pages\SettingPage.xaml" />
     <None Remove="Windows\ImageViewerWindow.xaml" />
     <None Remove="Windows\MediaPlayerWindow.xaml" />
@@ -120,6 +123,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\KeyControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\NotifyItem.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
@@ -221,6 +228,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Pages\DialogPages\EqualizerPage.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Pages\SettingEqPage.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Pages\SettingHotKeyPage.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

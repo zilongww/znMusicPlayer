@@ -213,24 +213,6 @@ namespace znMusicPlayerWUI.Pages
         {
         }
 
-        #region hotKeyExp
-        private async void Button_Click_5(object sender, RoutedEventArgs e)
-        {
-            var list = App.hotKeyManager.RegistedHotKeys.ToList();
-            App.hotKeyManager.UnregisterHotKeys(list);
-            await Task.Delay(200);
-            App.hotKeyManager.RegisterHotKeys(list);
-        }
-
-        private async void Button_Click_6(object sender, RoutedEventArgs e)
-        {
-            var list = App.hotKeyManager.RegistedHotKeys.ToList();
-            App.hotKeyManager.UnregisterHotKeys(list);
-            await Task.Delay(200);
-            App.hotKeyManager.RegisterHotKeys(HotKeyManager.DefaultRegisterHotKeysList);
-        }
-        #endregion
-
         #region cacheExp
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -837,6 +819,11 @@ namespace znMusicPlayerWUI.Pages
         {
             DesktopLyricWindow.LyricOpacity = e.NewValue / 100;
             if (MainWindow.DesktopLyricWindow != null) MainWindow.DesktopLyricWindow.SetLyricOpacity(DesktopLyricWindow.LyricOpacity);
+        }
+
+        private void HotKeySettings_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.SetNavViewContent(typeof(SettingHotKeyPage));
         }
     }
 }

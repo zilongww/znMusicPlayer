@@ -43,6 +43,7 @@ using Windows.ApplicationModel.Background;
 using Windows.Devices.Enumeration;
 using System.Security.Policy;
 using CommunityToolkit.WinUI;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -1298,7 +1299,7 @@ namespace znMusicPlayerWUI
                     break;
 
                 case "AboutPage":
-                    SNavView.SelectedItem = SNavView.MenuItems[8];
+                    SNavView.SelectedItem = SNavView.FooterMenuItems[0];
                     break;
 
                 case "SettingPage":
@@ -1323,12 +1324,20 @@ namespace znMusicPlayerWUI
                     }
                     break;
 
+                case "SettingHotKeyPage":
+                    SNavView.SelectedItem = SNavView.SettingsItem;
+                    break;
+                    
+                case "SettingEqPage":
+                    SNavView.SelectedItem = SNavView.SettingsItem;
+                    break;
+                    
                 case "EmptyPage":
                     TryGoBack();
                     break;
 
                 default:
-                    AddNotify("未添加此功能", $"未添加 \"未知\" 功能。", NotifySeverity.Error);
+                    AddNotify("未定义页面", $"未定义 \"{(SContentFrame.Content as Page).GetType().ToString().Split('.')[2]}\" 页面。", NotifySeverity.Warning);
                     break;
             }
             IsJustUpdate = false;
@@ -1605,6 +1614,23 @@ namespace znMusicPlayerWUI
                     Debug.WriteLine("[MainWindow]: 主界面被隐藏。");
                 }
             }
+        }
+
+        int volumePopupCounter = 0;
+        private async void VolumeAppButton_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        {
+            if (e.GetCurrentPoint(sender as UIElement).Properties.MouseWheelDelta > 0)
+                //VolumeSlider.Value += 1.1f;
+                App.audioPlayer.Volume += 1f;
+            else
+                App.audioPlayer.Volume -= 1f;
+
+            (VolumePopup.Content as TextBlock).Text = $"音量：{App.audioPlayer.Volume}";
+            VolumePopup.ShowAt(sender as DependencyObject, new() { Placement = FlyoutPlacementMode.Top, ShowMode = FlyoutShowMode.Transient });
+            volumePopupCounter++;
+            await Task.Delay(3000);
+            volumePopupCounter--;
+            if (volumePopupCounter == 0) VolumePopup.Hide();
         }
         #endregion
 
