@@ -80,7 +80,7 @@ namespace znMusicPlayerWUI.Media
                             f.Close();
                             f.Dispose();
                         });
-                        source = await CodeHelper.ImageFromBytes(imageByte);
+                        source = await FileHelper.GetImageSource(b, decodePixelWidth, decodePixelHeight, useBitmapImage);
                     }
                     else
                     {

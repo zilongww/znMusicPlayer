@@ -1632,6 +1632,13 @@ namespace znMusicPlayerWUI
             volumePopupCounter--;
             if (volumePopupCounter == 0) VolumePopup.Hide();
         }
+
+        private void CommandBar_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var cb = sender as CommandBar;
+            if (cb.ActualWidth <= 300 || true) cb.DefaultLabelPosition = CommandBarDefaultLabelPosition.Collapsed;
+            else cb.DefaultLabelPosition = CommandBarDefaultLabelPosition.Right;
+        }
         #endregion
 
         #region Key Events

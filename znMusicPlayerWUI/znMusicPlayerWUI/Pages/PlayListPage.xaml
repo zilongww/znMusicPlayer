@@ -44,7 +44,7 @@
                 </CommandBar>
             </Grid>
         </GridView.Header>
-        <ItemsView x:Name="ItemsViewer" SelectionMode="None" Margin="12,12,12,0"
+        <ItemsView x:Name="ItemsViewer" SelectionMode="None" Margin="16,12,12,0"
                    HorizontalAlignment="Center" VerticalAlignment="Center">
             <ItemsView.Layout>
                 <LinedFlowLayout ItemsStretch="Fill" LineHeight="320" LineSpacing="12" MinItemSpacing="12"/>

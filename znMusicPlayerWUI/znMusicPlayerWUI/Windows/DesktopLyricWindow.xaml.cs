@@ -57,6 +57,7 @@ namespace znMusicPlayerWUI.Windowed
         public DesktopLyricWindow()
         {
             InitializeComponent();
+            //LyricRomajiPopup1.XamlRoot = root.XamlRoot;
             /*
             WindowHelper.Window.hWnd = WindowHelper.Window.GetHWnd(this);
             WindowHelper.Window.MakeTransparent();*/
@@ -101,8 +102,12 @@ namespace znMusicPlayerWUI.Windowed
             }
             TrySetAcrylicBackdrop();
             //SystemBackdrop = new DesktopAcrylicBackdrop();
-            AddEvents();
             AppWindow.Closing += AppWindow_Closing;
+        }
+
+        private void root_Loaded(object sender, RoutedEventArgs e)
+        {
+            AddEvents();
         }
 
         private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
@@ -272,46 +277,39 @@ namespace znMusicPlayerWUI.Windowed
                 catch { }
 
                 bool RomajiEnable = !string.IsNullOrEmpty(nowLyricsData.Romaji);
-                TR1DSP.Visibility = Visibility.Visible;
-                TR2DSP.Visibility = Visibility.Visible;
-                TR1.Text = null;
-                TR2.Text = null;
+                if (RomajiEnable)
+                {
+                    LyricRomajiPopup_tb.Text = nowLyricsData.Romaji;
+                    //LyricRomajiPopup.IsOpen = true;
+                }
+                else
+                {
+                    LyricRomajiPopup_tb.Text = "";
+                }
 
                 string t1text = nowLyricsData?.Lyric?.FirstOrDefault();
                 if (LyricTranslateTextPosition == LyricTranslateTextPosition.Center)
                 {
                     V1.HorizontalAlignment = HorizontalAlignment.Center;
                     V2.HorizontalAlignment = HorizontalAlignment.Center;
-                    TR1DSP.HorizontalAlignment = HorizontalAlignment.Center;
-                    TR2DSP.HorizontalAlignment = HorizontalAlignment.Center;
                     //progressRoot.HorizontalAlignment = HorizontalAlignment.Center;
                 }
                 else if (LyricTranslateTextPosition == LyricTranslateTextPosition.Left)
                 {
                     V1.HorizontalAlignment = HorizontalAlignment.Left;
                     V2.HorizontalAlignment = HorizontalAlignment.Left;
-                    TR1DSP.HorizontalAlignment = HorizontalAlignment.Left;
-                    TR2DSP.HorizontalAlignment = HorizontalAlignment.Left;
                     //progressRoot.HorizontalAlignment = HorizontalAlignment.Left;
                 }
                 else
                 {
                     V1.HorizontalAlignment = HorizontalAlignment.Right;
                     V2.HorizontalAlignment = HorizontalAlignment.Right;
-                    TR1DSP.HorizontalAlignment = HorizontalAlignment.Right;
-                    TR2DSP.HorizontalAlignment = HorizontalAlignment.Right;
                     //progressRoot.HorizontalAlignment = HorizontalAlignment.Right;
                 }
                 if (LyricTranslateTextBehavior == LyricTranslateTextBehavior.MainLyric)
                 {
                     if (tcount == 1) T11.Text = null;
                     else T11.Text = $"x{tcount}";
-
-                    if (RomajiEnable)
-                    {
-                        TR1DSP.Visibility = Visibility.Visible;
-                        TR1.Text = nowLyricsData.Romaji;
-                    }
 
                     T1.Text = t1text;
                     T2.Text = nowLyricsData?.Lyric[1];
@@ -321,12 +319,6 @@ namespace znMusicPlayerWUI.Windowed
                     if (tcount == 1) T21.Text = null;
                     else T21.Text = $"x{tcount}";
 
-                    if (RomajiEnable)
-                    {
-                        TR2DSP.Visibility = Visibility.Visible;
-                        TR2.Text = nowLyricsData.Romaji;
-                    }
-
                     T1.Text = nowLyricsData?.Lyric[1];
                     T2.Text = t1text;
                 }
@@ -334,12 +326,6 @@ namespace znMusicPlayerWUI.Windowed
                 {
                     if (tcount == 1) T11.Text = null;
                     else T11.Text = $"x{tcount}";
-
-                    if (RomajiEnable)
-                    {
-                        TR1DSP.Visibility = Visibility.Visible;
-                        TR1.Text = nowLyricsData.Romaji;
-                    }
 
                     T1.Text = t1text;
                     T2.Text = null;
@@ -385,6 +371,16 @@ namespace znMusicPlayerWUI.Windowed
                 {
                     V1.HorizontalAlignment = HorizontalAlignment.Center;
                     V2.HorizontalAlignment = HorizontalAlignment.Center;
+                }
+
+                bool RomajiEnable = !string.IsNullOrEmpty(nowLyricsData.Romaji);
+                if (RomajiEnable)
+                {
+                    LyricRomajiPopup_tb.Text = nowLyricsData.Romaji;
+                }
+                else
+                {
+                    LyricRomajiPopup_tb.Text = "";
                 }
 
                 LyricData nextData = new(null, null, TimeSpan.Zero);
@@ -485,9 +481,6 @@ namespace znMusicPlayerWUI.Windowed
                     T2.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
                 }
             }
-
-            TR1DSP.Visibility = Visibility.Collapsed;
-            TR2DSP.Visibility = Visibility.Collapsed;
         }
 
         private void AudioPlayer_TimingChanged(AudioPlayer audioPlayer)
@@ -558,7 +551,7 @@ namespace znMusicPlayerWUI.Windowed
                 overlappedPresenter.SetBorderAndTitleBar(false, false);
                 DisposeAcrylicBackdrop();
                 TryTransparentWindow();
-                LockButton.Visibility = Visibility.Collapsed;
+                ToolButtonsStackPanel.Visibility = Visibility.Collapsed;
 
                 UpdateDragSize();
                 SizeInt32 sizeInt32 = new(AppWindow.Size.Width - 1, AppWindow.Size.Height);
@@ -580,8 +573,8 @@ namespace znMusicPlayerWUI.Windowed
             double dpi = CodeHelper.GetScaleAdjustment(this);
             int windowWidth = (int)(AppWindow.Size.Width * dpi);
             int windowHeight = (int)(AppWindow.Size.Height * dpi);
-            int lockButtonWidth = (int)((LockButton.ActualWidth - 1) * dpi);
-            int lockButtonHeight = (int)(LockButton.ActualHeight * dpi);
+            int toolBarWidth = (int)((ToolButtonsStackPanel.ActualWidth) * dpi);
+            int toolBarHeight = (int)(ToolButtonsStackPanel.ActualHeight * dpi);
 
             RectInt32[] rectInt32s = default;
             if (IsLock)
@@ -594,8 +587,8 @@ namespace znMusicPlayerWUI.Windowed
             else
             {
                 rectInt32s = new RectInt32[] {
-                    new(lockButtonWidth, 0, windowWidth - lockButtonWidth, windowHeight),
-                    new(0, lockButtonHeight, lockButtonWidth, windowHeight - lockButtonHeight)
+                    new(toolBarWidth, 0, windowWidth - toolBarWidth, windowHeight),
+                    new(0, toolBarHeight, toolBarWidth, windowHeight - toolBarHeight)
                 };
             }
             
@@ -701,6 +694,58 @@ namespace znMusicPlayerWUI.Windowed
         {
             UpdateDragSize();
             progressRoot.Width = root.ActualWidth / 4;
+        }
+
+        private void MusicControlButton_Click(object sender, RoutedEventArgs e)
+        {
+            MusicControlPopup.IsOpen = !MusicControlPopup.IsOpen;
+        }
+
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            MusicControlPopup.VerticalOffset = -MusicControlPopup.Child.ActualSize.Y - 4;
+        }
+
+        private void MusicControlPopup_Opened(object sender, object e)
+        {
+            AddMusicControlEvents();
+        }
+
+        private void MusicControlPopup_Closed(object sender, object e)
+        {
+            RemoveMusicControlEvents();
+        }
+
+        public void AddMusicControlEvents()
+        {
+            App.playingList.NowPlayingImageLoaded += PlayingList_NowPlayingImageLoaded;
+            App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged1;
+            App.audioPlayer.TimingChanged += AudioPlayer_TimingChanged1;
+        }
+
+        private void PlayingList_NowPlayingImageLoaded(ImageSource imageSource, string path)
+        {
+            MusicControl_Image.Source = imageSource;
+        }
+
+        private void AudioPlayer_SourceChanged1(AudioPlayer audioPlayer)
+        {
+            if (audioPlayer.MusicData == null) return;
+            MusicControl_TitleTb.Text = audioPlayer.MusicData.Title;
+            MusicControl_ButtonNameTb.Text = audioPlayer.MusicData.ButtonName;
+        }
+
+        private void AudioPlayer_TimingChanged1(AudioPlayer audioPlayer)
+        {
+            MusicControl_TimeSlider.Value = audioPlayer.CurrentTime.Ticks;
+            MusicControl_TimeSlider.Maximum = audioPlayer.TotalTime.Ticks;
+        }
+
+        public void RemoveMusicControlEvents()
+        {
+            App.playingList.NowPlayingImageLoaded -= PlayingList_NowPlayingImageLoaded;
+            App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged1;
+            App.audioPlayer.TimingChanged -= AudioPlayer_TimingChanged1;
         }
     }
 }

@@ -222,6 +222,19 @@
                                         BorderThickness="0" Padding="14"
                                         Click="PlayBeforeButton_Click"
                                         Background="Transparent">
+                                    <Button.Resources>
+                                        <ResourceDictionary>
+                                            <ResourceDictionary.ThemeDictionaries>
+                                                <ResourceDictionary x:Key="Dark">
+                                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#0DFFFFFF"/>
+                                                </ResourceDictionary>
+                                                <ResourceDictionary x:Key="Light">
+                                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#0E000000"/>
+                                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#05000000"/>
+                                                </ResourceDictionary>
+                                            </ResourceDictionary.ThemeDictionaries>
+                                        </ResourceDictionary>
+                                    </Button.Resources>
                                     <Path Stretch="Uniform"
                                           Fill="{ThemeResource ButtonForegroundThemeBrush}"
                                           Data="{StaticResource 上一首}"/>
@@ -231,8 +244,8 @@
                                             Height="60"
                                             Width="60"
                                             CornerRadius="28" BorderBrush="{ThemeResource CircleElevationBorderBrush}"
-                                            BorderThickness="6" Padding="10"
-                                            Margin="8,0,8,0" Background="Transparent"
+                                            BorderThickness="2" Padding="15"
+                                            Margin="8,0,8,0"
                                             Click="PlayButton_Click"
                                             IsHoldingEnabled="True" Holding="PlayButton_Holding"
                                             IsRightTapEnabled="True" RightTapped="PlayButton_RightTapped">
@@ -247,7 +260,7 @@
                                         </Button.Resources>
                                         <controls:MediaPlayStateViewer x:Name="MediaPlayStateViewer" PlaybackState="Paused" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4"/>
                                     </Button>
-                                    <ProgressRing x:Name="PlayRing" Width="60" Height="60" IsIndeterminate="False"/>
+                                    <ProgressRing x:Name="PlayRing" Width="62" Height="62" IsIndeterminate="False"/>
                                 </Grid>
                                 <Button x:Name="PlayNextButton"
                                         Height="44"
@@ -255,20 +268,34 @@
                                         BorderThickness="0" Padding="14"
                                         Click="PlayNextButton_Click"
                                         Background="Transparent">
+                                    <Button.Resources>
+                                        <ResourceDictionary>
+                                            <ResourceDictionary.ThemeDictionaries>
+                                                <ResourceDictionary x:Key="Dark">
+                                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#0DFFFFFF"/>
+                                                </ResourceDictionary>
+                                                <ResourceDictionary x:Key="Light">
+                                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#0E000000"/>
+                                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#05000000"/>
+                                                </ResourceDictionary>
+                                            </ResourceDictionary.ThemeDictionaries>
+                                        </ResourceDictionary>
+                                    </Button.Resources>
                                     <Path Stretch="Uniform"
                                           Fill="{ThemeResource ButtonForegroundThemeBrush}"
                                           Data="{StaticResource 下一首}"/>
                                 </Button>
                             </StackPanel>
 
-                            <CommandBar Background="Transparent"
+                            <CommandBar Background="{x:Null}"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Right"
-                                        DefaultLabelPosition="Collapsed"
+                                        DefaultLabelPosition="Right"
                                         Grid.Column="2"
+                                        SizeChanged="CommandBar_SizeChanged"
                                         AccessKey="BT">
                                 <AppBarButton Background="Transparent"
-                                              Label="打开桌面歌词"
+                                              Label="桌面歌词" IsCompact="False"
                                               Click="Button_Click_6"
                                               AccessKey="BY">
                                     <AppBarButton.Icon>

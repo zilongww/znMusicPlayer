@@ -28,7 +28,7 @@
                 <Setter Property="Margin" Value="0,0,0,14"/>
             </Style>
             <Style TargetType="cc:SettingsExpander">
-                <Setter Property="Margin" Value="0,4,6,0"/>
+                <Setter Property="Margin" Value="0,4,4,0"/>
             </Style>
         </ListView.Resources>
 
@@ -427,7 +427,7 @@
                          Description="重置热键设置、重新注册热键、更改热键按键设置"
                          IsClickEnabled="True"
                          Click="HotKeySettings_Click"
-                         Margin="0,4,6,0">
+                         Margin="0,4,4,0">
             <cc:SettingsCard.HeaderIcon>
                 <FontIcon Glyph="&#xf210;"/>
             </cc:SettingsCard.HeaderIcon>

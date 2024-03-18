@@ -67,7 +67,7 @@ namespace znMusicPlayerWUI
         public static TaskBarInfoWindow taskBarInfoWindow;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.3.3 Preview";
+        public static readonly string AppVersion = "0.3.4 Preview";
 
         public static App AppStatic = null;
         /// <summary>
