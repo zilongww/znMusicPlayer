@@ -17,7 +17,9 @@
                       ZoomMode="Enabled"
                       HorizontalScrollMode="Enabled"
                       HorizontalScrollBarVisibility="Auto"
-                      ViewChanged="ScrollViewer_ViewChanged">
+                      ViewChanged="ScrollViewer_ViewChanged"
+                      IsVerticalRailEnabled="False"
+                      IsHorizontalRailEnabled="False">
             <Image x:Name="ImageControl" Source="/Images/SugarAndSalt.jpg"
                    Margin="0,-32,0,0"/>
         </ScrollViewer>

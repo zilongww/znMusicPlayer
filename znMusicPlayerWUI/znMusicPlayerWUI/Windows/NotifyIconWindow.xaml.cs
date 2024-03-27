@@ -306,9 +306,9 @@ namespace znMusicPlayerWUI.Windowed
 
         private void NotifyIcon_DoubleClick(object sender, EventArgs e)
         {
-            App.AppWindowLocal.Show();
-            App.AppWindowLocalOverlappedPresenter.Restore();
-            PInvoke.User32.SetForegroundWindow(App.AppWindowLocalHandle);
+            MainWindow.AppWindowLocal.Show();
+            MainWindow.OverlappedPresenter.Restore();
+            PInvoke.User32.SetForegroundWindow(MainWindow.Handle);
         }
 
         private async void NotifyIcon_Click(object sender, EventArgs e)
@@ -317,9 +317,10 @@ namespace znMusicPlayerWUI.Windowed
 
         private void NotifyIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine(e.Delta.ToString());
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
-                if (this.Visible)
+                if (Visible)
                 {
                     AppWindow.Hide();
                     return;
@@ -332,9 +333,9 @@ namespace znMusicPlayerWUI.Windowed
             }
             else
             {
-                App.AppWindowLocal.Show();
-                App.AppWindowLocalOverlappedPresenter.Restore();
-                PInvoke.User32.SetForegroundWindow(App.AppWindowLocalHandle);
+                MainWindow.AppWindowLocal.Show();
+                MainWindow.OverlappedPresenter.Restore();
+                PInvoke.User32.SetForegroundWindow(MainWindow.Handle);
             }
         }
         #endregion
@@ -515,9 +516,9 @@ namespace znMusicPlayerWUI.Windowed
                     App.Current.Exit();
                     break;
                 case "returnBack":
-                    App.AppWindowLocal.Show();
-                    App.AppWindowLocalOverlappedPresenter.Restore();
-                    PInvoke.User32.SetForegroundWindow(App.AppWindowLocalHandle);
+                    MainWindow.AppWindowLocal.Show();
+                    MainWindow.OverlappedPresenter.Restore();
+                    PInvoke.User32.SetForegroundWindow(MainWindow.Handle);
                     break;
             }
         }

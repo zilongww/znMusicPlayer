@@ -330,15 +330,16 @@ namespace znMusicPlayerWUI.Pages
 
         private void SelectReverseButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (SongItemBindBase item in MusicDataList)
+            foreach (SongItemBindBase item in Children.Items)
             {
-                try
+                if (Children.SelectedItems.Contains(item))
                 {
-                    var a = Children.ContainerFromIndex(Children.Items.IndexOf(item)) as ListViewItem;
-                    if (a!=null)
-                        a.IsSelected = !a.IsSelected;
+                    Children.SelectedItems.Remove(item);
                 }
-                catch { }
+                else
+                {
+                    Children.SelectedItems.Add(item);
+                }
             }
         }
 

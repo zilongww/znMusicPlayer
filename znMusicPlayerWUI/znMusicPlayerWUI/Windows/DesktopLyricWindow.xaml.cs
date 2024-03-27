@@ -94,8 +94,8 @@ namespace znMusicPlayerWUI.Windowed
                     if (!MainWindow.isMinSize)
                     {
                         PointInt32 pointInt32 = new(
-                            App.AppWindowLocal.Position.X + App.AppWindowLocal.Size.Width - AppWindow.Size.Width,
-                            App.AppWindowLocal.Position.Y + App.AppWindowLocal.Size.Height - AppWindow.Size.Height);
+                            MainWindow.AppWindowLocal.Position.X + MainWindow.AppWindowLocal.Size.Width - AppWindow.Size.Width,
+                            MainWindow.AppWindowLocal.Position.Y + MainWindow.AppWindowLocal.Size.Height - AppWindow.Size.Height);
                         AppWindow.Move(pointInt32);
                     }
                 }
@@ -197,6 +197,7 @@ namespace znMusicPlayerWUI.Windowed
         {
             T11.Text = null;
             T21.Text = null;
+            LyricRomajiPopup_tb.Text = null;
 
             // nice coding
             if (nowLyricsData == null)

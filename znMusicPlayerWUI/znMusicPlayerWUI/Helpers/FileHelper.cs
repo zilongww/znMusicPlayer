@@ -193,7 +193,7 @@ namespace znMusicPlayerWUI.Helpers
                 picker.FileTypeFilter.Add(i);
             }
 
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, App.AppWindowLocalHandle);
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, MainWindow.Handle);
             var files = await picker.PickMultipleFilesAsync();
             return files;
         }
@@ -213,7 +213,7 @@ namespace znMusicPlayerWUI.Helpers
                 picker.FileTypeFilter.Add(i);
             }
 
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, App.AppWindowLocalHandle);
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, MainWindow.Handle);
             var files = await picker.PickSingleFileAsync();
             return files;
         }
@@ -223,7 +223,7 @@ namespace znMusicPlayerWUI.Helpers
             var folderPicker = new FolderPicker();
             folderPicker.SuggestedStartLocation = suggestedStartLocation;
 
-            WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, App.AppWindowLocalHandle);
+            WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, MainWindow.Handle);
             StorageFolder folder = await folderPicker.PickSingleFolderAsync();
             return folder;
         }
@@ -239,7 +239,7 @@ namespace znMusicPlayerWUI.Helpers
             saveFile.FileTypeChoices.Add(fileTypeFilterKey, fileTypeFilter);
             saveFile.SuggestedFileName = suggestedFileName;
 
-            WinRT.Interop.InitializeWithWindow.Initialize(saveFile, windowHandle == 0 ? App.AppWindowLocalHandle : windowHandle);
+            WinRT.Interop.InitializeWithWindow.Initialize(saveFile, windowHandle == 0 ? MainWindow.Handle : windowHandle);
             StorageFile sFile = await saveFile.PickSaveFileAsync();
 
             return sFile;

@@ -247,7 +247,12 @@
                     </ComboBox>
                 </cc:SettingsCard>
                 <cc:SettingsCard Header="深色模式时为图片添加灰色透明遮罩">
-                    <ToggleSwitch Loaded="ToggleSwitch_Loaded_1"
+                    <ToggleSwitch Loaded="ToggleSwitch_Loaded_1" Tag="1"
+                                  Toggled="ToggleSwitch_Toggled_3"/>
+                </cc:SettingsCard>
+                <cc:SettingsCard Header="导航栏使用顶部样式"
+                                 Description="导航栏将会在窗口顶部显示">
+                    <ToggleSwitch Loaded="ToggleSwitch_Loaded_1" Tag="0"
                                   Toggled="ToggleSwitch_Toggled_3"/>
                 </cc:SettingsCard>
                 <cc:SettingsCard Header="主题色">
@@ -379,7 +384,7 @@
                     <cc:SettingsCard.HeaderIcon>
                         <FontIcon Glyph="&#xECAA;"/>
                     </cc:SettingsCard.HeaderIcon>
-                    <ToggleSwitch Loaded="ToggleSwitch_Loaded" Tag="0"
+                    <ToggleSwitch Loaded="ToggleSwitch_Loaded" Tag="1"
                                   Toggled="ToggleSwitch_Toggled_2"/>
                 </cc:SettingsCard>
                 <cc:SettingsCard Header="后台运行"
@@ -387,7 +392,7 @@
                     <cc:SettingsCard.HeaderIcon>
                         <FontIcon Glyph="&#xEF1F;"/>
                     </cc:SettingsCard.HeaderIcon>
-                    <ToggleSwitch Loaded="ToggleSwitch_Loaded" Tag="1"
+                    <ToggleSwitch Loaded="ToggleSwitch_Loaded" Tag="2"
                                   Toggled="ToggleSwitch_Toggled_2"/>
                 </cc:SettingsCard>
                 <cc:SettingsCard Header="关闭此程序"

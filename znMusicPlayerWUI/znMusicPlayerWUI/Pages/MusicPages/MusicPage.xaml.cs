@@ -660,15 +660,15 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private void FullScreenButton_Click(object sender, RoutedEventArgs e)
         {
-            if (App.AppWindowLocal.Presenter.Kind == AppWindowPresenterKind.FullScreen)
+            if (MainWindow.AppWindowLocal.Presenter.Kind == AppWindowPresenterKind.FullScreen)
             {
                 FullScreenIcon.Glyph = "\xE1D9";
-                App.AppWindowLocal.SetPresenter(AppWindowPresenterKind.Default);
+                MainWindow.AppWindowLocal.SetPresenter(AppWindowPresenterKind.Default);
             }
             else
             {
                 FullScreenIcon.Glyph = "\xE1D8";
-                App.AppWindowLocal.SetPresenter(AppWindowPresenterKind.FullScreen);
+                MainWindow.AppWindowLocal.SetPresenter(AppWindowPresenterKind.FullScreen);
             }
         }
 

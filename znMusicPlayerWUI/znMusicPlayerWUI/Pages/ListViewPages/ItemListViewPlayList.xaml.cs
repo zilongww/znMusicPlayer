@@ -662,13 +662,14 @@ namespace znMusicPlayerWUI.Pages
         {
             foreach (SongItemBindBase item in Children.Items)
             {
-                try
+                if (Children.SelectedItems.Contains(item))
                 {
-                    var a = Children.ContainerFromIndex(Children.Items.IndexOf(item)) as ListViewItem;
-                    if (a != null)
-                        a.IsSelected = !a.IsSelected;
+                    Children.SelectedItems.Remove(item);
                 }
-                catch { }
+                else
+                {
+                    Children.SelectedItems.Add(item);
+                }
             }
         }
 

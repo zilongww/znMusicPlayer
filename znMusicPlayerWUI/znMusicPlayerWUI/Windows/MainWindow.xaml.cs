@@ -44,6 +44,7 @@ using Windows.Devices.Enumeration;
 using System.Security.Policy;
 using CommunityToolkit.WinUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using znMusicPlayerWUI.Background.HotKeys;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -56,6 +57,11 @@ namespace znMusicPlayerWUI
     public sealed partial class MainWindow : Window
     {
         public static bool RunInBackground = false;
+
+        public static AppWindow AppWindowLocal;
+        public static OverlappedPresenter OverlappedPresenter;
+        public static FullScreenPresenter FullScreenPresenter;
+        public static IntPtr Handle;
 
         public static UIElement SContent;
         public static Window SWindow;
@@ -98,9 +104,14 @@ namespace znMusicPlayerWUI
         {
             SWindow = this;
             InitializeComponent();
+            Handle = WindowHelperzn.WindowHelper.GetWindowHandle(this);
+            OverlappedPresenter = OverlappedPresenter.Create();
+            AppWindow.SetPresenter(OverlappedPresenter);
+            AppWindowLocal = AppWindow;
+            //FullScreenPresenter = FullScreenPresenter.Create();
 
             WindowGridBase.DataContext = this;
-            SContent = this.Content;
+            SContent = Content;
             SBackgroundColor = BackgroundColor;
             SBackgroundImageRoot = BackgroundImageRoot;
             SBackgroundMass = BackgroundMass;
@@ -132,15 +143,14 @@ namespace znMusicPlayerWUI
             equalizerPage = new Pages.DialogPages.EqualizerPage();
             SubClassing();
 
-            App.AppWindowLocal = WindowHelperzn.WindowHelper.GetAppWindowForCurrentWindow(this);
-            App.AppWindowLocal.Title = App.AppName;
-            App.AppWindowLocal.SetIcon("icon.ico");
+            AppWindow.Title = App.AppName;
+            AppWindow.SetIcon("icon.ico");
 
             InitializeTitleBar(SWindowGridBaseTop.RequestedTheme);
 
             m_wsdqHelper = new WindowHelperzn.WindowsSystemDispatcherQueueHelper();
             m_wsdqHelper.EnsureWindowsSystemDispatcherQueueController();
-            SetDragRegionForCustomTitleBar(App.AppWindowLocal);
+            SetDragRegionForCustomTitleBar(AppWindow);
 
             //Windows.UI.Core.SystemNavigationManager.GetForCurrentView().BackRequested += (_, __) => { TryGoBack(); };
 
@@ -151,19 +161,19 @@ namespace znMusicPlayerWUI
             App.audioPlayer.VolumeChanged += AudioPlayer_VolumeChanged;
             MusicPageViewStateChanged += MainWindow_MusicPageViewStateChanged;
 
-            this.AppWindow.Closing += AppWindow_Closing;
+            AppWindow.Closing += AppWindow_Closing;
 
             loadingst.Children.Add(loadingprogress);
             loadingst.Children.Add(loadingtextBlock);
-            // 第一次点击不会响应动画。。。
+
             App.LoadSettings(App.StartingSettings);
             App.LoadLastPlaying();
             SetBackdrop(m_currentBackdrop);
-            ReadLAE();
 
             NavView.SelectedItem = NavView.MenuItems[1];
             NavView.IsBackEnabled = false;
 
+            StaringPrepare();
             //NotifyListView.ItemsSource = NotifyList;
             //PlayingListBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
             //VolumeBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
@@ -171,7 +181,7 @@ namespace znMusicPlayerWUI
 
         bool isBackground = false;
         static bool isShowClosingDialog = false;
-        public async void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
+        public void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
             App.SaveNowPlaying();
             App.SaveSettings();
@@ -204,18 +214,108 @@ namespace znMusicPlayerWUI
             isShowClosingDialog = false;
         }
 
-        public async void ReadLAE()
+        public async void StaringPrepare()
         {
-            return;
-            if (App.LAE == null) return;
+            var displayArea = CodeHelper.GetDisplayArea(this);
+            var dpi = CodeHelper.GetScaleAdjustment(this);
 
-            string b = "";
-            foreach (var arg in App.LAE.Arguments)
+            bool isPreparedActivate = true;
+            var windowWidth = (int)(1140 * dpi);
+            var windowHeight = (int)(640 * dpi);
+            var windowPositionX = displayArea.WorkArea.Width / 2 - windowWidth / 2;
+            var windowPositionY = displayArea.WorkArea.Height / 2 - windowHeight / 2;
+
+            if (App.LaunchArgs != null)
             {
-                b += arg + "\n";
+                var lagsString = string.Join(" ", App.LaunchArgs);
+                var lags = lagsString.Split('-');
+
+                var list = lags.ToList();
+                foreach (var lagsItem in lags)
+                {
+                    if (string.IsNullOrEmpty(lagsItem)) continue;
+                    if (lagsItem.Last() == ' ')
+                    {
+                        int index = list.IndexOf(lagsItem);
+                        int emptyCharIndex = lagsItem.LastIndexOf(' ');
+                        string result = lagsItem.Remove(emptyCharIndex);
+                        list[index] = result;
+                    }
+                }
+                lags = [.. list];
+
+                List<string> unknowArg = new();
+                // 处理启动参数
+                foreach (string arg in lags)
+                {
+                    if (string.IsNullOrEmpty(arg)) continue;
+                    if (arg.Contains("OpenWithWindows"))
+                    {
+                        isPreparedActivate = false;
+                    }
+                    else if (arg.Contains("Size"))
+                    {
+                        var s = arg.Split(' ');
+                        if (s.Length != 3) continue;
+                        bool widthComplete = int.TryParse(s[1], out int width);
+                        bool heightComplete = int.TryParse(s[2], out int height);
+                        if (widthComplete && heightComplete)
+                        {
+                            windowWidth = (int)(width * dpi);
+                            windowHeight = (int)(height * dpi);
+                        }
+                    }
+                    else if (arg.Contains("Position"))
+                    {
+                        var s = arg.Split(' ');
+                        if (s.Length != 3) continue;
+                        bool posXComplete = int.TryParse(s[1], out int posX);
+                        bool posYComplete = int.TryParse(s[2], out int posY);
+                        if (posXComplete && posYComplete)
+                        {
+                            windowPositionX = posX;
+                            windowPositionY = posY;
+                        }
+                    }
+                    else
+                    {
+                        unknowArg.Add(arg);
+                    }
+                }
+                if (unknowArg.Any())
+                {
+                    AddNotify("未知的启动参数：", string.Join('、', unknowArg), NotifySeverity.Warning);
+                }
             }
-            await ShowDialog("LAE", b);
-            AppTitleTextBlock.Text = b;
+
+            // 设置参数
+            if (displayArea.WorkArea.Width * dpi <= windowWidth ||
+                displayArea.WorkArea.Height * dpi <= windowHeight)
+            {
+                OverlappedPresenter.Maximize();
+            }
+            else
+            {
+                AppWindow.MoveAndResize(new(
+                    windowPositionX, windowPositionY,
+                    windowWidth, windowHeight));
+            }
+
+            if (isPreparedActivate) Activate();
+
+            await Task.Delay(500);
+            List<string> hotKeyUsed = new();
+            foreach (var hotKey in App.hotKeyManager.RegistedHotKeys)
+            {
+                if (hotKey.IsUsed)
+                {
+                    hotKeyUsed.Add(HotKey.GetHotKeyIDString(hotKey.HotKeyID));
+                }
+            }
+            if (hotKeyUsed.Any())
+            {
+                AddNotify("热键已被占用", $"你可以转到设置界面更改被占用的热键：\n{string.Join('、', hotKeyUsed)}。", NotifySeverity.Warning, TimeSpan.FromSeconds(5));
+            }
         }
 
         public void UpdatePlayListButtonUI()
@@ -337,7 +437,7 @@ namespace znMusicPlayerWUI
             if (args.WindowActivationState == WindowActivationState.PointerActivated ||
                 args.WindowActivationState == WindowActivationState.CodeActivated)
             {
-                if (!CodeHelper.IsIconic(App.AppWindowLocalHandle))
+                if (!CodeHelper.IsIconic(Handle))
                 {
                     isMinSize = false;
                     WindowViewStateChanged?.Invoke(true);
@@ -350,7 +450,7 @@ namespace znMusicPlayerWUI
             }
             else
             {
-                if (CodeHelper.IsIconic(App.AppWindowLocalHandle))
+                if (CodeHelper.IsIconic(Handle))
                 {
                     App.SaveNowPlaying();
                     App.SaveSettings();
@@ -373,7 +473,7 @@ namespace znMusicPlayerWUI
             {
                 AddEvents();
             }
-            SetDragRegionForCustomTitleBar(App.AppWindowLocal);
+            SetDragRegionForCustomTitleBar(MainWindow.AppWindowLocal);
         }
 
         private static void Window_Activated(object sender, WindowActivatedEventArgs args)
@@ -422,7 +522,7 @@ namespace znMusicPlayerWUI
 
         private async void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            SetDragRegionForCustomTitleBar(App.AppWindowLocal);
+            SetDragRegionForCustomTitleBar(MainWindow.AppWindowLocal);
             //NotifyListView.Padding = new(0, SWindowGridBase.ActualHeight, 0, 12);
             /*
             if (NotifyList.Any())
@@ -461,7 +561,7 @@ namespace znMusicPlayerWUI
         {
             if (AppWindowTitleBar.IsCustomizationSupported())
             {
-                InitializeTitleBara(App.AppWindowLocal.TitleBar, theme);
+                InitializeTitleBara(AppWindowLocal.TitleBar, theme);
             }
             else
             {
@@ -491,7 +591,7 @@ namespace znMusicPlayerWUI
 
             bool defaultLightTheme = false;
             bool defaultDarkTheme = false;
-            App.AppWindowLocal.TitleBar.IconShowOptions = IconShowOptions.HideIconAndSystemMenu;
+            AppWindowLocal.TitleBar.IconShowOptions = IconShowOptions.HideIconAndSystemMenu;
             if (theme == ElementTheme.Default)
             {
                 defaultLightTheme = App.Current.RequestedTheme == ApplicationTheme.Light;
@@ -1184,7 +1284,7 @@ namespace znMusicPlayerWUI
                 dragRectR.X = (int)((NavView.DisplayMode == NavigationViewDisplayMode.Minimal ? 84 * scaleAdjustment : 44 * scaleAdjustment));
                 dragRectR.Y = 0;
                 dragRectR.Height = (int)(AppTitleBar.ActualHeight * scaleAdjustment);
-                dragRectR.Width = (int)(scaleAdjustment * App.AppWindowLocal.Size.Width);
+                dragRectR.Width = (int)(scaleAdjustment * AppWindowLocal.Size.Width);
                 dragRectsList.Add(dragRectR);
 
                 RectInt32[] dragRects = dragRectsList.ToArray();
@@ -1199,7 +1299,7 @@ namespace znMusicPlayerWUI
         {
             NavViewContentBase_RGClip.Rect = new Windows.Foundation.Rect(0, 0,
                 NavViewContentBase.ActualWidth,
-                App.AppWindowLocal.Size.Height - AppTitleBar.ActualHeight);
+                AppWindowLocal.Size.Height - AppTitleBar.ActualHeight);
         }
 
         public static void SetNavViewContent(Type type, object param = null, NavigationTransitionInfo navigationTransitionInfo = null)
@@ -1224,46 +1324,38 @@ namespace znMusicPlayerWUI
                 return;
             }
 
-            if ((sender.SelectedItem as NavigationViewItem).Content is null) return;
-
-            switch ((sender.SelectedItem as NavigationViewItem).Content)
+            var item = sender.SelectedItem as NavigationViewItem;
+            if (item is null) return;
+            
+            if (item == SNavView.MenuItems[1])
+                SetNavViewContent(typeof(SearchPage));
+            else if (item == SNavView.MenuItems[2])
+                SetNavViewContent(typeof(BrowsePage));
+            else if (item == SNavView.MenuItems[3])
+                SetNavViewContent(typeof(DownloadPage));
+            else if (item == SNavView.MenuItems[5])
+                SetNavViewContent(typeof(PlayListPage));
+            else if (item == SNavView.MenuItems[6])
+                SetNavViewContent(typeof(HistoryPage));
+            else if (item == SNavView.MenuItems[7])
+                SetNavViewContent(typeof(LocalAudioPage));
+            else if (item == SNavView.FooterMenuItems[0])
+                SetNavViewContent(typeof(AboutPage));
+            else
             {
-                case "搜索":
-                    SetNavViewContent(typeof(SearchPage));
-                    break;
-                case "关于":
-                    SetNavViewContent(typeof(AboutPage));
-                    break;
-                case "浏览":
-                    SetNavViewContent(typeof(BrowsePage));
-                    break;
-                case "下载":
-                    SetNavViewContent(typeof(DownloadPage));
-                    break;
-                case "播放列表":
-                    SetNavViewContent(typeof(PlayListPage));
-                    break;
-                case "历史":
-                    SetNavViewContent(typeof(HistoryPage));
-                    break;
-                case "本地音频":
-                    SetNavViewContent(typeof(LocalAudioPage));
-                    break;
-                case "设置":
+                if ((args.SelectedItem as NavigationViewItem)?.Tag.GetType() == typeof(MusicListData))
+                {
+                    Pages.ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewPlayList>((args.SelectedItem as NavigationViewItem).Tag);
+                }
+                else if (sender.SelectedItem as NavigationViewItem == NavView.SettingsItem as NavigationViewItem)
+                {
                     SetNavViewContent(typeof(SettingPage));
-                    break;
-                default:
-                    if ((args.SelectedItem as NavigationViewItem)?.Tag.GetType() == typeof(MusicListData))
-                    {
-                        Pages.ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewPlayList>((args.SelectedItem as NavigationViewItem).Tag);
-                    }
-                    else
-                    {
-                        AddNotify("未添加此功能", $"未添加 \"{(sender.SelectedItem as NavigationViewItem).Content}\" 功能。", NotifySeverity.Error);
-                    }
-                    break;
+                }
+                else
+                {
+                    AddNotify("未添加此功能", $"未添加 \"{(sender.SelectedItem as NavigationViewItem).Content}\" 功能。", NotifySeverity.Error);
+                }
             }
-
             if (ContentFrame.CanGoBack) NavView.IsBackEnabled = true;
             else NavView.IsBackEnabled = false;
         }
@@ -1272,74 +1364,37 @@ namespace znMusicPlayerWUI
         public static async void UpdateNavViewSelectedItem(bool justUpdate = false)
         {
             if (justUpdate) IsJustUpdate = true;
-            switch ((SContentFrame.Content as Page).GetType().ToString().Split('.')[2])
+            Type type = (SContentFrame.Content as Page).GetType();
+            if (type == typeof(SearchPage))
+                SNavView.SelectedItem = SNavView.MenuItems[1];
+            else if (type == typeof(BrowsePage))
+                SNavView.SelectedItem = SNavView.MenuItems[2];
+            else if (type == typeof(DownloadPage))
+                SNavView.SelectedItem = SNavView.MenuItems[3];
+            else if (type == typeof(PlayListPage))
+                SNavView.SelectedItem = SNavView.MenuItems[5];
+            else if (type == typeof(HistoryPage))
+                SNavView.SelectedItem = SNavView.MenuItems[6];
+            else if (type == typeof(LocalAudioPage))
+                SNavView.SelectedItem = SNavView.MenuItems[7];
+            else if (type == typeof(AboutPage))
+                SNavView.SelectedItem = SNavView.FooterMenuItems[0];
+            else if (type == typeof(SettingPage))
+                SNavView.SelectedItem = SNavView.SettingsItem;
+            else if (type == typeof(ItemListViewPlayList))
             {
-                case "SearchPage":
-                    SNavView.SelectedItem = SNavView.MenuItems[1];
-                    break;
-
-                case "BrowsePage":
-                    SNavView.SelectedItem = SNavView.MenuItems[2];
-                    break;
-
-                case "DownloadPage":
-                    SNavView.SelectedItem = SNavView.MenuItems[3];
-                    break;
-
-                case "PlayListPage":
-                    SNavView.SelectedItem = SNavView.MenuItems[5];
-                    break;
-
-                case "HistoryPage":
-                    SNavView.SelectedItem = SNavView.MenuItems[6];
-                    break;
-
-                case "LocalAudioPage":
-                    SNavView.SelectedItem = SNavView.MenuItems[7];
-                    break;
-
-                case "AboutPage":
-                    SNavView.SelectedItem = SNavView.FooterMenuItems[0];
-                    break;
-
-                case "SettingPage":
-                    SNavView.SelectedItem = SNavView.SettingsItem;
-                    break;
-
-                case "ItemListViewSearch":
-                case "ItemListViewArtist":
-                case "ItemListViewAlbum":
-                    SNavView.SelectedItem = null;
-                    break;
-
-                case "ItemListViewPlayList":
-                    //TODO:优化写法
-                    foreach (NavigationViewItem item in (SNavView.MenuItems[5] as NavigationViewItem).MenuItems)
+                //TODO:优化写法
+                foreach (NavigationViewItem item in (SNavView.MenuItems[5] as NavigationViewItem).MenuItems)
+                {
+                    if ((SContentFrame.Content as ItemListViewPlayList).NavToObj == item.Tag as MusicListData)
                     {
-                        if ((SContentFrame.Content as ItemListViewPlayList).NavToObj == item.Tag as MusicListData)
-                        {
-                            SNavView.SelectedItem = item;
-                            break;
-                        }
+                        SNavView.SelectedItem = item;
+                        break;
                     }
-                    break;
-
-                case "SettingHotKeyPage":
-                    SNavView.SelectedItem = SNavView.SettingsItem;
-                    break;
-                    
-                case "SettingEqPage":
-                    SNavView.SelectedItem = SNavView.SettingsItem;
-                    break;
-                    
-                case "EmptyPage":
-                    TryGoBack();
-                    break;
-
-                default:
-                    AddNotify("未定义页面", $"未定义 \"{(SContentFrame.Content as Page).GetType().ToString().Split('.')[2]}\" 页面。", NotifySeverity.Warning);
-                    break;
+                }
             }
+            else if (type == typeof(ItemListViewSearch) || type == typeof(ItemListViewArtist) || type == typeof(ItemListViewAlbum))
+                SNavView.SelectedItem = null;
             IsJustUpdate = false;
         }
 
@@ -1387,6 +1442,22 @@ namespace znMusicPlayerWUI
 
         private void NavView_DisplayModeChanged(NavigationView sender, NavigationViewDisplayModeChangedEventArgs args)
         {
+            if (sender.PaneDisplayMode == NavigationViewPaneDisplayMode.Top)
+            {
+                AppTitleBar.Margin = new Thickness(12, 0, 0, 0);
+                NavView_LocalTextItem.Margin = new(0);
+                AppTitleBar.Height = 32;
+                sender.Margin = new(0, 32, 0, 0);
+                SetDragRegionForCustomTitleBar(MainWindow.AppWindowLocal);
+                return;
+            }
+            else
+            {
+                NavView_LocalTextItem.Margin = new(0, 12, 0, 0);
+                AppTitleBar.Height = 48;
+                sender.Margin = new(0);
+            }
+
             if (sender.DisplayMode == NavigationViewDisplayMode.Minimal)
             {
                 AppTitleBar.Margin = new Thickness(90, 0, 0, 0);
@@ -1398,7 +1469,7 @@ namespace znMusicPlayerWUI
                 NavigationViewMinSizeTopColorRectangle.Visibility = Visibility.Collapsed;
             }
 
-            SetDragRegionForCustomTitleBar(App.AppWindowLocal);
+            SetDragRegionForCustomTitleBar(AppWindowLocal);
         }
 
         private void NavViewContentBase_SizeChanged(object sender, SizeChangedEventArgs e)

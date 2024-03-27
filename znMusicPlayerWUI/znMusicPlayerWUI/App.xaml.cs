@@ -57,17 +57,11 @@ namespace znMusicPlayerWUI
         public static readonly HotKeyManager hotKeyManager = new();
 
         public static Window WindowLocal;
-        public static AppWindow AppWindowLocal;
-        public static AppWindow AppDesktopLyricWindow;
-        public static OverlappedPresenter AppWindowLocalOverlappedPresenter;
-        public static FullScreenPresenter AppWindowLocalFullScreenPresenter;
-        public static IntPtr AppWindowLocalHandle;
-        public static IntPtr AppDesktopLyricWindowHandle;
         public static NotifyIconWindow NotifyIconWindow;
         public static TaskBarInfoWindow taskBarInfoWindow;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.3.4 Preview";
+        public static readonly string AppVersion = "0.3.5 Preview";
 
         public static App AppStatic = null;
         /// <summary>
@@ -103,13 +97,13 @@ namespace znMusicPlayerWUI
                 if (_.MusicData == null)
                 {
                     SMTC.DisplayUpdater.MusicProperties.Title = _.FileReader?.FileName;
-                    AppWindowLocal.Title = AppName;
+                    MainWindow.AppWindowLocal.Title = AppName;
                 }
                 else
                 {
                     SMTC.DisplayUpdater.MusicProperties.Title = _.MusicData.Title;
                     SMTC.DisplayUpdater.MusicProperties.Artist = _.MusicData.ButtonName;
-                    AppWindowLocal.Title = $"{_.MusicData.Title} - {_.MusicData.ArtistName} · {AppName}";
+                    MainWindow.AppWindowLocal.Title = $"{_.MusicData.Title} - {_.MusicData.ArtistName} · {AppName}";
                 }
                 SMTC.DisplayUpdater.Update();
             };
@@ -166,7 +160,7 @@ namespace znMusicPlayerWUI
 #endif
         }
 
-        public static Microsoft.UI.Xaml.LaunchActivatedEventArgs LAE = null;
+        public static string[] LaunchArgs = null;
         public static JObject StartingSettings = null;
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -186,13 +180,17 @@ namespace znMusicPlayerWUI
 
                 Debug.WriteLine(Current.Resources["SystemAccentColorLight2"].GetType());
             }
+
+            // WinUI Bug: 获取不到启动参数
+            //LAE = args;
+            LaunchArgs = Environment.GetCommandLineArgs();
+            var lags = LaunchArgs.ToList();
+            lags.Remove(lags.First());
+            LaunchArgs = [.. lags];
+
             m_window = new MainWindow();
             WindowLocal = m_window;
-            AppWindowLocalHandle = WindowHelperzn.WindowHelper.GetWindowHandle(m_window);
-            AppWindowLocalOverlappedPresenter = OverlappedPresenter.Create();
-            AppWindowLocalFullScreenPresenter = FullScreenPresenter.Create();
-            App.AppWindowLocal.SetPresenter(AppWindowLocalOverlappedPresenter);
-            LAE = args;
+            hotKeyManager.Init(WindowLocal);
             /*
                         List<Microsoft.WindowsAPICodePack.Taskbar.ThumbnailToolBarButton> buttons = new()
                         {
@@ -203,33 +201,14 @@ namespace znMusicPlayerWUI
                         Microsoft.WindowsAPICodePack.Taskbar.TaskbarManager.Instance.ThumbnailToolBars.AddButtons(AppWindowLocalHandle, buttons.ToArray());
             */
 
-            var displayArea = CodeHelper.GetDisplayArea(m_window);
-            var dpi = CodeHelper.GetScaleAdjustment(m_window);
-            var width = (int)(1140 * dpi);
-            var height = (int)(640 * dpi);
-            if (displayArea.WorkArea.Width * dpi <= width ||
-                displayArea.WorkArea.Height * dpi <= height)
-            {
-                AppWindowLocalOverlappedPresenter.Maximize();
-            }
-            else
-            {
-                AppWindowLocal.MoveAndResize(new(
-                    displayArea.WorkArea.Width / 2 - width / 2,
-                    displayArea.WorkArea.Height / 2 - height / 2,
-                    width, height));
-            }
-
             if (loadFailed)
             {
                 ShowErrorDialog();
                 return;
             }
 
-            m_window.Activate();
             m_window.Closed += M_window_Closed;
             //AppWindowLocal.SetPresenter(AppWindowLocalPresenter);
-            hotKeyManager.Init(App.WindowLocal);
             DelayOpenWindows();
         }
 
@@ -280,64 +259,65 @@ namespace znMusicPlayerWUI
         {
             try
             {
-                DataFolderBase.DownloadFolder = (string)b[DataFolderBase.SettingParams.DownloadFolderPath.ToString()];
-                DataFolderBase.AudioCacheFolder = (string)b[DataFolderBase.SettingParams.AudioCacheFolderPath.ToString()];
-                DataFolderBase.ImageCacheFolder = (string)b[DataFolderBase.SettingParams.ImageCacheFolderPath.ToString()];
-                DataFolderBase.LyricCacheFolder = (string)b[DataFolderBase.SettingParams.LyricCacheFolderPath.ToString()];
+                DataFolderBase.DownloadFolder = SettingEditHelper.GetSetting<string>(b, DataFolderBase.SettingParams.DownloadFolderPath);
+                DataFolderBase.AudioCacheFolder = SettingEditHelper.GetSetting<string>(b, DataFolderBase.SettingParams.AudioCacheFolderPath);
+                DataFolderBase.ImageCacheFolder = SettingEditHelper.GetSetting<string>(b, DataFolderBase.SettingParams.ImageCacheFolderPath);
+                DataFolderBase.LyricCacheFolder = SettingEditHelper.GetSetting<string>(b, DataFolderBase.SettingParams.LyricCacheFolderPath);
 
-                var bdata = ((string)b[DataFolderBase.SettingParams.EqualizerCustomData.ToString()]).Split(',');
+                var bdata = SettingEditHelper.GetSetting<string>(b, DataFolderBase.SettingParams.EqualizerCustomData).Split(',');
                 for (int i = 0; i < 10; i++)
                 {
                     AudioEqualizerBands.CustomBands[i][2] = float.Parse(bdata[i]);
                 }
 
-                audioPlayer.Volume = (float)b[DataFolderBase.SettingParams.Volume.ToString()];
-                audioPlayer.EqEnabled = (bool)b[DataFolderBase.SettingParams.EqualizerEnable.ToString()];
-                audioPlayer.EqualizerBand = AudioEqualizerBands.GetBandFromString((string)b[DataFolderBase.SettingParams.EqualizerString.ToString()]);
-                audioPlayer.WasapiOnly = (bool)b[DataFolderBase.SettingParams.WasapiOnly.ToString()];
-                audioPlayer.Latency = (int)b[DataFolderBase.SettingParams.AudioLatency.ToString()];
-                MainWindow.SMusicPage.ShowLrcPage = (bool)b[DataFolderBase.SettingParams.MusicPageShowLyricPage.ToString()];
+                audioPlayer.Volume = SettingEditHelper.GetSetting<float>(b, DataFolderBase.SettingParams.Volume);
+                audioPlayer.EqEnabled = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.EqualizerEnable);
+                audioPlayer.EqualizerBand = AudioEqualizerBands.GetBandFromString(SettingEditHelper.GetSetting<string>(b, DataFolderBase.SettingParams.EqualizerString));
+                audioPlayer.WasapiOnly = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.WasapiOnly);
+                audioPlayer.Latency = SettingEditHelper.GetSetting<int>(b, DataFolderBase.SettingParams.AudioLatency);
+                MainWindow.SMusicPage.ShowLrcPage = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.MusicPageShowLyricPage);
                 string nmc = "NeteaseMusicCookie";
                 if (b.ContainsKey(nmc))
                 {
                     metingServices.NeteaseCookie = (string)b[nmc];
                 }
 
-                downloadManager.DownloadQuality = (DataFolderBase.DownloadQuality)(int)b[DataFolderBase.SettingParams.DownloadQuality.ToString()];
-                downloadManager.DownloadingMaximum = (int)b[DataFolderBase.SettingParams.DownloadMaximum.ToString()];
-                downloadManager.DownloadNamedMethod = (DataFolderBase.DownloadNamedMethod)(int)b[DataFolderBase.SettingParams.DownloadNamedMethod.ToString()];
-                downloadManager.IDv3WriteImage = (bool)b[DataFolderBase.SettingParams.DownloadOptions.ToString()][0];
-                downloadManager.IDv3WriteArtistImage = (bool)b[DataFolderBase.SettingParams.DownloadOptions.ToString()][1];
-                downloadManager.IDv3WriteLyric = (bool)b[DataFolderBase.SettingParams.DownloadOptions.ToString()][2];
-                downloadManager.SaveLyricToLrcFile = (bool)b[DataFolderBase.SettingParams.DownloadOptions.ToString()][3];
+                downloadManager.DownloadQuality = (DataFolderBase.DownloadQuality)SettingEditHelper.GetSetting<int>(b, DataFolderBase.SettingParams.DownloadQuality);
+                downloadManager.DownloadingMaximum = SettingEditHelper.GetSetting<int>(b, DataFolderBase.SettingParams.DownloadMaximum);
+                downloadManager.DownloadNamedMethod = (DataFolderBase.DownloadNamedMethod)SettingEditHelper.GetSetting<int>(b, DataFolderBase.SettingParams.DownloadNamedMethod);
+                downloadManager.IDv3WriteImage = (bool)SettingEditHelper.GetSetting<JArray>(b, DataFolderBase.SettingParams.DownloadOptions)[0];
+                downloadManager.IDv3WriteArtistImage = (bool)SettingEditHelper.GetSetting<JArray>(b, DataFolderBase.SettingParams.DownloadOptions)[1];
+                downloadManager.IDv3WriteLyric = (bool)SettingEditHelper.GetSetting<JArray>(b, DataFolderBase.SettingParams.DownloadOptions)[2];
+                downloadManager.SaveLyricToLrcFile = (bool)SettingEditHelper.GetSetting<JArray>(b, DataFolderBase.SettingParams.DownloadOptions)[3];
 
-                playingList.PlayBehavior = (PlayBehavior)(int)b[DataFolderBase.SettingParams.PlayBehavior.ToString()];
-                playingList.PauseWhenPreviousPause = (bool)b[DataFolderBase.SettingParams.PlayPauseWhenPreviousPause.ToString()];
-                playingList.NextWhenPlayError = (bool)b[DataFolderBase.SettingParams.PlayNextWhenPlayError.ToString()];
+                playingList.PlayBehavior = (PlayBehavior)SettingEditHelper.GetSetting<int>(b, DataFolderBase.SettingParams.PlayBehavior);
+                playingList.PauseWhenPreviousPause = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.PlayPauseWhenPreviousPause);
+                playingList.NextWhenPlayError = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.PlayNextWhenPlayError);
 
-                MainWindow.SWindowGridBaseTop.RequestedTheme = (ElementTheme)(int)b[DataFolderBase.SettingParams.ThemeColorMode.ToString()];
-                MainWindow.SMusicPage.RequestedTheme = (ElementTheme)(int)b[DataFolderBase.SettingParams.ThemeMusicPageColorMode.ToString()];
-                MainWindow.m_currentBackdrop = (MainWindow.BackdropType)(int)b[DataFolderBase.SettingParams.ThemeBackdropEffect.ToString()];
-                MainWindow.ImagePath = (string)b[DataFolderBase.SettingParams.ThemeBackdropImagePath.ToString()];
-                MainWindow.SBackgroundMass.Opacity = (double)b[DataFolderBase.SettingParams.ThemeBackdropImageMassOpacity.ToString()];
+                MainWindow.SWindowGridBaseTop.RequestedTheme = (ElementTheme)SettingEditHelper.GetSetting<int>(b, DataFolderBase.SettingParams.ThemeColorMode);
+                MainWindow.SMusicPage.RequestedTheme = (ElementTheme)SettingEditHelper.GetSetting<int>(b, DataFolderBase.SettingParams.ThemeMusicPageColorMode);
+                MainWindow.m_currentBackdrop = (MainWindow.BackdropType)SettingEditHelper.GetSetting<int>(b, DataFolderBase.SettingParams.ThemeBackdropEffect);
+                MainWindow.ImagePath = SettingEditHelper.GetSetting<string>(b, DataFolderBase.SettingParams.ThemeBackdropImagePath);
+                MainWindow.SBackgroundMass.Opacity = SettingEditHelper.GetSetting<double>(b, DataFolderBase.SettingParams.ThemeBackdropImageMassOpacity);
                 //Accent Color
                 
-                DesktopLyricWindow.PauseButtonVisible = (bool)b[DataFolderBase.SettingParams.DesktopLyricOptions.ToString()][0];
-                DesktopLyricWindow.ProgressUIVisible = (bool)b[DataFolderBase.SettingParams.DesktopLyricOptions.ToString()][1];
-                DesktopLyricWindow.ProgressUIPercentageVisible = (bool)b[DataFolderBase.SettingParams.DesktopLyricOptions.ToString()][2];
-                DesktopLyricWindow.MusicChangeUIVisible = (bool)b[DataFolderBase.SettingParams.DesktopLyricOptions.ToString()][3];
-                DesktopLyricWindow.LyricTextBehavior = (LyricTextBehavior)(int)b[DataFolderBase.SettingParams.DesktopLyricText.ToString()][0];
-                DesktopLyricWindow.LyricTextPosition = (LyricTextPosition)(int)b[DataFolderBase.SettingParams.DesktopLyricText.ToString()][1];
-                DesktopLyricWindow.LyricTranslateTextBehavior = (LyricTranslateTextBehavior)(int)b[DataFolderBase.SettingParams.DesktopLyricTranslateText.ToString()][0];
-                DesktopLyricWindow.LyricTranslateTextPosition = (LyricTranslateTextPosition)(int)b[DataFolderBase.SettingParams.DesktopLyricTranslateText.ToString()][1];
-                DesktopLyricWindow.LyricOpacity = (double)b[DataFolderBase.SettingParams.DesktopLyricOpacity.ToString()];
+                DesktopLyricWindow.PauseButtonVisible = (bool)SettingEditHelper.GetSetting<JArray>(b, DataFolderBase.SettingParams.DesktopLyricOptions)[0];
+                DesktopLyricWindow.ProgressUIVisible = (bool)SettingEditHelper.GetSetting<JArray>(b, DataFolderBase.SettingParams.DesktopLyricOptions)[1];
+                DesktopLyricWindow.ProgressUIPercentageVisible = (bool)SettingEditHelper.GetSetting<JArray>(b, DataFolderBase.SettingParams.DesktopLyricOptions)[2];
+                DesktopLyricWindow.MusicChangeUIVisible = (bool)SettingEditHelper.GetSetting<JArray>(b, DataFolderBase.SettingParams.DesktopLyricOptions)[3];
+                DesktopLyricWindow.LyricTextBehavior = (LyricTextBehavior)(int)SettingEditHelper.GetSetting<JArray>(b, DataFolderBase.SettingParams.DesktopLyricText)[0];
+                DesktopLyricWindow.LyricTextPosition = (LyricTextPosition)(int)SettingEditHelper.GetSetting<JArray>(b, DataFolderBase.SettingParams.DesktopLyricText)[1];
+                DesktopLyricWindow.LyricTranslateTextBehavior = (LyricTranslateTextBehavior)(int)SettingEditHelper.GetSetting<JArray>(b, DataFolderBase.SettingParams.DesktopLyricTranslateText)[0];
+                DesktopLyricWindow.LyricTranslateTextPosition = (LyricTranslateTextPosition)(int)SettingEditHelper.GetSetting<JArray>(b, DataFolderBase.SettingParams.DesktopLyricTranslateText)[1];
+                DesktopLyricWindow.LyricOpacity = SettingEditHelper.GetSetting<double>(b, DataFolderBase.SettingParams.DesktopLyricOpacity);
 
-                NotifyIconWindow.IsVisible = (bool)b[DataFolderBase.SettingParams.TaskbarShowIcon.ToString()];
-                MainWindow.RunInBackground = (bool)b[DataFolderBase.SettingParams.BackgroundRun.ToString()];
-                Controls.Imagezn.ImageDarkMass = (bool)b[DataFolderBase.SettingParams.ImageDarkMass.ToString()];
-                LoadLastExitPlayingSongAndSongList = (bool)b[DataFolderBase.SettingParams.LoadLastExitPlayingSongAndSongList.ToString()];
+                NotifyIconWindow.IsVisible = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.TaskbarShowIcon);
+                MainWindow.RunInBackground = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.BackgroundRun);
+                Controls.Imagezn.ImageDarkMass = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.ImageDarkMass);
+                LoadLastExitPlayingSongAndSongList = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.LoadLastExitPlayingSongAndSongList);
+                MainWindow.SNavView.PaneDisplayMode = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.TopNavigationStyle) ? NavigationViewPaneDisplayMode.Top : NavigationViewPaneDisplayMode.Auto;
 
-                JArray hkd = (JArray)b[DataFolderBase.SettingParams.HotKeySettings.ToString()];
+                JArray hkd = SettingEditHelper.GetSetting<JArray>(b, DataFolderBase.SettingParams.HotKeySettings);
                 HotKeyManager.WillRegisterHotKeysList = hkd.ToObject<List<HotKey>>();
 
                 metingServices.InitMeting();
@@ -360,56 +340,59 @@ namespace znMusicPlayerWUI
         public static void SaveSettings()
         {
             var a = DataFolderBase.JSettingData;
-            a[DataFolderBase.SettingParams.Volume.ToString()] = audioPlayer.Volume == 0 ? MainWindow.NoVolumeValue : audioPlayer.Volume;
-            a[DataFolderBase.SettingParams.DownloadFolderPath.ToString()] = DataFolderBase.DownloadFolder;
-            a[DataFolderBase.SettingParams.AudioCacheFolderPath.ToString()] = DataFolderBase.AudioCacheFolder;
-            a[DataFolderBase.SettingParams.ImageCacheFolderPath.ToString()] = DataFolderBase.ImageCacheFolder;
-            a[DataFolderBase.SettingParams.LyricCacheFolderPath.ToString()] = DataFolderBase.LyricCacheFolder;
-            a[DataFolderBase.SettingParams.DownloadOptions.ToString()][0] = downloadManager.IDv3WriteImage;
-            a[DataFolderBase.SettingParams.DownloadOptions.ToString()][1] = downloadManager.IDv3WriteArtistImage;
-            a[DataFolderBase.SettingParams.DownloadOptions.ToString()][2] = downloadManager.IDv3WriteLyric;
-            a[DataFolderBase.SettingParams.DownloadOptions.ToString()][3] = downloadManager.SaveLyricToLrcFile;
-            a[DataFolderBase.SettingParams.DownloadNamedMethod.ToString()] = (int)downloadManager.DownloadNamedMethod;
-            a[DataFolderBase.SettingParams.DownloadQuality.ToString()] = (int)downloadManager.DownloadQuality;
-            a[DataFolderBase.SettingParams.DownloadMaximum.ToString()] = downloadManager.DownloadingMaximum;
-            a[DataFolderBase.SettingParams.PlayBehavior.ToString()] = (int)playingList.PlayBehavior;
-            a[DataFolderBase.SettingParams.PlayPauseWhenPreviousPause.ToString()] = playingList.PauseWhenPreviousPause;
-            a[DataFolderBase.SettingParams.PlayNextWhenPlayError.ToString()] = playingList.NextWhenPlayError;
-            a[DataFolderBase.SettingParams.DownloadMaximum.ToString()] = downloadManager.DownloadingMaximum;
-            a[DataFolderBase.SettingParams.EqualizerEnable.ToString()] = audioPlayer.EqEnabled;
-            a[DataFolderBase.SettingParams.EqualizerString.ToString()] = AudioEqualizerBands.GetNameFromBands(audioPlayer.EqualizerBand);
-            a[DataFolderBase.SettingParams.WasapiOnly.ToString()] = audioPlayer.WasapiOnly;
-            a[DataFolderBase.SettingParams.AudioLatency.ToString()] = audioPlayer.Latency < 50 ? 50 : audioPlayer.Latency;
-            a[DataFolderBase.SettingParams.MusicPageShowLyricPage.ToString()] = MainWindow.SMusicPage.ShowLrcPage;
-            a[DataFolderBase.SettingParams.ThemeColorMode.ToString()] = (int)MainWindow.SWindowGridBaseTop.RequestedTheme;
-            a[DataFolderBase.SettingParams.ThemeMusicPageColorMode.ToString()] = (int)MainWindow.SMusicPage.pageRoot.RequestedTheme;
-            a[DataFolderBase.SettingParams.ThemeBackdropEffect.ToString()] = (int)MainWindow.m_currentBackdrop;
-            a[DataFolderBase.SettingParams.ThemeBackdropImagePath.ToString()] = MainWindow.ImagePath;
-            a[DataFolderBase.SettingParams.ThemeBackdropImageMassOpacity.ToString()] = MainWindow.SBackgroundMass.Opacity;
-            a[DataFolderBase.SettingParams.ThemeAccentColor.ToString()] = AccentColor == Windows.UI.Color.FromArgb(0,0,0,0) ? null : AccentColor.ToString();
-            a[DataFolderBase.SettingParams.DesktopLyricOptions.ToString()] = new JArray()
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.Volume, audioPlayer.Volume == 0 ? MainWindow.NoVolumeValue : audioPlayer.Volume);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.DownloadFolderPath, DataFolderBase.DownloadFolder);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.AudioCacheFolderPath, DataFolderBase.AudioCacheFolder);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.ImageCacheFolderPath, DataFolderBase.ImageCacheFolder);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.LyricCacheFolderPath, DataFolderBase.LyricCacheFolder);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.DownloadOptions,
+                new JArray() {
+                    downloadManager.IDv3WriteImage,
+                    downloadManager.IDv3WriteArtistImage,
+                    downloadManager.IDv3WriteLyric,
+                    downloadManager.SaveLyricToLrcFile
+                    });
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.DownloadNamedMethod, (int)downloadManager.DownloadNamedMethod);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.DownloadQuality, (int)downloadManager.DownloadQuality);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.DownloadMaximum, downloadManager.DownloadingMaximum);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.PlayBehavior, (int)playingList.PlayBehavior);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.PlayPauseWhenPreviousPause, playingList.PauseWhenPreviousPause);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.PlayNextWhenPlayError, playingList.NextWhenPlayError);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.DownloadMaximum, downloadManager.DownloadingMaximum);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.EqualizerEnable, audioPlayer.EqEnabled);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.EqualizerString, AudioEqualizerBands.GetNameFromBands(audioPlayer.EqualizerBand));
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.WasapiOnly, audioPlayer.WasapiOnly);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.AudioLatency, audioPlayer.Latency < 50 ? 50 : audioPlayer.Latency);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.MusicPageShowLyricPage, MainWindow.SMusicPage.ShowLrcPage);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.ThemeColorMode, (int)MainWindow.SWindowGridBaseTop.RequestedTheme);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.ThemeMusicPageColorMode, (int)MainWindow.SMusicPage.pageRoot.RequestedTheme);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.ThemeBackdropEffect, (int)MainWindow.m_currentBackdrop);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.ThemeBackdropImagePath, MainWindow.ImagePath);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.ThemeBackdropImageMassOpacity, MainWindow.SBackgroundMass.Opacity);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.ThemeAccentColor, AccentColor == Windows.UI.Color.FromArgb(0,0,0,0) ? null : AccentColor.ToString());
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.DesktopLyricOptions, new JArray()
             {
                 DesktopLyricWindow.PauseButtonVisible, DesktopLyricWindow.ProgressUIVisible,
                 DesktopLyricWindow.ProgressUIPercentageVisible, DesktopLyricWindow.MusicChangeUIVisible
-            };
-            a[DataFolderBase.SettingParams.DesktopLyricText.ToString()] = new JArray()
+            });
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.DesktopLyricText, new JArray()
             {
                 DesktopLyricWindow.LyricTextBehavior,
                 DesktopLyricWindow.LyricTextPosition
-            };
-            a[DataFolderBase.SettingParams.DesktopLyricTranslateText.ToString()] = new JArray()
+            });
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.DesktopLyricTranslateText, new JArray()
             {
                 DesktopLyricWindow.LyricTranslateTextBehavior,
                 DesktopLyricWindow.LyricTranslateTextPosition
-            };
-            a[DataFolderBase.SettingParams.DesktopLyricOpacity.ToString()] = DesktopLyricWindow.LyricOpacity;
+            });
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.DesktopLyricOpacity, DesktopLyricWindow.LyricOpacity);
 
-            a[DataFolderBase.SettingParams.TaskbarShowIcon.ToString()] = NotifyIconWindow.IsVisible;
-            a[DataFolderBase.SettingParams.BackgroundRun.ToString()] = MainWindow.RunInBackground;
-            a[DataFolderBase.SettingParams.ImageDarkMass.ToString()] = Controls.Imagezn.ImageDarkMass;
-            a[DataFolderBase.SettingParams.LoadLastExitPlayingSongAndSongList.ToString()] = LoadLastExitPlayingSongAndSongList;
-
-            a[DataFolderBase.SettingParams.HotKeySettings.ToString()] = JArray.FromObject(App.hotKeyManager.RegistedHotKeys);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.TaskbarShowIcon, NotifyIconWindow.IsVisible);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.BackgroundRun, MainWindow.RunInBackground);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.ImageDarkMass, Controls.Imagezn.ImageDarkMass);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.LoadLastExitPlayingSongAndSongList, LoadLastExitPlayingSongAndSongList);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.HotKeySettings, JArray.FromObject(App.hotKeyManager.RegistedHotKeys));
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.TopNavigationStyle, MainWindow.SNavView.PaneDisplayMode == NavigationViewPaneDisplayMode.Top);
 
             List<float> c = new();
             foreach (var d in AudioEqualizerBands.CustomBands)
@@ -417,7 +400,7 @@ namespace znMusicPlayerWUI
                 c.Add(d[2]);
             }
             string b = string.Join(",", c.ToArray());
-            a[DataFolderBase.SettingParams.EqualizerCustomData.ToString()] = b;
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.EqualizerCustomData, b);
             DataFolderBase.JSettingData = a;
 #if DEBUG
             Debug.WriteLine("[SaveSettingData]: 设置配置已存储！");

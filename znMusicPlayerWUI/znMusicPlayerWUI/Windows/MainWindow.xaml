@@ -7,6 +7,7 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:CommunityToolkit.WinUI.UI.Behaviors"
     xmlns:data="using:znMusicPlayerWUI.DataEditor"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:controls="using:znMusicPlayerWUI.Controls"
     xmlns:m="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -96,7 +97,7 @@
                             </InfoBadge>
                         </NavigationViewItem.InfoBadge>
                     </NavigationViewItem>
-                    <NavigationViewItemHeader Content="本地" Margin="0,16,0,0"/>
+                    <NavigationViewItemHeader x:Name="NavView_LocalTextItem" Content="本地"/>
                     <NavigationViewItem Content="播放列表" AccessKey="ML" x:Name="MusicPlayListButton">
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE90B;"/>
@@ -243,8 +244,9 @@
                                     <Button x:Name="PlayButton"
                                             Height="60"
                                             Width="60"
-                                            CornerRadius="28" BorderBrush="{ThemeResource CircleElevationBorderBrush}"
-                                            BorderThickness="2" Padding="15"
+                                            CornerRadius="28" 
+                                            Background="Transparent"
+                                            BorderThickness="0" Padding="15"
                                             Margin="8,0,8,0"
                                             Click="PlayButton_Click"
                                             IsHoldingEnabled="True" Holding="PlayButton_Holding"
@@ -260,6 +262,11 @@
                                         </Button.Resources>
                                         <controls:MediaPlayStateViewer x:Name="MediaPlayStateViewer" PlaybackState="Paused" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4"/>
                                     </Button>
+                                    <Ellipse Width="60" Height="60"
+                                             IsHitTestVisible="False"
+                                             Fill="Transparent"
+                                             Stroke="{ThemeResource ControlStrokeColorSecondaryBrush}"
+                                             StrokeThickness="5"/>
                                     <ProgressRing x:Name="PlayRing" Width="62" Height="62" IsIndeterminate="False"/>
                                 </Grid>
                                 <Button x:Name="PlayNextButton"

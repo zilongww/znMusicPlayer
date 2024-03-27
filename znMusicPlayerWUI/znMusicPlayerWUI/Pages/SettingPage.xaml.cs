@@ -746,9 +746,12 @@ namespace znMusicPlayerWUI.Pages
             switch (toggleSwitch.Tag as string)
             {
                 case "0":
-                    toggleSwitch.IsOn = NotifyIconWindow.IsVisible;
+                    toggleSwitch.IsOn = MainWindow.SNavView.PaneDisplayMode == NavigationViewPaneDisplayMode.Top;
                     break;
                 case "1":
+                    toggleSwitch.IsOn = NotifyIconWindow.IsVisible;
+                    break;
+                case "2":
                     toggleSwitch.IsOn = MainWindow.RunInBackground;
                     break;
             }
@@ -760,9 +763,12 @@ namespace znMusicPlayerWUI.Pages
             switch (toggleSwitch.Tag as string)
             {
                 case "0":
-                    NotifyIconWindow.IsVisible = toggleSwitch.IsOn;
+                    MainWindow.SNavView.PaneDisplayMode = toggleSwitch.IsOn ? NavigationViewPaneDisplayMode.Top : NavigationViewPaneDisplayMode.Auto;
                     break;
                 case "1":
+                    NotifyIconWindow.IsVisible = toggleSwitch.IsOn;
+                    break;
+                case "2":
                     MainWindow.RunInBackground = toggleSwitch.IsOn;
                     break;
             }
@@ -777,14 +783,29 @@ namespace znMusicPlayerWUI.Pages
 
         private void ToggleSwitch_Loaded_1(object sender, RoutedEventArgs e)
         {
-            var ts = sender as ToggleSwitch;
-            ts.IsOn = Controls.Imagezn.ImageDarkMass;
+            var toggleSwitch = sender as ToggleSwitch;
+            if (toggleSwitch.Tag as string == "0")
+            {
+                toggleSwitch.IsOn = MainWindow.SNavView.PaneDisplayMode == NavigationViewPaneDisplayMode.Top;
+            }
+            else
+            {
+                toggleSwitch.IsOn = Controls.Imagezn.ImageDarkMass;
+            }
         }
 
         private void ToggleSwitch_Toggled_3(object sender, RoutedEventArgs e)
         {
-            var ts = sender as ToggleSwitch;
-            Controls.Imagezn.ImageDarkMass = ts.IsOn;
+            var toggleSwitch = sender as ToggleSwitch;
+            if (toggleSwitch == null) return;
+            if (toggleSwitch.Tag as string == "0")
+            {
+                MainWindow.SNavView.PaneDisplayMode = toggleSwitch.IsOn ? NavigationViewPaneDisplayMode.Top : NavigationViewPaneDisplayMode.Auto;
+            }
+            else 
+            {
+                Controls.Imagezn.ImageDarkMass = toggleSwitch.IsOn;
+            }
         }
 
         private void ToggleSwitch_Loaded_2(object sender, RoutedEventArgs e)

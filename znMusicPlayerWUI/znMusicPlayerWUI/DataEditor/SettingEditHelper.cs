@@ -1,8 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace znMusicPlayerWUI.DataEditor
@@ -11,7 +8,14 @@ namespace znMusicPlayerWUI.DataEditor
     {
         public static void EditSetting(JObject eData, DataFolderBase.SettingParams settingParams, object data)
         {
-            eData[settingParams.ToString()] = (JToken)data;
+            if (data == null)
+            {
+                eData[settingParams.ToString()] = null;
+            }
+            else
+            {
+                eData[settingParams.ToString()] = JValue.FromObject(data);
+            }
         }
 
         public static async Task EditSetting(DataFolderBase.SettingParams settingParams, object data)
@@ -22,17 +26,20 @@ namespace znMusicPlayerWUI.DataEditor
             });
         }
 
-        public static object GetSetting(JObject eData, DataFolderBase.SettingParams settingParams)
+        public static T GetSetting<T>(JObject eData, DataFolderBase.SettingParams settingParams)
         {
-            return eData[settingParams.ToString()];
+            try
+            {
+                return eData[settingParams.ToString()].Value<T>();
+            }
+            catch (ArgumentNullException ex)
+            {
+                var jdata = DataFolderBase.JSettingData;
+                jdata.Add(settingParams.ToString(), DataFolderBase.SettingDefault[settingParams.ToString()]);
+                DataFolderBase.JSettingData = jdata;
+                return DataFolderBase.SettingDefault[settingParams.ToString()].Value<T>();
+            }
         }
 
-        public static async Task<object> GetSetting(DataFolderBase.SettingParams settingParams)
-        {
-            return await Task.Run(() =>
-            {
-                return GetSetting(DataFolderBase.JSettingData, settingParams);
-            });
-        }
     }
 }

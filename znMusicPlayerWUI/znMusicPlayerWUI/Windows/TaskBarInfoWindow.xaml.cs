@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Composition;
 using System;
 using System.Collections.Generic;
@@ -25,9 +26,12 @@ namespace znMusicPlayerWUI.Windowed
         public string IconPath { get; private set; }
         public string IconPathUsing { get; private set; }
 
+        OverlappedPresenter overlappedPresenter = OverlappedPresenter.Create();
+
         public TaskBarInfoWindow()
         {
             Handle = WindowHelperzn.WindowHelper.GetWindowHandle(this);
+            AppWindow.SetPresenter(overlappedPresenter);
             InitializeComponent();
             InitCallBack();
             InitTaskbarInfo();
@@ -35,6 +39,9 @@ namespace znMusicPlayerWUI.Windowed
 
             AppWindow.SetIcon("icon.ico");
             SetTaskbarImage(Path.Combine(localPath, "SugarAndSalt.jpg"));
+
+            overlappedPresenter.IsMaximizable = false;
+            overlappedPresenter.IsMinimizable = false;
 
             MainWindow.WindowViewStateChanged += MainWindow_WindowViewStateChanged;
             App.audioPlayer.PlayStateChanged += (_) => SetTaskbarButtonIcon(_.PlaybackState);
@@ -63,9 +70,10 @@ namespace znMusicPlayerWUI.Windowed
             AppWindow.Closing += (_, __) =>
             {
                 __.Cancel = true;
-                App.AppWindowLocalOverlappedPresenter.Restore();
-                App.WindowLocal.Activate();
+                MainWindow.AppWindowLocal.Hide();
             };
+
+            AppWindow.MoveAndResize(new(0, 0, 0, 0));
         }
 
         bool lastIsBackground = false;
@@ -88,8 +96,8 @@ namespace znMusicPlayerWUI.Windowed
                 throw Marshal.GetExceptionForHR(hresult);
 
             Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.HrInit();
-            Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.RegisterTab(Handle, App.AppWindowLocalHandle);
-            Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetTabOrder(Handle, App.AppWindowLocalHandle);
+            Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.RegisterTab(Handle, MainWindow.Handle);
+            Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetTabOrder(Handle, MainWindow.Handle);
         }
 
         private void InitCallBack()

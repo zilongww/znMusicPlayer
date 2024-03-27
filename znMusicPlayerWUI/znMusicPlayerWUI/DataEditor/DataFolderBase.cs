@@ -106,18 +106,18 @@ namespace znMusicPlayerWUI.DataEditor
             { SettingParams.ThemeBackdropImagePath.ToString(), null },
             { SettingParams.ThemeBackdropImageMassOpacity.ToString(), 0.5 },
             { SettingParams.DesktopLyricOptions.ToString(),
-                new JArray(){
+                new JArray() {
                     true, true, false, true
                 }
             },
             { SettingParams.DesktopLyricText.ToString(),
-                new JArray(){
+                new JArray() {
                     (int)LyricTextBehavior.Exchange,
                     (int)LyricTextPosition.Default
                 }
             },
             { SettingParams.DesktopLyricTranslateText.ToString(),
-                new JArray(){
+                new JArray() {
                     (int)LyricTranslateTextBehavior.MainLyric,
                     (int)LyricTranslateTextPosition.Center
                 }
@@ -128,6 +128,7 @@ namespace znMusicPlayerWUI.DataEditor
             { SettingParams.ImageDarkMass.ToString(), false },
             { SettingParams.LoadLastExitPlayingSongAndSongList.ToString(), true },
             { SettingParams.HotKeySettings.ToString(), JArray.FromObject(HotKeyManager.DefaultRegisterHotKeysList) },
+            { SettingParams.TopNavigationStyle.ToString(), false },
         };
         
         /// <summary>
@@ -190,6 +191,7 @@ namespace znMusicPlayerWUI.DataEditor
             ImageDarkMass,
             LoadLastExitPlayingSongAndSongList,
             HotKeySettings,
+            TopNavigationStyle,
         }
 
         /// <summary>
