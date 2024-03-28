@@ -11,7 +11,7 @@
     xmlns:control="using:znMusicPlayerWUI.Controls"
     mc:Ignorable="d">
     <Grid>
-        <ScrollViewer  ScrollViewer.CanContentRenderOutsideBounds="True" ScrollViewer.ZoomMode="Enabled">
+        <ScrollView ScrollViewer.CanContentRenderOutsideBounds="True" ScrollViewer.ZoomMode="Enabled">
             <StackPanel HorizontalAlignment="Stretch"
                         Orientation="Vertical"
                         Margin="16" Spacing="12">
@@ -156,6 +156,6 @@
                     </cc:SettingsExpander.Items>
                 </cc:SettingsExpander>
             </StackPanel>
-        </ScrollViewer>
+        </ScrollView>
     </Grid>
 </Page>
