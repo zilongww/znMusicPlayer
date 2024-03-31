@@ -139,7 +139,7 @@ namespace znMusicPlayerWUI.Helpers
             //System.Diagnostics.Debug.WriteLine(filePath);
             if (string.IsNullOrEmpty(filePath))
             {
-                filePath = @"ms-appx:///Images/SugarAndSalt.jpg";
+                filePath = @"ms-appx:///Images/icon.png";
                 return GetImageSource(new Uri(filePath), decodePixelWidth, decodePixelHeight);
             }
             else if (Path.GetExtension(filePath) == ".gif" || useBitmapImage)

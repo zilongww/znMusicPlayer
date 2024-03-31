@@ -141,7 +141,7 @@ namespace znMusicPlayerWUI
             };
 
             equalizerPage = new Pages.DialogPages.EqualizerPage();
-            SubClassing();
+            //SubClassing();
 
             AppWindow.Title = App.AppName;
             AppWindow.SetIcon("icon.ico");

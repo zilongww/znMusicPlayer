@@ -74,7 +74,7 @@ namespace znMusicPlayerWUI.DataEditor
         /// <summary>
         /// 默认播放列表数据
         /// </summary>
-        public static MusicListData PlayListDefault = new("default", "默认播放列表", Path.Combine(Environment.CurrentDirectory, "Images", "SugarAndSalt.jpg"), MusicFrom.localMusic, listDataType: DataType.本地歌单);
+        public static MusicListData PlayListDefault = new("default", "默认播放列表", Path.Combine(Environment.CurrentDirectory, "Images", "icon.png"), MusicFrom.localMusic, listDataType: DataType.本地歌单);
 
         /// <summary>
         /// 默认设置数据

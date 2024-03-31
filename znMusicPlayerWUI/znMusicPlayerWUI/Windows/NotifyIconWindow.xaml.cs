@@ -70,7 +70,7 @@ namespace znMusicPlayerWUI.Windowed
 
             notifyIcon = new System.Windows.Forms.NotifyIcon();
             notifyIcon.Text = App.AppName;
-            notifyIcon.Icon = new(Path.Combine(Directory.GetCurrentDirectory(), "icon.ico"));
+            notifyIcon.Icon = new(Path.Combine(Directory.GetCurrentDirectory(), "icon_nobackground.ico"));
             notifyIcon.Visible = isVisible;
 
             #region others

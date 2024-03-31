@@ -22,7 +22,7 @@
                             VerticalAlignment="Top"
                             HorizontalAlignment="Center">
                         <control:Imagezn x:Name="abcd"
-                                         Source="/Images/SugarAndSalt.jpg"
+                                         Source="/Images/icon.png"
                                          MaxWidth="150" MaxHeight="150" CornerRadius="5"
                                          Opacity="1" Loaded="Image_Loaded"/>
                     </Border>

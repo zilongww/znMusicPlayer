@@ -1,22 +1,14 @@
 ﻿using Microsoft.UI;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Composition;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using znMusicPlayerWUI.Helpers;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Windows.UI.Core;
 using System.Diagnostics;
-using PInvoke;
 
 namespace znMusicPlayerWUI.Windowed
 {
@@ -26,22 +18,17 @@ namespace znMusicPlayerWUI.Windowed
         public string IconPath { get; private set; }
         public string IconPathUsing { get; private set; }
 
-        OverlappedPresenter overlappedPresenter = OverlappedPresenter.Create();
+        OverlappedPresenter overlappedPresenter = null;
 
         public TaskBarInfoWindow()
         {
-            Handle = WindowHelperzn.WindowHelper.GetWindowHandle(this);
-            AppWindow.SetPresenter(overlappedPresenter);
             InitializeComponent();
+            Handle = WindowHelperzn.WindowHelper.GetWindowHandle(this);
+
             InitCallBack();
             InitTaskbarInfo();
             ShowTaskBarButtons();
-
-            AppWindow.SetIcon("icon.ico");
-            SetTaskbarImage(Path.Combine(localPath, "SugarAndSalt.jpg"));
-
-            overlappedPresenter.IsMaximizable = false;
-            overlappedPresenter.IsMinimizable = false;
+            SetTaskbarImage(Path.Combine(localPath, "icon.png"));
 
             MainWindow.WindowViewStateChanged += MainWindow_WindowViewStateChanged;
             App.audioPlayer.PlayStateChanged += (_) => SetTaskbarButtonIcon(_.PlaybackState);
@@ -73,6 +60,11 @@ namespace znMusicPlayerWUI.Windowed
                 MainWindow.AppWindowLocal.Hide();
             };
 
+            overlappedPresenter = OverlappedPresenter.Create();
+            AppWindow.SetIcon("icon.ico");
+            AppWindow.SetPresenter(overlappedPresenter);
+            overlappedPresenter.IsMaximizable = false;
+            overlappedPresenter.IsMinimizable = false;
             AppWindow.MoveAndResize(new(0, 0, 0, 0));
         }
 
@@ -102,13 +94,13 @@ namespace znMusicPlayerWUI.Windowed
 
         private void InitCallBack()
         {
-            hotKeyPrc = HotKeyPrc;
-            var hotKeyPrcPointer = Marshal.GetFunctionPointerForDelegate(hotKeyPrc);
+            taskBarPrc = TaskBarPrc;
+            var hotKeyPrcPointer = Marshal.GetFunctionPointerForDelegate(taskBarPrc);
             origPrc =
                 Marshal.GetDelegateForFunctionPointer<Windows.Win32.UI.WindowsAndMessaging.WNDPROC>(
-                    Windows.Win32.PInvoke.SetWindowLongPtr(
+                    PInvoke.User32.SetWindowLongPtr(
                         new Windows.Win32.Foundation.HWND(Handle),
-                        Windows.Win32.UI.WindowsAndMessaging.WINDOW_LONG_PTR_INDEX.GWL_WNDPROC,
+                        PInvoke.User32.WindowLongIndexFlags.GWL_WNDPROC,
                         hotKeyPrcPointer)
                     );
         }
@@ -132,6 +124,7 @@ namespace znMusicPlayerWUI.Windowed
             }
             try
             {
+                // 似乎在某些情况下不会起作用？
                 Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarUpdateButtons(Handle, 3, changer);
             }
             catch(Exception ex)
@@ -147,12 +140,12 @@ namespace znMusicPlayerWUI.Windowed
         nint perviousPlayIconHandle = (Bitmap.FromFile(Path.Combine(localPath, "上一首.png")) as Bitmap).GetHicon();
         private void ShowTaskBarButtons()
         {
-            Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] taskbarInfoButtonPauseStyle = new Helpers.SDKs.TaskbarProgress.THUMBBUTTON[]
-            {
+            Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] taskbarInfoButtonPauseStyle =
+            [
                 new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 1, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = perviousPlayIconHandle, szTip = "上一首" },
                 new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing ? pauseIconHandle : playIconHandle, szTip = "播放" },
                 new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 3, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = nextPlayIconHandle, szTip = "下一首" },
-            };
+            ];
             Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarAddButtons(Handle, 3, taskbarInfoButtonPauseStyle);
             Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarUpdateButtons(Handle, 3, taskbarInfoButtonPauseStyle);
         }
@@ -195,7 +188,7 @@ namespace znMusicPlayerWUI.Windowed
         nint appIconHandle = (Bitmap.FromFile(Path.Combine(localPath, "opacityMask.png")).GetThumbnailImage(1, 1, null, 0) as Bitmap).GetHbitmap();
         private const uint WM_HOTKEY = 0x0312;
         private Windows.Win32.UI.WindowsAndMessaging.WNDPROC origPrc;
-        private Windows.Win32.UI.WindowsAndMessaging.WNDPROC hotKeyPrc;
+        private Windows.Win32.UI.WindowsAndMessaging.WNDPROC taskBarPrc;
         /// <summary>
         /// 窗口获得的系统消息在这里处理
         /// </summary>
@@ -204,7 +197,7 @@ namespace znMusicPlayerWUI.Windowed
         /// <param name="wParam"></param>
         /// <param name="lParam"></param>
         /// <returns></returns>
-        private Windows.Win32.Foundation.LRESULT HotKeyPrc(Windows.Win32.Foundation.HWND hwnd,
+        private Windows.Win32.Foundation.LRESULT TaskBarPrc(Windows.Win32.Foundation.HWND hwnd,
             uint uMsg,
             Windows.Win32.Foundation.WPARAM wParam,
             Windows.Win32.Foundation.LPARAM lParam)
@@ -233,6 +226,10 @@ namespace znMusicPlayerWUI.Windowed
             return Windows.Win32.PInvoke.CallWindowProc(origPrc, hwnd, uMsg, wParam, lParam);
         }
 
+        /// <summary>
+        /// 任务栏按钮触发时响应
+        /// </summary>
+        /// <param name="wParam"></param>
         private async void TaskbarButtonInvoke(Windows.Win32.Foundation.WPARAM wParam)
         {
             switch (wParam.Value)

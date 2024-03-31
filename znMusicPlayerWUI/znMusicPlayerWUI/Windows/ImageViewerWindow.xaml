@@ -20,7 +20,7 @@
                       ViewChanged="ScrollViewer_ViewChanged"
                       IsVerticalRailEnabled="False"
                       IsHorizontalRailEnabled="False">
-            <Image x:Name="ImageControl" Source="/Images/SugarAndSalt.jpg"
+            <Image x:Name="ImageControl" Source="/Images/icon.png"
                    Margin="0,-32,0,0"/>
         </ScrollViewer>
         <Grid x:Name="TitleBar" Background="{ThemeResource CardStrokeColorDefault}"

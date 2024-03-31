@@ -36,7 +36,7 @@
                             <FontIcon Glyph="&#xE72C;"/>
                         </AppBarButton.Icon>
                     </AppBarButton>
-                    <AppBarButton Label="添加" AccessKey="A" Click="AppBarButton_Click_1">
+                    <AppBarButton Label="添加/导入" AccessKey="A" Click="AppBarButton_Click_1">
                         <AppBarButton.Icon>
                             <FontIcon Glyph="&#xE710;"/>
                         </AppBarButton.Icon>

@@ -173,7 +173,7 @@ namespace znMusicPlayerWUI.Media
                 }
                 else
                 {
-                    return "/Images/SugarAndSalt.jpg";
+                    return "/Images/icon.png";
                 }
             }
 

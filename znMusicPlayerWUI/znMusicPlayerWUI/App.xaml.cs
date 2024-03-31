@@ -215,14 +215,15 @@ namespace znMusicPlayerWUI
         public async void DelayOpenWindows()
         {
 #if DEBUG
-            await Task.Delay(1000);
+            //await Task.Delay(2000);
 #endif
-            await Task.Delay(500);
-            taskBarInfoWindow = new();
-
             // 在 Windows App SDK 1.4 的版本一直闪退，1.3 则不会
+            // 似乎有两个以上的窗口一起启动会导致崩溃，微软你干的好事😡
             await Task.Delay(1000);
             NotifyIconWindow = new();
+
+            await Task.Delay(1000);
+            taskBarInfoWindow = new();
         }
 
         private void M_window_Closed(object sender, WindowEventArgs args)

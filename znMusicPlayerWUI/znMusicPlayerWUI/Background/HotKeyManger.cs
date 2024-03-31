@@ -269,11 +269,10 @@ namespace znMusicPlayerWUI.Background.HotKeys
             var hotKeyPrcPointer = Marshal.GetFunctionPointerForDelegate(hotKeyPrc);
             origPrc =
                 Marshal.GetDelegateForFunctionPointer<Windows.Win32.UI.WindowsAndMessaging.WNDPROC>(
-                    Windows.Win32.PInvoke.SetWindowLongPtr(
+                    PInvoke.User32.SetWindowLongPtr(
                         new Windows.Win32.Foundation.HWND(RegistedWindowHandle),
-                        Windows.Win32.UI.WindowsAndMessaging.WINDOW_LONG_PTR_INDEX.GWL_WNDPROC,
-                        hotKeyPrcPointer)
-                    );
+                        PInvoke.User32.WindowLongIndexFlags.GWLP_WNDPROC,
+                        hotKeyPrcPointer));
         }
 
         private const uint WM_HOTKEY = 0x0312;
