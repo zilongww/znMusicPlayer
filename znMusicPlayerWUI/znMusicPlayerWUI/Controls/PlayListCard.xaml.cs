@@ -81,9 +81,7 @@ namespace znMusicPlayerWUI.Controls
 
         public async void UpdateImage()
         {
-            /*ExitMass();
-            CrateShadow();
-            */
+            //ExitMass();
             if (MusicListData != null)
             {
                 int size = 0;//(int)(200 * ImageScaleDPI);
@@ -102,12 +100,14 @@ namespace znMusicPlayerWUI.Controls
                 }
                 PlayListImage.SaveName = $"{MusicListData.ListShowName}";
             }
+            //CrateShadow();
         }
 
         Compositor compositor;
         DropShadow dropShadow;
         private void CrateShadow()
-        {/*
+        {
+            return;
             var visual = ElementCompositionPreview.GetElementVisual(ShadowBaseRectangle);
             compositor = visual.Compositor;
 
@@ -115,13 +115,13 @@ namespace znMusicPlayerWUI.Controls
             basicRectVisual.Size = new Vector2((float)(ActualWidth - 8), (float)ActualHeight);
 
             dropShadow = compositor.CreateDropShadow();
-            dropShadow.BlurRadius = 50f;
-            dropShadow.Opacity = 0f;
+            dropShadow.BlurRadius = 150f;
+            dropShadow.Opacity = 1f;
             dropShadow.Color = Color.FromArgb(255, 0, 0, 0);
-            dropShadow.Offset = new Vector3(0, 2, 0);
+            dropShadow.Offset = new Vector3(0, 0, 0);
 
             basicRectVisual.Shadow = dropShadow;
-            ElementCompositionPreview.SetElementChildVisual(ShadowBaseRectangle, basicRectVisual);*/
+            ElementCompositionPreview.SetElementChildVisual(ShadowBaseRectangle, basicRectVisual);
         }
 
         private async void UILoaded(object sender, RoutedEventArgs e)
@@ -164,7 +164,7 @@ namespace znMusicPlayerWUI.Controls
                 if (dropShadow != null)
                 {
                     ScalarKeyFrameAnimation blurAnimation = compositor.CreateScalarKeyFrameAnimation();
-                    blurAnimation.InsertKeyFrame(0.5f, 0.15f);
+                    blurAnimation.InsertKeyFrame(0.5f, 1f);
                     blurAnimation.Duration = TimeSpan.FromSeconds(0.5);
                     dropShadow.StartAnimation("Opacity", blurAnimation);
                 }

@@ -177,7 +177,7 @@ namespace znMusicPlayerWUI.Windowed
             LoadingRing.IsIndeterminate = false;
             LoadingRoot.Visibility = Visibility.Collapsed;
 
-            if (audioPlayer.MusicData == null)
+            if (audioPlayer.MusicData == null || true)
             {
                 notifyIcon.Text = App.AppName;
             }

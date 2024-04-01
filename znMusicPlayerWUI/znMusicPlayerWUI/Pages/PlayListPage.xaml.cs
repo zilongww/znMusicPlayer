@@ -18,6 +18,7 @@ using System.Reflection.Emit;
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections.ObjectModel;
 using znMusicPlayerWUI.DataEditor;
+using System.Xml.Linq;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -179,6 +180,11 @@ namespace znMusicPlayerWUI.Pages
         private async void AppBarButton_Click_2(object sender, RoutedEventArgs e)
         {
             await DialogPages.InsertPlayListPage.ShowDialog();
+        }
+
+        private void ItemContainer_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

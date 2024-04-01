@@ -23,7 +23,8 @@
             </MenuFlyoutItem>
         </MenuFlyout>
     </Grid.Resources>
-    
+
+    <Rectangle x:Name="ShadowBaseRectangle"/>
     <Border CornerRadius="8"
             BorderThickness="1"
             BorderBrush="{ThemeResource ControlElevationBorderBrush}">
