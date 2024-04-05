@@ -359,17 +359,21 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                     {
                         //ScrollViewerBehavior.(scrollViewer, c.ActualOffset.Y + c.ActualSize.Y / 2 + LrcBaseListView.ActualHeight / 25 + 48);
                         //sv.GetAnimationBaseValue(sv.ver);
-                        if (disableAnimation)
-                            sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2 , null, disableAnimation);
+                        //if (disableAnimation)
+                        sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2, null, disableAnimation);
+                        /*
                         else
-                            await LrcBaseListView.SmoothScrollIntoViewWithItemAsync(App.lyricManager.NowLyricsData, ScrollItemPlacement.Center);
+                            sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2, null);*/
+                        //await LrcBaseListView.SmoothScrollIntoViewWithItemAsync(App.lyricManager.NowLyricsData, ScrollItemPlacement.Center);
                     }
                     else
                     {
                         if (isMiniPageLyricCenter)
-                            await LrcSecondListView.SmoothScrollIntoViewWithItemAsync(App.lyricManager.NowLyricsData, ScrollItemPlacement.Center, disableAnimation);
+                            //await LrcSecondListView.SmoothScrollIntoViewWithItemAsync(App.lyricManager.NowLyricsData, ScrollItemPlacement.Center, disableAnimation);
+                            sv.ChangeView(null, c.ActualOffset.Y + c.ActualSize.Y / 2, null, disableAnimation);
                         else
                             await LrcSecondListView.SmoothScrollIntoViewWithItemAsync(App.lyricManager.NowLyricsData, ScrollItemPlacement.Top, disableAnimation);
+                            //sv.ChangeView(null, c.ActualOffset.Y - c.ActualSize.Y, null, disableAnimation);
                     }
                 }
             }

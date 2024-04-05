@@ -28,8 +28,9 @@ using Vanara.Extensions;
 
 namespace znMusicPlayerWUI.Pages
 {
-    public partial class ItemListViewPlayList : Page
+    public partial class ItemListViewPlayList : Page, IPage
     {
+        public bool IsNavigatedOutFromPage { get; set; } = false;
         private ScrollViewer scrollViewer { get; set; }
         public MusicListData NavToObj { get; set; }
 
@@ -44,6 +45,7 @@ namespace znMusicPlayerWUI.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            IsNavigatedOutFromPage = false;
             MainWindow.MainViewStateChanged += MainWindow_MainViewStateChanged;
             ImageManage.localImageCache.Clear();
             ConnectedAnimation animation =
@@ -74,6 +76,7 @@ namespace znMusicPlayerWUI.Pages
             if (MoveItemButton.IsChecked == true)
                 foreach (var i in SongItem.StaticSongItems) i.AddUnloadedEvent();
             base.OnNavigatedFrom(e);
+            IsNavigatedOutFromPage = true;
             ImageManage.localImageCache.Clear();
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
             App.playListReader.Updated -= PlayListReader_Updated;
@@ -140,6 +143,8 @@ namespace znMusicPlayerWUI.Pages
             }
             if (isLoading) return;
             isLoading = true;
+
+            if (IsNavigatedOutFromPage) return;
 
             #region Collecter
             SelectorSeparator.Visibility = Visibility.Collapsed;

@@ -26,8 +26,9 @@ using znMusicPlayerWUI.Controls;
 
 namespace znMusicPlayerWUI.Pages
 {
-    public partial class ItemListViewArtist : Page
+    public partial class ItemListViewArtist : Page, IPage
     {
+        public bool IsNavigatedOutFromPage { get; set; } = false;
         private ScrollViewer scrollViewer { get; set; }
         public Artist NavToObj { get; set; }
         public MusicFrom NowMusicFrom { get; set; } = MusicFrom.neteaseMusic;
@@ -41,6 +42,8 @@ namespace znMusicPlayerWUI.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             //PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
+            base.OnNavigatedTo(e);
+            IsNavigatedOutFromPage = false;
             Artist a = (Artist)e.Parameter;
             NavToObj = a;
             InitData();
@@ -49,6 +52,7 @@ namespace znMusicPlayerWUI.Pages
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            IsNavigatedOutFromPage = true;
             await Task.Delay(500);
             scrollViewer?.ScrollToVerticalOffset(0);
 
@@ -100,6 +104,7 @@ namespace znMusicPlayerWUI.Pages
                 MainWindow.AddNotify("加载艺术家信息时出现错误", "无法加载艺术家信息，请重试。", NotifySeverity.Error);
                 return;
             }
+            if (IsNavigatedOutFromPage) return;
             NavToObj = obj;
             musicListData = NavToObj.HotSongs;
             Artist_SmallName.Text = string.IsNullOrEmpty(NavToObj.Name2) ? NavToObj.Name : $"{NavToObj.Name}（{NavToObj.Name2}）";

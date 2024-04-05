@@ -27,8 +27,9 @@ using znMusicPlayerWUI.Controls;
 
 namespace znMusicPlayerWUI.Pages
 {
-    public partial class ItemListViewSearch : Page
+    public partial class ItemListViewSearch : Page, IPage
     {
+        public bool IsNavigatedOutFromPage { get; set; } = false;
         private ScrollViewer scrollViewer { get; set; }
         public object NavToObj { get; set; }
         public SearchDataType NowSearchMode { get; set; } = SearchDataType.歌曲;
@@ -44,6 +45,8 @@ namespace znMusicPlayerWUI.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             //PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
+            base.OnNavigatedTo(e);
+            IsNavigatedOutFromPage = false;
             var a = (List<object>)e.Parameter;
             NavToObj = a[0];
             NowMusicFrom = (MusicFrom)a[1];
@@ -55,6 +58,7 @@ namespace znMusicPlayerWUI.Pages
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            IsNavigatedOutFromPage = true;
             await Task.Delay(500);
             scrollViewer?.ScrollToVerticalOffset(0);
             MusicDataList.Clear();
@@ -126,6 +130,8 @@ namespace znMusicPlayerWUI.Pages
                     }
                 }
             }
+
+            if (IsNavigatedOutFromPage) return;
 
             if (searchDatas != null)
             {

@@ -30,8 +30,9 @@ using znMusicPlayerWUI.Background.HotKeys;
 
 namespace znMusicPlayerWUI.Pages
 {
-    public partial class ItemListViewAlbum : Page
+    public partial class ItemListViewAlbum : Page, IPage
     {
+        public bool IsNavigatedOutFromPage { get; set; } = false;
         private ScrollViewer scrollViewer { get; set; }
         public Album NavToObj { get; set; }
         public MusicFrom NowMusicFrom { get; set; } = MusicFrom.neteaseMusic;
@@ -45,6 +46,8 @@ namespace znMusicPlayerWUI.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             //PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
+            base.OnNavigatedTo(e);
+            IsNavigatedOutFromPage = false;
             Album a = (Album)e.Parameter;
             NavToObj = a;
             musicListData = new() { ListDataType = DataType.专辑 };
@@ -55,6 +58,7 @@ namespace znMusicPlayerWUI.Pages
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            IsNavigatedOutFromPage = true;
             await Task.Delay(500);
             MainWindow.MainViewStateChanged -= MainWindow_MainViewStateChanged;
             scrollViewer?.ScrollToVerticalOffset(0);
@@ -113,6 +117,7 @@ namespace znMusicPlayerWUI.Pages
                     NotifySeverity.Error);
                 return;
             }
+            if (IsNavigatedOutFromPage) return;
             NavToObj = obj;
             musicListData = NavToObj.Songs;
             if (string.IsNullOrEmpty(obj.Title2))

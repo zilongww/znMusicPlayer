@@ -1,49 +1,33 @@
-﻿using Microsoft.UI;
+﻿using System;
+using System.Linq;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Collections.ObjectModel;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Windowing;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.UI;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Composition;
+using Windows.UI;
 using WinRT;
+using Windows.Graphics;
+using NAudio.Wave;
+using CommunityToolkit.WinUI;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.Pages;
 using znMusicPlayerWUI.Pages.MusicPages;
-using Microsoft.UI.Xaml.Input;
-using Windows.Graphics;
-using System.Runtime.InteropServices;
-using WinRT.Interop;
-using NAudio.Wave;
-using Microsoft.UI.Xaml.Hosting;
-using System.Collections.ObjectModel;
 using znMusicPlayerWUI.Controls;
-using NAudio.Gui;
-using System.Runtime.Intrinsics.Arm;
-using Windows.Services.Store;
 using znMusicPlayerWUI.Windowed;
-using System.Diagnostics;
-using System.Reflection.Metadata;
 using znMusicPlayerWUI.DataEditor;
-using Vanara.PInvoke;
-using ColorCode.Compilation.Languages;
-using CommunityToolkit.WinUI.UI.Animations;
-using Microsoft.UI.Xaml.Shapes;
-using Windows.UI.Shell;
-using Windows.ApplicationModel.Background;
-using Windows.Devices.Enumeration;
-using System.Security.Policy;
-using CommunityToolkit.WinUI;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using znMusicPlayerWUI.Background.HotKeys;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -1324,7 +1308,7 @@ namespace znMusicPlayerWUI
                 return;
             }
 
-            var item = sender.SelectedItem as NavigationViewItem;
+            NavigationViewItem item = sender.SelectedItem as NavigationViewItem;
             if (item is null) return;
             
             if (item == SNavView.MenuItems[1])
@@ -1343,9 +1327,14 @@ namespace znMusicPlayerWUI
                 SetNavViewContent(typeof(AboutPage));
             else
             {
-                if ((args.SelectedItem as NavigationViewItem)?.Tag.GetType() == typeof(MusicListData))
+                // TOFIX: 快速切换到 PlayList 页面会导致 SelectedItem 为 null
+                if (sender.SelectedItem == null)
                 {
-                    Pages.ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewPlayList>((args.SelectedItem as NavigationViewItem).Tag);
+                    Debug.WriteLine("[MainWindow][NavigationSelectionChanged] SelectedItem 为 null");
+                }
+                else if ((sender.SelectedItem as NavigationViewItem)?.Tag.GetType() == typeof(MusicListData))
+                {
+                    Pages.ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewPlayList>((sender.SelectedItem as NavigationViewItem).Tag);
                 }
                 else if (sender.SelectedItem as NavigationViewItem == NavView.SettingsItem as NavigationViewItem)
                 {
