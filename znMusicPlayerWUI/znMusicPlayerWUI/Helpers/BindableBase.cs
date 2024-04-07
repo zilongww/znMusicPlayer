@@ -64,6 +64,17 @@ namespace znMusicPlayerWUI.Helpers
             }
         }
 
+        string _searchText = null;
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged(nameof(SearchText));
+            }
+        }
+
         public void Dispose()
         {
             _musicData = null;

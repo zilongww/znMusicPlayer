@@ -87,9 +87,10 @@ namespace znMusicPlayerWUI.Background
             {
                 if (musicData.From == MusicFrom.localMusic)
                 {
+                    TagLib.File tagfile = null;
                     try
                     {
-                        var tagfile = await Task.Run(() => TagLib.File.Create(musicData.InLocal));
+                        tagfile = await Task.Run(() => TagLib.File.Create(musicData.InLocal));
                         await InitLyricList(tagfile);
                     }
                     catch { }
@@ -133,18 +134,22 @@ namespace znMusicPlayerWUI.Background
 
         public async Task InitLyricList(TagLib.File file)
         {
-            if (string.IsNullOrEmpty(file.Tag.Lyrics)) return;
             Debug.WriteLine($"[LyricManager]: 从 IDv3 标签中获取歌词");
+            if (string.IsNullOrEmpty(file.Tag.Lyrics))
+            {
+                await InitLyricList("");
+                return;
+            }
             InitLyricList(await LyricHelper.LyricToLrcData(file.Tag.Lyrics));
         }
 
         public async Task InitLyricList(string lyricPath)
         {
-            if (lyricPath == null)
+            if (string.IsNullOrEmpty(lyricPath))
             {
                 NowPlayingLyrics.Clear();
                 NowLyricsData = null;
-                Debug.WriteLine($"[LyricManager]: 无法获取有效");
+                Debug.WriteLine($"[LyricManager]: 无法获取有效歌词。");
                 return;
             }
 

@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:helper="using:znMusicPlayerWUI.Helpers"
+    xmlns:ui="using:CommunityToolkit.WinUI.UI"
     xmlns:m="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     mc:Ignorable="d" SizeChanged="Result_BaseGrid_SizeChanged">
 
@@ -36,10 +37,11 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Header>
-                <Border VerticalAlignment="Stretch"
-                        x:Name="menu_border"
-                        BorderThickness="0">
-                    <Border Height="300" Margin="0,0,0,6"
+                <Grid VerticalAlignment="Stretch"
+                      x:Name="menu_border"
+                      BorderThickness="0"
+                      Margin="0,0,0,12">
+                    <Border Height="300"
                             BorderThickness="0" CornerRadius="0,0,8,8">
                         <Grid SizeChanged="Result_BaseGrid_SizeChanged" Name="Album_ImageBaseGrid">
 
@@ -134,7 +136,23 @@
                                                     <FontIcon Glyph="&#xE762;"/>
                                                 </AppBarToggleButton.Icon>
                                             </AppBarToggleButton>
-                                            
+
+                                            <AppBarButton Label="搜索歌曲"
+                                                          AccessKey="F"
+                                                          Click="SearchButton_Click"
+                                                          x:Name="SearchButton">
+                                                <AppBarButton.Icon>
+                                                    <AnimatedIcon x:Name='SearchAnimatedIcon'>
+                                                        <AnimatedIcon.Source>
+                                                            <m:AnimatedFindVisualSource/>
+                                                        </AnimatedIcon.Source>
+                                                        <AnimatedIcon.FallbackIconSource>
+                                                            <SymbolIconSource Symbol='Find'/>
+                                                        </AnimatedIcon.FallbackIconSource>
+                                                    </AnimatedIcon>
+                                                </AppBarButton.Icon>
+                                            </AppBarButton>
+
                                             <AppBarSeparator x:Name="SelectorSeparator"/>
                                             
                                             <AppBarButton x:Name="SelectAllButton"
@@ -203,7 +221,134 @@
                             </Grid>
                         </Grid>
                     </Border>
-                </Border>
+                    <Grid x:Name="SearchBase"
+                          Background="{x:Null}"
+                          IsHitTestVisible="False"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Top"
+                          Opacity="0"
+                          Margin="16,0">
+                        <Grid.Resources>
+                            <Style TargetType="TeachingTip">
+                                <Setter Property="Background" Value="{ThemeResource AcrylicNormal}"/>
+                                <Setter Property="MaxWidth" Value="1080"/>
+                                <Setter Property="CloseButtonStyle">
+                                    <Setter.Value>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Width" Value="0"/>
+                                            <Setter Property="Content" Value="0"/>
+                                        </Style>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                            <Style x:Key="CloseButtonStyle" TargetType="Button">
+                            </Style>
+                        </Grid.Resources>
+                        <Rectangle Fill="{ThemeResource AcrylicNormal}" IsHitTestVisible="False"
+                                   Stroke="{ThemeResource ControlElevationBorderBrush}" StrokeThickness="1"
+                                   RadiusX="8" RadiusY="8"
+                                   MaxWidth="1000"/>
+                        <Grid x:Name="SearchBaseFlyout" Padding="8"
+                              MaxWidth="1000">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <AutoSuggestBox x:Name="SearchBox"
+                                                PlaceholderText="搜索歌曲关键字"
+                                                UpdateTextOnSelect="False"
+                                                TextChanged="AutoSuggestBox_TextChanged"
+                                                QuerySubmitted="AutoSuggestBox_QuerySubmitted"
+                                                SuggestionChosen="SearchBox_SuggestionChosen">
+                                    <AutoSuggestBox.ItemTemplate>
+                                        <DataTemplate x:DataType="helper:SongItemBindBase">
+                                            <StackPanel Padding="0,12">
+                                                <TextBlock Text="{Binding MusicData.Title}" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding MusicData.ArtistName}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding MusicData.Album.Title}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" TextTrimming="CharacterEllipsis"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </AutoSuggestBox.ItemTemplate>
+                                </AutoSuggestBox>
+                                <TextBlock x:Name="SearchResultTextBlock" Text="0 of 0" Margin="4,0,4,0"
+                                           VerticalAlignment="Center" HorizontalAlignment="Right" IsHitTestVisible="False"
+                                           Grid.Column="1"/>
+                                <StackPanel Orientation="Horizontal" Spacing="4"
+                                            HorizontalAlignment="Right"
+                                            Grid.Column="2">
+                                    <StackPanel Orientation="Horizontal">
+                                        <StackPanel.Resources>
+                                            <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                                                <Setter Property="VerticalAlignment" Value="Stretch"/>
+                                                <Setter Property="MaxHeight" Value="32"/>
+                                            </Style>
+                                        </StackPanel.Resources>
+                                        <Button CornerRadius="4,0,0,4" BorderThickness="1,1,0,1"
+                                                Click="Button_Click_7"
+                                                Tag="0">
+                                            <AnimatedIcon>
+                                                <AnimatedIcon.Source>
+                                                    <m:AnimatedBackVisualSource/>
+                                                </AnimatedIcon.Source>
+                                                <AnimatedIcon.FallbackIconSource>
+                                                    <SymbolIconSource Symbol='Back'/>
+                                                </AnimatedIcon.FallbackIconSource>
+                                            </AnimatedIcon>
+                                        </Button>
+                                        <Button CornerRadius="0,4,4,0" BorderThickness="1,1,1,1"
+                                                Click="Button_Click_7"
+                                                Tag="1">
+                                            <AnimatedIcon ui:VisualExtensions.RotationAngle="3.14"
+                                                          ui:VisualExtensions.CenterPoint="9,9.6,0">
+                                                <AnimatedIcon.Source>
+                                                    <m:AnimatedBackVisualSource/>
+                                                </AnimatedIcon.Source>
+                                                <AnimatedIcon.FallbackIconSource>
+                                                    <SymbolIconSource Symbol='Back'/>
+                                                </AnimatedIcon.FallbackIconSource>
+                                            </AnimatedIcon>
+                                        </Button>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2"
+                                                Orientation="Horizontal">
+                                        <Button MaxHeight="32" 
+                                                CornerRadius="4,0,0,4"
+                                                BorderThickness="1,1,0,1"
+                                                Padding="7">
+                                            <Button.Flyout>
+                                                <Flyout ShouldConstrainToRootBounds="False">
+                                                    <StackPanel>
+                                                        <CheckBox x:Name="LowerCheckBox" Content="区分大小写"/>
+                                                        <ComboBox Header="搜索目标"
+                                                                  SelectedIndex="0"
+                                                                  x:Name="SearchModeComboBox">
+                                                            <x:String>全部</x:String>
+                                                            <x:String>标题</x:String>
+                                                            <x:String>艺术家</x:String>
+                                                        </ComboBox>
+                                                    </StackPanel>
+                                                </Flyout>
+                                            </Button.Flyout>
+                                            <AnimatedIcon>
+                                                <AnimatedIcon.Source>
+                                                    <m:AnimatedSettingsVisualSource/>
+                                                </AnimatedIcon.Source>
+                                            </AnimatedIcon>
+                                        </Button>
+                                        <Button Width="32" Height="32"
+                                                CornerRadius="0,4,4,0"
+                                                BorderThickness="0,1,1,1"
+                                                Padding="0" Click="SearchButton_Click">
+                                            <FontIcon Glyph="&#xE711;" FontSize="16"/>
+                                        </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </ListView.Header>
         </ListView>
         <Grid VerticalAlignment="Bottom"

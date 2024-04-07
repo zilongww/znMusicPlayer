@@ -302,29 +302,6 @@ namespace znMusicPlayerWUI
             }
         }
 
-        public void UpdatePlayListButtonUI()
-        {
-            foreach (NavigationViewItem nvi in MusicPlayListButton.MenuItems)
-            {
-                nvi.Tag = null;
-            }
-            MusicPlayListButton.MenuItems.Clear();
-            foreach (var i in App.playListReader.NowMusicListData)
-            {
-                var nvi = new NavigationViewItem() { Content = i.ListShowName, Tag = i };
-                MusicPlayListButton.MenuItems.Add(nvi);
-            }
-        }
-
-        public async void OpenPlayListNavView()
-        {
-            await App.playListReader.Refresh();
-            if (NavView.DisplayMode == NavigationViewDisplayMode.Expanded)
-            {
-                MusicPlayListButton.IsExpanded = true;
-            }
-        }
-
         #region Window Events
         private void WindowGridBase_Loaded(object sender, RoutedEventArgs e)
         {
@@ -1279,6 +1256,29 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region NavView Events
+        public async void OpenPlayListNavView()
+        {
+            await App.playListReader.Refresh();
+            if (NavView.DisplayMode == NavigationViewDisplayMode.Expanded)
+            {
+                MusicPlayListButton.IsExpanded = true;
+            }
+        }
+
+        public void UpdatePlayListButtonUI()
+        {
+            foreach (NavigationViewItem nvi in MusicPlayListButton.MenuItems)
+            {
+                nvi.Tag = null;
+            }
+            MusicPlayListButton.MenuItems.Clear();
+            foreach (var i in App.playListReader.NowMusicListData)
+            {
+                var nvi = new NavigationViewItem() { Content = i.ListShowName, Tag = i };
+                MusicPlayListButton.MenuItems.Add(nvi);
+            }
+        }
+
         public void UpdateNavViewContentBaseRGClip()
         {
             NavViewContentBase_RGClip.Rect = new Windows.Foundation.Rect(0, 0,
@@ -1702,7 +1702,13 @@ namespace znMusicPlayerWUI
         #endregion
 
         #region Key Events
-        bool isAltDown = false;
+        public delegate void InKeyDown(Windows.System.VirtualKey key);
+        public static event InKeyDown InKeyDownEvent;
+        public static event InKeyDown InKeyUpEvent;
+
+        public static bool isAltDown = false;
+        public static bool isControlDown = false;
+        public static bool isShiftDown = false;
         public static bool CanKeyDownBack = true;
         private void Grid_KeyDown(object sender, KeyRoutedEventArgs e)
         {
@@ -1717,6 +1723,12 @@ namespace znMusicPlayerWUI
                 case Windows.System.VirtualKey.Menu:
                     isAltDown = true;
                     break;
+                case Windows.System.VirtualKey.Control:
+                    isControlDown = true;
+                    break;
+                case Windows.System.VirtualKey.Shift:
+                    isShiftDown = true;
+                    break;
                 case Windows.System.VirtualKey.Left:
                     if (isAltDown)
                         TryGoBack();
@@ -1726,6 +1738,7 @@ namespace znMusicPlayerWUI
                         TryGoForward();
                     break;
             }
+            InKeyDownEvent?.Invoke(e.Key);
         }
 
         private void Grid_KeyUp(object sender, KeyRoutedEventArgs e)
@@ -1735,9 +1748,13 @@ namespace znMusicPlayerWUI
                 case Windows.System.VirtualKey.Menu:
                     isAltDown = false;
                     break;
+                case Windows.System.VirtualKey.Control:
+                    isControlDown = false;
+                    break;
                 default:
                     break;
             }
+            InKeyUpEvent?.Invoke(e.Key);
         }
 
         private void Grid_PointerPressed(object sender, PointerRoutedEventArgs e)

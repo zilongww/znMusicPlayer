@@ -1,29 +1,27 @@
-﻿using Microsoft.UI;
+﻿using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System.Threading.Tasks;
-using System;
-using System.Numerics;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using znMusicPlayerWUI.Helpers;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
-using znMusicPlayerWUI.Pages;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Windows.Storage.Pickers;
+using System;
+using System.IO;
+using System.Linq;
+using System.Data;
+using System.Numerics;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Runtime.InteropServices.WindowsRuntime;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Media;
+using znMusicPlayerWUI.Helpers;
+using znMusicPlayerWUI.Controls;
+using Windows.Storage.Pickers;
 using Newtonsoft.Json.Linq;
 using CommunityToolkit.WinUI.UI;
-using znMusicPlayerWUI.Controls;
-using System.Collections.ObjectModel;
-using System.Data;
 using Vanara.Extensions;
 
 namespace znMusicPlayerWUI.Pages
@@ -34,12 +32,15 @@ namespace znMusicPlayerWUI.Pages
         private ScrollViewer scrollViewer { get; set; }
         public MusicListData NavToObj { get; set; }
 
+        ObservableCollection<SongItemBindBase> searchMusicDatas = new();
         public ItemListViewPlayList()
         {
             InitializeComponent();
             DataContext = this;
             var _enumval = Enum.GetValues(typeof(PlaySort)).Cast<PlaySort>();
             SortComboBox.ItemsSource = _enumval.ToList();
+            SearchBox.ItemsSource = searchMusicDatas;
+            MainWindow.InKeyDownEvent += MainWindow_InKeyDownEvent;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -72,6 +73,7 @@ namespace znMusicPlayerWUI.Pages
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
+            MainWindow.InKeyDownEvent -= MainWindow_InKeyDownEvent;
             MainWindow.MainViewStateChanged -= MainWindow_MainViewStateChanged;
             if (MoveItemButton.IsChecked == true)
                 foreach (var i in SongItem.StaticSongItems) i.AddUnloadedEvent();
@@ -96,11 +98,11 @@ namespace znMusicPlayerWUI.Pages
                 i.Dispose();
             }
             MusicDataList.Clear();
+            searchMusicDatas.Clear();
 
             Children.ItemsSource = null; //😡GC2代频繁回收的罪魁祸首😡😡
-            Children.Items.Clear();
+            SearchBox.ItemsSource = null;
 
-            searchMusicDatas.Clear();
             dropShadow?.Dispose();
             PlayList_Image.Dispose();
             PlayList_Image.Dispose();
@@ -126,7 +128,7 @@ namespace znMusicPlayerWUI.Pages
             dropShadow = compositor.CreateDropShadow();
             dropShadow.BlurRadius = 30f;
             dropShadow.Opacity = 0.3f;
-            dropShadow.Offset = new Vector3(0, 4, 0);
+            dropShadow.Offset = new Vector3(0, 0, 0);
 
             basicRectVisual.Shadow = dropShadow;
             ElementCompositionPreview.SetElementChildVisual(PlayList_Image_DropShadowBase, basicRectVisual);
@@ -300,6 +302,7 @@ namespace znMusicPlayerWUI.Pages
         Visual stackVisual;
         Visual commandBarVisual;
         Visual commandFootVisual;
+        Visual searchBaseVisual;
         ExpressionAnimation offsetExpression;
         ExpressionAnimation backgroundVisualOpacityAnimation;
         ExpressionAnimation logoHeaderScaleAnimation;
@@ -308,6 +311,7 @@ namespace znMusicPlayerWUI.Pages
         ExpressionAnimation stackVisualOffsetAnimation;
         ExpressionAnimation commandBarVisualOffsetAnimation;
         ExpressionAnimation commandFootVisualOffsetAnimation;
+        ExpressionAnimation searchBaseVisualOffsetAnimation;
         int logoSizeCount = 0;
         public void UpdateShyHeader(bool xOnly = false)
         {
@@ -318,6 +322,7 @@ namespace znMusicPlayerWUI.Pages
             int anotherXEnd = 150;
             double logoSizeEnd = 0.45;
             int commandYEnd = 84;
+            int searchBaseYEnd = 158;
 
             if (logoSizeCount == 1)
             {
@@ -326,6 +331,7 @@ namespace znMusicPlayerWUI.Pages
                 anotherHeight = 54;
                 anotherXEnd = 131;
                 commandYEnd = 64;
+                searchBaseYEnd = 138;
             }
             int anotherX = 16 + logoHeight + 12;
 
@@ -341,6 +347,7 @@ namespace znMusicPlayerWUI.Pages
                 stackVisual = ElementCompositionPreview.GetElementVisual(InfosBaseStackPanel);
                 commandBarVisual = ElementCompositionPreview.GetElementVisual(CommandBarWidthChanger);
                 commandFootVisual = ElementCompositionPreview.GetElementVisual(CommandFoot);
+                searchBaseVisual = ElementCompositionPreview.GetElementVisual(SearchBase);
             }
             else
             {
@@ -384,10 +391,13 @@ namespace znMusicPlayerWUI.Pages
                 logoVisualOffsetXAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
                 logoVisual.StartAnimation("Offset.X", logoVisualOffsetXAnimation);
 
-                stackVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3({logoVisual.Size.X + 32},16,0), Vector3({(int)(logoVisual.Size.X * logoSizeEnd) + 32},{anotherHeight} + 16,0), {progress})");
+                stackVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3({logoVisual.Size.X + 32},16,0), Vector3({(int)(logoVisual.Size.X * logoSizeEnd) + 32},{anotherHeight + 16},0), {progress})");
                 stackVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
                 stackVisual.StartAnimation(nameof(stackVisual.Offset), stackVisualOffsetAnimation);
-
+                
+                searchBaseVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(16,{headerVisual.Size.Y + 4},0), Vector3(16,{anotherHeight + searchBaseYEnd + 4},0), {progress})");
+                searchBaseVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+                searchBaseVisual.StartAnimation(nameof(searchBaseVisual.Offset), searchBaseVisualOffsetAnimation);
             }
 
             string sizelogo = null;
@@ -503,22 +513,10 @@ namespace znMusicPlayerWUI.Pages
             }/*
             System.Diagnostics.Debug.WriteLine(ActualWidth);
             System.Diagnostics.Debug.WriteLine(ActualHeight);*/
-            ShowFootCommandBar();
             await Task.Delay(1);
             UpdateShyHeader();
             UpdateInfoWidth();
             CrateShadow();
-        }
-
-        int times = 0;
-        public async void ShowFootCommandBar()
-        {
-            CommandFoot.Opacity = 0;
-            times++;
-            await Task.Delay(250);
-            times--;
-            if (times == 0)
-                CommandFoot.Opacity = 1;
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -549,7 +547,7 @@ namespace znMusicPlayerWUI.Pages
                 Children.SelectionMode = ListViewSelectionMode.Multiple;
 
                 SortComboBoxParent.Visibility = Visibility.Collapsed;
-                SearchBoxParent.Visibility = Visibility.Collapsed;
+                SearchButton.Visibility = Visibility.Collapsed;
                 PlayAllButton.Visibility = Visibility.Collapsed;
                 AddLocalFilesButton.Visibility = Visibility.Collapsed;
                 RefreshButton.Visibility = Visibility.Collapsed;
@@ -574,7 +572,7 @@ namespace znMusicPlayerWUI.Pages
                 Children.SelectionMode = ListViewSelectionMode.None;
 
                 SortComboBoxParent.Visibility = Visibility.Visible;
-                SearchBoxParent.Visibility = Visibility.Visible;
+                SearchButton.Visibility = Visibility.Visible;
                 PlayAllButton.Visibility = Visibility.Visible;
                 AddLocalFilesButton.Visibility = Visibility.Visible;
                 RefreshButton.Visibility = Visibility.Visible;
@@ -838,45 +836,6 @@ namespace znMusicPlayerWUI.Pages
             await PlayListHelper.SaveData(data);
         }
 
-        List<SongItemBindBase> searchMusicDatas = new();
-        bool isQuery = false;
-        int searchNum = -1;
-        private async void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-        {
-            if (string.IsNullOrEmpty(SearchBox.Text)) return;
-            if (!isQuery)
-            {
-                isQuery = true;
-                searchNum = -1;
-                searchMusicDatas.Clear();
-                foreach (var i in MusicDataList)
-                {
-                    if (i.MusicData.Title.ToLower().Contains(SearchBox.Text.ToLower()))
-                    {
-                        searchMusicDatas.Add(i);
-                    }
-                }
-            }
-            if (searchMusicDatas.Any())
-            {
-                searchNum++;
-                if (searchNum > searchMusicDatas.Count - 1) searchNum = 0;
-                var item = searchMusicDatas[searchNum];
-                await Children.SmoothScrollIntoViewWithItemAsync(item, ScrollItemPlacement.Center);
-                await Children.SmoothScrollIntoViewWithItemAsync(item, ScrollItemPlacement.Center, true);
-
-                foreach (var s in SongItem.StaticSongItems)
-                {
-                    if (s.MusicData == item.MusicData) s.AnimateMouseLeavingBackground(true);
-                }
-            }
-        }
-
-        private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
-        {
-            isQuery = false;
-        }
-
         private void Children_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var a = Children.ContainerFromItem(Children.SelectedItem);
@@ -943,7 +902,7 @@ namespace znMusicPlayerWUI.Pages
             if ((bool)MoveItemButton.IsChecked)
             {
                 SortComboBoxParent.Visibility = Visibility.Collapsed;
-                SearchBoxParent.Visibility = Visibility.Collapsed;
+                SearchButton.Visibility = Visibility.Collapsed;
                 PlayAllButton.Visibility = Visibility.Collapsed;
                 AddLocalFilesButton.Visibility = Visibility.Collapsed;
                 RefreshButton.Visibility = Visibility.Collapsed;
@@ -961,7 +920,7 @@ namespace znMusicPlayerWUI.Pages
             else
             {
                 SortComboBoxParent.Visibility = Visibility.Visible;
-                SearchBoxParent.Visibility = Visibility.Visible;
+                SearchButton.Visibility = Visibility.Visible;
                 PlayAllButton.Visibility = Visibility.Visible;
                 AddLocalFilesButton.Visibility = Visibility.Visible;
                 RefreshButton.Visibility = Visibility.Visible;
@@ -996,7 +955,7 @@ namespace znMusicPlayerWUI.Pages
         {
             MoveItemButton.IsChecked = false;
             SortComboBoxParent.Visibility = Visibility.Visible;
-            SearchBoxParent.Visibility = Visibility.Visible;
+            SearchButton.Visibility = Visibility.Visible;
             PlayAllButton.Visibility = Visibility.Visible;
             AddLocalFilesButton.Visibility = Visibility.Visible;
             RefreshButton.Visibility = Visibility.Visible;
@@ -1011,6 +970,175 @@ namespace znMusicPlayerWUI.Pages
             SelectItemButton.Visibility = Visibility.Visible;
             foreach (var i in SongItem.StaticSongItems) i.AddUnloadedEvent();
             UpdateCommandToolBarWidth();
+        }
+
+        private async void ChangeViewToSearchItem(SongItemBindBase item)
+        {
+            if (searchMusicDatas.Any())
+            {
+                searchNum = searchMusicDatas.IndexOf(item) - 1;
+                SearchResultTextBlock.Text = $"{searchNum + 1} of {searchMusicDatas.Count}";
+                await Children.SmoothScrollIntoViewWithItemAsync(item, ScrollItemPlacement.Center);
+                await Children.SmoothScrollIntoViewWithItemAsync(item, ScrollItemPlacement.Center, true);
+                foreach (var s in SongItem.StaticSongItems)
+                {
+                    if (s.MusicData == item.MusicData) s.AnimateMouseLeavingBackground(true);
+                }
+            }
+        }
+
+        private async void ChangeViewToSearchItem(bool add = true)
+        {
+            if (searchMusicDatas.Any())
+            {
+                if (add) searchNum++;
+                else searchNum--;
+
+                if (searchNum > searchMusicDatas.Count - 1) searchNum = 0;
+                if (searchNum <= -1) searchNum = searchMusicDatas.Count - 1;
+
+                var item = searchMusicDatas[searchNum];
+                SearchResultTextBlock.Text = $"{searchNum + 1} of {searchMusicDatas.Count}";
+
+                var scrollPlacement = ActualHeight <= 450 ? ScrollItemPlacement.Bottom : ScrollItemPlacement.Center;
+                await Children.SmoothScrollIntoViewWithItemAsync(item, scrollPlacement);
+                await Children.SmoothScrollIntoViewWithItemAsync(item, scrollPlacement, true);
+
+                foreach (var s in SongItem.StaticSongItems)
+                {
+                    if (s.MusicData == item.MusicData) s.AnimateMouseLeavingBackground(true);
+                }
+            }
+            else
+            {
+                SearchResultTextBlock.Text = "0 of 0";
+            }
+        }
+
+        bool isQuery = false;
+        int searchNum = -1;
+        private async void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            ChangeViewToSearchItem();
+            AutoSuggestBox_TextChanged(null, new() { Reason = AutoSuggestionBoxTextChangeReason.UserInput });
+        }
+
+        private void SearchBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            if (SearchModeComboBox.SelectedIndex == 0)
+                SearchBox.Text = (args.SelectedItem as SongItemBindBase).MusicData.Title;
+            else if(SearchModeComboBox.SelectedIndex == 1)
+                SearchBox.Text = (args.SelectedItem as SongItemBindBase).MusicData.Title;
+            else if(SearchModeComboBox.SelectedIndex == 2)
+                SearchBox.Text = (args.SelectedItem as SongItemBindBase).MusicData.ArtistName;
+            else if(SearchModeComboBox.SelectedIndex == 3)
+                SearchBox.Text = (args.SelectedItem as SongItemBindBase).MusicData.Album.Title;
+
+            searchNum = searchMusicDatas.IndexOf(args.SelectedItem as SongItemBindBase) - 1;
+            SearchResultTextBlock.Text = $"{searchNum + 2} of {searchMusicDatas.Count}";
+            //ChangeViewToSearchItem(args.SelectedItem as SongItemBindBase);
+        }
+
+        private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput) // 有 bug
+            {
+                if (string.IsNullOrEmpty(SearchBox.Text)) return;
+                searchMusicDatas.Clear();
+                string text = CompareString(SearchBox.Text);
+
+                switch (SearchModeComboBox.SelectedIndex)
+                {
+                    case 0:
+                        foreach (var i in MusicDataList)
+                        {
+                            if (CompareString(i.MusicData.Title).Contains(text))
+                                searchMusicDatas.Add(i);
+                            else if (i.MusicData.Title2 is not null)
+                            {
+                                if (CompareString(i.MusicData.Title2).Contains(text))
+                                    searchMusicDatas.Add(i);
+                            }
+                            else if (CompareString(i.MusicData.ArtistName).Contains(text))
+                                searchMusicDatas.Add(i);
+                            else if (CompareString(i.MusicData.Album.Title).Contains(text))
+                                searchMusicDatas.Add(i);
+                        }
+                        break;
+                    case 1:
+                        foreach (var i in MusicDataList)
+                        {
+                            if (CompareString(i.MusicData.Title).Contains(text))
+                                searchMusicDatas.Add(i);
+                            else if (i.MusicData.Title2 is not null)
+                            {
+                                if (CompareString(i.MusicData.Title2).Contains(text))
+                                    searchMusicDatas.Add(i);
+                            }
+                        }
+                        break;
+                    case 2:
+                        foreach (var i in MusicDataList)
+                        {
+                            if (CompareString(i.MusicData.ArtistName).Contains(text))
+                                searchMusicDatas.Add(i);
+                        }
+                        break;
+                    case 3:
+                        foreach (var i in MusicDataList)
+                        {
+                            if (CompareString(i.MusicData.Album.Title).Contains(text))
+                                searchMusicDatas.Add(i);
+                        }
+                        break;
+                }
+                searchNum = 0;
+                SearchResultTextBlock.Text = $"All of {searchMusicDatas.Count}";
+            }
+        }
+
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SearchBase.IsHitTestVisible)
+            {
+                SearchBase.Opacity = 0;
+                menu_border.Margin = new(0, 0, 0, 0);
+            }
+            else
+            {
+                SearchBase.Opacity = 1;
+                menu_border.Margin = new(0, 0, 0, searchBaseVisual.Size.Y + 4 + 4);
+            }
+            SearchBase.IsHitTestVisible = !SearchBase.IsHitTestVisible;
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            if (btn.Tag as string == "0")
+            {
+                ChangeViewToSearchItem(false);
+            }
+            else
+            {
+                ChangeViewToSearchItem();
+            }
+        }
+
+        private string CompareString(string str)
+        {
+            return (bool)LowerCheckBox.IsChecked ? str : str.ToLower();
+        }
+
+        private void MainWindow_InKeyDownEvent(Windows.System.VirtualKey key)
+        {
+            if (MainWindow.isControlDown)
+            {
+                if (key == Windows.System.VirtualKey.F)
+                {
+                    SearchButton_Click(null, null);
+                }
+            }
         }
     }
 }
