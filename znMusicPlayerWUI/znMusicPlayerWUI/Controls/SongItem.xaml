@@ -150,7 +150,7 @@
         <Grid>
             <Rectangle x:Name="BackgroundBaseGrid"
                        RadiusX="8" RadiusY="8"
-                       Fill="{ThemeResource ControlFillColorDefault}"
+                       Fill="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                        Stroke="{ThemeResource ControlElevationBorderBrush}"
                        StrokeThickness="1"
                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>

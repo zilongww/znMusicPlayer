@@ -157,6 +157,8 @@ namespace znMusicPlayerWUI
             NavView.SelectedItem = NavView.MenuItems[1];
             NavView.IsBackEnabled = false;
 
+            Canvas.SetZIndex(AppTitleBar, 1);
+
             StaringPrepare();
             //NotifyListView.ItemsSource = NotifyList;
             //PlayingListBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();

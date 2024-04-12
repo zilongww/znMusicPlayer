@@ -102,7 +102,7 @@ namespace znMusicPlayerWUI.DataEditor
             { SettingParams.ThemeColorMode.ToString(), (int)ElementTheme.Default },
             { SettingParams.ThemeMusicPageColorMode.ToString(), (int)ElementTheme.Default },
             { SettingParams.ThemeAccentColor.ToString(), null },
-            { SettingParams.ThemeBackdropEffect.ToString(), (int)MainWindow.BackdropType.Mica },
+            { SettingParams.ThemeBackdropEffect.ToString(), (int)MainWindow.BackdropType.DesktopAcrylic },
             { SettingParams.ThemeBackdropImagePath.ToString(), null },
             { SettingParams.ThemeBackdropImageMassOpacity.ToString(), 0.5 },
             { SettingParams.DesktopLyricOptions.ToString(),
