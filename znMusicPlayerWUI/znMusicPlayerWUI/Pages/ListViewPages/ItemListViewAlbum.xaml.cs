@@ -158,6 +158,7 @@ namespace znMusicPlayerWUI.Pages
 
         private async void LoadImage()
         {
+            AlbumLogo.BorderThickness = new(0);
             if (musicListData.ListDataType == DataType.本地歌单)
             {
                 Album_Image.Source = await FileHelper.GetImageSource(musicListData.PicturePath);
@@ -173,6 +174,7 @@ namespace znMusicPlayerWUI.Pages
             }
             AlbumLogo.Source = Album_Image.Source;
             AlbumLogo.SaveName = NavToObj.Title;
+            AlbumLogo.BorderThickness = new(1);
             UpdateShyHeader();
             await Task.Delay(10);
             UpdateShyHeader();
@@ -667,6 +669,7 @@ namespace znMusicPlayerWUI.Pages
             {
                 SearchBase.Opacity = 1;
                 menu_border.Margin = new(0, 0, 0, searchBaseVisual.Size.Y + 12 + 12);
+                SearchBox.Focus(FocusState.Keyboard);
             }
             SearchBase.IsHitTestVisible = !SearchBase.IsHitTestVisible;
         }
@@ -696,6 +699,8 @@ namespace znMusicPlayerWUI.Pages
                 if (key == Windows.System.VirtualKey.F)
                 {
                     SearchButton_Click(null, null);
+                    if (!SearchBase.IsHitTestVisible)
+                        ToolsCommandBar.Focus(FocusState.Programmatic);
                 }
             }
         }

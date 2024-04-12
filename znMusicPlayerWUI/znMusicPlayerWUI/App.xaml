@@ -22,7 +22,7 @@
                     <SolidColorBrush x:Key="BorderNormal" Color="#10FFFFFF"/>
                     <SolidColorBrush x:Key="MusicPageLrcForeground" Color="#4DFFFFFF"/>
                     <StaticResource x:Key="AcrylicNormal" ResourceKey="AcrylicBackgroundFillColorDefaultBrush"/>
-                    <Color x:Key="MusicPageImageBlurFallbackColor">#BAAAAAAA</Color>
+                    <Color x:Key="MusicPageImageBlurFallbackColor">#BA000000</Color>
                     <StaticResource x:Key="MusicPageSelectLyricForeground" ResourceKey="AccentAAFillColorTertiaryBrush"/>
                     <Color x:Key="BlurImageAcrylicBrush">#272727</Color>
                     <AcrylicBrush x:Key="MusicPageImageAcrylicBrush" TintLuminosityOpacity="0.85" TintOpacity="0.0" FallbackColor="#BA000000" TintColor="#FF202020" Opacity="1"/>

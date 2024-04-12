@@ -1108,6 +1108,7 @@ namespace znMusicPlayerWUI.Pages
             {
                 SearchBase.Opacity = 1;
                 menu_border.Margin = new(0, 0, 0, searchBaseVisual.Size.Y + 4 + 4);
+                SearchBox.Focus(FocusState.Keyboard);
             }
             SearchBase.IsHitTestVisible = !SearchBase.IsHitTestVisible;
         }
@@ -1137,6 +1138,8 @@ namespace znMusicPlayerWUI.Pages
                 if (key == Windows.System.VirtualKey.F)
                 {
                     SearchButton_Click(null, null);
+                    if (!SearchBase.IsHitTestVisible)
+                        ToolsCommandBar.Focus(FocusState.Programmatic);
                 }
             }
         }

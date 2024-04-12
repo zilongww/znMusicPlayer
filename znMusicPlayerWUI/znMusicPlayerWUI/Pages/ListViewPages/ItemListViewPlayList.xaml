@@ -359,7 +359,8 @@
                                         </StackPanel.Resources>
                                         <Button CornerRadius="4,0,0,4" BorderThickness="1,1,0,1"
                                                 Click="Button_Click_4"
-                                                Tag="0">
+                                                Tag="0"
+                                                ToolTipService.ToolTip="上一个">
                                             <AnimatedIcon>
                                                 <AnimatedIcon.Source>
                                                     <m:AnimatedBackVisualSource/>
@@ -371,7 +372,8 @@
                                         </Button>
                                         <Button CornerRadius="0,4,4,0" BorderThickness="1,1,1,1"
                                                 Click="Button_Click_4"
-                                                Tag="1">
+                                                Tag="1"
+                                                ToolTipService.ToolTip="下一个">
                                             <AnimatedIcon ui:VisualExtensions.RotationAngle="3.14"
                                                           ui:VisualExtensions.CenterPoint="9,9.6,0">
                                                 <AnimatedIcon.Source>
@@ -388,7 +390,8 @@
                                         <Button MaxHeight="32" 
                                                 CornerRadius="4,0,0,4"
                                                 BorderThickness="1,1,0,1"
-                                                Padding="7">
+                                                Padding="7"
+                                                ToolTipService.ToolTip="搜索选项">
                                             <Button.Flyout>
                                                 <Flyout ShouldConstrainToRootBounds="False">
                                                     <StackPanel>
@@ -413,7 +416,8 @@
                                         <Button Width="32" Height="32"
                                                 CornerRadius="0,4,4,0"
                                                 BorderThickness="0,1,1,1"
-                                                Padding="0" Click="SearchButton_Click">
+                                                Padding="0" Click="SearchButton_Click"
+                                                ToolTipService.ToolTip="关闭搜索栏">
                                             <FontIcon Glyph="&#xE711;" FontSize="16"/>
                                         </Button>
                                     </StackPanel>
