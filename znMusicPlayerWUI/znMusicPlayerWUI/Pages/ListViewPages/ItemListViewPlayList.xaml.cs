@@ -867,7 +867,7 @@ namespace znMusicPlayerWUI.Pages
                             {
                                 if (j != null)
                                     if (j.MusicData == App.audioPlayer.MusicData)
-                                        j.AnimateMouseLeavingBackground(true);
+                                        j.AnimateStroke();
                             }
                         }
                     }
@@ -982,7 +982,7 @@ namespace znMusicPlayerWUI.Pages
                 await Children.SmoothScrollIntoViewWithItemAsync(item, ScrollItemPlacement.Center, true);
                 foreach (var s in SongItem.StaticSongItems)
                 {
-                    if (s.MusicData == item.MusicData) s.AnimateMouseLeavingBackground(true);
+                    if (s.MusicData == item.MusicData) s.AnimateStroke();
                 }
             }
         }
@@ -1006,7 +1006,7 @@ namespace znMusicPlayerWUI.Pages
 
                 foreach (var s in SongItem.StaticSongItems)
                 {
-                    if (s.MusicData == item.MusicData) s.AnimateMouseLeavingBackground(true);
+                    if (s.MusicData == item.MusicData) s.AnimateStroke();
                 }
             }
             else

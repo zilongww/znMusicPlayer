@@ -320,20 +320,29 @@
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
                                 <AutoSuggestBox x:Name="SearchBox"
-                                                PlaceholderText="搜索歌曲关键字"
+                                                AutoMaximizeSuggestionArea="True"
                                                 UpdateTextOnSelect="False"
+                                                MaxSuggestionListHeight="200"
+                                                PlaceholderText="搜索歌曲关键字"
                                                 TextChanged="AutoSuggestBox_TextChanged"
                                                 QuerySubmitted="AutoSuggestBox_QuerySubmitted"
                                                 SuggestionChosen="SearchBox_SuggestionChosen">
                                     <AutoSuggestBox.ItemTemplate>
                                         <DataTemplate x:DataType="helper:SongItemBindBase">
-                                            <StackPanel Padding="0,12">
+                                            <StackPanel Padding="0,8">
                                                 <TextBlock Text="{Binding MusicData.Title}" FontWeight="Bold"/>
                                                 <TextBlock Text="{Binding MusicData.ArtistName}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                                                 <TextBlock Text="{Binding MusicData.Album.Title}" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </AutoSuggestBox.ItemTemplate>
+                                    <AutoSuggestBox.QueryIcon>
+                                        <AnimatedIcon>
+                                            <AnimatedIcon.Source>
+                                                <m:AnimatedFindVisualSource/>
+                                            </AnimatedIcon.Source>
+                                        </AnimatedIcon>
+                                    </AutoSuggestBox.QueryIcon>
                                 </AutoSuggestBox>
                                 <TextBlock x:Name="SearchResultTextBlock" Text="0 of 0" Margin="4,0,4,0"
                                            VerticalAlignment="Center" HorizontalAlignment="Right" IsHitTestVisible="False"

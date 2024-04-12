@@ -168,6 +168,8 @@ namespace znMusicPlayerWUI.Background
 
             if (f.Length < 10)
             {
+                NowPlayingLyrics.Clear();
+                NowLyricsData = null;
                 Debug.WriteLine($"[LyricManager]: 歌词文件大小未超过 10 字节，不会使用此歌词文件");
                 //System.IO.File.Delete(lyricPath);
                 return;

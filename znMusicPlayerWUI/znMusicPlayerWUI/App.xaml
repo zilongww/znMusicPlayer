@@ -21,8 +21,8 @@
                     <SolidColorBrush x:Key="HeaderLowForeground" Color="#FF878787"/>
                     <SolidColorBrush x:Key="BorderNormal" Color="#10FFFFFF"/>
                     <SolidColorBrush x:Key="MusicPageLrcForeground" Color="#4DFFFFFF"/>
-                    <StaticResource x:Key="AcrylicNormal" ResourceKey="AcrylicInAppFillColorDefaultBrush"/>
-                    <Color x:Key="MusicPageImageBlurFallbackColor">#BA000000</Color>
+                    <StaticResource x:Key="AcrylicNormal" ResourceKey="AcrylicBackgroundFillColorDefaultBrush"/>
+                    <Color x:Key="MusicPageImageBlurFallbackColor">#BAAAAAAA</Color>
                     <StaticResource x:Key="MusicPageSelectLyricForeground" ResourceKey="AccentAAFillColorTertiaryBrush"/>
                     <Color x:Key="BlurImageAcrylicBrush">#272727</Color>
                     <AcrylicBrush x:Key="MusicPageImageAcrylicBrush" TintLuminosityOpacity="0.85" TintOpacity="0.0" FallbackColor="#BA000000" TintColor="#FF202020" Opacity="1"/>
@@ -36,7 +36,7 @@
                     <SolidColorBrush x:Key="HeaderLowForeground" Color="#FF424242"/>
                     <SolidColorBrush x:Key="BorderNormal" Color="#15000000"/>
                     <SolidColorBrush x:Key="MusicPageLrcForeground" Color="#4F000000"/>
-                    <StaticResource x:Key="AcrylicNormal" ResourceKey="AcrylicInAppFillColorBaseBrush"/>
+                    <StaticResource x:Key="AcrylicNormal" ResourceKey="AcrylicBackgroundFillColorBaseBrush"/>
                     <Color x:Key="MusicPageImageBlurFallbackColor">#CADDDDDD</Color>
                     <StaticResource x:Key="MusicPageSelectLyricForeground" ResourceKey="AccentTextFillColorSecondaryBrush"/>
                     <Color x:Key="BlurImageAcrylicBrush">#E5E5E5</Color>

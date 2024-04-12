@@ -434,7 +434,7 @@ namespace znMusicPlayerWUI.Pages
                             {
                                 if (j != null)
                                     if (j.MusicData == App.audioPlayer.MusicData)
-                                        j.AnimateMouseLeavingBackground(true);
+                                        j.AnimateStroke();
                             }
                         }
                     }

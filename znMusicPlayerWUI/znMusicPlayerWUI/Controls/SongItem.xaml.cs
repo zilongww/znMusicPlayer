@@ -162,11 +162,14 @@ namespace znMusicPlayerWUI.Controls
 
         Visual backgroundBaseGridVisual;
         Visual rightToolBarVisual;
+        Visual strokeVisual;
         public SongItem()
         {
             InitializeComponent();
             backgroundBaseGridVisual = ElementCompositionPreview.GetElementVisual(BackgroundBaseGrid);
             rightToolBarVisual = ElementCompositionPreview.GetElementVisual(RightToolBar);
+            strokeVisual = ElementCompositionPreview.GetElementVisual(StrokeBase);
+            strokeVisual.Opacity = 0;
 
             AddUnloadedEvent();
             DataContextChanged += SongItem_DataContextChanged;
@@ -463,6 +466,14 @@ namespace znMusicPlayerWUI.Controls
                 out var compositor, out var animation);
             if (opacityStartAtHeighest) backgroundBaseGridVisual.Opacity = 1;
             backgroundBaseGridVisual.StartAnimation(nameof(backgroundBaseGridVisual.Opacity), animation);
+        }
+
+        public void AnimateStroke()
+        {
+            strokeVisual.Opacity = 1;
+            AnimateHelper.AnimateScalar(strokeVisual, 0, 3, 0 ,0 ,0 ,0,
+                out var compositor, out var animation);
+            strokeVisual.StartAnimation("Opacity", animation);
         }
 
         private void Grid_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)

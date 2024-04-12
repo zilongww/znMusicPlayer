@@ -12,6 +12,12 @@
     PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
     RightTapped="Grid_RightTapped" Holding="Grid_Holding" AccessKeyInvoked="Grid_AccessKeyInvoked">
 
+    <Grid.Transitions>
+        <TransitionCollection>
+            <RepositionThemeTransition/>
+        </TransitionCollection>
+    </Grid.Transitions>
+
     <Grid.Resources>
         <MenuFlyout x:Name="FlyoutMenu">
             <MenuFlyoutItem x:Name="EditPlayListButton" Icon="edit" Text="编辑" Click="EditPlayListButton_Click"/>
@@ -29,11 +35,15 @@
             BorderThickness="1"
             BorderBrush="{ThemeResource ControlElevationBorderBrush}">
         <Grid CornerRadius="7">
-            <Grid>
-                <local:Imagezn x:Name="PlayListImage" Stretch="UniformToFill" ShowMenuBehavior="OnlyLightUp"
+            <local:Imagezn x:Name="PlayListImage" Stretch="UniformToFill" ShowMenuBehavior="OnlyLightUp"
                                HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="8"/>
-                <Grid IsHitTestVisible="False" VerticalAlignment="Bottom"
-                      Background="{ThemeResource AcrylicNormal}" Padding="8,6">
+            <Grid IsHitTestVisible="False"
+                      VerticalAlignment="Bottom">
+                <Grid Background="{ThemeResource ControlOnImageFillColorDefaultBrush}"
+                          BorderBrush="{ThemeResource ControlElevationBorderBrush}"
+                          BorderThickness="1" CornerRadius="8"
+                          Padding="8" Margin="4"
+                      HorizontalAlignment="Left">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>

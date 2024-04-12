@@ -148,12 +148,18 @@
             Background="Transparent"
             x:Name="rootBorder">
         <Grid>
-            <Border x:Name="BackgroundBaseGrid"
-                    CornerRadius="8"
-                    Background="{ThemeResource ControlFillColorDefault}"
-                    BorderBrush="{ThemeResource ControlElevationBorderBrush}"
-                    BorderThickness="1"
-                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            <Rectangle x:Name="BackgroundBaseGrid"
+                       RadiusX="8" RadiusY="8"
+                       Fill="{ThemeResource ControlFillColorDefault}"
+                       Stroke="{ThemeResource ControlElevationBorderBrush}"
+                       StrokeThickness="1"
+                       VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            <Rectangle x:Name="StrokeBase"
+                       RadiusX="8" RadiusY="8"
+                       Fill="{x:Null}"
+                       Stroke="{ThemeResource AccentFillColorDefaultBrush}"
+                       StrokeThickness="2"
+                       VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             <Rectangle HorizontalAlignment="Left"
                        Width="3"
                        Fill="{ThemeResource SystemColorControlAccentBrush}"
