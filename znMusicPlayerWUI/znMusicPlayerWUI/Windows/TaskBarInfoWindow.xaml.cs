@@ -1,16 +1,12 @@
-﻿using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Windowing;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using znMusicPlayerWUI.Helpers;
-using static znMusicPlayerWUI.Windowed.WindowHelper.Win32;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Windowing;
 
 namespace znMusicPlayerWUI.Windowed
 {

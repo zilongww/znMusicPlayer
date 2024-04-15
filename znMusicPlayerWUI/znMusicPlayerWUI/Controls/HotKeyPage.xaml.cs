@@ -1,12 +1,9 @@
-﻿using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Shapes;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
 using znMusicPlayerWUI.Background.HotKeys;
-using Microsoft.UI.Xaml.Media;
 
 namespace znMusicPlayerWUI.Controls
 {

@@ -1,21 +1,12 @@
-﻿using Microsoft.UI;
+﻿using System;
+using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices.WindowsRuntime;
-using znMusicPlayerWUI.Helpers;
-using Windows.UI.Core;
-using Microsoft.UI.Xaml.Media;
-using znMusicPlayerWUI.DataEditor;
-using Melanchall.DryWetMidi.Core;
-using System.Collections.ObjectModel;
-using znMusicPlayerWUI.Controls;
 using znMusicPlayerWUI.Media;
+using znMusicPlayerWUI.Helpers;
+using znMusicPlayerWUI.Controls;
+using znMusicPlayerWUI.DataEditor;
 using Newtonsoft.Json.Linq;
 
 namespace znMusicPlayerWUI.Pages.DialogPages

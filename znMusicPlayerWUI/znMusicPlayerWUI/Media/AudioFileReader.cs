@@ -1,17 +1,9 @@
-﻿using NAudio.Wave.SampleProviders;
-using NAudio.Wave;
-using System;
+﻿using System.IO;
 using System.Collections.Generic;
-using System.Threading.Channels;
 using NAudio.Dsp;
-using NAudio.Codecs;
-using System.IO;
-using System.Linq;
+using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using znMusicPlayerWUI.Helpers;
-using NAudio.Midi;
-using System.Threading.Tasks;
-using znMusicPlayerWUI.Media.Decoder.FFmpeg;
-using FFmpeg.AutoGen;
 
 namespace znMusicPlayerWUI.Media
 {

@@ -1,12 +1,9 @@
-﻿using Microsoft.UI;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using znMusicPlayerWUI.Background.HotKeys;
 using Vanara.PInvoke;
 using Windows.System;
+using znMusicPlayerWUI.Background.HotKeys;
 
 namespace znMusicPlayerWUI.Controls
 {

@@ -1,23 +1,13 @@
-﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System;
 using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using znMusicPlayerWUI.DataEditor;
-using znMusicPlayerWUI.Helpers;
-using WinRT;
-using znMusicPlayerWUI.Media;
-using Melanchall.DryWetMidi.Core;
-using TagLib.Ape;
-using System.Xml.Schema;
-using znMusicPlayerWUI.Controls;
-using NAudio;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using znMusicPlayerWUI.Media;
+using znMusicPlayerWUI.DataEditor;
+using NAudio;
+using Microsoft.UI.Xaml.Media;
+using Melanchall.DryWetMidi.Core;
 
 namespace znMusicPlayerWUI.Background
 {

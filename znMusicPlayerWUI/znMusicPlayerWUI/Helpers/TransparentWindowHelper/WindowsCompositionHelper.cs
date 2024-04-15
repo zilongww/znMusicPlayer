@@ -1,13 +1,5 @@
-﻿using Microsoft.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI.Composition;
-using Windows.UI.Composition.Desktop;
-using WinRT;
 using WinCompositor = Windows.UI.Composition.Compositor;
 using WinDispatcherQueueController = Windows.System.DispatcherQueueController;
 using WinDispatcherQueue = Windows.System.DispatcherQueue;

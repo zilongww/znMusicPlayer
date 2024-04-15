@@ -1,35 +1,19 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
-using NAudio;
-using NAudio.Wave;
-using NAudio.Dsp;
-using SoundTouch.Net;
-using System.Net;
-using NAudio.CoreAudioApi;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
-using System.Reflection.Metadata;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.DataEditor;
-using Windows.Media;
-using Windows.Storage.Pickers;
-using Windows.Media.Playback;
-using Windows.Media.Core;
-using Microsoft.VisualBasic.Logging;
-using System.Windows.Forms;
+using NAudio.Wave;
+using NAudio.CoreAudioApi;
+using NAudio.CoreAudioApi.Interfaces;
 using Melanchall.DryWetMidi.Multimedia;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
+using znMusicPlayerWUI.DataEditor;
 using static znMusicPlayerWUI.Media.AudioPlayer;
-using static znMusicPlayerWUI.DataEditor.DataFolderBase;
-using Vanara.Extensions.Reflection;
-using NAudio.CoreAudioApi.Interfaces;
-using static NeteaseCloudMusicApi.Utils.QuickHttp;
-using System.Runtime.InteropServices;
 
 namespace znMusicPlayerWUI.Media
 {

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using znMusicPlayerWUI.DataEditor;
-using znMusicPlayerWUI.Helpers;
 using System.IO;
 using System.Net;
-using Melanchall.DryWetMidi.MusicTheory;
-using znMusicPlayerWUI.Pages;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using znMusicPlayerWUI.DataEditor;
+using znMusicPlayerWUI.Helpers;
 
 namespace znMusicPlayerWUI.Background
 {

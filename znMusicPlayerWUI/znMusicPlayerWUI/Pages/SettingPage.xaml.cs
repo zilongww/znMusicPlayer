@@ -1,29 +1,16 @@
-﻿using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Numerics;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Contacts;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Composition;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.DataEditor;
-using Windows.Networking.Connectivity;
 using znMusicPlayerWUI.Windowed;
 using znMusicPlayerWUI.Background;
-using znMusicPlayerWUI.Background.HotKeys;
-using CommunityToolkit.WinUI.UI;
-using Windows.UI;
-using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace znMusicPlayerWUI.Pages
 {

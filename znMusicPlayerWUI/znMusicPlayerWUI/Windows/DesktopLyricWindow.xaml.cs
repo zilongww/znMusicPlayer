@@ -1,37 +1,20 @@
-﻿using Microsoft.UI;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Composition;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using WinRT;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.Pages;
-using znMusicPlayerWUI.Pages.MusicPages;
-using Microsoft.UI.Xaml.Input;
-using Windows.Graphics;
 using System.Runtime.InteropServices;
-using WinRT.Interop;
-using NAudio.Wave;
-using Microsoft.UI.Xaml.Hosting;
 using System.Collections.ObjectModel;
-using Windows.Devices.Input;
 using znMusicPlayerWUI.DataEditor;
-using PInvoke;
 using znMusicPlayerWUI.Media;
-using static Vanara.PInvoke.User32;
-using System.Diagnostics.Eventing.Reader;
-using System.Numerics;
+using znMusicPlayerWUI.Helpers;
+using WinRT;
+using Windows.Graphics;
+using NAudio.Wave;
 
 namespace znMusicPlayerWUI.Windowed
 {

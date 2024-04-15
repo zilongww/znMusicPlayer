@@ -1,18 +1,11 @@
-﻿using Downloader;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Linq;
-using System.Security.Policy;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using Windows.Media.Protection.PlayReady;
-using znMusicPlayerWUI.DataEditor;
+using System.Collections.Generic;
 using znMusicPlayerWUI.Helpers;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using znMusicPlayerWUI.DataEditor;
 
 namespace znMusicPlayerWUI.Background
 {

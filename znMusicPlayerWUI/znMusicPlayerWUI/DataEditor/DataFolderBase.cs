@@ -1,16 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using System.Diagnostics;
 using Newtonsoft.Json;
-using znMusicPlayerWUI.Background.HotKeys;
-using znMusicPlayerWUI.Background;
-using Microsoft.UI.Xaml;
+using Newtonsoft.Json.Linq;
 using znMusicPlayerWUI.Windowed;
+using znMusicPlayerWUI.Background;
+using znMusicPlayerWUI.Background.HotKeys;
+using Microsoft.UI.Xaml;
 
 namespace znMusicPlayerWUI.DataEditor
 {

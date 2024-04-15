@@ -1,15 +1,9 @@
-﻿using Microsoft.UI;
+﻿using System;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Composition;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using znMusicPlayerWUI.Helpers;
 
 namespace znMusicPlayerWUI.Pages
 {

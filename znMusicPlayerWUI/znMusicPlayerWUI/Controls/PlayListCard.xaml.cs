@@ -1,25 +1,18 @@
-﻿using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using System.Threading.Tasks;
-using System;
-using System.Numerics;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using znMusicPlayerWUI.Helpers;
-using Microsoft.UI.Xaml.Navigation;
+using System.Numerics;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Media;
-using znMusicPlayerWUI.Media;
-using znMusicPlayerWUI.DataEditor;
 using Newtonsoft.Json.Linq;
 using Windows.UI;
-using znMusicPlayerWUI.Pages.ListViewPages;
+using znMusicPlayerWUI.Media;
+using znMusicPlayerWUI.Helpers;
+using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Pages;
+using znMusicPlayerWUI.Pages.ListViewPages;
 
 namespace znMusicPlayerWUI.Controls
 {

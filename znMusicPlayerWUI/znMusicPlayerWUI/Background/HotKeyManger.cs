@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using Vanara.PInvoke;
-using Microsoft.UI.Xaml;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
+using Vanara.PInvoke;
 using Newtonsoft.Json;
+using Microsoft.UI.Xaml;
 
 namespace znMusicPlayerWUI.Background.HotKeys
 {

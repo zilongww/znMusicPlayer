@@ -1,20 +1,10 @@
-﻿using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices.WindowsRuntime;
-using znMusicPlayerWUI.Helpers;
-using Windows.UI.Core;
-using Microsoft.UI.Xaml.Media;
-using znMusicPlayerWUI.DataEditor;
-using NAudio.Wave;
-using ATL.AudioData;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using znMusicPlayerWUI.Media;
+using znMusicPlayerWUI.Helpers;
 using CueSharp;
 
 namespace znMusicPlayerWUI.Pages.DialogPages

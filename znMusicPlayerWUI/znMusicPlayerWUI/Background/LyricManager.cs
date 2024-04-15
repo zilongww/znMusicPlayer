@@ -1,16 +1,12 @@
-﻿using Meting4Net.Core.Models.Tencent;
-using Microsoft.UI.Xaml;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+﻿using System;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
-using znMusicPlayerWUI.DataEditor;
+using System.Collections.ObjectModel;
 using znMusicPlayerWUI.Helpers;
-using static znMusicPlayerWUI.Helpers.MetingService.KgMeting;
+using znMusicPlayerWUI.DataEditor;
+using Microsoft.UI.Xaml;
 
 namespace znMusicPlayerWUI.Background
 {

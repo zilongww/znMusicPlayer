@@ -1,29 +1,20 @@
-﻿using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Composition;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using znMusicPlayerWUI.Helpers;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Windows.UI.Core;
-using System.Diagnostics;
-using PInvoke;
-using Windows.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Windowing;
 using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 using Windows.Storage;
 using znMusicPlayerWUI.DataEditor;
 using WinRT.Interop;
-using Microsoft.UI.Windowing;
+using Windows.UI;
 
 namespace znMusicPlayerWUI.Windowed
 {
