@@ -155,6 +155,9 @@
                                          Description="A C# library for converting Japanese sentence to Hiragana, Katakana or Romaji with furigana and okurigana modes supported. Inspired by project Kuroshiro."/>
                     </cc:SettingsExpander.Items>
                 </cc:SettingsExpander>
+                <TextBlock>
+                    图标中的图片来自 <Hyperlink Click="Hyperlink_Click_2">裁 - 嫌</Hyperlink>
+                </TextBlock>
             </StackPanel>
         </ScrollView>
     </Grid>

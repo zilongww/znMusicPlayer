@@ -52,7 +52,7 @@
                         </Grid.Transitions>
                         <StackPanel VerticalAlignment="Top">
                             <c:AutoScrollViewer x:Name="TitleTBBase">
-                                <TextBlock x:Name="TitleTB" Text="znMusicPlayer" FontSize="18" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock x:Name="TitleTB" Text="znMusicPlayerWUI" FontSize="18" TextTrimming="CharacterEllipsis"/>
                             </c:AutoScrollViewer>
                             <Grid>
                                 <Grid.ColumnDefinitions>

@@ -40,25 +40,26 @@ namespace znMusicPlayerWUI.Pages
             var _enumval = Enum.GetValues(typeof(PlaySort)).Cast<PlaySort>();
             SortComboBox.ItemsSource = _enumval.ToList();
             SearchBox.ItemsSource = searchMusicDatas;
-            MainWindow.InKeyDownEvent += MainWindow_InKeyDownEvent;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             IsNavigatedOutFromPage = false;
+            MainWindow.InKeyDownEvent += MainWindow_InKeyDownEvent;
             MainWindow.MainViewStateChanged += MainWindow_MainViewStateChanged;
+            App.playListReader.Updated += PlayListReader_Updated;
+            App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
             ImageManage.localImageCache.Clear();
+            /*
             ConnectedAnimation animation =
                 ConnectedAnimationService.GetForCurrentView().GetAnimation("forwardAnimation");
             if (animation != null)
             {
                 animation.TryStart(PlayList_ImageBaseBorder);
             }
-
+*/
             //PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
-            App.playListReader.Updated += PlayListReader_Updated;
-            App.audioPlayer.SourceChanged += AudioPlayer_SourceChanged;
 
             foreach (var mld in App.playListReader.NowMusicListData)
             {
@@ -73,15 +74,15 @@ namespace znMusicPlayerWUI.Pages
 
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
-            MainWindow.InKeyDownEvent -= MainWindow_InKeyDownEvent;
-            MainWindow.MainViewStateChanged -= MainWindow_MainViewStateChanged;
-            if (MoveItemButton.IsChecked == true)
-                foreach (var i in SongItem.StaticSongItems) i.AddUnloadedEvent();
             base.OnNavigatedFrom(e);
             IsNavigatedOutFromPage = true;
-            ImageManage.localImageCache.Clear();
-            App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
+
+            MainWindow.InKeyDownEvent -= MainWindow_InKeyDownEvent;
+            MainWindow.MainViewStateChanged -= MainWindow_MainViewStateChanged;
             App.playListReader.Updated -= PlayListReader_Updated;
+            App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
+            if (MoveItemButton.IsChecked == true)
+                foreach (var i in SongItem.StaticSongItems) i.AddUnloadedEvent();
 
             if (Children.SelectionMode != ListViewSelectionMode.None)
             {
@@ -103,8 +104,9 @@ namespace znMusicPlayerWUI.Pages
             Children.ItemsSource = null; //😡GC2代频繁回收的罪魁祸首😡😡
             SearchBox.ItemsSource = null;
 
+            ImageManage.localImageCache.Clear();
+
             dropShadow?.Dispose();
-            PlayList_Image.Dispose();
             PlayList_Image.Dispose();
             NavToObj = null;
             UnloadObject(this);
@@ -183,6 +185,10 @@ namespace znMusicPlayerWUI.Pages
             {
                 LoadImage();
 
+                foreach (var i in MusicDataList)
+                {
+                    i.Dispose();
+                }
                 MusicDataList.Clear();
                 var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
                 MusicData[] array = null;
@@ -267,6 +273,8 @@ namespace znMusicPlayerWUI.Pages
 
         private async void LoadImage()
         {
+            if (NavToObj == null) return;
+            PlayList_Image.BorderThickness = new(0);
             if (NavToObj.ListDataType == DataType.本地歌单)
             {
                 bool isExists = true;
@@ -283,6 +291,7 @@ namespace znMusicPlayerWUI.Pages
             {
                 PlayList_Image.Source = await FileHelper.GetImageSource("");
             }
+            PlayList_Image.BorderThickness = new(1);
             System.Diagnostics.Debug.WriteLine("[ItemListViewPlayList] 图片加载完成。");
             await Task.Delay(100);
             UpdateShyHeader();

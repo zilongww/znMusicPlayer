@@ -247,7 +247,7 @@ namespace znMusicPlayerWUI
         {
             MessageDialog messageDialog = new("设置文件出现了一些错误，且程序尝试 5 次后也无法恢复默认配置。\n" +
                 "请尝试删除 文档->znMusicPlayerDatas->UserData 里的 Setting 文件。\n" +
-                "如果仍然出现问题，请到 GitHub 里向项目提出 Issues。", "znMusicPlayer - 程序无法启动");
+                "如果仍然出现问题，请到 GitHub 里向项目提出 Issues。", "znMusicPlayerWUI - 程序无法启动");
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(WindowLocal);
             WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, hwnd);
             await messageDialog.ShowAsync();

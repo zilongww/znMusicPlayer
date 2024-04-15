@@ -1,26 +1,18 @@
-﻿using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media.Animation;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using znMusicPlayerWUI.Helpers;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using znMusicPlayerWUI.DataEditor;
-using znMusicPlayerWUI.Pages;
-using System.Security.Cryptography;
-using System.Diagnostics;
-using Windows.System;
-using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Composition;
+using Windows.System;
 using Windows.Storage;
 using znMusicPlayerWUI.Media;
-using static Vanara.PInvoke.Kernel32;
+using znMusicPlayerWUI.Pages;
+using znMusicPlayerWUI.Helpers;
+using znMusicPlayerWUI.DataEditor;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -84,7 +76,7 @@ namespace znMusicPlayerWUI.Controls
         }
 
         bool? lastValue = null;
-        private async void DelaySetIconRootVisibility(bool value)
+        private void DelaySetIconRootVisibility(bool value)
         {
             if (lastValue != null)
                 if ((bool)lastValue == value) return;
@@ -308,16 +300,6 @@ namespace znMusicPlayerWUI.Controls
                         err = true;
                     }
                 }
-                /* 性能低下
-                if (musicData.From == MusicFrom.localMusic)
-                {
-                    if (await FileHelper.FileTypeGetAsync(musicData.InLocal) == "7784")
-                    {
-                        a = null;
-                        err = true;
-                    }
-                }*/
-
                 if (!err)
                 {
                     var b = await ImageManage.GetImageSource(musicData, (int)(56 * ImageScaleDPI), (int)(56 * ImageScaleDPI), true);
@@ -373,6 +355,7 @@ namespace znMusicPlayerWUI.Controls
                 MusicData = null;
                 UnloadObject(this);
                 isDisposed = true;
+                System.Diagnostics.Debug.WriteLine($"[SongItem] Disposed: {StaticSongItems.Count}");
             }
             catch (Exception err)
             {
@@ -551,7 +534,7 @@ namespace znMusicPlayerWUI.Controls
             App.downloadManager.Add(MusicData);
         }
 
-        private async void rmf_Opened(object sender, object e)
+        private void rmf_Opened(object sender, object e)
         {
         }
 
@@ -678,7 +661,7 @@ namespace znMusicPlayerWUI.Controls
                     MainWindow.SetNavViewContent(typeof(SearchPage), MusicData.Title);
                     break;
                 case "1":
-                    await Launcher.LaunchUriAsync(new System.Uri($"https://www.bing.com/search?q={MusicData.Title}-{MusicData.Album}"));
+                    await Launcher.LaunchUriAsync(new Uri($"https://www.bing.com/search?q={MusicData.Title}-{MusicData.Album}"));
                     break;
                 case "2":
                     Uri uri = null;

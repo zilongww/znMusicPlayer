@@ -45,7 +45,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock x:Name="AppTitleTextBlock"
-                               Text="znMusicPlayer"
+                               Text="znMusicPlayerWUI"
                                TextWrapping="NoWrap"
                                Style="{StaticResource CaptionTextBlockStyle}"
                                VerticalAlignment="Center"/>
@@ -81,7 +81,7 @@
                             </AnimatedIcon>
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
-                    <NavigationViewItem Content="浏览" AccessKey="MB">
+                    <NavigationViewItem Content="浏览" AccessKey="MB" Visibility="Collapsed">
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE704;"/>
                         </NavigationViewItem.Icon>
@@ -197,7 +197,7 @@
                                         </TransitionCollection>
                                     </StackPanel.Transitions>
                                     <TextBlock x:Name="PlayTitle"
-                                               Text="znMusicPlayer"
+                                               Text="znMusicPlayerWUI"
                                                FontSize="20"
                                                HorizontalAlignment="Left"
                                                RasterizationScale="1.89"
@@ -245,7 +245,7 @@
                                     <Button x:Name="PlayButton"
                                             Height="60"
                                             Width="60"
-                                            CornerRadius="28" 
+                                            CornerRadius="30" 
                                             Background="Transparent"
                                             BorderThickness="0" Padding="15"
                                             Margin="8,0,8,0"

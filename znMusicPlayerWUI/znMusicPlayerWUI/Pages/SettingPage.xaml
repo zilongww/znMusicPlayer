@@ -269,7 +269,7 @@
                                     Background="{ThemeResource SystemAccentColor}"
                                     x:Name="accentcolor_accentcolor_presenter_root"
                                     Visibility="Visible">
-                                <TextBlock Text="znMusicPlayer"
+                                <TextBlock Text="znMusicPlayerWUI"
                                            Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
                                            VerticalAlignment="Center"
                                            HorizontalAlignment="Center"

@@ -59,19 +59,33 @@ namespace znMusicPlayerWUI.Windowed
                 __.Cancel = true;
                 MainWindow.AppWindowLocal.Hide();
             };
+            AppWindow.Changed += (_, __) =>
+            {
+                //Debug.WriteLine(__?.DidPresenterChange);
+                // WinUI Bug：设置了窗口不能最大化结果还是能 >:(
+                /*if (__?.DidPresenterChange == true)
+                    overlappedPresenter.Minimize();*/
+            };
 
             overlappedPresenter = OverlappedPresenter.Create();
-            AppWindow.SetIcon("icon.ico");
-            AppWindow.SetPresenter(overlappedPresenter);
             overlappedPresenter.IsMaximizable = false;
             overlappedPresenter.IsMinimizable = false;
+
+            AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+            AppWindow.TitleBar.BackgroundColor = Windows.UI.Color.FromArgb(0, 0, 0, 0);
+            AppWindow.TitleBar.ButtonBackgroundColor = Windows.UI.Color.FromArgb(0, 0, 0, 0);
+            AppWindow.TitleBar.ButtonInactiveBackgroundColor = Windows.UI.Color.FromArgb(0, 0, 0, 0);
+            SystemBackdrop = new DesktopAcrylicBackdrop();
+            AppWindow.SetIcon("icon.ico");
             AppWindow.MoveAndResize(new(0, 0, 0, 0));
+            AppWindow.SetPresenter(overlappedPresenter);
         }
 
         bool lastIsBackground = false;
         private void MainWindow_WindowViewStateChanged(bool isView)
         {
             ShowTaskBarButtons();
+            SetTaskbarButtonIcon(App.audioPlayer.PlaybackState);
         }
 
         public async void InitTaskbarInfo()
@@ -114,6 +128,10 @@ namespace znMusicPlayerWUI.Windowed
                 [
                     new Helpers.SDKs.TaskbarProgress.THUMBBUTTON() { iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = pauseIconHandle, szTip = "播放" }
                 ];
+
+                // 这个 api 调用似乎会慢一拍，所以这里调用两次
+                Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetOverlayIcon(Handle, playIconHandle, null);
+                Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetOverlayIcon(Handle, playIconHandle, null);
             }
             else
             {
@@ -121,6 +139,8 @@ namespace znMusicPlayerWUI.Windowed
                 [
                     new Helpers.SDKs.TaskbarProgress.THUMBBUTTON() { iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = playIconHandle, szTip = "播放" }
                 ];
+                Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetOverlayIcon(Handle, pauseIconHandle, null);
+                Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetOverlayIcon(Handle, pauseIconHandle, null);
             }
             try
             {

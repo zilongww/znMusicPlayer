@@ -74,7 +74,7 @@ namespace znMusicPlayerWUI.Pages
             Album_Image.Dispose(); AlbumLogo.Dispose();
             musicListData = null;
 
-            NavToObj.Songs.Songs.Clear();
+            NavToObj.Songs?.Songs.Clear();
             NavToObj = null;
             UnloadObject(this);
         }
@@ -118,13 +118,13 @@ namespace znMusicPlayerWUI.Pages
             SelectAllButton.Visibility = Visibility.Collapsed;
             LoadingTipControl.ShowLoading();
             var obj = await App.metingServices.NeteaseServices.GetAlbum(NavToObj.ID);
+            if (IsNavigatedOutFromPage) return;
             if (obj == null)
             {
                 MainWindow.AddNotify("加载专辑信息时出现错误", "无法加载专辑信息，请重试。",
                     NotifySeverity.Error);
                 return;
             }
-            if (IsNavigatedOutFromPage) return;
             NavToObj = obj;
             musicListData = NavToObj.Songs;
             if (string.IsNullOrEmpty(obj.Title2))

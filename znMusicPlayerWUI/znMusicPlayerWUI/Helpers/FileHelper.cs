@@ -49,7 +49,7 @@ namespace znMusicPlayerWUI.Helpers
         /// <summary>
         /// 查询或获取图片缓存文件路径
         /// </summary>
-        /// <param name="musicData"></param>
+        /// <param name="fileName"></param>
         /// <returns>
         /// !=null - 图片缓存文件路径 /
         /// null - 未查询到图片缓存
@@ -90,7 +90,7 @@ namespace znMusicPlayerWUI.Helpers
         /// <summary>
         /// 查询或获取图片缓存文件路径
         /// </summary>
-        /// <param name="musicData"></param>
+        /// <param name="musicListData"></param>
         /// <returns>
         /// !=null - 图片缓存文件路径 /
         /// null - 未查询到图片缓存

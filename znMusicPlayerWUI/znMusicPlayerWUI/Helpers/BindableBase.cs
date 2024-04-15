@@ -79,6 +79,7 @@ namespace znMusicPlayerWUI.Helpers
         {
             _musicData = null;
             _musicListData = null;
+            _searchText = null;
         }
     }
 
