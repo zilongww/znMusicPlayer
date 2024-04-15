@@ -9,6 +9,8 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using znMusicPlayerWUI.Helpers;
+using static znMusicPlayerWUI.Windowed.WindowHelper.Win32;
 
 namespace znMusicPlayerWUI.Windowed
 {
@@ -52,6 +54,7 @@ namespace znMusicPlayerWUI.Windowed
 
             Activated += (_, __) =>
             {
+                __.Handled = true;
                 App.WindowLocal.Activate();
             };
             AppWindow.Closing += (_, __) =>
@@ -75,7 +78,6 @@ namespace znMusicPlayerWUI.Windowed
             AppWindow.TitleBar.BackgroundColor = Windows.UI.Color.FromArgb(0, 0, 0, 0);
             AppWindow.TitleBar.ButtonBackgroundColor = Windows.UI.Color.FromArgb(0, 0, 0, 0);
             AppWindow.TitleBar.ButtonInactiveBackgroundColor = Windows.UI.Color.FromArgb(0, 0, 0, 0);
-            SystemBackdrop = new DesktopAcrylicBackdrop();
             AppWindow.SetIcon("icon.ico");
             AppWindow.MoveAndResize(new(0, 0, 0, 0));
             AppWindow.SetPresenter(overlappedPresenter);
@@ -86,6 +88,7 @@ namespace znMusicPlayerWUI.Windowed
         {
             ShowTaskBarButtons();
             SetTaskbarButtonIcon(App.audioPlayer.PlaybackState);
+            //TryTransparentWindow();
         }
 
         public async void InitTaskbarInfo()
@@ -242,6 +245,14 @@ namespace znMusicPlayerWUI.Windowed
             {
                 SetTaskbarImage(IconPath);
             }
+            else if (uMsg == 124 || uMsg == 125)
+            {
+                if (wParam.Value == 18446744073709551596)
+                {
+                    Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetOverlayIcon(Handle, nint.Zero, null);
+                    Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetOverlayIcon(Handle, nint.Zero, null);
+                }
+            }
 
             return Windows.Win32.PInvoke.CallWindowProc(origPrc, hwnd, uMsg, wParam, lParam);
         }
@@ -275,6 +286,52 @@ namespace znMusicPlayerWUI.Windowed
             App.playingList.NowPlayingImageLoaded -= PlayingList_NowPlayingImageLoaded;
             SetTaskbarImage(path);
         }
+
+        #region Transparent Window Method
+        private SUBCLASSPROC subClassProc;
+        public void TryTransparentWindow()
+        {
+            subClassProc = new SUBCLASSPROC(SubClassWndProc);
+            var windowHandle = new IntPtr((long)this.AppWindow.Id.Value);
+            SetWindowSubclass(windowHandle, subClassProc, 0, 0);
+
+            var exStyle = Vanara.PInvoke.User32.GetWindowLongAuto(windowHandle, Vanara.PInvoke.User32.WindowLongFlags.GWL_EXSTYLE).ToInt32();
+            if ((exStyle & (int)Vanara.PInvoke.User32.WindowStylesEx.WS_EX_LAYERED) == 0)
+            {
+                exStyle |= (int)Vanara.PInvoke.User32.WindowStylesEx.WS_EX_LAYERED;
+                exStyle |= (int)Vanara.PInvoke.User32.WindowStylesEx.WS_EX_TRANSPARENT;
+                Vanara.PInvoke.User32.SetWindowLong(windowHandle, Vanara.PInvoke.User32.WindowLongFlags.GWL_EXSTYLE, exStyle);
+                Vanara.PInvoke.User32.SetLayeredWindowAttributes(
+                    windowHandle,
+                    (uint)System.Drawing.ColorTranslator.ToWin32(System.Drawing.Color.FromArgb(255, 99, 99, 99)), 255,
+                    Vanara.PInvoke.User32.LayeredWindowAttributes.LWA_COLORKEY);
+            }
+            Helpers.TransparentWindowHelper.TransparentHelper.SetTransparent(this, true);
+        }
+
+        private IntPtr SubClassWndProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, uint dwRefData)
+        {
+            if (uMsg == (uint)Vanara.PInvoke.User32.WindowMessage.WM_ERASEBKGND)
+            {
+                if (Vanara.PInvoke.User32.GetClientRect(hWnd, out var rect))
+                {
+                    using var brush = Vanara.PInvoke.Gdi32.CreateSolidBrush((uint)System.Drawing.ColorTranslator.ToWin32(System.Drawing.Color.FromArgb(255, 99, 99, 99)));
+                    Vanara.PInvoke.User32.FillRect(wParam, rect, brush);
+                    return new IntPtr(1);
+                }
+            }
+
+            return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+        }
+
+        private delegate IntPtr SUBCLASSPROC(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, uint dwRefData);
+
+        [DllImport("Comctl32.dll", SetLastError = true)]
+        private static extern IntPtr DefSubclassProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("Comctl32.dll", SetLastError = true)]
+        private static extern bool SetWindowSubclass(IntPtr hWnd, SUBCLASSPROC pfnSubclass, uint uIdSubclass, uint dwRefData);
+        #endregion
     }
 
     internal static class NativeMethods

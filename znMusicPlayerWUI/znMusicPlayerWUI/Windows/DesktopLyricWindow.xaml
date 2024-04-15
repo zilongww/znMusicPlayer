@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" SizeChanged="Window_SizeChanged"
-    xmlns:ui="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:ui="using:CommunityToolkit.WinUI.UI"
     xmlns:media="using:CommunityToolkit.WinUI.UI.Media">
     <Grid x:Name="root" SizeChanged="root_SizeChanged" Loaded="root_Loaded">
         <Grid.Resources>
@@ -24,22 +24,30 @@
             </Grid.RowDefinitions>
             <Grid x:Name="V1" Grid.Row="0" HorizontalAlignment="Stretch">
                 <Viewbox>
-                    <ui:DropShadowPanel x:Name="ShadowTarget" OffsetX="0" OffsetY="0.5" BlurRadius="6" Color="#AA000000">
+                    <Grid x:Name="T1BaseParent">
+                        <Border x:Name="T1ShadowTarget"/>
                         <TextBlock x:Name="T1Base">
+                            <ui:Effects.Shadow>
+                                <ui:AttachedDropShadow Opacity="1" BlurRadius="10" Color="#88000000" Offset="0,0.5" CastTo="{x:Bind T1ShadowTarget}"/>
+                            </ui:Effects.Shadow>
                             <Run x:Name="T1" Text="znMusicPlayerWUI" Foreground="{ThemeResource LrcForeground}"/>
                             <Run x:Name="T11" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
                         </TextBlock>
-                    </ui:DropShadowPanel>
+                    </Grid>
                 </Viewbox>
             </Grid>
             <Grid x:Name="V2" Grid.Row="1" HorizontalAlignment="Stretch">
                 <Viewbox>
-                    <ui:DropShadowPanel x:Name="ShadowTarget1" OffsetX="0" OffsetY="0.5" BlurRadius="6" Color="#AA000000">
+                    <Grid x:Name="T2BaseParent">
+                        <Border x:Name="T2ShadowTarget"/>
                         <TextBlock x:Name="T2Base">
+                            <ui:Effects.Shadow>
+                                <ui:AttachedDropShadow Opacity="1" BlurRadius="10" Color="#88000000" Offset="0,0.5" CastTo="{x:Bind T2ShadowTarget}"/>
+                            </ui:Effects.Shadow>
                             <Run x:Name="T2" Text="无歌词" Foreground="{ThemeResource LrcForeground}"/>
                             <Run x:Name="T21" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
                         </TextBlock>
-                    </ui:DropShadowPanel>
+                    </Grid>
                 </Viewbox>
             </Grid>
         </Grid>
@@ -79,7 +87,8 @@
                     HorizontalAlignment="Left"
                     Orientation="Horizontal"
                     x:Name="ToolButtonsStackPanel"
-                    RequestedTheme="Dark">
+                    RequestedTheme="Dark"
+                    Opacity="0.3">
             <StackPanel.Resources>
                 <Style TargetType="FontIcon">
                     <Setter Property="FontSize" Value="16"/>
@@ -89,25 +98,34 @@
                 x:Name="LockButton" Click="LockButton_Click" Width="50" Height="34" ToolTipService.ToolTip="锁定">
                 <FontIcon Glyph="&#xE72E;"/>
             </Button>
-            <Button Background="Transparent" BorderThickness="0" CornerRadius="0,0,4,0" Visibility="Collapsed"
+            <Button Background="Transparent" BorderThickness="0" CornerRadius="0,0,4,0" Visibility="Visible"
                 x:Name="MusicControlButton" Click="MusicControlButton_Click" Width="50" Height="34" ToolTipService.ToolTip="">
                 <FontIcon Glyph="&#xEA69;"/>
             </Button>
         </StackPanel>
-        <ui:DropShadowPanel VerticalAlignment="Bottom" HorizontalAlignment="Center"
-                            OffsetX="0" OffsetY="0.5" BlurRadius="6" Color="#AA000000"
-                            RequestedTheme="Dark">
+        <Grid x:Name="TRBaseParent">
+            <Border x:Name="TRShadowTarget"/>
             <TextBlock x:Name="LyricRomajiPopup_tb"
-                       FontSize="14"
-                       Foreground="{ThemeResource LrcForeground}"/>
-        </ui:DropShadowPanel>
+                   FontSize="14"
+                   Foreground="{ThemeResource LrcForeground}"
+                   IsHitTestVisible="False"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Center">
+                <ui:Effects.Shadow>
+                    <ui:AttachedDropShadow Opacity="1" BlurRadius="3" Color="#AA000000" Offset="0,0.5" CastTo="{x:Bind TRShadowTarget}"/>
+                </ui:Effects.Shadow>
+            </TextBlock>
+        </Grid>
         <Popup x:Name="MusicControlPopup" ShouldConstrainToRootBounds="False"
                VerticalOffset="-40" Opened="MusicControlPopup_Opened" Closed="MusicControlPopup_Closed">
-            <Grid Background="{ThemeResource AcrylicNormal}"
+            <Popup.SystemBackdrop>
+                <DesktopAcrylicBackdrop/>
+            </Popup.SystemBackdrop>
+            <Grid Background="Transparent"
                   BorderBrush="{ThemeResource ControlElevationBorderBrush}"
                   BorderThickness="1"
                   HorizontalAlignment="Stretch"
-                  Padding="12" CornerRadius="4"
+                  Padding="16" CornerRadius="10"
                   SizeChanged="Grid_SizeChanged">
                 <Grid>
                     <Grid.RowDefinitions>

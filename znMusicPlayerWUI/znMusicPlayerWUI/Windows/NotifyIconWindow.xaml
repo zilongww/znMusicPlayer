@@ -131,7 +131,7 @@
                 </Grid>
             </StackPanel>
             <Rectangle HorizontalAlignment="Stretch" Height="1" Fill="{ThemeResource CardStrokeColorDefaultBrush}" VerticalAlignment="Top" Grid.Row="1"/>
-            <ScrollViewer Grid.Row="1" Visibility="Collapsed">
+            <ScrollViewer Grid.Row="1" Visibility="Visible">
                 <ScrollViewer.Resources>
                     <Style TargetType="TextBlock">
                         <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -159,34 +159,16 @@
                     </Style>
                 </ScrollViewer.Resources>
 
-                <cc:WrapPanel Margin="24,24,24,12" HorizontalSpacing="16"> 
+                <cc:WrapPanel Margin="24,24,24,12" HorizontalSpacing="16">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <ToggleButton x:Name="TB_Lyric" Click="TB_Lyric_Click" AccessKey="A">
-                            <FontIcon Glyph="词" FontSize="16" FontFamily="{StaticResource ContentControlThemeFontFamily}"/>
+                            <FontIcon Glyph="&#xED1E;" FontSize="16"/>
                         </ToggleButton>
                         <TextBlock Text="桌面歌词" Grid.Row="1"/>
-                    </Grid>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
-                        <Button Padding="17" AccessKey="S">
-                            <Button.Flyout>
-                                <MenuFlyout>
-                                    <MenuFlyoutItem Text="顺序播放" Click="MenuFlyoutItem_Click" Tag="0" AccessKey="Z"/>
-                                    <MenuFlyoutItem Text="随机播放" Click="MenuFlyoutItem_Click" Tag="1" AccessKey="X"/>
-                                    <MenuFlyoutItem Text="单曲循环" Click="MenuFlyoutItem_Click" Tag="2" AccessKey="C"/>
-                                    <MenuFlyoutItem Text="播放完成后停止" Click="MenuFlyoutItem_Click" Tag="3" AccessKey="v"/>
-                                </MenuFlyout>
-                            </Button.Flyout>
-                            <Path Fill="{ThemeResource ButtonForegroundThemeBrush}" Data="{StaticResource 顺序播放}" Stretch="Uniform"/>
-                        </Button>
-                        <TextBlock Text="顺序播放" Grid.Row="1"/>
                     </Grid>
                 </cc:WrapPanel>
             </ScrollViewer>

@@ -5,6 +5,8 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Composition.SystemBackdrops;
+using Microsoft.UI.Composition;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,9 +14,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.UI;
-using Microsoft.UI.Composition.SystemBackdrops;
-using Microsoft.UI.Composition;
 using WinRT;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.Pages;
@@ -32,6 +31,7 @@ using PInvoke;
 using znMusicPlayerWUI.Media;
 using static Vanara.PInvoke.User32;
 using System.Diagnostics.Eventing.Reader;
+using System.Numerics;
 
 namespace znMusicPlayerWUI.Windowed
 {
@@ -107,9 +107,52 @@ namespace znMusicPlayerWUI.Windowed
 
         private void root_Loaded(object sender, RoutedEventArgs e)
         {
-            AddEvents();
+            AddEvents();/*
+            T1Base.SizeChanged += T1Base_SizeChanged;
+            T2Base.SizeChanged += T1Base_SizeChanged;
+            LyricRomajiPopup_tb.SizeChanged += T1Base_SizeChanged;*/
+        }
+/*
+        private void T1Base_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            CrateShadow();
         }
 
+        Visual T1Visual = null;
+        Visual T2Visual = null;
+        Visual RTVisual = null;
+        private async void CrateShadow()
+        {
+            await Task.Delay(10);
+            T1Visual = ElementCompositionPreview.GetElementVisual(T1Base);
+            T2Visual = ElementCompositionPreview.GetElementVisual(T2Base);
+            RTVisual = ElementCompositionPreview.GetElementVisual(LyricRomajiPopup_tb);
+
+            TextBlock[] crateShadowElementList = { T1Base, T2Base, LyricRomajiPopup_tb };
+            Visual[] crateShadowVisualList = { T1Visual, T2Visual, RTVisual };
+            DropShadow[] shadowList = new DropShadow[3];
+            for (int i = 0; i < 3; i++)
+            {
+                shadowList[i]?.Dispose();
+
+                var element = crateShadowElementList[i];
+                var visual = crateShadowVisualList[i];
+                var compositor = visual.Compositor;
+                var basicRectVisual = compositor.CreateSpriteVisual();
+                basicRectVisual.Size = element.RenderSize.ToVector2();
+
+                DropShadow dropShadow = compositor.CreateDropShadow();
+                dropShadow.BlurRadius = 15f;
+                dropShadow.Opacity = 1f;
+                dropShadow.Color = Windows.UI.Color.FromArgb(255, 50, 50, 50);
+                dropShadow.Mask = element.GetAlphaMask();
+                shadowList[i] = dropShadow;
+
+                basicRectVisual.Shadow = dropShadow;
+                ElementCompositionPreview.SetElementChildVisual(element, basicRectVisual);
+            }
+        }
+*/
         private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
             RemoveEvents();
@@ -609,10 +652,10 @@ namespace znMusicPlayerWUI.Windowed
                 
                 m_acrylicController = new DesktopAcrylicController()
                 {
-                    TintColor = Color.FromArgb(255, 35, 35, 35),
+                    TintColor = Windows.UI.Color.FromArgb(255, 35, 35, 35),
                     LuminosityOpacity = 0.8f,
                     TintOpacity = 0f,
-                    FallbackColor = Color.FromArgb(255, 40, 40, 40)
+                    FallbackColor = Windows.UI.Color.FromArgb(255, 40, 40, 40)
                 };
 
                 m_configurationSource.IsInputActive = true;

@@ -106,7 +106,7 @@ namespace znMusicPlayerWUI.Windowed
             Activated += NotifyIconWindow_Activated;
 
             SetBackdrop(BackdropType.DesktopAcrylic);
-            MoveToPosition();
+            //MoveToPosition();
             #endregion
         }
 
@@ -317,7 +317,6 @@ namespace znMusicPlayerWUI.Windowed
 
         private void NotifyIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine(e.Delta.ToString());
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
                 if (Visible)
@@ -326,7 +325,6 @@ namespace znMusicPlayerWUI.Windowed
                     return;
                 }
 
-                //TrySetAcrylicBackdrop();
                 AppWindow.Show(true);
                 MoveToPosition();
                 PInvoke.User32.SetForegroundWindow(hwnd);
@@ -606,6 +604,58 @@ namespace znMusicPlayerWUI.Windowed
                 root.BorderThickness = new(1);
             }
         }
+    }
+
+    public class TransparentWindow
+    {
+        Window window = null;
+        public TransparentWindow(Window window)
+        {
+            this.window = window;
+        }
+
+        private SUBCLASSPROC subClassProc;
+        public void TryTransparentWindow()
+        {
+            subClassProc = new SUBCLASSPROC(SubClassWndProc);
+            var windowHandle = new IntPtr((long)window.AppWindow.Id.Value);
+            SetWindowSubclass(windowHandle, subClassProc, 0, 0);
+
+            var exStyle = Vanara.PInvoke.User32.GetWindowLongAuto(windowHandle, Vanara.PInvoke.User32.WindowLongFlags.GWL_EXSTYLE).ToInt32();
+            if ((exStyle & (int)Vanara.PInvoke.User32.WindowStylesEx.WS_EX_LAYERED) == 0)
+            {
+                exStyle |= (int)Vanara.PInvoke.User32.WindowStylesEx.WS_EX_LAYERED;
+                Vanara.PInvoke.User32.SetWindowLong(windowHandle, Vanara.PInvoke.User32.WindowLongFlags.GWL_EXSTYLE, exStyle);
+                Vanara.PInvoke.User32.SetLayeredWindowAttributes(
+                    windowHandle,
+                    (uint)System.Drawing.ColorTranslator.ToWin32(System.Drawing.Color.FromArgb(255, 99, 99, 99)), 255,
+                    Vanara.PInvoke.User32.LayeredWindowAttributes.LWA_COLORKEY);
+            }
+            Helpers.TransparentWindowHelper.TransparentHelper.SetTransparent(window, true);
+        }
+
+        private IntPtr SubClassWndProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, uint dwRefData)
+        {
+            if (uMsg == (uint)Vanara.PInvoke.User32.WindowMessage.WM_ERASEBKGND)
+            {
+                if (Vanara.PInvoke.User32.GetClientRect(hWnd, out var rect))
+                {
+                    using var brush = Vanara.PInvoke.Gdi32.CreateSolidBrush((uint)System.Drawing.ColorTranslator.ToWin32(System.Drawing.Color.FromArgb(255, 99, 99, 99)));
+                    Vanara.PInvoke.User32.FillRect(wParam, rect, brush);
+                    return new IntPtr(1);
+                }
+            }
+
+            return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+        }
+
+        private delegate IntPtr SUBCLASSPROC(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, uint dwRefData);
+
+        [DllImport("Comctl32.dll", SetLastError = true)]
+        private static extern IntPtr DefSubclassProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("Comctl32.dll", SetLastError = true)]
+        private static extern bool SetWindowSubclass(IntPtr hWnd, SUBCLASSPROC pfnSubclass, uint uIdSubclass, uint dwRefData);
     }
 
     public class RoundWindow

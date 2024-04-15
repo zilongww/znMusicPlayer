@@ -14,14 +14,9 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Windowing;
-using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Composition;
-using Windows.UI;
-using WinRT;
-using Windows.Graphics;
-using NAudio.Wave;
-using CommunityToolkit.WinUI;
+using Microsoft.UI.Composition.SystemBackdrops;
+using Microsoft.UI.Windowing;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.Pages;
 using znMusicPlayerWUI.Pages.MusicPages;
@@ -29,6 +24,11 @@ using znMusicPlayerWUI.Controls;
 using znMusicPlayerWUI.Windowed;
 using znMusicPlayerWUI.DataEditor;
 using znMusicPlayerWUI.Background.HotKeys;
+using CommunityToolkit.WinUI;
+using Windows.UI;
+using WinRT;
+using Windows.Graphics;
+using NAudio.Wave;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
