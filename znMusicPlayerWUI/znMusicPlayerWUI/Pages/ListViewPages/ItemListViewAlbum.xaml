@@ -141,7 +141,8 @@
                                             <AppBarButton Label="搜索歌曲"
                                                           AccessKey="F"
                                                           Click="SearchButton_Click"
-                                                          x:Name="SearchButton">
+                                                          x:Name="SearchButton"
+                                                          ToolTipService.ToolTip="按关键字搜索歌曲">
                                                 <AppBarButton.Icon>
                                                     <AnimatedIcon x:Name='SearchAnimatedIcon'>
                                                         <AnimatedIcon.Source>

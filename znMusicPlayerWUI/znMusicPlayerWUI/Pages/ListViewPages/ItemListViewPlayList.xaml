@@ -120,10 +120,10 @@
                                                     </AppBarButton.Icon>
                                                 </AppBarButton>
                                                 <AppBarToggleButton Click="Button_Click_2"
-                                                              Label="多选"
-                                                              AccessKey="S"
-                                                              ToolTipService.ToolTip="多选"
-                                                              x:Name="SelectItemButton">
+                                                                    Label="多选"
+                                                                    AccessKey="S"
+                                                                    ToolTipService.ToolTip="多选"
+                                                                    x:Name="SelectItemButton">
                                                     <AppBarToggleButton.Icon>
                                                         <FontIcon Glyph="&#xE762;"/>
                                                     </AppBarToggleButton.Icon>
@@ -147,9 +147,10 @@
                                                 </AppBarButton>
                                                 
                                                 <AppBarButton Label="搜索歌曲"
-                                                                  AccessKey="F"
-                                                                  Click="SearchButton_Click"
-                                                                  x:Name="SearchButton">
+                                                              AccessKey="F"
+                                                              Click="SearchButton_Click"
+                                                              x:Name="SearchButton"
+                                                              ToolTipService.ToolTip="按关键字搜索歌曲">
                                                     <AppBarButton.Icon>
                                                         <AnimatedIcon x:Name='SearchAnimatedIcon'>
                                                             <AnimatedIcon.Source>
