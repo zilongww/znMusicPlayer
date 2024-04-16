@@ -604,16 +604,23 @@ namespace znMusicPlayerWUI.Pages
                         foreach (var i in MusicDataList)
                         {
                             if (CompareString(i.MusicData.Title).Contains(text))
-                                searchMusicDatas.Add(i);
-                            else if (i.MusicData.Title2 is not null)
+                                if (!searchMusicDatas.Contains(i))
+                                    searchMusicDatas.Add(i);
+                            if (i.MusicData.Title2 is not null)
                             {
                                 if (CompareString(i.MusicData.Title2).Contains(text))
-                                    searchMusicDatas.Add(i);
+                                    if (!searchMusicDatas.Contains(i))
+                                        searchMusicDatas.Add(i);
                             }
-                            else if (CompareString(i.MusicData.ArtistName).Contains(text))
-                                searchMusicDatas.Add(i);
-                            else if (CompareString(i.MusicData.Album.Title).Contains(text))
-                                searchMusicDatas.Add(i);
+                            if (i.MusicData.ArtistName is not null)
+                            {
+                                if (CompareString(i.MusicData.ArtistName).Contains(text))
+                                    if (!searchMusicDatas.Contains(i))
+                                        searchMusicDatas.Add(i);
+                            }
+                            if (CompareString(i.MusicData.Album.Title).Contains(text))
+                                if (!searchMusicDatas.Contains(i))
+                                    searchMusicDatas.Add(i);
                         }
                         break;
                     case 1:
@@ -631,8 +638,11 @@ namespace znMusicPlayerWUI.Pages
                     case 2:
                         foreach (var i in MusicDataList)
                         {
-                            if (CompareString(i.MusicData.ArtistName).Contains(text))
-                                searchMusicDatas.Add(i);
+                            if (i.MusicData.ArtistName is not null)
+                            {
+                                if (CompareString(i.MusicData.ArtistName).Contains(text))
+                                    searchMusicDatas.Add(i);
+                            }
                         }
                         break;
                     case 3:

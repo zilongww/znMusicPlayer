@@ -263,7 +263,8 @@
                                                 UpdateTextOnSelect="False"
                                                 TextChanged="AutoSuggestBox_TextChanged"
                                                 QuerySubmitted="AutoSuggestBox_QuerySubmitted"
-                                                SuggestionChosen="SearchBox_SuggestionChosen">
+                                                SuggestionChosen="SearchBox_SuggestionChosen"
+                                                Style="{ThemeResource DefaultAutoSuggestBoxStyle1}">
                                     <AutoSuggestBox.ItemTemplate>
                                         <DataTemplate x:DataType="helper:SongItemBindBase">
                                             <StackPanel Padding="0,8">

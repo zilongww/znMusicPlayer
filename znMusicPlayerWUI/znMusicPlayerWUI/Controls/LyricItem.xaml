@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:znMusicPlayerWUI.Controls"
     xmlns:brush="using:CommunityToolkit.WinUI.UI.Media"
-    xmlns:ui="using:CommunityToolkit.WinUI.UI.Controls"   
+    xmlns:ui="using:CommunityToolkit.WinUI.UI"   
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" HorizontalAlignment="Stretch" DataContextChanged="Grid_DataContextChanged"
@@ -14,11 +14,22 @@
         <RowDefinition Height="auto" x:Name="RomajiRD"/>
         <RowDefinition Height="auto"/>
     </Grid.RowDefinitions>
-    <ui:DropShadowPanel BlurRadius="18" Color="#60555555" OffsetX="0" OffsetY="0">
-        <TextBlock x:Name="RomajiTextBlock" TextWrapping="Wrap" FontSize="20" Foreground="{ThemeResource MusicPageLrcForeground}"/>
-    </ui:DropShadowPanel>
-    <ui:DropShadowPanel BlurRadius="18" Color="#60555555" OffsetX="0" OffsetY="0" Grid.Row="1">
+
+    <Grid>
+        <Border x:Name="RomajiTextBlockShadowTarget"/>
+        <TextBlock x:Name="RomajiTextBlock" TextWrapping="Wrap" FontSize="20" Foreground="{ThemeResource MusicPageLrcForeground}">
+            <ui:Effects.Shadow>
+                <ui:AttachedDropShadow BlurRadius="18" Color="#60555555" CastTo="{x:Bind RomajiTextBlockShadowTarget}"/>
+            </ui:Effects.Shadow>
+        </TextBlock>
+    </Grid>
+    <Grid Grid.Row="1">
+        <Border x:Name="LyricTextBlockShadowTarget"/>
         <TextBlock x:Name="LyricTextBlock" TextWrapping="Wrap"
-               FontSize="24"/>
-    </ui:DropShadowPanel>
+               FontSize="24">
+            <ui:Effects.Shadow>
+                <ui:AttachedDropShadow BlurRadius="18" Color="#60555555" CastTo="{x:Bind LyricTextBlockShadowTarget}"/>
+            </ui:Effects.Shadow>
+        </TextBlock>
+    </Grid>
 </Grid>

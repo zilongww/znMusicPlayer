@@ -46,12 +46,13 @@
                             <Grid x:Name="PlayList_BaseGrid">
                                 <Grid x:Name="PlayList_Image_BaseGrid" Margin="0,32,0,0" HorizontalAlignment="Left">
                                     <Rectangle x:Name="PlayList_Image_DropShadowBase"/>
-                                    <Border HorizontalAlignment="Left"
-                                            x:Name="PlayList_ImageBaseBorder">
+                                    <Grid HorizontalAlignment="Left"
+                                          x:Name="PlayList_ImageBaseBorder">
                                         <controlszn:Imagezn x:Name="PlayList_Image"
                                                             CornerRadius="8"
-                                                            BorderBrush="{ThemeResource ControlElevationBorderBrush}"/>
-                                    </Border>
+                                                            BorderBrush="{ThemeResource ControlElevationBorderBrush}">
+                                        </controlszn:Imagezn>
+                                    </Grid>
                                 </Grid>
                                 <Grid x:Name="InfosBaseStackPanel"
                                       VerticalAlignment="Top">
@@ -327,7 +328,8 @@
                                                 PlaceholderText="搜索歌曲关键字"
                                                 TextChanged="AutoSuggestBox_TextChanged"
                                                 QuerySubmitted="AutoSuggestBox_QuerySubmitted"
-                                                SuggestionChosen="SearchBox_SuggestionChosen">
+                                                SuggestionChosen="SearchBox_SuggestionChosen"
+                                                Style="{ThemeResource DefaultAutoSuggestBoxStyle1}">
                                     <AutoSuggestBox.ItemTemplate>
                                         <DataTemplate x:DataType="helper:SongItemBindBase">
                                             <StackPanel Padding="0,8">

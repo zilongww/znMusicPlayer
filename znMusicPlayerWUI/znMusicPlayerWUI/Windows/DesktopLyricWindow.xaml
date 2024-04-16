@@ -52,7 +52,7 @@
             </Grid>
         </Grid>
         <Border x:Name="InfoTBBorder" RequestedTheme="Dark"
-                HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0"
+                HorizontalAlignment="Center" VerticalAlignment="Bottom" Opacity="0"
                 CornerRadius="4" BorderThickness="1" Background="#90000000" BorderBrush="{ThemeResource ControlElevationBorderBrush}">
             <Border.OpacityTransition>
                 <ScalarTransition/>
