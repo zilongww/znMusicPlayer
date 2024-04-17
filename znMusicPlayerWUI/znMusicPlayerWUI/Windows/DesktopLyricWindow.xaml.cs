@@ -73,7 +73,7 @@ namespace znMusicPlayerWUI.Windowed
                 }
                 else
                 {
-                    AppWindow.Resize(new SizeInt32() { Width = (int)(450 * dpi), Height = (int)(100 * dpi) });
+                    AppWindow.Resize(new SizeInt32() { Width = (int)(850 * dpi), Height = (int)(120 * dpi) });
                     if (!MainWindow.isMinSize)
                     {
                         PointInt32 pointInt32 = new(
@@ -578,6 +578,7 @@ namespace znMusicPlayerWUI.Windowed
                 overlappedPresenter.SetBorderAndTitleBar(false, false);
                 DisposeAcrylicBackdrop();
                 TryTransparentWindow();
+                root.Padding = new(8,0,8,8); // 透明窗口后会导致窗口左右下往外增大 8 像素
                 ToolButtonsStackPanel.Visibility = Visibility.Collapsed;
 
                 UpdateDragSize();

@@ -242,12 +242,12 @@ namespace znMusicPlayerWUI.Windowed
                 SetTaskbarImage(IconPath);
             }
             else if (uMsg == 124 || uMsg == 125)
-            {
+            {/* doesn't work
                 if (wParam.Value == 18446744073709551596)
                 {
                     Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetOverlayIcon(Handle, nint.Zero, null);
                     Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetOverlayIcon(Handle, nint.Zero, null);
-                }
+                }*/
             }
 
             return Windows.Win32.PInvoke.CallWindowProc(origPrc, hwnd, uMsg, wParam, lParam);

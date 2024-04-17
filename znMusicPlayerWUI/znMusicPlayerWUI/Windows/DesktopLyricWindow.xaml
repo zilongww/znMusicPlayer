@@ -9,7 +9,8 @@
     mc:Ignorable="d" SizeChanged="Window_SizeChanged"
     xmlns:ui="using:CommunityToolkit.WinUI.UI"
     xmlns:media="using:CommunityToolkit.WinUI.UI.Media">
-    <Grid x:Name="root" SizeChanged="root_SizeChanged" Loaded="root_Loaded">
+    <Grid x:Name="root" SizeChanged="root_SizeChanged" Loaded="root_Loaded"
+          Padding="0">
         <Grid.Resources>
             <ResourceDictionary>
                 <SolidColorBrush x:Key="LrcForeground" Color="#DDFFFFFF"/>
@@ -17,7 +18,7 @@
                 <StaticResource x:Key="AccentLrcForeground" ResourceKey="AccentAAFillColorTertiaryBrush"/>
             </ResourceDictionary>
         </Grid.Resources>
-        <Grid Padding="16" Loaded="Grid_Loaded" RequestedTheme="Dark">
+        <Grid Padding="24" Loaded="Grid_Loaded" RequestedTheme="Dark">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -28,7 +29,7 @@
                         <Border x:Name="T1ShadowTarget"/>
                         <TextBlock x:Name="T1Base">
                             <ui:Effects.Shadow>
-                                <ui:AttachedDropShadow Opacity="1" BlurRadius="10" Color="#88000000" Offset="0,0.5" CastTo="{x:Bind T1ShadowTarget}"/>
+                                <ui:AttachedDropShadow Opacity="1" BlurRadius="15" Color="#99000000" Offset="0,1" CastTo="{x:Bind T1ShadowTarget}"/>
                             </ui:Effects.Shadow>
                             <Run x:Name="T1" Text="znMusicPlayerWUI" Foreground="{ThemeResource LrcForeground}"/>
                             <Run x:Name="T11" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
@@ -42,7 +43,7 @@
                         <Border x:Name="T2ShadowTarget"/>
                         <TextBlock x:Name="T2Base">
                             <ui:Effects.Shadow>
-                                <ui:AttachedDropShadow Opacity="1" BlurRadius="10" Color="#88000000" Offset="0,0.5" CastTo="{x:Bind T2ShadowTarget}"/>
+                                <ui:AttachedDropShadow Opacity="1" BlurRadius="15" Color="#99000000" Offset="0,1" CastTo="{x:Bind T2ShadowTarget}"/>
                             </ui:Effects.Shadow>
                             <Run x:Name="T2" Text="无歌词" Foreground="{ThemeResource LrcForeground}"/>
                             <Run x:Name="T21" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
@@ -106,11 +107,12 @@
         <Grid x:Name="TRBaseParent">
             <Border x:Name="TRShadowTarget"/>
             <TextBlock x:Name="LyricRomajiPopup_tb"
-                   FontSize="14"
-                   Foreground="{ThemeResource LrcForeground}"
-                   IsHitTestVisible="False"
-                   VerticalAlignment="Top"
-                   HorizontalAlignment="Center">
+                       FontSize="14"
+                       Margin="0,6,0,0"
+                       Foreground="{ThemeResource LrcForeground}"
+                       IsHitTestVisible="False"
+                       VerticalAlignment="Top"
+                       HorizontalAlignment="Center">
                 <ui:Effects.Shadow>
                     <ui:AttachedDropShadow Opacity="1" BlurRadius="3" Color="#AA000000" Offset="0,0.5" CastTo="{x:Bind TRShadowTarget}"/>
                 </ui:Effects.Shadow>
