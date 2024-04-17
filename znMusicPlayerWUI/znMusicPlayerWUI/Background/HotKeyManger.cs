@@ -349,13 +349,13 @@ namespace znMusicPlayerWUI.Background.HotKeys
                         }
                         break;
                     case HotKeyID.LockLyricWindow:
+                        MainWindow.DesktopLyricWindow?.Lock();/*
                         if (MainWindow.DesktopLyricWindow != null)
                         {
                             if (!MainWindow.DesktopLyricWindow.IsLock)
                             {
-                                MainWindow.DesktopLyricWindow.Lock();
                             }
-                        }
+                        }*/
                         break;
                     default:
                         MainWindow.AddNotify(

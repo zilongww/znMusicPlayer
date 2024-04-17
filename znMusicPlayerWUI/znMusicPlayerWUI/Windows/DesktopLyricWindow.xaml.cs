@@ -15,6 +15,7 @@ using znMusicPlayerWUI.Helpers;
 using WinRT;
 using Windows.Graphics;
 using NAudio.Wave;
+using Vanara.PInvoke;
 
 namespace znMusicPlayerWUI.Windowed
 {
@@ -579,15 +580,15 @@ namespace znMusicPlayerWUI.Windowed
                 DisposeAcrylicBackdrop();
                 TryTransparentWindow();
                 root.Padding = new(8,0,8,8); // 透明窗口后会导致窗口左右下往外增大 8 像素
-                ToolButtonsStackPanel.Visibility = Visibility.Collapsed;
+                ToolButtonsBase.Visibility = Visibility.Collapsed;
 
                 UpdateDragSize();
-                SizeInt32 sizeInt32 = new(AppWindow.Size.Width - 1, AppWindow.Size.Height);
-                SizeInt32 sizeInt32_1 = new(AppWindow.Size.Width + 1, AppWindow.Size.Height);
-                AppWindow.Resize(sizeInt32);
-                AppWindow.Resize(sizeInt32_1);
+                //SizeInt32 sizeInt32 = new(AppWindow.Size.Width - 1, AppWindow.Size.Height);
+                //SizeInt32 sizeInt32_1 = new(AppWindow.Size.Width + 1, AppWindow.Size.Height);
+                //AppWindow.Resize(sizeInt32);
+                //AppWindow.Resize(sizeInt32_1);
 
-                ShowInfo("关闭桌面歌词后会解除锁定状态");
+                ShowInfo("使用 锁定桌面歌词 热键可以切换锁定状态");
             }
         }
 
@@ -607,17 +608,14 @@ namespace znMusicPlayerWUI.Windowed
             RectInt32[] rectInt32s = default;
             if (IsLock)
             {
-                return;
-                rectInt32s = new RectInt32[] {
-                    new(0, 0, windowWidth, windowHeight)
-                };
+                rectInt32s = [new(0, 0, windowWidth, windowHeight)];
             }
             else
             {
-                rectInt32s = new RectInt32[] {
+                rectInt32s = [
                     new(toolBarWidth, 0, windowWidth - toolBarWidth, windowHeight),
                     new(0, toolBarHeight, toolBarWidth, windowHeight - toolBarHeight)
-                };
+                ];
             }
             
             AppWindow.TitleBar.SetDragRectangles(rectInt32s);
@@ -631,8 +629,8 @@ namespace znMusicPlayerWUI.Windowed
         {
             if (DesktopAcrylicController.IsSupported())
             {
-                this.Activated += DesktopLyricWindow_Activated;
-                this.Closed += DesktopLyricWindow_Closed;
+                Activated += DesktopLyricWindow_Activated;
+                Closed += DesktopLyricWindow_Closed;
                 
                 m_acrylicController = new DesktopAcrylicController()
                 {
@@ -677,31 +675,31 @@ namespace znMusicPlayerWUI.Windowed
         public void TryTransparentWindow()
         {
             subClassProc = new SUBCLASSPROC(SubClassWndProc);
-            var windowHandle = new IntPtr((long)this.AppWindow.Id.Value);
+            var windowHandle = new IntPtr((long)AppWindow.Id.Value);
             SetWindowSubclass(windowHandle, subClassProc, 0, 0);
 
-            var exStyle = Vanara.PInvoke.User32.GetWindowLongAuto(windowHandle, Vanara.PInvoke.User32.WindowLongFlags.GWL_EXSTYLE).ToInt32();
-            if ((exStyle & (int)Vanara.PInvoke.User32.WindowStylesEx.WS_EX_LAYERED) == 0)
+            var exStyle = User32.GetWindowLongAuto(windowHandle, User32.WindowLongFlags.GWL_EXSTYLE).ToInt32();
+            if ((exStyle & (int)User32.WindowStylesEx.WS_EX_LAYERED) == 0)
             {
-                exStyle |= (int)Vanara.PInvoke.User32.WindowStylesEx.WS_EX_LAYERED;
-                exStyle |= (int)Vanara.PInvoke.User32.WindowStylesEx.WS_EX_TRANSPARENT;
-                Vanara.PInvoke.User32.SetWindowLong(windowHandle, Vanara.PInvoke.User32.WindowLongFlags.GWL_EXSTYLE, exStyle);
-                Vanara.PInvoke.User32.SetLayeredWindowAttributes(
+                exStyle |= (int)User32.WindowStylesEx.WS_EX_LAYERED;
+                exStyle |= (int)User32.WindowStylesEx.WS_EX_TRANSPARENT;
+                User32.SetWindowLong(windowHandle, User32.WindowLongFlags.GWL_EXSTYLE, exStyle);
+                User32.SetLayeredWindowAttributes(
                     windowHandle,
                     (uint)System.Drawing.ColorTranslator.ToWin32(System.Drawing.Color.FromArgb(255, 99, 99, 99)), 255,
-                    Vanara.PInvoke.User32.LayeredWindowAttributes.LWA_COLORKEY);
+                    User32.LayeredWindowAttributes.LWA_COLORKEY);
             }
             Helpers.TransparentWindowHelper.TransparentHelper.SetTransparent(this, true);
         }
 
         private IntPtr SubClassWndProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, uint dwRefData)
         {
-            if (uMsg == (uint)Vanara.PInvoke.User32.WindowMessage.WM_ERASEBKGND)
+            if (uMsg == (uint)User32.WindowMessage.WM_ERASEBKGND)
             {
-                if (Vanara.PInvoke.User32.GetClientRect(hWnd, out var rect))
+                if (User32.GetClientRect(hWnd, out var rect))
                 {
-                    using var brush = Vanara.PInvoke.Gdi32.CreateSolidBrush((uint)System.Drawing.ColorTranslator.ToWin32(System.Drawing.Color.FromArgb(255, 99, 99, 99)));
-                    Vanara.PInvoke.User32.FillRect(wParam, rect, brush);
+                    using var brush = Gdi32.CreateSolidBrush((uint)System.Drawing.ColorTranslator.ToWin32(System.Drawing.Color.FromArgb(255, 99, 99, 99)));
+                    User32.FillRect(wParam, rect, brush);
                     return new IntPtr(1);
                 }
             }
@@ -774,6 +772,12 @@ namespace znMusicPlayerWUI.Windowed
             App.playingList.NowPlayingImageLoaded -= PlayingList_NowPlayingImageLoaded;
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged1;
             App.audioPlayer.TimingChanged -= AudioPlayer_TimingChanged1;
+        }
+
+        private void ResizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dpi = CodeHelper.GetScaleAdjustment(this);
+            AppWindow.Resize(new SizeInt32() { Width = (int)(850 * dpi), Height = (int)(120 * dpi) });
         }
     }
 }

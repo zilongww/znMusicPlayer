@@ -10,7 +10,7 @@
     xmlns:ui="using:CommunityToolkit.WinUI.UI"
     xmlns:media="using:CommunityToolkit.WinUI.UI.Media">
     <Grid x:Name="root" SizeChanged="root_SizeChanged" Loaded="root_Loaded"
-          Padding="0">
+          Padding="0" Background="Transparent">
         <Grid.Resources>
             <ResourceDictionary>
                 <SolidColorBrush x:Key="LrcForeground" Color="#DDFFFFFF"/>
@@ -29,7 +29,7 @@
                         <Border x:Name="T1ShadowTarget"/>
                         <TextBlock x:Name="T1Base">
                             <ui:Effects.Shadow>
-                                <ui:AttachedDropShadow Opacity="1" BlurRadius="10" Color="#AA333333" Offset="0,0.2" CastTo="{x:Bind T1ShadowTarget}"/>
+                                <ui:AttachedDropShadow Opacity="1" BlurRadius="10" Color="#88333333" Offset="0,0.2" CastTo="{x:Bind T1ShadowTarget}"/>
                             </ui:Effects.Shadow>
                             <Run x:Name="T1" Text="znMusicPlayerWUI" Foreground="{ThemeResource LrcForeground}"/>
                             <Run x:Name="T11" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
@@ -43,7 +43,7 @@
                         <Border x:Name="T2ShadowTarget"/>
                         <TextBlock x:Name="T2Base">
                             <ui:Effects.Shadow>
-                                <ui:AttachedDropShadow Opacity="1" BlurRadius="10" Color="#AA333333" Offset="0,0.2" CastTo="{x:Bind T2ShadowTarget}"/>
+                                <ui:AttachedDropShadow Opacity="1" BlurRadius="10" Color="#88333333" Offset="0,0.2" CastTo="{x:Bind T2ShadowTarget}"/>
                             </ui:Effects.Shadow>
                             <Run x:Name="T2" Text="无歌词" Foreground="{ThemeResource LrcForeground}"/>
                             <Run x:Name="T21" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
@@ -83,27 +83,44 @@
             <ProgressBar x:Name="progressBase" Grid.Column="1" Background="{ThemeResource SystemAccentColorDark2}"/>
             <Rectangle Fill="{ThemeResource SystemAccentColorLight2}" Grid.Column="1" Width="4" Height="3" RadiusX="3" RadiusY="3" VerticalAlignment="Center" HorizontalAlignment="Right"/>
         </Grid>
-        <StackPanel Margin="0,0,0,0"
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Left"
-                    Orientation="Horizontal"
-                    x:Name="ToolButtonsStackPanel"
-                    RequestedTheme="Dark"
-                    Opacity="0.3">
-            <StackPanel.Resources>
-                <Style TargetType="FontIcon">
-                    <Setter Property="FontSize" Value="16"/>
-                </Style>
-            </StackPanel.Resources>
-            <Button Background="Transparent" BorderThickness="0" CornerRadius="0"
-                x:Name="LockButton" Click="LockButton_Click" Width="50" Height="34" ToolTipService.ToolTip="锁定">
-                <FontIcon Glyph="&#xE72E;"/>
-            </Button>
-            <Button Background="Transparent" BorderThickness="0" CornerRadius="0,0,4,0" Visibility="Visible"
-                x:Name="MusicControlButton" Click="MusicControlButton_Click" Width="50" Height="34" ToolTipService.ToolTip="">
-                <FontIcon Glyph="&#xEA69;"/>
-            </Button>
-        </StackPanel>
+        <Grid x:Name="ToolButtonsBase"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Left">
+            <StackPanel Margin="0,0,0,0"
+                        x:Name="ToolButtonsStackPanel"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        Orientation="Horizontal"
+                        RequestedTheme="Dark"
+                        Opacity="0.3">
+                <StackPanel.Resources>
+                    <Style TargetType="FontIcon">
+                        <Setter Property="FontSize" Value="16"/>
+                    </Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                    </Style>
+                </StackPanel.Resources>
+                <Button CornerRadius="0,0,4,0"
+                        x:Name="LockButton" Click="LockButton_Click" Width="50" Height="34" ToolTipService.ToolTip="锁定">
+                    <FontIcon Glyph="&#xE72E;"/>
+                </Button>
+                <Button CornerRadius="0,0,4,4"
+                        x:Name="ResizeButton" Click="ResizeButton_Click" Width="50" Height="34" ToolTipService.ToolTip="恢复窗口大小到默认">
+                    <FontIcon Glyph="&#xE61F;"/>
+                </Button>
+                <Button CornerRadius="0,0,4,0" Visibility="Collapsed"
+                        x:Name="MusicControlButton" Click="MusicControlButton_Click" Width="50" Height="34" ToolTipService.ToolTip="">
+                    <FontIcon Glyph="&#xEA69;"/>
+                </Button>
+            </StackPanel>
+            <FontIcon HorizontalAlignment="Left" VerticalAlignment="Top"
+                      Glyph="&#xE788;" FontSize="16"
+                      ui:VisualExtensions.RotationAngleInDegrees="180"
+                      Margin="19,20,0,0" Opacity="0.8"
+                      IsHitTestVisible="False"/>
+        </Grid>
         <Grid x:Name="TRBaseParent">
             <Border x:Name="TRShadowTarget"/>
             <TextBlock x:Name="LyricRomajiPopup_tb"
@@ -120,6 +137,11 @@
         </Grid>
         <Popup x:Name="MusicControlPopup" ShouldConstrainToRootBounds="False"
                VerticalOffset="-40" Opened="MusicControlPopup_Opened" Closed="MusicControlPopup_Closed">
+            <Popup.Transitions>
+                <TransitionCollection>
+                    <PopupThemeTransition/>
+                </TransitionCollection>
+            </Popup.Transitions>
             <Popup.SystemBackdrop>
                 <DesktopAcrylicBackdrop/>
             </Popup.SystemBackdrop>

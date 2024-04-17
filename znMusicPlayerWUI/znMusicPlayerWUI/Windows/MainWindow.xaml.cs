@@ -1967,6 +1967,7 @@ namespace znMusicPlayerWUI
                     DesktopLyricWindow.Closed += DesktopLyricWindow_Closed;
 
                     DesktopLyricWindow.AppWindow.Show(false);
+                    DesktopLyricWindow.Activate();
                     DesktopLyricWindowOpenedEvent?.Invoke();
                 }
                 else
@@ -1974,6 +1975,7 @@ namespace znMusicPlayerWUI
                     DesktopLyricWindow.Closed -= DesktopLyricWindow_Closed;
                     DesktopLyricWindow.RemoveEvents();
                     DesktopLyricWindow.Close();
+                    DesktopLyricWindow_Closed(null, null);
                     DesktopLyricWindow = null;
                 }
                 if (timeDelay)

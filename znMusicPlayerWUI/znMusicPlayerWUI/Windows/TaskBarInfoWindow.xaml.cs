@@ -39,6 +39,7 @@ namespace znMusicPlayerWUI.Windowed
                 {
                     Title = $"{_.MusicData.Title} - {_.MusicData.ArtistName} · {App.AppName}";
                 }
+                Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetThumbnailTooltip(Handle, $"正在播放：{_.MusicData.Title} - {_.MusicData.ArtistName}");
             };
             if (App.audioPlayer.MusicData == null)
                 Title = App.AppName;
@@ -120,6 +121,8 @@ namespace znMusicPlayerWUI.Windowed
 
         private void SetTaskbarButtonIcon(NAudio.Wave.PlaybackState playbackState)
         {
+            //Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetProgressState(Handle, Helpers.SDKs.TaskbarProgress.TBPFLAG.TBPF_NORMAL);
+            //Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetProgressValue(Handle, 1, 100);
             Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] changer;
             if (playbackState == NAudio.Wave.PlaybackState.Playing)
             {
