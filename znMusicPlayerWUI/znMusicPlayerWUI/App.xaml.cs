@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -142,7 +141,7 @@ namespace znMusicPlayerWUI
 #endif
         }
 
-        public static string[] LaunchArgs = null;
+        public static List<string> LaunchArgs = null;
         public static JObject StartingSettings = null;
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -165,10 +164,8 @@ namespace znMusicPlayerWUI
 
             // WinUI Bug: 获取不到启动参数
             //LAE = args;
-            LaunchArgs = Environment.GetCommandLineArgs();
-            var lags = LaunchArgs.ToList();
-            lags.Remove(lags.First());
-            LaunchArgs = [.. lags];
+            LaunchArgs = Environment.GetCommandLineArgs().ToList();
+            LaunchArgs.Remove(LaunchArgs.First());
 
             m_window = new MainWindow();
             WindowLocal = m_window;
@@ -216,7 +213,7 @@ namespace znMusicPlayerWUI
             }
 
             NotifyIconWindow.HideIcon();
-            SaveNowPlaying();
+            MainWindow.SaveNowPlaying();
             WindowLocal.Close();
             SMTC.DisplayUpdater.ClearAll();
             SMTC.DisplayUpdater.Update();
@@ -391,59 +388,6 @@ namespace znMusicPlayerWUI
         }
 
         public static bool LoadLastExitPlayingSongAndSongList = true;
-        public static async void SaveNowPlaying()
-        {
-            if (audioPlayer.MusicData is null) return;
-
-            var path = Path.Combine(DataFolderBase.UserDataFolder, "LastPlaying");
-            if (!LoadLastExitPlayingSongAndSongList)
-            {
-                File.Delete(path);
-                return;
-            }
-            
-            if (!File.Exists(path)) File.Create(path).Close();
-
-            JArray array = new JArray();
-            foreach (var a in (playingList.PlayBehavior == PlayBehavior.随机播放 ? playingList.RandomSavePlayingList : playingList.NowPlayingList))
-                array.Add(JObject.FromObject(a));
-            JObject jobject = new JObject() {
-                { "music", JObject.FromObject(audioPlayer.MusicData) },
-                { "list", array }
-            };
-            await File.WriteAllTextAsync(path, jobject.ToString());
-            Debug.WriteLine("[SavePlayingList]: 正在播放列表已保存！");
-        }
-
-        public static async void LoadLastPlaying()
-        {
-            if (!LoadLastExitPlayingSongAndSongList) return;
-
-            var path = Path.Combine(DataFolderBase.UserDataFolder, "LastPlaying");
-            if (!File.Exists(path)) return;
-
-            MusicData musicData = null;
-            await Task.Run(() =>
-            {
-                var texts = File.ReadAllText(path);
-                JObject jobject = JObject.Parse(texts);
-                musicData = JsonNewtonsoft.FromJSON<MusicData>(jobject["music"].ToString());
-
-                foreach(var m in jobject["list"])
-                {
-                    var md = JsonNewtonsoft.FromJSON<MusicData>(m.ToString());
-                    playingList.NowPlayingList.Add(md);
-                }
-            });
-
-            if (musicData is null) return;
-            if (playingList.PlayBehavior == PlayBehavior.随机播放)
-            {
-                playingList.SetRandomPlay(PlayBehavior.随机播放);
-            }
-            await playingList.Play(musicData, false);
-            audioPlayer.SetPause();
-        }
 
         public static void SetFramePerSecondViewer(bool visible = false)
         {

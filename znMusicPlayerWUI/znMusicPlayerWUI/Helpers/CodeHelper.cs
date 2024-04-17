@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -265,7 +265,66 @@ namespace znMusicPlayerWUI.Helpers
                 }
         */
 
-        public async static System.Threading.Tasks.Task<BitmapImage> ImageFromBytes(byte[] bytes, int width = 0, int height = 0)
+        #region 判断文件编码
+        /// <summary>
+        /// 根据文件尝试返回字符编码
+        /// </summary>
+        /// <param name="file">文件路径</param>
+        /// <param name="defEnc">没有BOM返回的默认编码</param>
+        /// <returns>如果文件无法读取，返回null。否则，返回根据BOM判断的编码或者缺省编码（没有BOM）。</returns>
+        public static Encoding GetEncoding(string file, Encoding defEnc)
+        {
+            using (var stream = File.OpenRead(file))
+            {
+                //判断流可读？
+                if (!stream.CanRead)
+                    return null;
+                //字节数组存储BOM
+                var bom = new byte[4];
+                //实际读入的长度
+                int readc;
+
+                readc = stream.Read(bom, 0, 4);
+
+                if (readc >= 2)
+                {
+                    if (readc >= 4)
+                    {
+                        //UTF32，Big-Endian
+                        if (CheckBytes(bom, 4, 0x00, 0x00, 0xFE, 0xFF))
+                            return new UTF32Encoding(true, true);
+                        //UTF32，Little-Endian
+                        if (CheckBytes(bom, 4, 0xFF, 0xFE, 0x00, 0x00))
+                            return new UTF32Encoding(false, true);
+                    }
+                    //UTF8
+                    if (readc >= 3 && CheckBytes(bom, 3, 0xEF, 0xBB, 0xBF))
+                        return new UTF8Encoding(true);
+
+                    //UTF16，Big-Endian
+                    if (CheckBytes(bom, 2, 0xFE, 0xFF))
+                        return new System.Text.UnicodeEncoding(true, true);
+                    //UTF16，Little-Endian
+                    if (CheckBytes(bom, 2, 0xFF, 0xFE))
+                        return new System.Text.UnicodeEncoding(false, true);
+                }
+
+                return defEnc;
+            }
+        }
+
+        //辅助函数，判断字节中的值
+        public static bool CheckBytes(byte[] bytes, int count, params int[] values)
+        {
+            for (int i = 0; i < count; i++)
+                if (bytes[i] != values[i])
+                    return false;
+            return true;
+        }
+        #endregion
+
+
+        public async static Task<BitmapImage> ImageFromBytes(byte[] bytes, int width = 0, int height = 0)
         {
             var image = new BitmapImage();
             InMemoryRandomAccessStream stream = null;

@@ -26,7 +26,7 @@ namespace znMusicPlayerWUI.Windowed
             InitCallBack();
             InitTaskbarInfo();
             ShowTaskBarButtons();
-            SetTaskbarImage(Path.Combine(localPath, "icon.png"));
+            //SetTaskbarImage(Path.Combine(localPath, "icon.png"));
 
             MainWindow.WindowViewStateChanged += MainWindow_WindowViewStateChanged;
             App.audioPlayer.PlayStateChanged += (_) => SetTaskbarButtonIcon(_.PlaybackState);
@@ -224,7 +224,7 @@ namespace znMusicPlayerWUI.Windowed
             Windows.Win32.Foundation.WPARAM wParam,
             Windows.Win32.Foundation.LPARAM lParam)
         {
-            //System.Diagnostics.Debug.WriteLine($"Get system message: {uMsg}\n    {wParam.Value}");
+            System.Diagnostics.Debug.WriteLine($"Get system message: {uMsg}\n    {wParam.Value}");
             if (uMsg == 806)
             {
                 if (bmp != null)
@@ -242,7 +242,8 @@ namespace znMusicPlayerWUI.Windowed
             }
             else if (uMsg == 127)
             {
-                SetTaskbarImage(IconPath);
+                if (wParam.Value == 2)
+                    SetTaskbarImage(IconPath);
             }
             else if (uMsg == 124 || uMsg == 125)
             {/* doesn't work

@@ -7,28 +7,30 @@ using System.Runtime.InteropServices;
 using System.Collections.ObjectModel;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Shapes;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Shapes;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.SystemBackdrops;
-using Microsoft.UI.Windowing;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.Pages;
 using znMusicPlayerWUI.Pages.MusicPages;
 using znMusicPlayerWUI.Controls;
 using znMusicPlayerWUI.Windowed;
 using znMusicPlayerWUI.DataEditor;
+using znMusicPlayerWUI.Background;
 using znMusicPlayerWUI.Background.HotKeys;
 using CommunityToolkit.WinUI;
 using Windows.UI;
 using WinRT;
 using Windows.Graphics;
 using NAudio.Wave;
+using Newtonsoft.Json.Linq;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -151,7 +153,6 @@ namespace znMusicPlayerWUI
             loadingst.Children.Add(loadingtextBlock);
 
             App.LoadSettings(App.StartingSettings);
-            App.LoadLastPlaying();
             SetBackdrop(m_currentBackdrop);
 
             NavView.SelectedItem = NavView.MenuItems[1];
@@ -160,6 +161,7 @@ namespace znMusicPlayerWUI
             Canvas.SetZIndex(AppTitleBar, 1);
 
             StaringPrepare();
+            LoadLastPlaying();
             //NotifyListView.ItemsSource = NotifyList;
             //PlayingListBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
             //VolumeBasePopup.SystemBackdrop = new DesktopAcrylicBackdrop();
@@ -169,8 +171,8 @@ namespace znMusicPlayerWUI
         static bool isShowClosingDialog = false;
         public void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
-            App.SaveNowPlaying();
             App.SaveSettings();
+            SaveNowPlaying();
 
             if (RunInBackground)
             {
@@ -213,6 +215,24 @@ namespace znMusicPlayerWUI
 
             if (App.LaunchArgs != null)
             {
+                //AddNotify("Args", string.Join(" ||| ", App.LaunchArgs), NotifySeverity.Warning, TimeSpan.FromSeconds(10));
+                List<string> openFiles = new List<string>();
+                foreach (var str in App.LaunchArgs)
+                {
+                    if (str.Contains(":\\"))
+                    {
+                        openFiles.Add(str);
+                    }
+                }
+                foreach (var str in openFiles)
+                {
+                    if (App.LaunchArgs.Contains(str))
+                    {
+                        App.LaunchArgs.Remove(str);
+                    }
+                }
+                AddOpeningMusic(openFiles.ToArray());
+
                 var lagsString = string.Join(" ", App.LaunchArgs);
                 var lags = lagsString.Split('-');
 
@@ -270,7 +290,7 @@ namespace znMusicPlayerWUI
                 }
                 if (unknowArg.Any())
                 {
-                    AddNotify("未知的启动参数：", string.Join('、', unknowArg), NotifySeverity.Warning);
+                    AddNotify("未知的启动参数：", string.Join('、', unknowArg), NotifySeverity.Warning, TimeSpan.FromSeconds(10));
                 }
             }
 
@@ -302,6 +322,81 @@ namespace znMusicPlayerWUI
             {
                 AddNotify("热键已被占用", $"你可以转到设置界面更改被占用的热键：\n{string.Join('、', hotKeyUsed)}。", NotifySeverity.Warning, TimeSpan.FromSeconds(5));
             }
+        }
+
+        static bool isOpeningMusicLoaded = false;
+        public async void AddOpeningMusic(string[] fileName)
+        {
+            if (!fileName.Any()) return;
+            isOpeningMusicLoaded = true;
+
+            List<MusicData> mlist = new();
+            foreach (string str in fileName)
+            {
+                foreach (var musicData in await MusicData.FromFile(str))
+                {
+                    App.playingList.Add(musicData); mlist.Add(musicData);
+                }
+            }
+            if (mlist.Any())
+            {
+                await App.playingList.Play(mlist.First());
+            }
+        }
+
+        public static async void SaveNowPlaying()
+        {
+            if (App.audioPlayer.MusicData is null) return;
+
+            var path = System.IO.Path.Combine(DataFolderBase.UserDataFolder, "LastPlaying");
+            if (!App.LoadLastExitPlayingSongAndSongList)
+            {
+                System.IO.File.Delete(path);
+                return;
+            }
+
+            if (!System.IO.File.Exists(path)) System.IO.File.Create(path).Close();
+
+            JArray array = new JArray();
+            foreach (var a in App.playingList.PlayBehavior == PlayBehavior.随机播放 ? App.playingList.RandomSavePlayingList : App.playingList.NowPlayingList)
+                array.Add(JObject.FromObject(a));
+            JObject jobject = new JObject() {
+                { "music", JObject.FromObject(App.audioPlayer.MusicData) },
+                { "list", array }
+            };
+            await System.IO.File.WriteAllTextAsync(path, jobject.ToString());
+            Debug.WriteLine("[SavePlayingList]: 正在播放列表已保存！");
+        }
+
+        public static async void LoadLastPlaying()
+        {
+            if (!App.LoadLastExitPlayingSongAndSongList) return;
+            if (isOpeningMusicLoaded) return;
+
+            var path = System.IO.Path.Combine(DataFolderBase.UserDataFolder, "LastPlaying");
+            if (!System.IO.File.Exists(path)) return;
+
+            MusicData musicData = null;
+            await Task.Run(() =>
+            {
+                var texts = System.IO.File.ReadAllText(path);
+                JObject jobject = JObject.Parse(texts);
+                musicData = JsonNewtonsoft.FromJSON<MusicData>(jobject["music"].ToString());
+
+                foreach (var m in jobject["list"])
+                {
+                    var md = JsonNewtonsoft.FromJSON<MusicData>(m.ToString());
+                    App.playingList.NowPlayingList.Add(md);
+                }
+            });
+
+            if (musicData is null) return;
+            if (App.playingList.PlayBehavior == PlayBehavior.随机播放)
+            {
+                App.playingList.SetRandomPlay(PlayBehavior.随机播放);
+            }
+            await App.playingList.Play(musicData, false);
+            App.audioPlayer.SetPause();
         }
 
         #region Window Events
@@ -415,7 +510,7 @@ namespace znMusicPlayerWUI
             {
                 if (CodeHelper.IsIconic(Handle))
                 {
-                    App.SaveNowPlaying();
+                    SaveNowPlaying();
                     App.SaveSettings();
 
                     isMinSize = true;

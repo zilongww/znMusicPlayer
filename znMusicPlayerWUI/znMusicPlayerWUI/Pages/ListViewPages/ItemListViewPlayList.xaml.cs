@@ -199,8 +199,7 @@ namespace znMusicPlayerWUI.Pages
                         array = NavToObj.Songs.ToArray();
                         break;
                     case PlaySort.默认降序:
-                        List<MusicData> list = new();
-                        foreach (var d in NavToObj.Songs) list.Add(d);
+                        List<MusicData> list = [.. NavToObj.Songs];
                         list.Reverse();
                         array = list.ToArray();
                         break;
@@ -211,10 +210,10 @@ namespace znMusicPlayerWUI.Pages
                         array = NavToObj.Songs.OrderByDescending(m => m.Title).ToArray();
                         break;
                     case PlaySort.艺术家升序:
-                        array = NavToObj.Songs.OrderBy(m => m.Artists[0].Name).ToArray();
+                        array = NavToObj.Songs.OrderBy(m => m.Artists.Any() ? m.Artists[0].Name : "未知").ToArray();
                         break;
                     case PlaySort.艺术家降序:
-                        array = NavToObj.Songs.OrderByDescending(m => m.Artists[0].Name).ToArray();
+                        array = NavToObj.Songs.OrderByDescending(m => m.Artists.Any() ? m.Artists[0].Name : "未知").ToArray();
                         break;
                     case PlaySort.专辑升序:
                         array = NavToObj.Songs.OrderBy(m => m.Album.Title).ToArray();
