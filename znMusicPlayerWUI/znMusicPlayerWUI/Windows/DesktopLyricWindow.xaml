@@ -29,7 +29,7 @@
                         <Border x:Name="T1ShadowTarget"/>
                         <TextBlock x:Name="T1Base">
                             <ui:Effects.Shadow>
-                                <ui:AttachedDropShadow Opacity="1" BlurRadius="15" Color="#99000000" Offset="0,1" CastTo="{x:Bind T1ShadowTarget}"/>
+                                <ui:AttachedDropShadow Opacity="1" BlurRadius="10" Color="#AA333333" Offset="0,0.2" CastTo="{x:Bind T1ShadowTarget}"/>
                             </ui:Effects.Shadow>
                             <Run x:Name="T1" Text="znMusicPlayerWUI" Foreground="{ThemeResource LrcForeground}"/>
                             <Run x:Name="T11" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
@@ -43,7 +43,7 @@
                         <Border x:Name="T2ShadowTarget"/>
                         <TextBlock x:Name="T2Base">
                             <ui:Effects.Shadow>
-                                <ui:AttachedDropShadow Opacity="1" BlurRadius="15" Color="#99000000" Offset="0,1" CastTo="{x:Bind T2ShadowTarget}"/>
+                                <ui:AttachedDropShadow Opacity="1" BlurRadius="10" Color="#AA333333" Offset="0,0.2" CastTo="{x:Bind T2ShadowTarget}"/>
                             </ui:Effects.Shadow>
                             <Run x:Name="T2" Text="无歌词" Foreground="{ThemeResource LrcForeground}"/>
                             <Run x:Name="T21" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
