@@ -78,19 +78,8 @@ namespace znMusicPlayerWUI.Controls
             if (MusicListData != null)
             {
                 int size = 0;//(int)(200 * ImageScaleDPI);
-                if (MusicListData.ListDataType == DataType.本地歌单)
-                {
-                    PlayListImage.Source = await FileHelper.GetImageSource(MusicListData.PicturePath, size, size, true);
-                }
-                else if (MusicListData.ListDataType == DataType.歌单)
-                {
-                    var path = await ImageManage.GetImageSource(MusicListData);
-                    PlayListImage.Source = await FileHelper.GetImageSource(path, size, size, true);
-                }
-                else
-                {
-                    PlayListImage.Source = null;
-                }
+                var imageSources = await ImageManage.GetImageSource(MusicListData, size, size, true);
+                PlayListImage.Source = imageSources.Item1;
                 PlayListImage.SaveName = $"{MusicListData.ListShowName}";
             }
             //CrateShadow();
@@ -253,7 +242,7 @@ namespace znMusicPlayerWUI.Controls
 
             try
             {
-                var deletePath = await ImageManage.GetImageSource(MusicListData);
+                var deletePath = (await ImageManage.GetImageSource(MusicListData)).Item2;
                 await Task.Run(() =>
                 {
                     try

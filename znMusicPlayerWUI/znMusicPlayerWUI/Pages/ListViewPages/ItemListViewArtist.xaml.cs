@@ -128,7 +128,7 @@ namespace znMusicPlayerWUI.Pages
             }
             else if (musicListData.ListDataType == DataType.歌单)
             {
-                Artist_Image.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(musicListData));
+                Artist_Image.Source = (await ImageManage.GetImageSource(musicListData)).Item1;
             }
             else if (musicListData.ListDataType == DataType.艺术家)
             {

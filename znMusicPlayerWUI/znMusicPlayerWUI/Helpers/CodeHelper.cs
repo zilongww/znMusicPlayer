@@ -425,8 +425,9 @@ namespace znMusicPlayerWUI.Helpers
                             case TagLib.PictureType.FrontCover:
                             case TagLib.PictureType.BackCover:
                                 if (data.Data.Data.Length == 0) continue;
+                                var imageData = data.Data.Data;
                                 f.Dispose();
-                                return data.Data.Data;
+                                return imageData;
                         }
                     }
 
@@ -611,7 +612,7 @@ namespace znMusicPlayerWUI.Helpers
                 lyricList.Add(l.Value);
             }
             converter.Dispose();
-            return [.. lyricList];
+            return lyricList.ToArray();
         }
     }
 }

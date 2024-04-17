@@ -155,7 +155,7 @@ namespace znMusicPlayerWUI.Pages
             }
             else if (musicListData.ListDataType == DataType.歌单)
             {
-                Album_Image.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(musicListData));
+                Album_Image.Source =(await ImageManage.GetImageSource(musicListData)).Item1;
             }
             else if (musicListData.ListDataType == DataType.专辑)
             {

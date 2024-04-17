@@ -42,7 +42,7 @@ namespace znMusicPlayerWUI
         public static TaskBarInfoWindow taskBarInfoWindow;
 
         public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.3.6 Preview";
+        public static readonly string AppVersion = "0.3.7 Preview";
 
         public static App AppStatic = null;
         /// <summary>
@@ -51,10 +51,10 @@ namespace znMusicPlayerWUI
         /// </summary>
         public App()
         {
-            AppStatic = this;
-            DataFolderBase.InitFiles();
             //Media.Decoder.FFmpeg.FFmpegBinariesHelper.InitFFmpeg();
             InitializeComponent();
+            AppStatic = this;
+            DataFolderBase.InitFiles();
             UnhandledException += App_UnhandledException;
 
             SMTC.IsPlayEnabled = true;
@@ -151,8 +151,8 @@ namespace znMusicPlayerWUI
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             StartingSettings = DataFolderBase.JSettingData;
-            var accentcolor = StartingSettings[DataFolderBase.SettingParams.ThemeAccentColor.ToString()];
-            if (accentcolor != null)
+            var accentColor = StartingSettings[DataFolderBase.SettingParams.ThemeAccentColor.ToString()];
+            if (accentColor != null)
             {
                 /*Current.Resources["SystemAccentColor"] = Windows.UI.Color.FromArgb(255, 2,255,2);
                 Current.Resources["SystemAccentColorLight2"] = Windows.UI.Color.FromArgb(255, 2, 255, 2);
@@ -225,7 +225,7 @@ namespace znMusicPlayerWUI
         public static async void ShowErrorDialog()
         {
             MessageDialog messageDialog = new("设置文件出现了一些错误，且程序尝试 5 次后也无法恢复默认配置。\n" +
-                "请尝试删除 文档->znMusicPlayerDatas->UserData 里的 Setting 文件。\n" +
+                "请尝试删除 文档->znMusicPlayer->UserData 里的 Setting 文件。\n" +
                 "如果仍然出现问题，请到 GitHub 里向项目提出 Issues。", "znMusicPlayerWUI - 程序无法启动");
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(WindowLocal);
             WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, hwnd);
@@ -244,10 +244,10 @@ namespace znMusicPlayerWUI
                 DataFolderBase.ImageCacheFolder = SettingEditHelper.GetSetting<string>(b, DataFolderBase.SettingParams.ImageCacheFolderPath);
                 DataFolderBase.LyricCacheFolder = SettingEditHelper.GetSetting<string>(b, DataFolderBase.SettingParams.LyricCacheFolderPath);
 
-                var bdata = SettingEditHelper.GetSetting<string>(b, DataFolderBase.SettingParams.EqualizerCustomData).Split(',');
+                var bData = SettingEditHelper.GetSetting<string>(b, DataFolderBase.SettingParams.EqualizerCustomData).Split(',');
                 for (int i = 0; i < 10; i++)
                 {
-                    AudioEqualizerBands.CustomBands[i][2] = float.Parse(bdata[i]);
+                    AudioEqualizerBands.CustomBands[i][2] = float.Parse(bData[i]);
                 }
 
                 audioPlayer.Volume = SettingEditHelper.GetSetting<float>(b, DataFolderBase.SettingParams.Volume);

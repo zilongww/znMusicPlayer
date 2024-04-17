@@ -332,7 +332,7 @@ namespace znMusicPlayerWUI.DataEditor
                 }
 
                 localAudioData.RelaseTime = localFile.CreationTime.Ticks.ToString();
-                return [localAudioData];
+                return new[] { localAudioData };
             }
         }
     }

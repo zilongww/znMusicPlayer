@@ -71,9 +71,16 @@ namespace znMusicPlayerWUI.Pages
             InitData();
         }
 
-        protected override async void OnNavigatedFrom(NavigationEventArgs e)
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            LeavingPageDo();
+            //GC.SuppressFinalize(this);
+            //System.Diagnostics.Debug.WriteLine("Clear");
+        }
+
+        private async void LeavingPageDo()
+        {
             IsNavigatedOutFromPage = true;
 
             MainWindow.InKeyDownEvent -= MainWindow_InKeyDownEvent;
@@ -109,8 +116,7 @@ namespace znMusicPlayerWUI.Pages
             PlayList_Image.Dispose();
             NavToObj = null;
             UnloadObject(this);
-            //GC.SuppressFinalize(this);
-            //System.Diagnostics.Debug.WriteLine("Clear");
+            System.Diagnostics.Debug.WriteLine($"[ItemListViewPlayList] 清理完成。{SongItem.StaticSongItems.Count}");
         }
 
         private void MainWindow_MainViewStateChanged(bool isView)
@@ -193,48 +199,51 @@ namespace znMusicPlayerWUI.Pages
                 MusicData[] array = null;
 
                 SortComboBox.SelectedItem = NavToObj.PlaySort;
-                switch ((PlaySort)SortComboBox.SelectedItem)
+                var scs = (PlaySort)SortComboBox.SelectedItem;
+                await Task.Run(() =>
                 {
-                    case PlaySort.默认升序:
-                        array = NavToObj.Songs.ToArray();
-                        break;
-                    case PlaySort.默认降序:
-                        List<MusicData> list = [.. NavToObj.Songs];
-                        list.Reverse();
-                        array = list.ToArray();
-                        break;
-                    case PlaySort.名称升序:
-                        array = NavToObj.Songs.OrderBy(m => m.Title).ToArray();
-                        break;
-                    case PlaySort.名称降序:
-                        array = NavToObj.Songs.OrderByDescending(m => m.Title).ToArray();
-                        break;
-                    case PlaySort.艺术家升序:
-                        array = NavToObj.Songs.OrderBy(m => m.Artists.Any() ? m.Artists[0].Name : "未知").ToArray();
-                        break;
-                    case PlaySort.艺术家降序:
-                        array = NavToObj.Songs.OrderByDescending(m => m.Artists.Any() ? m.Artists[0].Name : "未知").ToArray();
-                        break;
-                    case PlaySort.专辑升序:
-                        array = NavToObj.Songs.OrderBy(m => m.Album.Title).ToArray();
-                        break;
-                    case PlaySort.专辑降序:
-                        array = NavToObj.Songs.OrderByDescending(m => m.Album.Title).ToArray();
-                        break;
-                    case PlaySort.时间升序:
-                        array = NavToObj.Songs.OrderBy(m => m.RelaseTime).ToArray();
-                        break;
-                    case PlaySort.时间降序:
-                        array = NavToObj.Songs.OrderByDescending(m => m.RelaseTime).ToArray();
-                        break;
-                    case PlaySort.索引升序:
-                        array = NavToObj.Songs.OrderBy(m => m.Index).ToArray();
-                        break;
-                    case PlaySort.索引降序:
-                        array = NavToObj.Songs.OrderByDescending(m => m.Index).ToArray();
-                        break;
-                }
-
+                    switch (scs)
+                    {
+                        case PlaySort.默认升序:
+                            array = NavToObj.Songs.ToArray();
+                            break;
+                        case PlaySort.默认降序:
+                            List<MusicData> list = NavToObj.Songs;
+                            list.Reverse();
+                            array = [.. list];
+                            break;
+                        case PlaySort.名称升序:
+                            array = NavToObj.Songs.OrderBy(m => m.Title).ToArray();
+                            break;
+                        case PlaySort.名称降序:
+                            array = NavToObj.Songs.OrderByDescending(m => m.Title).ToArray();
+                            break;
+                        case PlaySort.艺术家升序:
+                            array = NavToObj.Songs.OrderBy(m => m.Artists.Count != 0 ? m.Artists[0].Name : "未知").ToArray();
+                            break;
+                        case PlaySort.艺术家降序:
+                            array = NavToObj.Songs.OrderByDescending(m => m.Artists.Count != 0 ? m.Artists[0].Name : "未知").ToArray();
+                            break;
+                        case PlaySort.专辑升序:
+                            array = NavToObj.Songs.OrderBy(m => m.Album.Title).ToArray();
+                            break;
+                        case PlaySort.专辑降序:
+                            array = NavToObj.Songs.OrderByDescending(m => m.Album.Title).ToArray();
+                            break;
+                        case PlaySort.时间升序:
+                            array = NavToObj.Songs.OrderBy(m => m.RelaseTime).ToArray();
+                            break;
+                        case PlaySort.时间降序:
+                            array = NavToObj.Songs.OrderByDescending(m => m.RelaseTime).ToArray();
+                            break;
+                        case PlaySort.索引升序:
+                            array = NavToObj.Songs.OrderBy(m => m.Index).ToArray();
+                            break;
+                        case PlaySort.索引降序:
+                            array = NavToObj.Songs.OrderByDescending(m => m.Index).ToArray();
+                            break;
+                    }
+                });
                 int count = 0;
                 foreach (var i in array)
                 {
@@ -244,7 +253,7 @@ namespace znMusicPlayerWUI.Pages
                     MusicDataList.Add(new() { MusicData = i, MusicListData = NavToObj, ImageScaleDPI = dpi });
                 }
                 array = null;
-                System.Diagnostics.Debug.WriteLine("[ItemListViewPlayList] 加载完成。");
+                System.Diagnostics.Debug.WriteLine($"[ItemListViewPlayList] 加载完成。");
             }
             isLoading = false;
             LoadingTipControl.UnShowLoading();
@@ -281,16 +290,15 @@ namespace znMusicPlayerWUI.Pages
             }
             else if (NavToObj.ListDataType == DataType.歌单)
             {
-                PlayList_Image.Source = await FileHelper.GetImageSource(await ImageManage.GetImageSource(NavToObj));
+                PlayList_Image.Source = (await ImageManage.GetImageSource(NavToObj)).Item1;
             }
-            PlayList_Image.SaveName = NavToObj.ListShowName;
-
+            PlayList_Image.SaveName = NavToObj?.ListShowName;
             if (PlayList_Image.Source == null)
             {
                 PlayList_Image.Source = await FileHelper.GetImageSource("");
             }
             PlayList_Image.BorderThickness = new(1);
-            System.Diagnostics.Debug.WriteLine("[ItemListViewPlayList] 图片加载完成。");
+            System.Diagnostics.Debug.WriteLine($"[ItemListViewPlayList] 图片加载完成。");
             await Task.Delay(100);
             UpdateShyHeader();
             UpdateInfoWidth();
@@ -299,6 +307,7 @@ namespace znMusicPlayerWUI.Pages
             UpdateShyHeader();
             UpdateInfoWidth();
             CrateShadow();
+            if (NavToObj == null) LeavingPageDo();
         }
 
         CompositionPropertySet scrollerPropertySet;
@@ -528,7 +537,7 @@ namespace znMusicPlayerWUI.Pages
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (!Children.Items.Any()) return;
+            if (Children.Items.Count == 0) return;
             if (App.playingList.PlayBehavior == znMusicPlayerWUI.Background.PlayBehavior.随机播放)
             {
                 App.playingList.ClearAll();
@@ -547,7 +556,7 @@ namespace znMusicPlayerWUI.Pages
         }
 
         DropShadow dropShadow;
-        private async void Button_Click_2(object sender, RoutedEventArgs e)
+        private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             if (SelectItemButton.IsChecked == true)
             {
@@ -606,7 +615,7 @@ namespace znMusicPlayerWUI.Pages
         {
             if (Children.SelectedItems.Any())
             {
-                foreach (SongItemBindBase item in Children.SelectedItems)
+                foreach (SongItemBindBase item in Children.SelectedItems.Cast<SongItemBindBase>())
                 {
                     App.playingList.Add(item.MusicData);
                 }
@@ -625,7 +634,7 @@ namespace znMusicPlayerWUI.Pages
                     var jdata = await PlayListHelper.ReadData();
                     int num = 0;
                     string listName = NavToObj.ListName;
-                    foreach (SongItemBindBase data in Children.SelectedItems)
+                    foreach (SongItemBindBase data in Children.SelectedItems.Cast<SongItemBindBase>())
                     {
                         num++;
                         item.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -670,7 +679,7 @@ namespace znMusicPlayerWUI.Pages
 
         private void SelectReverseButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (SongItemBindBase item in Children.Items)
+            foreach (SongItemBindBase item in Children.Items.Cast<SongItemBindBase>())
             {
                 if (Children.SelectedItems.Contains(item))
                 {
@@ -808,7 +817,7 @@ namespace znMusicPlayerWUI.Pages
             var text = await PlayListHelper.ReadData();
             var list = (sender as MenuFlyoutItem).Tag as MusicListData;
             var listName = list.ListName;
-            foreach (SongItemBindBase item in Children.SelectedItems)
+            foreach (SongItemBindBase item in Children.SelectedItems.Cast<SongItemBindBase>())
             {
                 MainWindow.SetLoadingText($"正在添加：{item.MusicData.Title} - {item.MusicData.ButtonName}");
                 MainWindow.SetLoadingProgressRingValue(Children.SelectedItems.Count, Children.SelectedItems.IndexOf(item));
@@ -1024,7 +1033,7 @@ namespace znMusicPlayerWUI.Pages
 
         bool isQuery = false;
         int searchNum = -1;
-        private async void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             ChangeViewToSearchItem();
             AutoSuggestBox_TextChanged(null, new() { Reason = AutoSuggestionBoxTextChangeReason.UserInput });

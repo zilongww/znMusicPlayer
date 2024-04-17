@@ -10,6 +10,7 @@ using Windows.System;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
+using static NMeCab.Core.DoubleArray;
 
 namespace znMusicPlayerWUI.Helpers
 {
@@ -88,10 +89,14 @@ namespace znMusicPlayerWUI.Helpers
         /// <param name="musicListData"></param>
         /// <returns>
         /// !=null - 图片缓存文件路径 /
-        /// null - 未查询到图片缓存
+        /// null - 未查询到图片缓存。如果为本地歌单会返回歌单记录的图片文件地址
         /// </returns>
         public static async Task<string> GetImageCache(DataEditor.MusicListData musicListData)
         {
+            if (musicListData.ListDataType == DataEditor.DataType.本地歌单)
+            {
+                return musicListData.PicturePath;
+            }
             return await GetImageCache($"{musicListData.ListFrom}{musicListData.ListDataType}{musicListData.ID}");
         }
         
@@ -159,7 +164,7 @@ namespace znMusicPlayerWUI.Helpers
             return new BitmapImage(fileUri) { DecodePixelWidth = decodePixelWidth, DecodePixelHeight = decodePixelHeight };
         }
 
-        private static async Task<WriteableBitmap> OpenWriteableBitmapFile(StorageFile file, int pixelWidth = 0, int pixelHeight = 0)
+        private static async Task<WriteableBitmap> OpenWriteableBitmapFile(StorageFile file)
         {
             using (IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read))
             {

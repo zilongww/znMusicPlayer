@@ -126,10 +126,10 @@ namespace znMusicPlayerWUI.Windowed
             Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] changer;
             if (playbackState == NAudio.Wave.PlaybackState.Playing)
             {
-                changer =
-                [
+                changer = new[]
+                {
                     new Helpers.SDKs.TaskbarProgress.THUMBBUTTON() { iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = pauseIconHandle, szTip = "播放" }
-                ];
+                };
 
                 // 这个 api 调用似乎会慢一拍，所以这里调用两次
                 Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetOverlayIcon(Handle, playIconHandle, null);
@@ -137,10 +137,10 @@ namespace znMusicPlayerWUI.Windowed
             }
             else
             {
-                changer =
-                [
+                changer = new[]
+                {
                     new Helpers.SDKs.TaskbarProgress.THUMBBUTTON() { iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = playIconHandle, szTip = "播放" }
-                ];
+                };
                 Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetOverlayIcon(Handle, pauseIconHandle, null);
                 Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.SetOverlayIcon(Handle, pauseIconHandle, null);
             }
@@ -162,17 +162,17 @@ namespace znMusicPlayerWUI.Windowed
         nint perviousPlayIconHandle = (Bitmap.FromFile(Path.Combine(localPath, "上一首.png")) as Bitmap).GetHicon();
         private void ShowTaskBarButtons()
         {
-            Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] taskbarInfoButtonPauseStyle =
-            [
+            Helpers.SDKs.TaskbarProgress.THUMBBUTTON[] taskbarInfoButtonPauseStyle = new[]
+            {
                 new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 1, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = perviousPlayIconHandle, szTip = "上一首" },
                 new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 2, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing ? pauseIconHandle : playIconHandle, szTip = "播放" },
                 new Helpers.SDKs.TaskbarProgress.THUMBBUTTON(){ iId = 3, dwMask = Helpers.SDKs.TaskbarProgress.THUMBBUTTONMASK.THB_ICON, dwFlags = Helpers.SDKs.TaskbarProgress.THUMBBUTTONFLAGS.THBF_ENABLED, hIcon = nextPlayIconHandle, szTip = "下一首" },
-            ];
+            };
             Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarAddButtons(Handle, 3, taskbarInfoButtonPauseStyle);
             Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarUpdateButtons(Handle, 3, taskbarInfoButtonPauseStyle);
         }
 
-        System.Drawing.Image bmp = null;
+        Image bmp = null;
         public async void SetTaskbarImage(string filePath)
         {
             if (string.IsNullOrEmpty(filePath)) return;
@@ -224,7 +224,7 @@ namespace znMusicPlayerWUI.Windowed
             Windows.Win32.Foundation.WPARAM wParam,
             Windows.Win32.Foundation.LPARAM lParam)
         {
-            System.Diagnostics.Debug.WriteLine($"Get system message: {uMsg}\n    {wParam.Value}");
+            //Debug.WriteLine($"Get system message: {uMsg}\n    {wParam.Value}");
             if (uMsg == 806)
             {
                 if (bmp != null)

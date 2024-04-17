@@ -73,8 +73,8 @@ namespace znMusicPlayerWUI.Pages.DialogPages
             }
             else if (ml.ListDataType == DataType.歌单)
             {
-                var path = await ImageManage.GetImageSource(ml);
-                image.Source = await FileHelper.GetImageSource(path, size, size, true);
+                var imageSources = await ImageManage.GetImageSource(ml, size, size, true);
+                image.Source = imageSources.Item1;
             }
         }
     }

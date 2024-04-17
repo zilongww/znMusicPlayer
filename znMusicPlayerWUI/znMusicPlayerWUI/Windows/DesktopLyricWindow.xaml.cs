@@ -608,14 +608,14 @@ namespace znMusicPlayerWUI.Windowed
             RectInt32[] rectInt32s = default;
             if (IsLock)
             {
-                rectInt32s = [new(0, 0, windowWidth, windowHeight)];
+                rectInt32s = new RectInt32[] { new(0, 0, windowWidth, windowHeight) };
             }
             else
             {
-                rectInt32s = [
+                rectInt32s = new RectInt32[] {
                     new(toolBarWidth, 0, windowWidth - toolBarWidth, windowHeight),
                     new(0, toolBarHeight, toolBarWidth, windowHeight - toolBarHeight)
-                ];
+                };
             }
             
             AppWindow.TitleBar.SetDragRectangles(rectInt32s);

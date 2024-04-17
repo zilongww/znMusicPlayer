@@ -248,7 +248,7 @@ namespace znMusicPlayerWUI
                         list[index] = result;
                     }
                 }
-                lags = [.. list];
+                lags = list.ToArray();
 
                 List<string> unknowArg = new();
                 // 处理启动参数
