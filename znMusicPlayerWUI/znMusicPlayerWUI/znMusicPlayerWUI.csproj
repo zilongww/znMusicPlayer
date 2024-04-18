@@ -133,13 +133,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="..\..\..\..\..\..\OneDrive\图片\icon\softwareIconresult.png">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
-	</ItemGroup>
-
-	<ItemGroup>
 		<None Update="Media\Decoder\Flac\NAudio.Flac\FlacFrame_GetBuffer.tt">
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>FlacFrame_GetBuffer.cs</LastGenOutput>
@@ -336,4 +329,11 @@
 	  </EmbeddedResource>
 	</ItemGroup>
 
+	<Target Name="RemovingLanuageFolders" AfterTargets="Build">
+		<ItemGroup>
+			<RemovingFiles Include="$(OutDir)*\*.mui" Exclude="$(OutDir)zh-CN\*.mui" />
+			<RemovingFolders Include="@(RemovingFiles->'%(RootDir)%(Directory)')" />
+		</ItemGroup>
+		<RemoveDir Directories="@(RemovingFolders)" />
+	</Target>
 </Project>
