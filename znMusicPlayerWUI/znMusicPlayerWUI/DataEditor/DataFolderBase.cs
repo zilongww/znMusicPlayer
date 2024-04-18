@@ -194,6 +194,7 @@ namespace znMusicPlayerWUI.DataEditor
         /// </summary>
         public static void InitFiles()
         {
+            System.Diagnostics.Debug.WriteLine("[DataFolderBase]: 初始化文件目录中...");
             Directory.CreateDirectory(BaseFolder);
             Directory.CreateDirectory(UserDataFolder);
             Directory.CreateDirectory(CacheFolder);
@@ -224,6 +225,7 @@ namespace znMusicPlayerWUI.DataEditor
             {
                 File.Create(LogDataPath).Close();
             }
+            System.Diagnostics.Debug.WriteLine("[DataFolderBase]: 初始化文件目录完成。");
         }
 
         /// <summary>

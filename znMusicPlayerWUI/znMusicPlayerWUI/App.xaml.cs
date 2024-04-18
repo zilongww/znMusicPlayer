@@ -26,25 +26,25 @@ namespace znMusicPlayerWUI
     /// </summary>
     public partial class App : Application
     {
-        public static readonly Windows.Media.Playback.MediaPlayer BMP = Windows.Media.Playback.BackgroundMediaPlayer.Current;
-        public static Windows.Media.SystemMediaTransportControls SMTC { get; } = Windows.Media.Playback.BackgroundMediaPlayer.Current?.SystemMediaTransportControls;
-        public static readonly MetingServices metingServices = new();
-        public static readonly CacheManager cacheManager = new();
-        public static readonly AudioPlayer audioPlayer = new();
-        public static readonly PlayingList playingList = new();
-        public static readonly LyricManager lyricManager = new();
-        public static readonly DownloadManager downloadManager = new();
-        public static readonly PlayListReader playListReader = new();
-        public static readonly HotKeyManager hotKeyManager = new();
+        public static Windows.Media.Playback.MediaPlayer BMP { get; private set; } = null;
+        public static Windows.Media.SystemMediaTransportControls SMTC { get; private set; } = null;
+        public static MetingServices metingServices { get; private set; } = null;
+        public static CacheManager cacheManager { get; private set; } = null;
+        public static AudioPlayer audioPlayer { get; private set; } = null;
+        public static PlayingList playingList { get; private set; } = null;
+        public static LyricManager lyricManager { get; private set; } = null;
+        public static DownloadManager downloadManager { get; private set; } = null;
+        public static PlayListReader playListReader { get; private set; } = null;
+        public static HotKeyManager hotKeyManager { get; private set; } = null;
+        public static App AppStatic { get; private set; } = null;
+        public static string AppName { get; } = "znMusicPlayer";
+        public static string AppVersion { get; } = "0.3.7 Preview";
 
         public static Window WindowLocal;
         public static NotifyIconWindow NotifyIconWindow;
         public static TaskBarInfoWindow taskBarInfoWindow;
 
-        public static readonly string AppName = "znMusicPlayer";
-        public static readonly string AppVersion = "0.3.7 Preview";
 
-        public static App AppStatic = null;
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -54,8 +54,48 @@ namespace znMusicPlayerWUI
             //Media.Decoder.FFmpeg.FFmpegBinariesHelper.InitFFmpeg();
             InitializeComponent();
             AppStatic = this;
-            DataFolderBase.InitFiles();
             UnhandledException += App_UnhandledException;
+            TaskScheduler.UnobservedTaskException +=
+                (object sender, UnobservedTaskExceptionEventArgs excArgs) =>
+                {
+                    LogHelper.WriteLog("UnobservedTaskError", excArgs.Exception.ToString(), false);
+    #if DEBUG
+                    Debug.WriteLine("UnobservedTaskError: " + excArgs.Exception.ToString());
+    #endif
+                };
+        }
+
+        private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
+            LogHelper.WriteLog("UnhandledError", e.Exception.ToString(), false);
+#if DEBUG
+            Debug.WriteLine("UnhandledError: " + e.ToString());
+#endif
+        }
+
+        public static List<string> LaunchArgs = null;
+        public static JObject StartingSettings = null;
+        /// <summary>
+        /// Invoked when the application is launched normally by the end user.  Other entry points
+        /// will be used such as when the application is launched to open a specific file.
+        /// </summary>
+        /// <param name="args">Details about the launch request and process.</param>
+        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+        {
+            base.OnLaunched(args);
+            DataFolderBase.InitFiles();
+            metingServices = new();
+            cacheManager = new();
+            audioPlayer = new();
+            playingList = new();
+            lyricManager = new();
+            downloadManager = new();
+            playListReader = new();
+            hotKeyManager = new();
+
+            BMP = Windows.Media.Playback.BackgroundMediaPlayer.Current;
+            SMTC = BMP?.SystemMediaTransportControls;
 
             SMTC.IsPlayEnabled = true;
             SMTC.IsPauseEnabled = true;
@@ -122,34 +162,6 @@ namespace znMusicPlayerWUI
                 SMTC.DisplayUpdater.Update();
             };
 
-            TaskScheduler.UnobservedTaskException +=
-                (object sender, UnobservedTaskExceptionEventArgs excArgs) =>
-                {
-                    LogHelper.WriteLog("UnobservedTaskError", excArgs.Exception.ToString(), false);
-    #if DEBUG
-                    Debug.WriteLine("UnobservedTaskError: " + excArgs.Exception.ToString());
-    #endif
-                };
-        }
-
-        private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
-        {
-            e.Handled = true;
-            LogHelper.WriteLog("UnhandledError", e.Exception.ToString(), false);
-#if DEBUG
-            Debug.WriteLine("UnhandledError: " + e.ToString());
-#endif
-        }
-
-        public static List<string> LaunchArgs = null;
-        public static JObject StartingSettings = null;
-        /// <summary>
-        /// Invoked when the application is launched normally by the end user.  Other entry points
-        /// will be used such as when the application is launched to open a specific file.
-        /// </summary>
-        /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
-        {
             StartingSettings = DataFolderBase.JSettingData;
             var accentColor = StartingSettings[DataFolderBase.SettingParams.ThemeAccentColor.ToString()];
             if (accentColor != null)
