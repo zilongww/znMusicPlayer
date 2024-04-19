@@ -152,17 +152,10 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
-        Visual backgroundBaseGridVisual;
-        Visual rightToolBarVisual;
-        Visual strokeVisual;
         public SongItem()
         {
             InitializeComponent();
-            backgroundBaseGridVisual = ElementCompositionPreview.GetElementVisual(BackgroundBaseGrid);
-            rightToolBarVisual = ElementCompositionPreview.GetElementVisual(RightToolBar);
-            strokeVisual = ElementCompositionPreview.GetElementVisual(StrokeBase);
-            strokeVisual.Opacity = 0;
-
+            CreateVisualsAnimation();
             AddUnloadedEvent();
             DataContextChanged += SongItem_DataContextChanged;
             //ShowImage = false;
@@ -349,10 +342,13 @@ namespace znMusicPlayerWUI.Controls
             try
             {
                 App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
-                if (!isDisposed) { return; }
                 DataContext = null;
                 AlbumImage?.Dispose();
+                AlbumImage.DisposeVisualsAnimation();
+                //AlbumImage = null;
                 MusicData = null;
+                MusicListData = null;
+                DisposeVisualsAnimation();
                 UnloadObject(this);
                 isDisposed = true;
                 System.Diagnostics.Debug.WriteLine($"[SongItem] Disposed: {StaticSongItems.Count}");
@@ -380,6 +376,61 @@ namespace znMusicPlayerWUI.Controls
             rmf.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
         }
 
+        Visual backgroundBaseGridVisual;
+        Visual rightToolBarVisual;
+        Visual strokeVisual;
+        ScalarKeyFrameAnimation rightToolBarVisualShowAnimation = null;
+        ScalarKeyFrameAnimation rightToolBarVisualHideAnimation = null;
+        ScalarKeyFrameAnimation backgroundBaseGridVisualShowAnimation = null;
+        ScalarKeyFrameAnimation backgroundBaseGridVisualHideAnimation = null;
+        ScalarKeyFrameAnimation strokeVisualShowAnimation = null;
+        private void CreateVisualsAnimation()
+        {
+            backgroundBaseGridVisual = ElementCompositionPreview.GetElementVisual(BackgroundBaseGrid);
+            rightToolBarVisual = ElementCompositionPreview.GetElementVisual(RightToolBar);
+            strokeVisual = ElementCompositionPreview.GetElementVisual(StrokeBase);
+            strokeVisual.Opacity = 0;
+
+            AnimateHelper.AnimateScalar(rightToolBarVisual, 1, 0.1,
+                0, 0, 0, 0,
+                out rightToolBarVisualShowAnimation);
+            AnimateHelper.AnimateScalar(rightToolBarVisual, 0, 0.1,
+                0, 0, 0, 0,
+                out rightToolBarVisualHideAnimation);
+            rightToolBarVisual.Compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += SongItem_Completed;
+            AnimateHelper.AnimateScalar(backgroundBaseGridVisual,
+                                        1, 0.1,
+                                        0, 0, 0, 0,
+                                        out backgroundBaseGridVisualShowAnimation);
+            AnimateHelper.AnimateScalar(backgroundBaseGridVisual,
+                0, 0.1,
+                0, 0, 0, 0,
+                out backgroundBaseGridVisualHideAnimation);
+            AnimateHelper.AnimateScalar(strokeVisual, 0, 3, 0, 0, 0, 0,
+                out strokeVisualShowAnimation);
+        }
+
+        public void DisposeVisualsAnimation()
+        {
+            strokeVisual?.Dispose();
+            rightToolBarVisual?.Dispose();
+            backgroundBaseGridVisual?.Dispose();
+            strokeVisualShowAnimation?.Dispose();
+            rightToolBarVisualShowAnimation?.Dispose();
+            rightToolBarVisualHideAnimation?.Dispose();
+            backgroundBaseGridVisualShowAnimation?.Dispose();
+            backgroundBaseGridVisualHideAnimation?.Dispose();
+
+            strokeVisual = null;
+            rightToolBarVisual = null;
+            backgroundBaseGridVisual = null;
+            strokeVisualShowAnimation = null;
+            rightToolBarVisualShowAnimation = null;
+            rightToolBarVisualHideAnimation = null;
+            backgroundBaseGridVisualShowAnimation = null;
+            backgroundBaseGridVisualHideAnimation = null;
+        }
+
         bool isShowRightToolBar = false;
         // 鼠标进入时改变颜色
         public void Grid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
@@ -395,10 +446,7 @@ namespace znMusicPlayerWUI.Controls
         {
             isShowRightToolBar = true;
             RightToolBar.Visibility = Visibility.Visible;
-            AnimateHelper.AnimateScalar(rightToolBarVisual, 1, 0.1,
-                0, 0, 0, 0,
-                out var compositor, out var animation);
-            rightToolBarVisual.StartAnimation(nameof(rightToolBarVisual.Opacity), animation);
+            rightToolBarVisual.StartAnimation(nameof(rightToolBarVisual.Opacity), rightToolBarVisualShowAnimation);
         }
 
         public void HideRightToolBar()
@@ -406,18 +454,15 @@ namespace znMusicPlayerWUI.Controls
             if (IsMusicDataPlaying) return;
 
             isShowRightToolBar = false;
+            rightToolBarVisual.StartAnimation(nameof(rightToolBarVisual.Opacity), rightToolBarVisualHideAnimation);
+        }
 
-            AnimateHelper.AnimateScalar(rightToolBarVisual, 0, 0.1,
-                0, 0, 0, 0,
-                out var compositor, out var animation);
-            compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
+        private void SongItem_Completed(object sender, CompositionBatchCompletedEventArgs args)
+        {
+            if (!isShowRightToolBar)
             {
-                if (!isShowRightToolBar)
-                {
-                    RightToolBar.Visibility = Visibility.Collapsed;
-                }
-            };
-            rightToolBarVisual.StartAnimation(nameof(rightToolBarVisual.Opacity), animation);
+                RightToolBar.Visibility = Visibility.Collapsed;
+            }
         }
 
         // 鼠标离开时改变颜色
@@ -432,31 +477,20 @@ namespace znMusicPlayerWUI.Controls
 
         public void AnimatedMouseEnterBackground()
         {
-            AnimateHelper.AnimateScalar(backgroundBaseGridVisual,
-                                        1, 0.1,
-                                        0, 0, 0, 0,
-                                        out var compositor, out var animation);
             backgroundBaseGridVisual.StartAnimation(
-                nameof(backgroundBaseGridVisual.Opacity), animation);
+                nameof(backgroundBaseGridVisual.Opacity), backgroundBaseGridVisualShowAnimation);
         }
 
-        public void AnimateMouseLeavingBackground(bool opacityStartAtHeighest = false)
+        public void AnimateMouseLeavingBackground()
         {
             if (IsMusicDataPlaying) return;
-            AnimateHelper.AnimateScalar(backgroundBaseGridVisual,
-                0, opacityStartAtHeighest ? 3.5 : 0.1,
-                0, 0, 0, 0,
-                out var compositor, out var animation);
-            if (opacityStartAtHeighest) backgroundBaseGridVisual.Opacity = 1;
-            backgroundBaseGridVisual.StartAnimation(nameof(backgroundBaseGridVisual.Opacity), animation);
+            backgroundBaseGridVisual.StartAnimation(nameof(backgroundBaseGridVisual.Opacity), backgroundBaseGridVisualHideAnimation);
         }
 
         public void AnimateStroke()
         {
             strokeVisual.Opacity = 1;
-            AnimateHelper.AnimateScalar(strokeVisual, 0, 3, 0 ,0 ,0 ,0,
-                out var compositor, out var animation);
-            strokeVisual.StartAnimation("Opacity", animation);
+            strokeVisual.StartAnimation("Opacity", strokeVisualShowAnimation);
         }
 
         private void Grid_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)

@@ -18,24 +18,24 @@
 		<PackageIcon>softwareIconresult.png</PackageIcon>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-	  <DebugType>none</DebugType>
+	  <DebugType>portable</DebugType>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-	  <DebugType>none</DebugType>
+	  <DebugType>portable</DebugType>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">
-	  <DebugType>none</DebugType>
+	  <DebugType>portable</DebugType>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-	  <DebugType>none</DebugType>
+	  <DebugType>portable</DebugType>
 	  <Optimize>True</Optimize>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-	  <DebugType>none</DebugType>
+	  <DebugType>portable</DebugType>
 	  <Optimize>True</Optimize>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">
-	  <DebugType>none</DebugType>
+	  <DebugType>portable</DebugType>
 	  <Optimize>True</Optimize>
 	</PropertyGroup>
 	

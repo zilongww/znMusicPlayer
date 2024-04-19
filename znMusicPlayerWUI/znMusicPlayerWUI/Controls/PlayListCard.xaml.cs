@@ -113,14 +113,21 @@ namespace znMusicPlayerWUI.Controls
 
         private void UIUnloaded(object sender, RoutedEventArgs e)
         {
-            PlayListImage.Dispose();
+            Dispose();
         }
 
         public void Dispose()
         {
+            if (PlayListImage != null)
+            {
+               PlayListImage.Dispose();
+               PlayListImage.DisposeVisualsAnimation();
+            }
             PlayListImage.Source = null;
             MusicListData = null;
             DataContext = null;
+            //PlayListImage = null;
+            System.Diagnostics.Debug.WriteLine("[PlayListCard]: Disposed.");
         }
 
         private void Grid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)

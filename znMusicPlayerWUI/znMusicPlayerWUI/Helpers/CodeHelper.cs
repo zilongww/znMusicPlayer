@@ -34,16 +34,17 @@ namespace znMusicPlayerWUI.Helpers
                                          out Visual elementVisual, out Compositor compositor, out ScalarKeyFrameAnimation animation)
         {
             elementVisual = ElementCompositionPreview.GetElementVisual(element);
+            compositor = elementVisual.Compositor;
             AnimateScalar(elementVisual, scalar, TimeSecond, cubicBezierEasing1, cubicBezierEasing2, cubicBezierEasing3, cubicBezierEasing4,
-                out compositor, out animation);
+                out animation);
         }
         
         public static void AnimateScalar(Visual visual, float scalar, double TimeSecond,
                                          float cubicBezierEasing1, float cubicBezierEasing2, float cubicBezierEasing3, float cubicBezierEasing4,
-                                         out Compositor compositor, out ScalarKeyFrameAnimation animation)
+                                         out ScalarKeyFrameAnimation animation)
         {
             Visual elementVisual = visual;
-            compositor = elementVisual.Compositor;
+            var compositor = elementVisual.Compositor;
 
             animation = compositor.CreateScalarKeyFrameAnimation();
             var easing = compositor.CreateCubicBezierEasingFunction(new Vector2(cubicBezierEasing1, cubicBezierEasing2), new Vector2(cubicBezierEasing3, cubicBezierEasing4));

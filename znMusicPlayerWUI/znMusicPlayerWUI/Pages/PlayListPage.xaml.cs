@@ -31,16 +31,6 @@ namespace znMusicPlayerWUI.Pages
             UpdatePlayList();
         }
 
-        private void MainWindow_MainViewStateChanged(bool isView)
-        {
-            if (isView)
-                ItemsViewer.ItemsSource = playListCards;
-            else
-            {
-                ItemsViewer.ItemsSource = null;
-            }
-        }
-
         ObservableCollection<MusicListData> playListCards = new();
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
@@ -50,6 +40,16 @@ namespace znMusicPlayerWUI.Pages
             playListCards.Clear();
             ItemsViewer.ItemsSource = null;
             BaseGridView.Items.Clear();
+        }
+
+        private void MainWindow_MainViewStateChanged(bool isView)
+        {
+            if (isView)
+                ItemsViewer.ItemsSource = playListCards;
+            else
+            {
+                ItemsViewer.ItemsSource = null;
+            }
         }
 
         bool isInUpdate = false;

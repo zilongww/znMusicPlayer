@@ -12,7 +12,7 @@ namespace znMusicPlayerWUI.Pages
         public LocalAudioPage()
         {
             InitializeComponent();
-            GC.Collect();
+            //GC.Collect();
         }
 
         public void UpdateShyHeader()

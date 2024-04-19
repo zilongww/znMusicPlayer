@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls;
@@ -7,6 +6,7 @@ using Microsoft.UI.Composition;
 using znMusicPlayerWUI.Media;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.DataEditor;
+using Microsoft.UI.Xaml.Hosting;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -84,6 +84,71 @@ namespace znMusicPlayerWUI.Controls
         {
             InitializeComponent();
             UpdateTheme();
+            CreateVisualsAnimation();
+        }
+
+        Visual animationVisual = null;
+        Visual animationVisualMass = null;
+        ScalarKeyFrameAnimation animationOpacity_SoureChanged = null;
+        ScalarKeyFrameAnimation animationMassOpacity_MouseIn = null;
+        ScalarKeyFrameAnimation animationMassOpacity_MouseExited = null;
+        ScalarKeyFrameAnimation animationSize_MouseIn = null;
+        ScalarKeyFrameAnimation animationSize_MouseExited = null;
+        ScalarKeyFrameAnimation animationSize_MousePressed = null;
+        ScalarKeyFrameAnimation animationSize_MouseReleased = null;
+        private void CreateVisualsAnimation()
+        {
+            animationVisual = ElementCompositionPreview.GetElementVisual(ImageSourceRoot);
+            animationVisualMass = ElementCompositionPreview.GetElementVisual(ImageMassAlpha);
+
+            // 图片源切换动画
+            AnimateHelper.AnimateScalar(
+                animationVisual, 1, 02,
+                0.2f, 1, 0.22f, 1f,
+                out animationOpacity_SoureChanged);
+            // 鼠标移入遮罩动画
+            AnimateHelper.AnimateScalar(
+                animationVisualMass, 1f, 0.2,
+                0.2f, 1, 0.22f, 1f,
+                out animationMassOpacity_MouseIn);
+            // 鼠标移入 Size 动画
+            AnimateHelper.AnimateScalar(
+                animationVisual, 1.07f, 0.2,
+                0.2f, 1, 0.22f, 1f,
+                out animationSize_MouseIn);
+            // 鼠标移出遮罩动画
+            AnimateHelper.AnimateScalar(
+                animationVisualMass, 0, 1.3,
+                0, 0, 0, 0,
+                out animationMassOpacity_MouseExited);
+            // 鼠标移出 Size 动画
+            AnimateHelper.AnimateScalar(
+                animationVisual, 1f, 1.5,
+                0.2f, 1, 0.22f, 1f,
+                out animationSize_MouseExited);
+            // 鼠标按下 Size 动画
+            AnimateHelper.AnimateScalar(
+                animationVisual, 0.93f, 0.5,
+                0.2f, 1, 0.22f, 1f,
+                out animationSize_MousePressed);
+            // 鼠标松起 Size 动画
+            AnimateHelper.AnimateScalar(
+                animationVisual, 1.07f, 1.5,
+                0.2f, 1, 0.22f, 1f,
+                out animationSize_MouseReleased);
+        }
+
+        public void DisposeVisualsAnimation()
+        {
+            animationVisual?.Dispose();
+            animationVisualMass?.Dispose();
+            animationOpacity_SoureChanged?.Dispose();
+            animationMassOpacity_MouseIn?.Dispose();
+            animationMassOpacity_MouseExited?.Dispose();
+            animationSize_MouseIn?.Dispose();
+            animationSize_MouseExited?.Dispose();
+            animationSize_MousePressed?.Dispose();
+            animationSize_MouseReleased?.Dispose();
         }
 
         public void Dispose()
@@ -135,12 +200,11 @@ namespace znMusicPlayerWUI.Controls
             scaleVisual.StartAnimation("Scale.X", animation);
             scaleVisual.StartAnimation("Scale.Y", animation);*/
 
-            AnimateHelper.AnimateScalar(
-                ImageSource, 1, 02,
-                0.2f, 1, 0.22f, 1f,
-                out var visual, out var compositor, out var scalarKeyFrameAnimation);
-            visual.Opacity = 0;
-            visual.StartAnimation("Opacity", scalarKeyFrameAnimation);
+            if (Source == null) return;
+            if (animationVisual == null) return;
+
+            animationVisual.Opacity = 0;
+            animationVisual.StartAnimation(nameof(animationVisual.Opacity), animationOpacity_SoureChanged);
             ImageSource.Source = Source;
         }
 
@@ -182,58 +246,29 @@ namespace znMusicPlayerWUI.Controls
         }
 
         bool isPointEnter = false;
-        bool isFirstAnimate = true;
         private async void Grid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
+            if (animationVisual == null) return;
+            if (animationVisualMass == null) return;
             if (isEnterDialog) return;
             if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
             isPointEnter = true;
 
-            ImageMassAlpha.Visibility = Visibility.Visible;
-            AnimateHelper.AnimateScalar(
-                ImageMassAlpha, 1f, 0.2,
-                0.2f, 1, 0.22f, 1f,
-                out var visual, out var compositor, out var scalarKeyFrameAnimation);
-            visual.StartAnimation(nameof(ImageMassAlpha.Opacity), scalarKeyFrameAnimation);
-
-            AnimateHelper.AnimateScalar(
-                ImageSourceRoot, 1.07f, 0.2,
-                0.2f, 1, 0.22f, 1f,
-                out var scaleVisual, out var compositor1, out var animation);
-            scaleVisual.CenterPoint = new(scaleVisual.Size.X / 2, scaleVisual.Size.Y / 2, 1);
-            scaleVisual.StartAnimation("Scale.X", animation);
-            scaleVisual.StartAnimation("Scale.Y", animation);
-
-            if (isFirstAnimate)
-            {
-                isFirstAnimate = false;
-                await Task.Delay(6);
-                Grid_PointerEntered(null, null);
-            }
+            animationVisualMass.StartAnimation(nameof(ImageMassAlpha.Opacity), animationMassOpacity_MouseIn);
+            animationVisual.StartAnimation("Scale.X", animationSize_MouseIn);
+            animationVisual.StartAnimation("Scale.Y", animationSize_MouseIn);
         }
 
         private void Grid_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
+            if (animationVisual == null) return;
+            if (animationVisualMass == null) return;
             if (ShowMenuBehavior == ShowMenuBehaviors.None) return;
             isPointEnter = false;
-            AnimateHelper.AnimateScalar(
-                ImageMassAlpha, 0, 1.3,
-                0, 0, 0, 0,
-                out var visual, out var compositor, out var scalarKeyFrameAnimation);
-            visual.StartAnimation(nameof(ImageMassAlpha.Opacity), scalarKeyFrameAnimation);
-            compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += (_, __) =>
-            {
-                if (!isPointEnter)
-                    ImageMassAlpha.Visibility = Visibility.Collapsed;
-            };
 
-            AnimateHelper.AnimateScalar(
-                ImageSourceRoot, 1f, 1.5,
-                0.2f, 1, 0.22f, 1f,
-                out var scaleVisual, out var compositor1, out var animation);
-            scaleVisual.CenterPoint = new(scaleVisual.Size.X / 2, scaleVisual.Size.Y / 2, 1);
-            scaleVisual.StartAnimation("Scale.X", animation);
-            scaleVisual.StartAnimation("Scale.Y", animation);
+            animationVisualMass.StartAnimation(nameof(ImageMassAlpha.Opacity), animationMassOpacity_MouseExited);
+            animationVisual.StartAnimation("Scale.X", animationSize_MouseExited);
+            animationVisual.StartAnimation("Scale.Y", animationSize_MouseExited);
         }
 
         bool IsMouse4Click = false;
@@ -245,24 +280,16 @@ namespace znMusicPlayerWUI.Controls
                 IsMouse4Click = true;
             }
 
-            AnimateHelper.AnimateScalar(
-                ImageSourceRoot, 0.93f, 0.5,
-                0.2f, 1, 0.22f, 1f,
-                out var scaleVisual, out var compositor1, out var animation);
-            scaleVisual.CenterPoint = new(scaleVisual.Size.X / 2, scaleVisual.Size.Y / 2, 1);
-            scaleVisual.StartAnimation("Scale.X", animation);
-            scaleVisual.StartAnimation("Scale.Y", animation);
+            if (animationVisual == null) return;
+            animationVisual.StartAnimation("Scale.X", animationSize_MousePressed);
+            animationVisual.StartAnimation("Scale.Y", animationSize_MousePressed);
         }
 
         private void Grid_PointerReleased(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            AnimateHelper.AnimateScalar(
-                ImageSourceRoot, 1.07f, 1.5,
-                0.2f, 1, 0.22f, 1f,
-                out var scaleVisual, out var compositor1, out var animation);
-            scaleVisual.CenterPoint = new(scaleVisual.Size.X / 2, scaleVisual.Size.Y / 2, 1);
-            scaleVisual.StartAnimation("Scale.X", animation);
-            scaleVisual.StartAnimation("Scale.Y", animation);
+            if (animationVisual == null) return;
+            animationVisual.StartAnimation("Scale.X", animationSize_MouseReleased);
+            animationVisual.StartAnimation("Scale.Y", animationSize_MouseReleased);
         }
 
         bool isEnterDialog = false;
@@ -280,11 +307,17 @@ namespace znMusicPlayerWUI.Controls
         {
             //ImageSource.CenterPoint = new(5, 5, 1);
             RGClip.Rect = new(0, 0, ActualWidth, ActualHeight);
+            if (animationVisual == null) return;
+            animationVisual.CenterPoint = new((float)ActualWidth / 2, (float)ActualHeight / 2, 1);
         }
 
         private void RootGrid_ActualThemeChanged(FrameworkElement sender, object args)
         {
             UpdateTheme();
+        }
+
+        private void ImageSource_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
         }
     }
 }

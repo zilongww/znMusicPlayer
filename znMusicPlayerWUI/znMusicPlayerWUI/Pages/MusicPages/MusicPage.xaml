@@ -103,7 +103,8 @@
                         <Border x:Name="AlbumImageShadowTarget"/>
                         <controls:Imagezn x:Name="AlbumImageBase" IsMassImage="True" CornerRadius="8" BorderBrush="{ThemeResource ControlElevationBorderBrush}" BorderThickness="1">
                             <uis:Effects.Shadow>
-                                <uis:AttachedDropShadow BlurRadius="60" Color="#50000000" CastTo="{x:Bind AlbumImageShadowTarget}"/>
+                                <uis:AttachedDropShadow BlurRadius="60" Color="#50000000" CastTo="{x:Bind AlbumImageShadowTarget}"
+                                                        Offset="0,3"/>
                             </uis:Effects.Shadow>
                         </controls:Imagezn>
                     </Grid>

@@ -47,26 +47,45 @@ namespace znMusicPlayerWUI.Pages
             MainWindow.MainViewStateChanged += MainWindow_MainViewStateChanged;
         }
 
-        protected override async void OnNavigatedFrom(NavigationEventArgs e)
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            LeavingPageDo();
+        }
+
+        private async void LeavingPageDo()
+        {
             IsNavigatedOutFromPage = true;
             await Task.Delay(500);
-            MainWindow.MainViewStateChanged -= MainWindow_MainViewStateChanged;
             MainWindow.InKeyDownEvent -= MainWindow_InKeyDownEvent;
-            scrollViewer?.ScrollToVerticalOffset(0);
+            MainWindow.MainViewStateChanged -= MainWindow_MainViewStateChanged;
 
             MusicDataList?.Clear();
-            searchMusicDatas.Clear();
-            Children.ItemsSource = null;
-            SearchBox.ItemsSource = null;
+            searchMusicDatas?.Clear();
 
-            Album_Image.Dispose(); AlbumLogo.Dispose();
+            if (Children != null)
+            {
+                Children.ItemsSource = null;
+                Children = null;
+            }
+            if (SearchBox != null)
+            {
+                SearchBox.ItemsSource = null;
+                SearchBox = null;
+            }
+
             musicListData = null;
+            MusicDataList = null;
+            searchMusicDatas = null;
 
-            NavToObj.Songs?.Songs.Clear();
+            Album_Image?.Dispose(); AlbumLogo?.Dispose();
+            Album_Image = null; AlbumLogo = null;
+
+            NavToObj?.Songs?.Songs.Clear();
             NavToObj = null;
+
             UnloadObject(this);
+            Debug.WriteLine($"[ItemListViewAlbum] 清理完成。{SongItem.StaticSongItems.Count}");
         }
 
         private void MainWindow_MainViewStateChanged(bool isView)
@@ -148,6 +167,7 @@ namespace znMusicPlayerWUI.Pages
 
         private async void LoadImage()
         {
+            if (IsNavigatedOutFromPage) LeavingPageDo();
             AlbumLogo.BorderThickness = new(0);
             if (musicListData.ListDataType == DataType.本地歌单)
             {
@@ -165,6 +185,7 @@ namespace znMusicPlayerWUI.Pages
             AlbumLogo.Source = Album_Image.Source;
             AlbumLogo.SaveName = NavToObj.Title;
             AlbumLogo.BorderThickness = new(1);
+            Debug.WriteLine("[ItemListViewAlbum] 图片加载完成");
             UpdateShyHeader();
             await Task.Delay(10);
             UpdateShyHeader();
@@ -172,7 +193,7 @@ namespace znMusicPlayerWUI.Pages
             UpdateShyHeader();
             await Task.Delay(200);
             UpdateShyHeader();
-            Debug.WriteLine("[ItemListViewAlbum] 图片加载完成");
+            if (IsNavigatedOutFromPage) LeavingPageDo();
         }
 
         CompositionPropertySet scrollerPropertySet;
