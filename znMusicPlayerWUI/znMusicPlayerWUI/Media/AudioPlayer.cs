@@ -72,7 +72,6 @@ namespace znMusicPlayerWUI.Media
         public static async Task<List<OutDevice>> GetOutDevicesAsync()
         {
             List<OutDevice> outDevices = new List<OutDevice>();
-
             await Task.Run(() =>
             {
                 // WaveOut
@@ -553,6 +552,7 @@ namespace znMusicPlayerWUI.Media
         bool isInReloadDefaultDeviceChanged = false;
         private async void NotificationClient_OnDefaultDeviceChangedEvent(DataFlow dataFlow, Role deviceRole, string defaultDeviceId)
         {
+            await Task.Delay(100); // 不加会导致 集合被修改 的错误，DirectSound 导致的 >:(
             var devices = await OutDevice.GetOutDevicesAsync();
             if (NowOutObj == null)
             {

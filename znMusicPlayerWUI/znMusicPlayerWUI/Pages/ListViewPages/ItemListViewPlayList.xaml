@@ -12,6 +12,7 @@
     xmlns:helper="using:znMusicPlayerWUI.Helpers"
     xmlns:data="using:znMusicPlayerWUI.DataEditor"
     xmlns:ui="using:CommunityToolkit.WinUI.UI"
+    Unloaded="Page_Unloaded"
     mc:Ignorable="d">
 
     <Page.Resources>

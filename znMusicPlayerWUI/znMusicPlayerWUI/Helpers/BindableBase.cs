@@ -5,7 +5,7 @@ using znMusicPlayerWUI.DataEditor;
 
 namespace znMusicPlayerWUI.Helpers
 {
-    public class SongItemBindBase : BindableBase, IDisposable
+    public class SongItemBindBase : BindableBase
     {
         MusicData _musicData;
         public MusicData MusicData
@@ -69,13 +69,6 @@ namespace znMusicPlayerWUI.Helpers
                 _searchText = value;
                 OnPropertyChanged(nameof(SearchText));
             }
-        }
-
-        public void Dispose()
-        {
-            _musicData = null;
-            _musicListData = null;
-            _searchText = null;
         }
     }
 

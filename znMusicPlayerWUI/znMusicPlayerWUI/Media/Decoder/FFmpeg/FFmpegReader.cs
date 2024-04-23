@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualBasic.Devices;
+﻿/*using Microsoft.VisualBasic.Devices;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -70,3 +70,4 @@ namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
         }
     }
 }
+*/

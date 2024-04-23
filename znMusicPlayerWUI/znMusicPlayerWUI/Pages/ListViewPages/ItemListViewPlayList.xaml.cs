@@ -74,44 +74,30 @@ namespace znMusicPlayerWUI.Pages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            LeavingPageDo();
+            DataContext = null;
+            //LeavingPageDo();
             //GC.SuppressFinalize(this);
             //System.Diagnostics.Debug.WriteLine("Clear");
         }
 
-        private async void LeavingPageDo()
+        ~ItemListViewPlayList()
+        {
+            System.Diagnostics.Debug.WriteLine($"[ItemListViewPlayList] Disposed by finalizer.");
+            LeavingPageDo();
+        }
+
+        private void LeavingPageDo()
         {
             IsNavigatedOutFromPage = true;
-
             MainWindow.InKeyDownEvent -= MainWindow_InKeyDownEvent;
             MainWindow.MainViewStateChanged -= MainWindow_MainViewStateChanged;
             App.playListReader.Updated -= PlayListReader_Updated;
             App.audioPlayer.SourceChanged -= AudioPlayer_SourceChanged;
-            if (MoveItemButton.IsChecked == true)
-                foreach (var i in SongItem.StaticSongItems) i.AddUnloadedEvent();
-            await Task.Delay(500);
 
-            //DisposeAllVisual();
-            if (MusicDataList != null)
-            {
-                foreach (var i in MusicDataList)
-                {
-                    i.Dispose();
-                }
-            }
-            if (searchMusicDatas != null)
-            {
-                foreach (var i in searchMusicDatas)
-                {
-                    i.Dispose();
-                }
-            }
+            DisposeAllVisual();
 
             MusicDataList?.Clear();
             searchMusicDatas?.Clear();
-            MusicDataList = null;
-            searchMusicDatas = null;
-
             if (Children != null)
             {
                 Children.ItemsSource = null;
@@ -125,18 +111,24 @@ namespace znMusicPlayerWUI.Pages
 
             ImageManage.localImageCache.Clear();
 
-            dropShadow?.Dispose();
-            PlayList_Image?.Dispose();
+            MusicDataList = null;
+            searchMusicDatas = null;
 
+            dropShadow?.Dispose();
             dropShadow = null;
-            PlayList_Image = null;
+            //PlayList_Image?.Dispose();
+            //PlayList_Image?.DisposeVisualsAnimation();
+
+            if (scrollViewer != null) scrollViewer.ViewChanging -= ScrollViewer_ViewChanging;
+            scrollViewer = null;
+
             NavToObj = null;
             UnloadObject(this);
-            System.Diagnostics.Debug.WriteLine($"[ItemListViewPlayList] 清理完成。{SongItem.StaticSongItems.Count}");
+            System.Diagnostics.Debug.WriteLine($"[ItemListViewPlayList] 清理完成。");
         }
 
         private void DisposeAllVisual()
-        {
+        {/* crash program
             scrollerPropertySet?.Dispose();
             headerVisual?.Dispose();
             backgroundVisual?.Dispose();
@@ -144,7 +136,7 @@ namespace znMusicPlayerWUI.Pages
             stackVisual?.Dispose();
             commandBarVisual?.Dispose();
             commandFootVisual?.Dispose();
-            searchBaseVisual?.Dispose();
+            searchBaseVisual?.Dispose();*/
             offsetExpression?.Dispose();
             backgroundVisualOpacityAnimation?.Dispose();
             logoHeaderScaleAnimation?.Dispose();
@@ -177,6 +169,8 @@ namespace znMusicPlayerWUI.Pages
 
         private void MainWindow_MainViewStateChanged(bool isView)
         {
+            if (IsNavigatedOutFromPage) return;
+            if (NavToObj == null) return;
             AutoScrollViewerControl.Pause = !isView;
         }
 
@@ -212,6 +206,7 @@ namespace znMusicPlayerWUI.Pages
             isLoading = true;
 
             if (IsNavigatedOutFromPage) return;
+            System.Diagnostics.Debug.WriteLine($"[ItemListViewPlayList] 开始初始化。");
 
             #region Collecter
             SelectorSeparator.Visibility = Visibility.Collapsed;
@@ -248,10 +243,6 @@ namespace znMusicPlayerWUI.Pages
             {
                 LoadImage();
 
-                foreach (var i in MusicDataList)
-                {
-                    i.Dispose();
-                }
                 MusicDataList.Clear();
                 var dpi = CodeHelper.GetScaleAdjustment(App.WindowLocal);
                 MusicData[] array = null;
@@ -311,15 +302,21 @@ namespace znMusicPlayerWUI.Pages
                     MusicDataList.Add(new() { MusicData = i, MusicListData = NavToObj, ImageScaleDPI = dpi });
                 }
                 array = null;
-                System.Diagnostics.Debug.WriteLine($"[ItemListViewPlayList] 加载完成。");
+                System.Diagnostics.Debug.WriteLine($"[ItemListViewPlayList] 列表加载完成。");
             }
             isLoading = false;
             LoadingTipControl.UnShowLoading();
             UpdateShyHeader();
+            System.Diagnostics.Debug.WriteLine($"[ItemListViewPlayList] 加载完成。");
         }
 
         private void PlayListReader_Updated()
         {
+            if (IsNavigatedOutFromPage || NavToObj == null)
+            {
+                App.playListReader.Updated -= PlayListReader_Updated;
+                return;
+            }
             foreach (var data in App.playListReader.NowMusicListData)
             {
                 if (data == NavToObj)
@@ -338,11 +335,7 @@ namespace znMusicPlayerWUI.Pages
 
         private async void LoadImage()
         {
-            if (NavToObj == null)
-            {
-                LeavingPageDo();
-                return;
-            }
+            if (NavToObj == null || IsNavigatedOutFromPage) return;
             PlayList_Image.BorderThickness = new(0);
             if (NavToObj.ListDataType == DataType.本地歌单)
             {
@@ -354,11 +347,7 @@ namespace znMusicPlayerWUI.Pages
             {
                 PlayList_Image.Source = (await ImageManage.GetImageSource(NavToObj)).Item1;
             }
-            if (NavToObj == null)
-            {
-                LeavingPageDo();
-                return;
-            }
+            if (NavToObj == null) return;
             if (PlayList_Image.Source == null)
             {
                 PlayList_Image.Source = await FileHelper.GetImageSource("");
@@ -374,7 +363,6 @@ namespace znMusicPlayerWUI.Pages
             UpdateShyHeader();
             UpdateInfoWidth();
             CrateShadow();
-            if (NavToObj == null) LeavingPageDo();
         }
 
         CompositionPropertySet scrollerPropertySet;
@@ -400,7 +388,6 @@ namespace znMusicPlayerWUI.Pages
         {
             if (NavToObj == null) return;
             if (IsNavigatedOutFromPage) return;
-            if (Children == null) return;
             if (scrollViewer == null) return;
 
             int logoHeight = 280;
@@ -530,6 +517,8 @@ namespace znMusicPlayerWUI.Pages
 
         private void UpdateInfoWidth()
         {
+            if (NavToObj == null) return;
+            if (IsNavigatedOutFromPage) return;
             if (logoVisual == null) return;
             var width = HeaderBaseGrid.ActualWidth - 50 - (PlayList_ImageBaseBorder.ActualWidth * logoVisual.Scale.X);
             if (width > 0)
@@ -1241,6 +1230,11 @@ namespace znMusicPlayerWUI.Pages
                         ToolsCommandBar.Focus(FocusState.Programmatic);
                 }
             }
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            LeavingPageDo();
         }
     }
 }

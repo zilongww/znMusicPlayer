@@ -16,7 +16,7 @@ using znMusicPlayerWUI.DataEditor;
 
 namespace znMusicPlayerWUI.Controls
 {
-    public partial class SongItem : Grid, IDisposable
+    public partial class SongItem : Grid
     {
         bool _ShowImage = true;
 
@@ -159,6 +159,12 @@ namespace znMusicPlayerWUI.Controls
             AddUnloadedEvent();
             DataContextChanged += SongItem_DataContextChanged;
             //ShowImage = false;
+        }
+
+        ~SongItem()
+        {
+            System.Diagnostics.Debug.WriteLine($"[SongItem] Disposed by Finalizer.");
+            Dispose();
         }
 
         private void SongItem_KeyUp(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
@@ -337,17 +343,19 @@ namespace znMusicPlayerWUI.Controls
         }
 
         bool isDisposed = false;
-        public void Dispose()
+        private void Dispose()
         {
             try
             {
                 App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
-                DataContext = null;
-                AlbumImage?.Dispose();
-                AlbumImage.DisposeVisualsAnimation();
-                //AlbumImage = null;
-                MusicData = null;
-                MusicListData = null;
+                if (!isDisposed)
+                {
+                    DataContext = null;
+                    MusicData = null;
+                    MusicListData = null;
+                    AlbumImage?.Dispose();
+                }
+                //AlbumImage?.DisposeVisualsAnimation();
                 DisposeVisualsAnimation();
                 UnloadObject(this);
                 isDisposed = true;
@@ -412,14 +420,17 @@ namespace znMusicPlayerWUI.Controls
 
         public void DisposeVisualsAnimation()
         {
-            strokeVisual?.Dispose();
-            rightToolBarVisual?.Dispose();
-            backgroundBaseGridVisual?.Dispose();
+            if (rightToolBarVisual != null) 
+                rightToolBarVisual.Compositor.GetCommitBatch(CompositionBatchTypes.AllAnimations).Completed -= SongItem_Completed;
             strokeVisualShowAnimation?.Dispose();
             rightToolBarVisualShowAnimation?.Dispose();
             rightToolBarVisualHideAnimation?.Dispose();
             backgroundBaseGridVisualShowAnimation?.Dispose();
             backgroundBaseGridVisualHideAnimation?.Dispose();
+            /* crash program
+            strokeVisual?.Dispose();
+            rightToolBarVisual?.Dispose();
+            backgroundBaseGridVisual?.Dispose();*/
 
             strokeVisual = null;
             rightToolBarVisual = null;
@@ -604,6 +615,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
+            Unloaded -= Grid_Unloaded;
             StaticSongItems.Remove(this);
             Dispose();
         }

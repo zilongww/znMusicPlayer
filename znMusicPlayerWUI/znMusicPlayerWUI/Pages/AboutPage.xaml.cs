@@ -26,7 +26,7 @@ namespace znMusicPlayerWUI.Pages
 
         unsafe void Play(string file)
         {
-
+/*
             var audio = new Media.Decoder.FFmpeg.FFmpegDecoder();
             audio.InitDecodecAudio(file);
             audio.Play();
@@ -53,7 +53,7 @@ namespace znMusicPlayerWUI.Pages
                     }
                 }
             });
-            PlayTask.Start();
+            PlayTask.Start();*/
 
         }
 

@@ -1,4 +1,4 @@
-﻿using FFmpeg.AutoGen;
+﻿/*using FFmpeg.AutoGen;
 using Microsoft.VisualBasic.Devices;
 using NAudio.Wave;
 using System;
@@ -15,6 +15,7 @@ namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
     public enum MediaState { Play, Pause, Stop, None, Read }
     public unsafe class FFmpegDecoder
     {
+        
         //媒体格式容器
         AVFormatContext* format;
         //解码上下文
@@ -364,4 +365,4 @@ namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
             StopPlay();
         }
     }
-}
+}*/

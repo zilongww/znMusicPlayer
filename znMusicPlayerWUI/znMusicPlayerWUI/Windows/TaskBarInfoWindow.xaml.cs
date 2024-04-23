@@ -175,7 +175,10 @@ namespace znMusicPlayerWUI.Windowed
         Image bmp = null;
         public async void SetTaskbarImage(string filePath)
         {
-            if (string.IsNullOrEmpty(filePath)) return;
+            if (string.IsNullOrEmpty(filePath))
+            {
+                filePath = Path.Combine(localPath, "icon.png");
+            }
             if (IconPathUsing == filePath) return;
             bool canBreak = false;
             bmp = await Task.Run(() => Bitmap.FromFile(filePath));

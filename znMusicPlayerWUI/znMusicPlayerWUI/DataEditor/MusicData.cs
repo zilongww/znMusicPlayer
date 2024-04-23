@@ -84,6 +84,12 @@ namespace znMusicPlayerWUI.DataEditor
             this.ID = ID;
             PicturePath = picturePath;
         }
+        ~Artist()
+        {
+            HotSongs?.Songs?.Clear();
+            HotSongs = null;
+            System.Diagnostics.Debug.WriteLine("[MusicListData] Dispose by finalizer.");
+        }
 
         public override string GetMD5()
         {
@@ -114,6 +120,12 @@ namespace znMusicPlayerWUI.DataEditor
             PicturePath = picturePath;
             Describee = describee;
             Songs = songs;
+        }
+        ~Album()
+        {
+            Artists?.Clear();
+            Artists = null;
+            System.Diagnostics.Debug.WriteLine("[MusicListData] Dispose by finalizer.");
         }
 
         public bool IsNull()
@@ -193,6 +205,14 @@ namespace znMusicPlayerWUI.DataEditor
 
         }
 
+        ~MusicData()
+        {
+            Artists?.Clear();
+            Artists = null;
+            Album = null;
+            System.Diagnostics.Debug.WriteLine("[MusicListData] Dispose by finalizer.");
+        }
+
         private void SetABName()
         {
             for (int i = 0; i < Artists.Count; i++)
@@ -249,13 +269,22 @@ namespace znMusicPlayerWUI.DataEditor
                             endTime = duration;
                         }
 
+                        string finalPath;
+                        if (string.IsNullOrEmpty(path))
+                        {
+                            finalPath = Path.Combine(localFile.DirectoryName, t.DataFile.Filename);
+                        }
+                        else
+                        {
+                            finalPath = path;
+                        }
                         MusicData musicData = new(
                             t.Title, null,
                             new List<Artist>() { new(string.IsNullOrEmpty(t.Performer) ? cueSheet.Performer : t.Performer) },
                             new(cueSheet.Title))
                         {
                             From = MusicFrom.localMusic,
-                            InLocal = t.DataFile.Filename != null ? Path.Combine(localFile.DirectoryName, t.DataFile.Filename) : null,
+                            InLocal = finalPath,
                             CUETrackData = new()
                             {
                                 Index = t.TrackNumber,
@@ -359,6 +388,12 @@ namespace znMusicPlayerWUI.DataEditor
             this.ID = ID;
             this.Songs = songs == null ? new() : songs;
             ListDataType = listDataType;
+        }
+        ~MusicListData()
+        {
+            Songs?.Clear();
+            Songs = null;
+            System.Diagnostics.Debug.WriteLine("[MusicListData] Dispose by finalizer.");
         }
 
         public override string GetMD5()

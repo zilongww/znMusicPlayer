@@ -212,6 +212,9 @@
                     </cc:SettingsCard.Description>
                     <ToggleSwitch Toggled="ToggleSwitch_Toggled"/>
                 </cc:SettingsCard>
+                <cc:SettingsCard Header="均衡器">
+                    <ToggleSwitch Loaded="ToggleSwitch_Loaded_2" Toggled="ToggleSwitch_Toggled_4"/>
+                </cc:SettingsCard>
                 <cc:SettingsCard Header="退出时保存正在播放的歌曲和列表并在下次启动时加载">
                     <ToggleSwitch Loaded="ToggleSwitch_Loaded_2" Toggled="ToggleSwitch_Toggled_4"/>
                 </cc:SettingsCard>
@@ -374,11 +377,20 @@
         </cc:SettingsExpander>
 
         <cc:SettingsExpander Header="其它设置"
-                             Description="显示托盘图标、后台运行、恢复默认设置">
+                             Description="热键设置、显示托盘图标、后台运行、恢复默认设置">
             <cc:SettingsExpander.HeaderIcon>
                 <FontIcon Glyph="&#xE712;"/>
             </cc:SettingsExpander.HeaderIcon>
             <cc:SettingsExpander.Items>
+                <cc:SettingsCard x:Name="HotKeySettings"
+                                 Header="热键设置"
+                                 Description="重置热键设置、重新注册热键、更改热键按键设置"
+                                 IsClickEnabled="True"
+                                 Click="HotKeySettings_Click">
+                    <cc:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xf210;"/>
+                    </cc:SettingsCard.HeaderIcon>
+                </cc:SettingsCard>
                 <cc:SettingsCard Header="显示托盘图标"
                                  Description="在 Windows 任务栏托盘中显示此程序的图标">
                     <cc:SettingsCard.HeaderIcon>
@@ -426,17 +438,6 @@
                 </cc:SettingsCard>
             </cc:SettingsExpander.Items>
         </cc:SettingsExpander>
-
-        <cc:SettingsCard x:Name="HotKeySettings"
-                         Header="热键设置"
-                         Description="重置热键设置、重新注册热键、更改热键按键设置"
-                         IsClickEnabled="True"
-                         Click="HotKeySettings_Click"
-                         Margin="0,4,4,0">
-            <cc:SettingsCard.HeaderIcon>
-                <FontIcon Glyph="&#xf210;"/>
-            </cc:SettingsCard.HeaderIcon>
-        </cc:SettingsCard>
 
         <cc:SettingsExpander Header="DEBUG">
             <cc:SettingsExpander.HeaderIcon>

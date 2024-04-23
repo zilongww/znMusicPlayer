@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Hosting;
 
 namespace znMusicPlayerWUI.Controls
 {
-    public partial class Imagezn : Grid, IDisposable
+    public partial class Imagezn : Grid
     {
         public static bool ImageDarkMass { get; set; } = true;
 
@@ -87,25 +87,41 @@ namespace znMusicPlayerWUI.Controls
             CreateVisualsAnimation();
         }
 
+        ~Imagezn()
+        {
+            try
+            {
+                DisposeVisualsAnimation();
+            }
+            catch { }
+            try
+            {
+                Dispose();
+            }
+            catch { }
+            System.Diagnostics.Debug.WriteLine($"[Imagezn] Disposed by Finalizer.");
+        }
+
         Visual animationVisual = null;
         Visual animationVisualMass = null;
-        ScalarKeyFrameAnimation animationOpacity_SoureChanged = null;
+        ScalarKeyFrameAnimation animationOpacity_SourceChanged = null;
         ScalarKeyFrameAnimation animationMassOpacity_MouseIn = null;
         ScalarKeyFrameAnimation animationMassOpacity_MouseExited = null;
         ScalarKeyFrameAnimation animationSize_MouseIn = null;
         ScalarKeyFrameAnimation animationSize_MouseExited = null;
         ScalarKeyFrameAnimation animationSize_MousePressed = null;
         ScalarKeyFrameAnimation animationSize_MouseReleased = null;
-        private void CreateVisualsAnimation()
+        public void CreateVisualsAnimation()
         {
             animationVisual = ElementCompositionPreview.GetElementVisual(ImageSourceRoot);
             animationVisualMass = ElementCompositionPreview.GetElementVisual(ImageMassAlpha);
+            animationVisual.Opacity = 1;
 
             // 图片源切换动画
             AnimateHelper.AnimateScalar(
                 animationVisual, 1, 02,
                 0.2f, 1, 0.22f, 1f,
-                out animationOpacity_SoureChanged);
+                out animationOpacity_SourceChanged);
             // 鼠标移入遮罩动画
             AnimateHelper.AnimateScalar(
                 animationVisualMass, 1f, 0.2,
@@ -138,23 +154,35 @@ namespace znMusicPlayerWUI.Controls
                 out animationSize_MouseReleased);
         }
 
-        public void DisposeVisualsAnimation()
-        {
+        private void DisposeVisualsAnimation()
+        {/* crash program
             animationVisual?.Dispose();
-            animationVisualMass?.Dispose();
-            animationOpacity_SoureChanged?.Dispose();
+            animationVisualMass?.Dispose();*/
+            animationOpacity_SourceChanged?.Dispose();
             animationMassOpacity_MouseIn?.Dispose();
             animationMassOpacity_MouseExited?.Dispose();
             animationSize_MouseIn?.Dispose();
             animationSize_MouseExited?.Dispose();
             animationSize_MousePressed?.Dispose();
             animationSize_MouseReleased?.Dispose();
+
+            animationVisual = null;
+            animationVisualMass = null;
+            animationOpacity_SourceChanged = null;
+            animationMassOpacity_MouseIn = null;
+            animationMassOpacity_MouseExited = null;
+            animationSize_MouseIn = null;
+            animationSize_MouseExited = null;
+            animationSize_MousePressed = null;
+            animationSize_MouseReleased = null;
+
+            //System.Diagnostics.Debug.WriteLine("[Imagezn]: Disposed Animations.");
         }
 
         public void Dispose()
         {
             Source = null;
-            ImageSource.Source = null;
+            if (animationVisual != null) ImageSource.Source = null;
         }
 
         private async void UpdateDatas()
@@ -189,8 +217,7 @@ namespace znMusicPlayerWUI.Controls
         }
 
         public void UpdateSource()
-        {
-            UpdateTheme();/*
+        {/*
             AnimateHelper.AnimateScalar(
                 ImageSource, 1f, 0.4,
                 0.2f, 1, 0.22f, 1f,
@@ -202,9 +229,10 @@ namespace znMusicPlayerWUI.Controls
 
             if (Source == null) return;
             if (animationVisual == null) return;
+            UpdateTheme();
 
             animationVisual.Opacity = 0;
-            animationVisual.StartAnimation(nameof(animationVisual.Opacity), animationOpacity_SoureChanged);
+            animationVisual.StartAnimation(nameof(animationVisual.Opacity), animationOpacity_SourceChanged);
             ImageSource.Source = Source;
         }
 
@@ -318,6 +346,16 @@ namespace znMusicPlayerWUI.Controls
 
         private void ImageSource_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+        }
+
+        private void RootGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            //CreateVisualsAnimation();
+        }
+
+        private void RootGrid_Unloaded(object sender, RoutedEventArgs e)
+        {
+            DisposeVisualsAnimation();
         }
     }
 }

@@ -1,30 +1,20 @@
-﻿using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Media.Imaging;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices.WindowsRuntime;
-using znMusicPlayerWUI.Helpers;
-using NAudio.Wave;
-using Microsoft.UI.Xaml.Media;
-using znMusicPlayerWUI.Controls;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Windowing;
-using znMusicPlayerWUI.DataEditor;
-using Windows.System;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Input;
-using System.Xml.Linq;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Windowing;
+using znMusicPlayerWUI.Controls;
+using znMusicPlayerWUI.DataEditor;
+using NAudio.Wave;
+using Windows.System;
 using CommunityToolkit.WinUI.UI;
-using System.Runtime.Intrinsics.Arm;
-using CommunityToolkit.WinUI.UI.Animations;
-using NAudio.Gui;
 
 namespace znMusicPlayerWUI.Pages.MusicPages
 {
@@ -234,7 +224,6 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 #if DEBUG
             Debug.WriteLine($"[MusicPage]: 图片已被更改.");
 #endif
-
         }
 
         private void BackgroundBaseImage_Loaded(object sender, RoutedEventArgs e)

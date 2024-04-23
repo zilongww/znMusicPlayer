@@ -31,7 +31,12 @@ namespace znMusicPlayerWUI.Controls
             ConnectAnimationElement1 = TextBaseTb;
             DataContextChanged += PlayListCard_DataContextChanged;
         }
-
+/*
+        ~PlayListCard()
+        {
+            Dispose();
+        }
+*/
         private void PlayListCard_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             if (DataContext is not null)
@@ -121,7 +126,6 @@ namespace znMusicPlayerWUI.Controls
             if (PlayListImage != null)
             {
                PlayListImage.Dispose();
-               PlayListImage.DisposeVisualsAnimation();
             }
             PlayListImage.Source = null;
             MusicListData = null;
@@ -243,13 +247,13 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
-        private async void MenuFlyoutItem_Click_1(object sender, RoutedEventArgs e)
+        private static async void UpdataMusicList(MusicListData musicListData)
         {
             MainWindow.AddNotify("正在更新歌单...", null);
 
             try
             {
-                var deletePath = (await ImageManage.GetImageSource(MusicListData)).Item2;
+                var deletePath = (await ImageManage.GetImageSource(musicListData)).Item2;
                 await Task.Run(() =>
                 {
                     try
@@ -260,11 +264,11 @@ namespace znMusicPlayerWUI.Controls
                 });
 
 
-                var playlist = await App.metingServices.NeteaseServices.GetPlayList(MusicListData.ID);
-                MusicListData = playlist;
+                var playlist = await App.metingServices.NeteaseServices.GetPlayList(musicListData.ID);
+                musicListData = playlist;
 
                 var data = await PlayListHelper.ReadData();
-                data[MusicListData.ListName] = JObject.FromObject(playlist);
+                data[musicListData.ListName] = JObject.FromObject(playlist);
                 await PlayListHelper.SaveData(data);
 
                 await App.playListReader.Refresh();
@@ -275,6 +279,11 @@ namespace znMusicPlayerWUI.Controls
                 LogHelper.WriteLog("PlayingList Update Error", ex.ToString(), false);
                 MainWindow.AddNotify("更新歌单失败", $"更新歌单时遇到错误，请重试。\n错误信息：{ex}", NotifySeverity.Error);
             }
+        }
+
+        private async void MenuFlyoutItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            UpdataMusicList(MusicListData);
         }
 
         private void Grid_AccessKeyInvoked(UIElement sender, Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs args)

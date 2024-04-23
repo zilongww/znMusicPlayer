@@ -66,12 +66,10 @@ namespace znMusicPlayerWUI.Pages
             if (Children != null)
             {
                 Children.ItemsSource = null;
-                Children = null;
             }
             if (SearchBox != null)
             {
                 SearchBox.ItemsSource = null;
-                SearchBox = null;
             }
 
             musicListData = null;
@@ -79,7 +77,6 @@ namespace znMusicPlayerWUI.Pages
             searchMusicDatas = null;
 
             Album_Image?.Dispose(); AlbumLogo?.Dispose();
-            Album_Image = null; AlbumLogo = null;
 
             NavToObj?.Songs?.Songs.Clear();
             NavToObj = null;
