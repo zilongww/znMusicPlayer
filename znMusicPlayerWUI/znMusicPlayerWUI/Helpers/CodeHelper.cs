@@ -497,31 +497,17 @@ namespace znMusicPlayerWUI.Helpers
             {
                 foreach (var lyric in lyricText.Split('\n'))
                 {
+                    if (string.IsNullOrEmpty(lyric)) continue;
                     var timesAndLyric = lyric.Split(']');
                     //当一句歌词在不同时间段时
                     if (timesAndLyric.Count() > 2)
                     {
                         for (int i = timesAndLyric.Count(); i > 0; i--)
                         {
-                            var times = timesAndLyric[i - 1].Replace("[", "").Split('.');
-                            var timesa = TimeSpan.TryParse("00:" + times[0], null, out TimeSpan timesb);
-
-                            if (times.Length == 1) continue;
-                            if (!timesa) continue;
-
-                            var timeMillsStr = times[1];
-                            var parse = int.TryParse(timeMillsStr, out int iparse);
-                            if (!parse) continue;
-
-                            switch (timeMillsStr.Length)
-                            {
-                                case 1: timeMillsStr += "00"; break;
-                                case 2: timeMillsStr += "0"; break;
-                                case 3: break;
-                                default: System.Diagnostics.Debug.WriteLine("[LyricHelper][Warning] 歌词精度可能会降低。"); break;
-                            }
-                            var timeMills = TimeSpan.FromMilliseconds(int.Parse(timeMillsStr));
-                            var timesResult = timesb + timeMills;
+                            var timef = timesAndLyric[i - 1].Replace("[", "");
+                            TimeSpan? timesResultBackup = GetLrcTimeStringTimeSpan(timef);
+                            if (timesResultBackup == null) continue;
+                            TimeSpan timesResult = (TimeSpan)timesResultBackup;
 
                             if (!lyricDictionary.ContainsKey(timesResult))
                             {
@@ -534,26 +520,11 @@ namespace znMusicPlayerWUI.Helpers
                     //当一句歌词在只在同一时间段时
                     else
                     {
-                        var times = timesAndLyric[0].Replace("[", "").Split('.');
-                        var timesa = TimeSpan.TryParse("00:" + times[0], null, out TimeSpan timesb);
-
-                        if (times.Length == 1) continue;
-                        if (!timesa) continue;
-
-                        var timeMillsStr = times[1];
-                        var parse = int.TryParse(timeMillsStr, out int iparse);
-                        if (!parse) continue;
-
-                        switch (timeMillsStr.Length)
-                        {
-                            case 1: timeMillsStr += "00"; break;
-                            case 2: timeMillsStr += "0"; break;
-                            case 3: break;
-                            default: System.Diagnostics.Debug.WriteLine("Warning：歌词精度可能会降低。"); break;
-                        }
-                        var timeMills = TimeSpan.FromMilliseconds(int.Parse(timeMillsStr));
-                        var timesResult = timesb + timeMills;
-
+                        var timef = timesAndLyric[0].Replace("[", "");
+                        TimeSpan? timesResultBackup = GetLrcTimeStringTimeSpan(timef);
+                        if (timesResultBackup == null) continue;
+                        TimeSpan timesResult = (TimeSpan)timesResultBackup;
+                        
                         var text = timesAndLyric[1];
                         if (text == "" || text == "...") text = NoneLyricString;
 
@@ -614,6 +585,57 @@ namespace znMusicPlayerWUI.Helpers
             }
             converter.Dispose();
             return lyricList.ToArray();
+        }
+
+        static TimeSpan? GetLrcTimeStringTimeSpan(string timeString)
+        {
+            if (timeString.Contains('.'))
+            {
+                var times = timeString.Split('.');
+                var timesa = TimeSpan.TryParse($"00:{times[0]}", null, out TimeSpan timesb);
+
+                if (times.Length == 1) return null;
+                if (!timesa) return null;
+
+                var timeMillsStr = times[1];
+                var parse = int.TryParse(timeMillsStr, out int iparse);
+                if (!parse) return null;
+
+                switch (timeMillsStr.Length)
+                {
+                    case 1: timeMillsStr += "00"; break;
+                    case 2: timeMillsStr += "0"; break;
+                    case 3: break;
+                    default: System.Diagnostics.Debug.WriteLine("Warning：歌词精度可能会降低。"); break;
+                }
+                var timeMills = TimeSpan.FromMilliseconds(int.Parse(timeMillsStr));
+                return timesb + timeMills;
+            }
+            else
+            {
+                var times = timeString.Split(':');
+                if (times.Length != 3)
+                {
+                    System.Diagnostics.Debug.WriteLine("[LyricToLrcData] 无法转换不支持的时间格式");
+                    return null;
+                }
+
+                var timesa = TimeSpan.TryParse($"00:{times[0]}:{times[1]}", null, out TimeSpan timesb);
+                var timeMillsStr = times[2];
+                var parse = int.TryParse(timeMillsStr, out int iparse);
+                if (!parse) return null;
+
+                switch (timeMillsStr.Length)
+                {
+                    case 1: timeMillsStr += "00"; break;
+                    case 2: timeMillsStr += "0"; break;
+                    case 3: break;
+                    default: System.Diagnostics.Debug.WriteLine("Warning：歌词精度可能会降低。"); break;
+                }
+                var timeMills = TimeSpan.FromMilliseconds(int.Parse(timeMillsStr));
+                return timesb + timeMills;
+            }
+
         }
     }
 }

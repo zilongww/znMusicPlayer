@@ -84,12 +84,19 @@ namespace znMusicPlayerWUI.Background
                 if (musicData.From == MusicFrom.localMusic)
                 {
                     TagLib.File tagfile = null;
-                    try
+                    tagfile = await Task.Run(() =>
                     {
-                        tagfile = await Task.Run(() => TagLib.File.Create(musicData.InLocal));
-                        await InitLyricList(tagfile);
-                    }
-                    catch { }
+                        try
+                        {
+                            return TagLib.File.Create(musicData.InLocal);
+                        }
+                        catch
+                        {
+                            return null;
+                        }
+                    });
+                    await InitLyricList(tagfile);
+                    
                     return;
                 }
 
@@ -131,6 +138,11 @@ namespace znMusicPlayerWUI.Background
         public async Task InitLyricList(TagLib.File file)
         {
             Debug.WriteLine($"[LyricManager]: 从 IDv3 标签中获取歌词");
+            if (file == null)
+            {
+                await InitLyricList("");
+                return;
+            }
             if (string.IsNullOrEmpty(file.Tag.Lyrics))
             {
                 await InitLyricList("");

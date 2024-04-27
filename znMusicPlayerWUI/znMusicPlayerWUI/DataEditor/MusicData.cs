@@ -169,7 +169,7 @@ namespace znMusicPlayerWUI.DataEditor
                     if (_artistName == null)
                         SetABName();
                 }
-                return _artistName;
+                return string.IsNullOrEmpty(_artistName) ? "未知" : _artistName;
             }
         }
 

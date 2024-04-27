@@ -57,7 +57,9 @@ namespace znMusicPlayerWUI.Controls
             {
                 RomajiTextBlock.Text = null;
                 RomajiTextBlock.Height = 0;
-            }
+            }/*
+            RomajiTextBlock.Text = lyricData.LyricTimeSpan.ToString();
+            RomajiTextBlock.Height = double.NaN;*/
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)

@@ -403,6 +403,11 @@ namespace znMusicPlayerWUI
         private void WindowGridBase_Loaded(object sender, RoutedEventArgs e)
         {
             PlayingListBaseView.ItemsSource = App.playingList.NowPlayingList;
+#if DEBUG
+            DebugViewPopup.XamlRoot = WindowGridBase.XamlRoot;
+            DebugViewPopup.IsOpen = true;
+#endif
+
         }
 
         private void WindowGridBase_ActualThemeChanged(FrameworkElement sender, object args)
@@ -581,6 +586,10 @@ namespace znMusicPlayerWUI
         private async void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             SetDragRegionForCustomTitleBar(MainWindow.AppWindowLocal);
+#if DEBUG
+            DebugView_Detail_WindowSizeRun.Text = $"{WindowGridBase.ActualWidth}x{WindowGridBase.ActualHeight}";
+            DebugViewPopup.VerticalOffset = -DebugViewBase.ActualHeight;
+#endif
             //NotifyListView.Padding = new(0, SWindowGridBase.ActualHeight, 0, 12);
             /*
             if (NotifyList.Any())
@@ -989,7 +998,7 @@ namespace znMusicPlayerWUI
             if (imageSource is null)
             {
                 im.BorderThickness = new(0);
-                im.Source = null;
+                im.Dispose();
                 return;
             }
             if (imageSource != im.Source)
@@ -2143,6 +2152,21 @@ namespace znMusicPlayerWUI
             }
         }
         #endregion
+
+        private void DebugViewPopup_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+#if DEBUG
+            DebugViewPopup.VerticalOffset = -DebugViewBase.ActualHeight;
+#endif
+        }
+
+        private void DebugViewPopup_Loaded(object sender, RoutedEventArgs e)
+        {
+
+#if DEBUG
+            DebugViewPopup.VerticalOffset = -DebugViewBase.ActualHeight;
+#endif
+        }
     }
 
     public enum NotifySeverity { Info, Error, Warning, Complete, Loading }

@@ -170,6 +170,14 @@
                 <FontIcon Glyph="&#xE768;"/>
             </cc:SettingsExpander.HeaderIcon>
             <cc:SettingsExpander.Items>
+                <cc:SettingsCard Header="均衡器"
+                                 Description="调整混音设置"
+                                 IsClickEnabled="True"
+                                 Click="SettingsCard_Click">
+                    <cc:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE9E9;"/>
+                    </cc:SettingsCard.HeaderIcon>
+                </cc:SettingsCard>
                 <cc:SettingsCard Header="行为">
                     <ComboBox Loaded="ComboBox_Loaded_1" SelectionChanged="ComboBox_SelectionChanged">
                         <x:String>循环播放</x:String>
@@ -179,50 +187,53 @@
                         <x:String>播放完成后停止</x:String>
                     </ComboBox>
                 </cc:SettingsCard>
-                <cc:SettingsCard Header="定时">
+                <cc:SettingsCard Header="定时"
+                                 VerticalContentAlignment="Top">
                     <cc:SettingsCard.Description>
-                        <StackPanel Orientation="Horizontal"
-                                    Visibility="Collapsed"
-                                    Margin="0,8,0,0">
-                            <StackPanel.Resources>
-                                <Style TargetType="NumberBox">
-                                    <Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
-                                    <Setter Property="FontSize" Value="14"/>
-                                </Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
-                                    <Setter Property="FontSize" Value="14"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Margin" Value="8,0"/>
-                                    <Setter Property="TextWrapping" Value="WrapWholeWords"/>
-                                </Style>
-                            </StackPanel.Resources>
-                            <NumberBox Text="0"/>
-                            <TextBlock Text="时"/>
-                            <NumberBox Text="25" />
-                            <TextBlock Text="分后，将执行"/>
-                            <ComboBox SelectedIndex="0"
-                                      SelectionChanged="ComboBox_SelectionChanged_2">
-                                <x:String>暂停</x:String>
-                                <x:String>退出程序</x:String>
-                                <x:String>注销</x:String>
-                                <x:String>关机</x:String>
-                            </ComboBox>
-                        </StackPanel>
+                        <Grid Loaded="Grid_Loaded">
+                            <TextBlock x:Name="timeup_event_description" Text="启动定时并设置定时任务"/>
+                            <community:WrapPanel Orientation="Horizontal"
+                                                 Visibility="Collapsed"
+                                                 Margin="0,8,0,0"
+                                                 VerticalSpacing="4"
+                                                 x:Name="timeup_event_base">
+                                <community:WrapPanel.Resources>
+                                    <Style TargetType="NumberBox">
+                                        <Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                                        <Setter Property="FontSize" Value="14"/>
+                                    </Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
+                                        <Setter Property="FontSize" Value="14"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="Margin" Value="8,0"/>
+                                        <Setter Property="TextWrapping" Value="WrapWholeWords"/>
+                                    </Style>
+                                </community:WrapPanel.Resources>
+                                <NumberBox Text="0"/>
+                                <TextBlock Text="时"/>
+                                <NumberBox Text="25" />
+                                <TextBlock Text="分后，将执行"/>
+                                <ComboBox SelectedIndex="0"
+                                          SelectionChanged="ComboBox_SelectionChanged_2">
+                                    <x:String>暂停</x:String>
+                                    <x:String>退出程序</x:String>
+                                    <x:String>注销</x:String>
+                                    <x:String>关机</x:String>
+                                </ComboBox>
+                                <CheckBox Content="播放完整首歌后再执行操作"
+                                          HorizontalAlignment="Stretch"/>
+                            </community:WrapPanel>
+                        </Grid>
                     </cc:SettingsCard.Description>
                     <ToggleSwitch Toggled="ToggleSwitch_Toggled"/>
-                </cc:SettingsCard>
-                <cc:SettingsCard Header="均衡器">
-                    <ToggleSwitch Loaded="ToggleSwitch_Loaded_2" Toggled="ToggleSwitch_Toggled_4"/>
-                </cc:SettingsCard>
-                <cc:SettingsCard Header="退出时保存正在播放的歌曲和列表并在下次启动时加载">
-                    <ToggleSwitch Loaded="ToggleSwitch_Loaded_2" Toggled="ToggleSwitch_Toggled_4"/>
                 </cc:SettingsCard>
                 <cc:SettingsCard>
                     <cc:SettingsCard.Header>
                         <StackPanel Loaded="StackPanel_Loaded">
                             <CheckBox Content="暂停切换歌曲时仍然继续暂停" Click="CheckBox_Checked" Tag="0"/>
                             <CheckBox Content="播放出错时跳到下一首歌" Checked="CheckBox_Checked" Tag="1"/>
+                            <CheckBox Content="退出时保存正在播放的歌曲和列表并在下次启动时加载" Click="CheckBox_Checked" Tag="2"/>
                         </StackPanel>
                     </cc:SettingsCard.Header>
                 </cc:SettingsCard>

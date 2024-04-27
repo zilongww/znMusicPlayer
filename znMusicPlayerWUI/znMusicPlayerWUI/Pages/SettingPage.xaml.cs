@@ -413,6 +413,7 @@ namespace znMusicPlayerWUI.Pages
             var sp = sender as StackPanel;
             (sp.Children[0] as CheckBox).IsChecked = App.playingList.PauseWhenPreviousPause;
             (sp.Children[1] as CheckBox).IsChecked = App.playingList.NextWhenPlayError;
+            (sp.Children[2] as CheckBox).IsChecked = App.LoadLastExitPlayingSongAndSongList;
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
@@ -425,6 +426,9 @@ namespace znMusicPlayerWUI.Pages
                     break;
                 case "1":
                     App.playingList.NextWhenPlayError = (bool)checkBox.IsChecked;
+                    break;
+                case "2":
+                    App.LoadLastExitPlayingSongAndSongList = (bool)checkBox.IsChecked;
                     break;
             }
         }
@@ -668,6 +672,13 @@ namespace znMusicPlayerWUI.Pages
 
         private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
         {
+            ToggleSwitch toggleSwitch = sender as ToggleSwitch;
+            timeup_event_base.Visibility = toggleSwitch.IsOn ? Visibility.Visible : Visibility.Collapsed;
+            timeup_event_description.Visibility = toggleSwitch.IsOn ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
 
         }
 
@@ -797,12 +808,10 @@ namespace znMusicPlayerWUI.Pages
 
         private void ToggleSwitch_Loaded_2(object sender, RoutedEventArgs e)
         {
-            (sender as ToggleSwitch).IsOn = App.LoadLastExitPlayingSongAndSongList;
         }
 
         private void ToggleSwitch_Toggled_4(object sender, RoutedEventArgs e)
         {
-            App.LoadLastExitPlayingSongAndSongList = (sender as ToggleSwitch).IsOn;
         }
 
         private async void Button_Click_9(object sender, RoutedEventArgs e)
@@ -832,6 +841,16 @@ namespace znMusicPlayerWUI.Pages
         private void HotKeySettings_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.SetNavViewContent(typeof(SettingHotKeyPage));
+        }
+
+        private void SettingsCard_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void timeup_event_description_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

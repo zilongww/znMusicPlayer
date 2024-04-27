@@ -578,6 +578,30 @@
                 </StackPanel.ChildrenTransitions>
             </StackPanel>
         </Grid>
-        
+
+        <Popup ShouldConstrainToRootBounds="False"
+               x:Name="DebugViewPopup"
+               HorizontalOffset="0"
+               VerticalOffset="-42"
+               IsHitTestVisible="False"
+               Loaded="DebugViewPopup_Loaded"
+               SizeChanged="DebugViewPopup_SizeChanged">
+            <Popup.SystemBackdrop>
+                <DesktopAcrylicBackdrop/>
+            </Popup.SystemBackdrop>
+            <Grid x:Name="DebugViewBase"
+                  BorderBrush="{ThemeResource ControlElevationBorderBrush}"
+                  BorderThickness="1" CornerRadius="8"
+                  Padding="8" IsHitTestVisible="False"
+                  Margin="0">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Debug Mode" FontWeight="Medium"/>
+                    <TextBlock x:Name="DebugView_Detail">
+                    WindowSize: <Run Text="null" x:Name="DebugView_Detail_WindowSizeRun"/>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </Popup>
+
     </Grid>
 </Window>
