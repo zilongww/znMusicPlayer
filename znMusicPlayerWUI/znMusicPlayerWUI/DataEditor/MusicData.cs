@@ -55,6 +55,7 @@ namespace znMusicPlayerWUI.DataEditor
             return (MD5 != null ? StringComparer.InvariantCulture.GetHashCode(MD5) : 0);
         }
     }
+    public interface IIsListPage { }
 
     public class CUETrackData
     {
@@ -68,7 +69,18 @@ namespace znMusicPlayerWUI.DataEditor
         public TimeSpan EndDuration { get; set; } = default;
     }
 
-    public class Artist : OnlyClass
+    public class SearchData : OnlyClass, IIsListPage
+    {
+        public string Key { get; set; }
+        public MusicFrom From { get; set; }
+        public SearchDataType SearchDataType { get; set; }
+        public override string GetMD5()
+        {
+            return $"{Key}{From}{SearchDataType}";
+        }
+    }
+
+    public class Artist : OnlyClass, IIsListPage
     {
         public string Name { get; set; }
         public string Name2 { get; set; }
@@ -84,12 +96,6 @@ namespace znMusicPlayerWUI.DataEditor
             this.ID = ID;
             PicturePath = picturePath;
         }
-        ~Artist()
-        {
-            HotSongs?.Songs?.Clear();
-            HotSongs = null;
-            System.Diagnostics.Debug.WriteLine("[MusicListData] Dispose by finalizer.");
-        }
 
         public override string GetMD5()
         {
@@ -102,7 +108,7 @@ namespace znMusicPlayerWUI.DataEditor
         }
     }
 
-    public class Album : OnlyClass
+    public class Album : OnlyClass, IIsListPage
     {
         public string Title { get; set; }
         public string Title2 { get; set; }
@@ -120,12 +126,6 @@ namespace znMusicPlayerWUI.DataEditor
             PicturePath = picturePath;
             Describee = describee;
             Songs = songs;
-        }
-        ~Album()
-        {
-            Artists?.Clear();
-            Artists = null;
-            System.Diagnostics.Debug.WriteLine("[MusicListData] Dispose by finalizer.");
         }
 
         public bool IsNull()
@@ -205,13 +205,6 @@ namespace znMusicPlayerWUI.DataEditor
 
         }
 
-        ~MusicData()
-        {
-            Artists?.Clear();
-            Artists = null;
-            Album = null;
-            System.Diagnostics.Debug.WriteLine("[MusicListData] Dispose by finalizer.");
-        }
 
         private void SetABName()
         {
@@ -366,7 +359,7 @@ namespace znMusicPlayerWUI.DataEditor
         }
     }
 
-    public class MusicListData : OnlyClass
+    public class MusicListData : OnlyClass, IIsListPage
     {
         public string ListName { get; set; }
         public string ListShowName { get; set; }
@@ -388,12 +381,6 @@ namespace znMusicPlayerWUI.DataEditor
             this.ID = ID;
             this.Songs = songs == null ? new() : songs;
             ListDataType = listDataType;
-        }
-        ~MusicListData()
-        {
-            Songs?.Clear();
-            Songs = null;
-            System.Diagnostics.Debug.WriteLine("[MusicListData] Dispose by finalizer.");
         }
 
         public override string GetMD5()
@@ -428,7 +415,7 @@ namespace znMusicPlayerWUI.DataEditor
         public override string GetMD5()
         {
             if (Lyric == null) return null;
-            return $"{string.Join<string>(' ', Lyric)}{Lyric.Count}{LyricTimeSpan.Ticks}";
+            return $"{string.Join(' ', Lyric)}{Lyric.Count}{LyricTimeSpan.Ticks}";
         }
     }
 

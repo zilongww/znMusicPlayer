@@ -588,7 +588,7 @@ namespace znMusicPlayerWUI
             SetDragRegionForCustomTitleBar(MainWindow.AppWindowLocal);
 #if DEBUG
             DebugView_Detail_WindowSizeRun.Text = $"{WindowGridBase.ActualWidth}x{WindowGridBase.ActualHeight}";
-            DebugViewPopup.VerticalOffset = -DebugViewBase.ActualHeight;
+            DebugViewPopup.VerticalOffset = AppWindow.Size.Height;
 #endif
             //NotifyListView.Padding = new(0, SWindowGridBase.ActualHeight, 0, 12);
             /*
@@ -1440,7 +1440,7 @@ namespace znMusicPlayerWUI
                 }
                 else if ((sender.SelectedItem as NavigationViewItem)?.Tag.GetType() == typeof(MusicListData))
                 {
-                    Pages.ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewPlayList>((sender.SelectedItem as NavigationViewItem).Tag);
+                    Pages.ListViewPages.ListViewPage.SetPageToListViewPage((sender.SelectedItem as NavigationViewItem).Tag as IIsListPage);
                 }
                 else if (sender.SelectedItem as NavigationViewItem == NavView.SettingsItem as NavigationViewItem)
                 {
@@ -2156,16 +2156,56 @@ namespace znMusicPlayerWUI
         private void DebugViewPopup_SizeChanged(object sender, SizeChangedEventArgs e)
         {
 #if DEBUG
-            DebugViewPopup.VerticalOffset = -DebugViewBase.ActualHeight;
+            DebugViewPopup.VerticalOffset = AppWindow.Size.Height;
 #endif
         }
 
+        DispatcherTimer ramTimer;
         private void DebugViewPopup_Loaded(object sender, RoutedEventArgs e)
         {
 
 #if DEBUG
-            DebugViewPopup.VerticalOffset = -DebugViewBase.ActualHeight;
+            DebugViewPopup.VerticalOffset = AppWindow.Size.Height;
+            ramTimer = new();
+            ramTimer.Tick += RamTimer_Tick;
+            ramTimer.Interval = TimeSpan.FromSeconds(0.5);
+            ramTimer.Start();
 #endif
+        }
+
+        private void DebugViewPopup_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ramTimer.Stop();
+            ramTimer.Tick -= RamTimer_Tick;
+            ramTimer = null;
+        }
+
+        private void RamTimer_Tick(object sender, object e)
+        {
+            DebugView_Detail_RAM.Text = $"RAM: {CodeHelper.GetAutoSizeString(Process.GetCurrentProcess().PrivateMemorySize64, 2)}";
+        }
+
+        private void Button_Click_8(object sender, RoutedEventArgs e)
+        {
+            GC.Collect();
+        }
+
+        ObservableCollection<string> oc = new();
+        private void ItemsView_Loaded(object sender, RoutedEventArgs e)
+        {
+            var iv = sender as ItemsView;
+            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                oc.Add(a.GetName().Name);
+            }
+            iv.ItemsSource = oc;
+        }
+
+        private void ItemsView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            var iv = sender as ItemsView;
+            iv.ItemsSource = null;
+            oc.Clear();
         }
     }
 

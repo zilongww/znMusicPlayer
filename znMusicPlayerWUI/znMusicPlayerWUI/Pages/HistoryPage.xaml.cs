@@ -16,9 +16,16 @@ namespace znMusicPlayerWUI.Pages
 {
     public partial class HistoryPage : Page
     {
+        bool isLeavedPage = false;
         protected override async void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            isLeavedPage = true;
+            LeavingPageDo();
+        }
+
+        async void LeavingPageDo()
+        {
             await Task.Delay(500);
             HistoryHelper.HistoryDataChanged -= HistoryHelper_HistoryDataChanged;
             songHistories.Clear();
@@ -42,14 +49,12 @@ namespace znMusicPlayerWUI.Pages
 
         private async void Init()
         {
+            if (isLeavedPage) return;
             var scrollOffset = scrollViewer.VerticalOffset;
             var datas = await SongHistoryHelper.GetHistories();
-            List<SongHistoryData> d = new();
-            foreach (var data in datas)
-            {
-                d.Add(data);
-            }
+            List<SongHistoryData> d = [.. datas];
             d = d.OrderByDescending(m => m.Time).ToList();
+            if (isLeavedPage) return;
             songHistories.Clear();
             foreach (var data in d)
             {
@@ -57,6 +62,7 @@ namespace znMusicPlayerWUI.Pages
             }
             await Task.Delay(10);
             scrollViewer.ScrollToVerticalOffset(scrollOffset);
+            if (isLeavedPage) LeavingPageDo();
         }
 
         Visual headerVisual;

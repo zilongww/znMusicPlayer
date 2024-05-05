@@ -22,6 +22,7 @@ using Windows.Storage.Pickers;
 using Newtonsoft.Json.Linq;
 using CommunityToolkit.WinUI.UI;
 using Vanara.Extensions;
+using System.Collections;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -31,16 +32,18 @@ namespace znMusicPlayerWUI.Pages
         private ScrollViewer scrollViewer { get; set; }
         public MusicListData NavToObj { get; set; }
 
-        ObservableCollection<SongItemBindBase> searchMusicDatas = new();
+        ObservableCollection<SongItemBindBase> searchMusicDatas = [];
         public ItemListViewPlayList()
         {
             InitializeComponent();
+            //arrayList = new ArrayList(100000000);
             DataContext = this;
             var _enumval = Enum.GetValues(typeof(PlaySort)).Cast<PlaySort>();
             SortComboBox.ItemsSource = _enumval.ToList();
             SearchBox.ItemsSource = searchMusicDatas;
         }
 
+        //public ArrayList arrayList { get; set; }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -80,12 +83,6 @@ namespace znMusicPlayerWUI.Pages
             //System.Diagnostics.Debug.WriteLine("Clear");
         }
 
-        ~ItemListViewPlayList()
-        {
-            System.Diagnostics.Debug.WriteLine($"[ItemListViewPlayList] Disposed by finalizer.");
-            LeavingPageDo();
-        }
-
         private void LeavingPageDo()
         {
             IsNavigatedOutFromPage = true;
@@ -98,16 +95,8 @@ namespace znMusicPlayerWUI.Pages
 
             MusicDataList?.Clear();
             searchMusicDatas?.Clear();
-            if (Children != null)
-            {
-                Children.ItemsSource = null;
-                Children = null;
-            }
-            if (SearchBox != null)
-            {
-                SearchBox.ItemsSource = null;
-                SearchBox = null;
-            }
+            Children.ItemsSource = null;
+            SearchBox.ItemsSource = null;
 
             ImageManage.localImageCache.Clear();
 
@@ -929,10 +918,10 @@ namespace znMusicPlayerWUI.Pages
             switch ((sender as Button).Tag)
             {
                 case "0":
-                    scrollViewer.ChangeView(null, 0, null);
+                    scrollViewer?.ChangeView(null, 0, null);
                     break;
                 case "1":
-                    scrollViewer.ChangeView(null, scrollViewer.ScrollableHeight, null);
+                    scrollViewer?.ChangeView(null, scrollViewer.ScrollableHeight, null);
                     break;
                 case "2":
                     foreach(var i in MusicDataList)

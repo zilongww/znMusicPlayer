@@ -130,7 +130,7 @@ namespace znMusicPlayerWUI.Controls
                 }
                 else
                 {
-                    ListViewPage.SetPageToListViewPage<ItemListViewArtist>(Artist);
+                    ListViewPage.SetPageToListViewPage(Artist);
                 }
             }
             isPressed = false;

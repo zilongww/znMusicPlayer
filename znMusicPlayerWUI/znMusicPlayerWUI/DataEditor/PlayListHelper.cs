@@ -8,7 +8,7 @@ namespace znMusicPlayerWUI.DataEditor
 {
     public static class PlayListHelper
     {
-        public static async Task<MusicListData[]> ReadAllPlayList()
+        public static async Task<List<MusicListData>> ReadAllPlayList()
         {
             var datas = new List<MusicListData>();
             return await Task.Run(() =>
@@ -18,8 +18,10 @@ namespace znMusicPlayerWUI.DataEditor
                 {
                     var a = JsonNewtonsoft.FromJSON<MusicListData>(list.Value.ToString());
                     datas.Add(a);
+                    a = null;
                 }
-                return datas.ToArray();
+                jdatas = null;
+                return datas;
             });
         }
 

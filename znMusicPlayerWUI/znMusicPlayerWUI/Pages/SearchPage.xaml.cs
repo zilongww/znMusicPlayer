@@ -34,13 +34,11 @@ namespace znMusicPlayerWUI.Pages
 
         public void StartSearch(string title)
         {
-            ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewSearch>(
-                new List<object> {
-                    title,
-                    Enum.Parse(typeof(MusicFrom),
-                    SearchSourceComboBox.SelectedItem as string),
-                    Enum.Parse(typeof(SearchDataType),
-                    SearchTypeComboBox.SelectedItem as string)
+            ListViewPages.ListViewPage.SetPageToListViewPage(
+                new SearchData {
+                    Key = title,
+                    From = (MusicFrom)Enum.Parse(typeof(MusicFrom), SearchSourceComboBox.SelectedItem as string),
+                    SearchDataType = (SearchDataType)Enum.Parse(typeof(SearchDataType), SearchTypeComboBox.SelectedItem as string)
                 });
         }
 

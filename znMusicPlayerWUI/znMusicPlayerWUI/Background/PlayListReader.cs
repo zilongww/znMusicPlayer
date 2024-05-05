@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace znMusicPlayerWUI.Background
 {
@@ -7,8 +8,8 @@ namespace znMusicPlayerWUI.Background
         public delegate void PlayListChanged();
         public event PlayListChanged Updated;
 
-        DataEditor.MusicListData[] nowMusicListData;
-        public DataEditor.MusicListData[] NowMusicListData
+        ObservableCollection<DataEditor.MusicListData> nowMusicListData;
+        public ObservableCollection<DataEditor.MusicListData> NowMusicListData
         {
             get => nowMusicListData;
             private set
@@ -24,7 +25,7 @@ namespace znMusicPlayerWUI.Background
         {
             if (inRefresh) return;
             inRefresh = true;
-            NowMusicListData = await DataEditor.PlayListHelper.ReadAllPlayList();
+            NowMusicListData = [.. await DataEditor.PlayListHelper.ReadAllPlayList()];
             Updated?.Invoke();
             inRefresh = false;
         }

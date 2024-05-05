@@ -37,10 +37,10 @@ namespace znMusicPlayerWUI.Pages
             //PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
             base.OnNavigatedTo(e);
             IsNavigatedOutFromPage = false;
-            var a = (List<object>)e.Parameter;
-            NavToObj = a[0];
-            NowMusicFrom = (MusicFrom)a[1];
-            NowSearchMode = (SearchDataType)a[2];
+            var a = (SearchData)e.Parameter;
+            NavToObj = a.Key;
+            NowMusicFrom = a.From;
+            NowSearchMode = a.SearchDataType;
             musicListData = new() { ListDataType = DataType.歌曲 };
             InitData();
         }

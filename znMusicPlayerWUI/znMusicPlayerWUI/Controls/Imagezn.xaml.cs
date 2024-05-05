@@ -87,21 +87,6 @@ namespace znMusicPlayerWUI.Controls
             CreateVisualsAnimation();
         }
 
-        ~Imagezn()
-        {
-            try
-            {
-                DisposeVisualsAnimation();
-            }
-            catch { }
-            try
-            {
-                Dispose();
-            }
-            catch { }
-            System.Diagnostics.Debug.WriteLine($"[Imagezn] Disposed by Finalizer.");
-        }
-
         Visual animationVisual = null;
         Visual animationVisualMass = null;
         ScalarKeyFrameAnimation animationOpacity_SourceChanged = null;

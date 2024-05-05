@@ -583,8 +583,8 @@
                x:Name="DebugViewPopup"
                HorizontalOffset="0"
                VerticalOffset="-42"
-               IsHitTestVisible="False"
                Loaded="DebugViewPopup_Loaded"
+               Unloaded="DebugViewPopup_Unloaded"
                SizeChanged="DebugViewPopup_SizeChanged">
             <Popup.SystemBackdrop>
                 <DesktopAcrylicBackdrop/>
@@ -592,13 +592,36 @@
             <Grid x:Name="DebugViewBase"
                   BorderBrush="{ThemeResource ControlElevationBorderBrush}"
                   BorderThickness="1" CornerRadius="8"
-                  Padding="8" IsHitTestVisible="False"
+                  Padding="12"
                   Margin="0">
                 <StackPanel Spacing="4">
-                    <TextBlock Text="Debug Mode" FontWeight="Medium"/>
-                    <TextBlock x:Name="DebugView_Detail">
-                    WindowSize: <Run Text="null" x:Name="DebugView_Detail_WindowSizeRun"/>
-                    </TextBlock>
+                    <TextBlock Text="znMusicPlayer Debug Panel" FontWeight="Medium"/>
+                    <cc:WrapPanel HorizontalSpacing="4">
+                        <TextBlock x:Name="DebugView_Detail" VerticalAlignment="Center">
+                            WindowSize: <Run Text="null" x:Name="DebugView_Detail_WindowSizeRun"/>
+                            <Run Text="null" x:Name="DebugView_Detail_RAM"/>
+                        </TextBlock>
+                    </cc:WrapPanel>
+                    <cc:WrapPanel HorizontalSpacing="4">
+                        <Button Content="GC Collect" Click="Button_Click_8"/>
+                        <Button Content="显示加载的程序集">
+                            <Button.Flyout>
+                                <Flyout ShouldConstrainToRootBounds="False">
+                                    <Flyout.FlyoutPresenterStyle>
+                                        <Style TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenterStyle}">
+                                            <Setter Property="MaxWidth" Value="9999"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                        </Style>
+                                    </Flyout.FlyoutPresenterStyle>
+                                    <Flyout.SystemBackdrop>
+                                        <DesktopAcrylicBackdrop/>
+                                    </Flyout.SystemBackdrop>
+                                    <ItemsView Loaded="ItemsView_Loaded"
+                                               Unloaded="ItemsView_Unloaded"/>
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+                    </cc:WrapPanel>
                 </StackPanel>
             </Grid>
         </Popup>

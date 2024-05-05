@@ -160,13 +160,13 @@ namespace znMusicPlayerWUI.Controls
             DataContextChanged += SongItem_DataContextChanged;
             //ShowImage = false;
         }
-
+/*
         ~SongItem()
         {
-            System.Diagnostics.Debug.WriteLine($"[SongItem] Disposed by Finalizer.");
+            //System.Diagnostics.Debug.WriteLine($"[SongItem] Disposed by Finalizer.");
             Dispose();
         }
-
+*/
         private void SongItem_KeyUp(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
             if (e.Key == Windows.System.VirtualKey.Enter)
@@ -336,7 +336,7 @@ namespace znMusicPlayerWUI.Controls
         #region Events
         private void A_Click(object sender, RoutedEventArgs e)
         {
-            Pages.ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewArtist>((sender as MenuFlyoutItem).Tag);
+            Pages.ListViewPages.ListViewPage.SetPageToListViewPage((sender as MenuFlyoutItem).Tag as IIsListPage);
 
             //var artist = await App.metingServices.NeteaseServices.GetArtist(((Artist)(sender as MenuFlyoutItem).Tag).ID);
             //await MainWindow.ShowDialog("result", $"{artist.Name}\n{artist.PicturePath}\n{artist.Describee}\n{artist.HotSongs.Songs.Count}");
@@ -359,7 +359,7 @@ namespace znMusicPlayerWUI.Controls
                 DisposeVisualsAnimation();
                 UnloadObject(this);
                 isDisposed = true;
-                System.Diagnostics.Debug.WriteLine($"[SongItem] Disposed: {StaticSongItems.Count}");
+                //System.Diagnostics.Debug.WriteLine($"[SongItem] Disposed: {StaticSongItems.Count}");
             }
             catch (Exception err)
             {
@@ -689,7 +689,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void mfi_Click(object sender, RoutedEventArgs e)
         {
-            Pages.ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewAlbum>(MusicData.Album);
+            Pages.ListViewPages.ListViewPage.SetPageToListViewPage(MusicData.Album);
         }
 
         private void root_AccessKeyInvoked(UIElement sender, Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs args)

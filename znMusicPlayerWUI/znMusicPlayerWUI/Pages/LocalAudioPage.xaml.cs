@@ -4,15 +4,17 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Composition;
+using System.Collections;
 
 namespace znMusicPlayerWUI.Pages
 {
     public partial class LocalAudioPage : Page
     {
+        public ArrayList arrayList { get; set; }
         public LocalAudioPage()
         {
             InitializeComponent();
-            GC.Collect();
+            arrayList = new ArrayList(100000000);
         }
 
         public void UpdateShyHeader()

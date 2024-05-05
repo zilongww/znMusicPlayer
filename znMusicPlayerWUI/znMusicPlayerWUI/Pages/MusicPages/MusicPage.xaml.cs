@@ -700,7 +700,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 };
                 item.Click += (sender, e) =>
                 {
-                    ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewArtist>((sender as MenuFlyoutItem).Tag);
+                    ListViewPages.ListViewPage.SetPageToListViewPage((sender as MenuFlyoutItem).Tag as IIsListPage);
                     MainWindow.OpenOrCloseMusicPage();
                 };
                 ArtistFlyout.Items.Add(item);
@@ -754,7 +754,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
 
         private async void AlbumMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewAlbum>(MusicData.Album);
+            ListViewPages.ListViewPage.SetPageToListViewPage(MusicData.Album);
             MainWindow.OpenOrCloseMusicPage();
         }
 
@@ -796,7 +796,7 @@ namespace znMusicPlayerWUI.Pages.MusicPages
                 }
                 else
                 {
-                    ListViewPages.ListViewPage.SetPageToListViewPage<ItemListViewAlbum>(MusicData.Album);
+                    ListViewPages.ListViewPage.SetPageToListViewPage(MusicData.Album);
                     MainWindow.OpenOrCloseMusicPage();
                 }
             }
