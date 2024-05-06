@@ -18,8 +18,11 @@
     <Grid x:Name="WindowGridBase" SizeChanged="Grid_SizeChanged"
           KeyDown="Grid_KeyDown" KeyUp="Grid_KeyUp"
           PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
-          Tapped="Grid_Tapped" Loaded="WindowGridBase_Loaded"  RequestedTheme="Default">
-        
+          Tapped="Grid_Tapped" Loaded="WindowGridBase_Loaded"  RequestedTheme="Default"
+          AllowDrop="True"
+          DragOver="WindowGridBase_DragOver" Drop="WindowGridBase_Drop" DragLeave="WindowGridBase_DragLeave">
+
+        <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#01000000"/>
         <Rectangle x:Name="BackgroundColor" Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" Visibility="Collapsed"/>
         
         <Grid x:Name="BackgroundImageRoot" Visibility="Collapsed">
@@ -27,7 +30,7 @@
                VerticalAlignment="Center" HorizontalAlignment="Center"/>
             <Rectangle x:Name="BackgroundMass" Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" Opacity="0.6"/>
         </Grid>
-        
+
         <Grid x:Name="GridBase">
             <Rectangle VerticalAlignment="Top"
                        HorizontalAlignment="Stretch"
@@ -625,6 +628,30 @@
                 </StackPanel>
             </Grid>
         </Popup>
-
+        <Grid
+            x:Name="DropInfo_Root"
+            IsHitTestVisible="False"
+            Opacity="0"
+            Margin="0">
+            <Grid.OpacityTransition>
+                <ScalarTransition/>
+            </Grid.OpacityTransition>
+            <Rectangle
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Fill="{ThemeResource AcrylicNormal}"
+                Stroke="{ThemeResource ControlElevationBorderBrush}"
+                StrokeThickness="1"
+                RadiusX="8"
+                RadiusY="8">
+            </Rectangle>
+            <TextBlock
+                Text="在此程序中打开"
+                Opacity="0.3"
+                FontSize="32"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+            </TextBlock>
+        </Grid>
     </Grid>
 </Window>

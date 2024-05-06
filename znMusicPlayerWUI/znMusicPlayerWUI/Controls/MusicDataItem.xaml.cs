@@ -1,0 +1,299 @@
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using znMusicPlayerWUI.DataEditor;
+using znMusicPlayerWUI.Helpers;
+using znMusicPlayerWUI.Media;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Hosting;
+
+namespace znMusicPlayerWUI.Controls
+{
+    public sealed partial class MusicDataItem : UserControl
+    {
+        static bool isStaticInited = false;
+        static List<MusicDataItem> staticMusicDataItem = [];
+        static void initListen()
+        {
+            if (isStaticInited) return;
+            isStaticInited = true;
+            App.audioPlayer.SourceChanged += (_) =>
+            {
+                foreach (MusicDataItem item in staticMusicDataItem)
+                {
+                    item.InitPlayingState();
+                }
+            };
+        }
+
+        public bool IsMusicDataPlaying
+        {
+            get => songItemBind?.MusicData == App.audioPlayer.MusicData;
+        }
+
+        bool isUnloaded = false;
+        SongItemBindBase songItemBind;
+        MusicDataFlyout musicDataFlyout;
+        public MusicDataItem()
+        {
+            initListen();
+            InitializeComponent();
+            InitVisuals();
+        }
+
+        void InitInfo()
+        {
+            if (isUnloaded) return;
+            if (songItemBind == null) return;
+            Info_Texts_CountRun.Text = songItemBind.MusicData.Count == 0 ? null : $"{songItemBind.MusicData.Count}.";
+            Info_Texts_TitleRun.Text = songItemBind.MusicData.Title;
+            Info_Texts_Title2Run.Text = songItemBind.MusicData.Title2;
+            Info_Texts_ButtonNameTextBlock.Text = songItemBind.MusicData.ButtonName;
+        }
+
+        int initImageCallCount = 0;
+        async void InitImage()
+        {
+            if (Info_Image == null) return;
+            Info_Image.Source = null;
+            Info_Image_Root.Visibility = Visibility.Visible;
+            SetImageBorder(false);
+            if (isUnloaded) return;
+            if (songItemBind == null) return;
+            initImageCallCount++;
+            await Task.Delay(200);
+            initImageCallCount--;
+            if (initImageCallCount != 0) return;
+            if (isUnloaded) return;
+            if (songItemBind == null) return;
+            if (songItemBind.MusicListData?.ListDataType == DataType.×¨¼­) return;
+            if (songItemBind.MusicData.From == MusicFrom.localMusic)
+            {
+                if (Path.GetExtension(songItemBind.MusicData.InLocal) == ".mid")
+                {
+                    Info_Image.Source = null;
+                    Info_Image_Root.Visibility = Visibility.Collapsed;
+                    SetImageBorder(false);
+                    return;
+                }
+            }
+
+            MusicData musicData = songItemBind.MusicData;
+            ImageSource result = null;
+            var bitmapTuple = await ImageManage.GetImageSource(musicData, (int)(56 * songItemBind.ImageScaleDPI), (int)(56 * songItemBind.ImageScaleDPI), true);
+            result = bitmapTuple.Item1;
+
+            if (isUnloaded) result = null;
+            if (musicData == songItemBind.MusicData)
+            {
+                if (result != null)
+                {
+                    Info_Image.Source = result;
+                    SetImageBorder(true);
+                }
+                else
+                {
+                    Info_Image.Source = null;
+                    Info_Image_Root.Visibility = Visibility.Collapsed;
+                    SetImageBorder(false);
+                }
+            }
+        }
+
+        Visual backgroundFillVisual;
+        Visual rightButtonVisual;
+        Visual strokeVisual;
+        ScalarKeyFrameAnimation rightButtonVisualShowAnimation;
+        ScalarKeyFrameAnimation rightButtonVisualHideAnimation;
+        ScalarKeyFrameAnimation backgroundFillVisualShowAnimation;
+        ScalarKeyFrameAnimation backgroundFillVisualHideAnimation;
+        ScalarKeyFrameAnimation strokeVisualShowAnimation;
+        void InitVisuals()
+        {
+            musicDataFlyout = new();
+
+            backgroundFillVisual = ElementCompositionPreview.GetElementVisual(Background_FillRectangle);
+            rightButtonVisual = ElementCompositionPreview.GetElementVisual(Info_Buttons_Root);
+            strokeVisual = ElementCompositionPreview.GetElementVisual(Background_HighlightRectangle);
+
+            backgroundFillVisual.Opacity = 0;
+            rightButtonVisual.Opacity = 0;
+            strokeVisual.Opacity = 0;
+
+            AnimateHelper.AnimateScalar(rightButtonVisual, 1, 0.1,
+                0, 0, 0, 0,
+                out rightButtonVisualShowAnimation);
+            AnimateHelper.AnimateScalar(rightButtonVisual, 0, 0.1,
+                0, 0, 0, 0,
+                out rightButtonVisualHideAnimation);
+            AnimateHelper.AnimateScalar(backgroundFillVisual,
+                                        1, 0.1,
+                                        0, 0, 0, 0,
+                                        out backgroundFillVisualShowAnimation);
+            AnimateHelper.AnimateScalar(backgroundFillVisual,
+                0, 0.1,
+                0, 0, 0, 0,
+                out backgroundFillVisualHideAnimation);
+            AnimateHelper.AnimateScalar(strokeVisual, 0, 3, 0, 0, 0, 0,
+                out strokeVisualShowAnimation);
+        }
+
+        void InitPlayingState()
+        {
+            if (isUnloaded) return;
+            if (songItemBind == null) return;
+
+            if (IsMusicDataPlaying)
+            {
+                App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
+                App.audioPlayer.PlayStateChanged += AudioPlayer_PlayStateChanged;
+                SetPlayingIcon(App.audioPlayer.PlaybackState);
+                UserControl_PointerEntered(null, null);
+                Background_PlayingRectangle.Opacity = 1;
+            }
+            else
+            {
+                App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
+                SetPlayingIcon(NAudio.Wave.PlaybackState.Paused);
+                UserControl_PointerExited(null, null);
+                Background_PlayingRectangle.Opacity = 0;
+            }
+        }
+
+        void SetImageBorder(bool isShow)
+        {
+            if (isShow)
+            {
+                Info_Image_Root.Opacity = 1;
+            }
+            else
+                Info_Image_Root.Opacity = 0;
+        }
+
+        void SetPlayingIcon(NAudio.Wave.PlaybackState playbackState)
+        {
+            if (playbackState == NAudio.Wave.PlaybackState.Playing)
+            {
+                Info_Buttons_MediaStateIcon.Glyph = "\xE769";
+            }
+            else
+            {
+                Info_Buttons_MediaStateIcon.Glyph = "\xE768";
+            }
+        }
+
+        private void MusicDataItem_Completed(object sender, CompositionBatchCompletedEventArgs args)
+        {
+            if (!isPointEnter) Info_Buttons_Root.Visibility = Visibility.Collapsed;
+            rightButtonVisual.Compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed -= MusicDataItem_Completed;
+        }
+
+        private void AudioPlayer_PlayStateChanged(AudioPlayer audioPlayer)
+        {
+            SetPlayingIcon(audioPlayer.PlaybackState);
+        }
+
+        private void UserControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            if (sender == null) return;
+            if (sender.DataContext == null) return;
+            if (sender.DataContext is not SongItemBindBase) return;
+            songItemBind = sender.DataContext as SongItemBindBase;
+            musicDataFlyout.SongItemBind = songItemBind;
+            InitInfo();
+            InitPlayingState();
+            InitImage();
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            staticMusicDataItem.Add(this);
+            if (songItemBind == null) return;
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            staticMusicDataItem.Remove(this);
+            isUnloaded = true;
+            songItemBind = null;
+            Info_Image.Source = null;
+            rightButtonVisualShowAnimation.Dispose();
+            rightButtonVisualHideAnimation.Dispose();
+            backgroundFillVisualShowAnimation.Dispose();
+            backgroundFillVisualHideAnimation.Dispose();
+            strokeVisualShowAnimation.Dispose();
+        }
+
+        bool isPointEnter = false;
+        private void UserControl_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (songItemBind == null) return;
+            isPointEnter = true;
+            Info_Buttons_Root.Visibility = Visibility.Visible;
+            backgroundFillVisual.StartAnimation("Opacity", backgroundFillVisualShowAnimation);
+            rightButtonVisual.StartAnimation("Opacity", rightButtonVisualShowAnimation);
+        }
+
+        private void UserControl_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            if (IsMusicDataPlaying) return;
+            if (!isPointEnter) return;
+            if (songItemBind == null)
+            {
+                rightButtonVisual.Compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed -= MusicDataItem_Completed;
+                return;
+            }
+            isPointEnter = false;
+            backgroundFillVisual.StartAnimation("Opacity", backgroundFillVisualHideAnimation);
+            rightButtonVisual.StartAnimation("Opacity", rightButtonVisualHideAnimation);
+            rightButtonVisual.Compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed -= MusicDataItem_Completed;
+            rightButtonVisual.Compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed += MusicDataItem_Completed;
+        }
+
+
+        private async void UserControl_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            await App.playingList.Play(songItemBind.MusicData, true);
+        }
+
+        private void UserControl_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            musicDataFlyout.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
+        }
+
+        private void UserControl_Holding(object sender, HoldingRoutedEventArgs e)
+        {
+            musicDataFlyout.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            musicDataFlyout.ShowAt(sender as FrameworkElement);
+        }
+
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (IsMusicDataPlaying)
+            {
+                if (App.audioPlayer.PlaybackState == NAudio.Wave.PlaybackState.Playing)
+                    App.audioPlayer.SetPause();
+                else
+                    App.audioPlayer.SetPlay();
+            }
+            else
+                await App.playingList.Play(songItemBind.MusicData, true);
+        }
+    }
+}

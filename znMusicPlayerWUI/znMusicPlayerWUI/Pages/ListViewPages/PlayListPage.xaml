@@ -1,4 +1,4 @@
-<Page
+﻿<Page
     x:Class="znMusicPlayerWUI.Pages.ListViewPages.PlayListPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -20,7 +20,7 @@
                     <ControlTemplate TargetType="ListViewItem">
                         <ListViewItemPresenter
                             Padding="0"
-                            Margin="16,0">
+                            Margin="16,1">
                         </ListViewItemPresenter>
                     </ControlTemplate>
                 </Setter.Value>
@@ -35,7 +35,7 @@
             Padding="0">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="helper:SongItemBindBase">
-                    <TextBlock Text="{Binding MusicData.Title}"/>
+                    <controls:MusicDataItem/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Header>
@@ -47,7 +47,7 @@
                             x:Name="ItemsList_Header_ImageInfo_BackgroundFill"
                             Background="{ThemeResource AcrylicNormal}"
                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                            BorderThickness="0,0,0,1"
+                            BorderThickness="0,0,0,1" Margin="-4,-4,-4,0"
                             VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                         <Grid Margin="16">
                             <Grid
@@ -55,13 +55,15 @@
                                 SizeChanged="ItemsList_Header_Image_Root_SizeChanged"
                                 VerticalAlignment="Top"
                                 HorizontalAlignment="Left"
-                                CornerRadius="8"
                                 Height="280">
                                 <Rectangle x:Name="ItemsList_Header_Image_Shadow"/>
                                 <controls:Imagezn
-                                    x:Name="ItemsList_Header_Image">
+                                    x:Name="ItemsList_Header_Image"
+                                    CornerRadius="8"
+                                    BorderBrush="{ThemeResource ControlElevationBorderBrush}"
+                                    BorderThickness="1">
                                     <c:Effects.Shadow>
-                                        <c:AttachedDropShadow BlurRadius="60" Color="#50000000" CastTo="{x:Bind ItemsList_Header_Image_Shadow}" Offset="0,3"/>
+                                        <c:AttachedDropShadow BlurRadius="50" Color="#30000000" CastTo="{x:Bind ItemsList_Header_Image_Shadow}" Offset="0,3"/>
                                     </c:Effects.Shadow>
                                 </controls:Imagezn>
                             </Grid>
@@ -83,15 +85,69 @@
                                         DefaultLabelPosition="Right"
                                         Margin="0,0,0,0"
                                         AccessKey="Z">
+                                        <CommandBar.SecondaryCommands>
+                                            <AppBarElementContainer 
+                                                AllowFocusOnInteraction="True"
+                                                x:Name="SortComboBoxParent">
+                                                <ComboBox
+                                                    x:Name="SortComboBox"
+                                                    SelectionChanged="SortComboBox_SelectionChanged"
+                                                    Header="排序方式"
+                                                    AccessKey="X"
+                                                    Margin="12, 4">
+                                                </ComboBox>
+                                            </AppBarElementContainer>
+                                        </CommandBar.SecondaryCommands>
                                         <AppBarButton
                                             Background="{ThemeResource AccentFillColorDefaultBrush}"
                                             BorderBrush="{ThemeResource ControlElevationBorderBrush}"
                                             Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
                                             BorderThickness="0,0,0,1"
-                                            Label="ȫ�����ţ�Alt+Q��"
-                                            ToolTipService.ToolTip="���Ÿ�����ȫ������">
+                                            Label="全部播放（Alt+Q）"
+                                            ToolTipService.ToolTip="播放歌单内的所有歌曲"
+                                            Click="AppBarButton_Click" Tag="playAll">
                                             <AppBarButton.Icon>
                                                 <FontIcon Glyph="&#xEE4A;"/>
+                                            </AppBarButton.Icon>
+                                        </AppBarButton>
+                                        <AppBarButton
+                                            Label="刷新"
+                                            ToolTipService.ToolTip="刷新"
+                                            Click="AppBarButton_Click" Tag="refresh">
+                                            <AppBarButton.Icon>
+                                                <FontIcon Glyph="&#xE72C;"/>
+                                            </AppBarButton.Icon>
+                                        </AppBarButton>
+                                        <AppBarToggleButton
+                                            Click="AppBarToggleButton_Click"
+                                            Label="多选"
+                                            ToolTipService.ToolTip="多选">
+                                            <AppBarToggleButton.Icon>
+                                                <FontIcon Glyph="&#xE762;"/>
+                                            </AppBarToggleButton.Icon>
+                                        </AppBarToggleButton>
+                                        <AppBarToggleButton
+                                            Click="AppBarToggleButton_Click"
+                                            Label="排序"
+                                            ToolTipService.ToolTip="拖动音乐控件以重新排序">
+                                            <AppBarToggleButton.Icon>
+                                                <FontIcon Glyph="&#xEA37;"/>
+                                            </AppBarToggleButton.Icon>
+                                        </AppBarToggleButton>
+                                        <AppBarButton
+                                            Label="添加本地文件"
+                                            ToolTipService.ToolTip="添加本地文件"
+                                            Click="AppBarButton_Click" Tag="addLocal">
+                                            <AppBarButton.Icon>
+                                                <FontIcon Glyph="&#xE8E5;"/>
+                                            </AppBarButton.Icon>
+                                        </AppBarButton>
+                                        <AppBarButton
+                                            Label="搜索"
+                                            ToolTipService.ToolTip="搜索播放列表中的歌曲"
+                                            Click="AppBarButton_Click" Tag="search">
+                                            <AppBarButton.Icon>
+                                                <FontIcon Glyph="&#xE721;"/>
                                             </AppBarButton.Icon>
                                         </AppBarButton>
                                     </CommandBar>

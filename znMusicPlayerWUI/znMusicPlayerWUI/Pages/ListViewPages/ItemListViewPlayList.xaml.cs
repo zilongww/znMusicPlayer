@@ -78,7 +78,7 @@ namespace znMusicPlayerWUI.Pages
         {
             base.OnNavigatedFrom(e);
             DataContext = null;
-            //LeavingPageDo();
+            LeavingPageDo();
             //GC.SuppressFinalize(this);
             //System.Diagnostics.Debug.WriteLine("Clear");
         }
@@ -97,6 +97,7 @@ namespace znMusicPlayerWUI.Pages
             searchMusicDatas?.Clear();
             Children.ItemsSource = null;
             SearchBox.ItemsSource = null;
+            SortComboBox.ItemsSource = null;
 
             ImageManage.localImageCache.Clear();
 
@@ -891,10 +892,9 @@ namespace znMusicPlayerWUI.Pages
 
         private async void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (isLoading)
-                return;
-            if (NavToObj.PlaySort == (PlaySort)SortComboBox.SelectedItem)
-                return;
+            if (IsNavigatedOutFromPage) return;
+            if (isLoading) return;
+            if (NavToObj.PlaySort == (PlaySort)SortComboBox.SelectedItem) return;
 
             NavToObj.PlaySort = (PlaySort)SortComboBox.SelectedItem;
             InitData();

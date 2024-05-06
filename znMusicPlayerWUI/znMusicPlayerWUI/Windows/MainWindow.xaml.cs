@@ -31,6 +31,8 @@ using WinRT;
 using Windows.Graphics;
 using NAudio.Wave;
 using Newtonsoft.Json.Linq;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -2163,7 +2165,6 @@ namespace znMusicPlayerWUI
         DispatcherTimer ramTimer;
         private void DebugViewPopup_Loaded(object sender, RoutedEventArgs e)
         {
-
 #if DEBUG
             DebugViewPopup.VerticalOffset = AppWindow.Size.Height;
             ramTimer = new();
@@ -2182,7 +2183,11 @@ namespace znMusicPlayerWUI
 
         private void RamTimer_Tick(object sender, object e)
         {
-            DebugView_Detail_RAM.Text = $"RAM: {CodeHelper.GetAutoSizeString(Process.GetCurrentProcess().PrivateMemorySize64, 2)}";
+            try
+            {
+                DebugView_Detail_RAM.Text = $"RAM: {CodeHelper.GetAutoSizeString(Windows.System.MemoryManager.AppMemoryUsage, 2)}/{CodeHelper.GetAutoSizeString(GC.GetTotalMemory(false), 2)}";
+            }
+            catch { }
         }
 
         private void Button_Click_8(object sender, RoutedEventArgs e)
@@ -2206,6 +2211,37 @@ namespace znMusicPlayerWUI
             var iv = sender as ItemsView;
             iv.ItemsSource = null;
             oc.Clear();
+        }
+
+        private void WindowGridBase_DragOver(object sender, DragEventArgs e)
+        {
+            DropInfo_Root.Opacity = 1;
+            e.AcceptedOperation = DataPackageOperation.Link;
+            e.DragUIOverride.Caption = "打开";
+        }
+
+        private async void WindowGridBase_Drop(object sender, DragEventArgs e)
+        {
+            DropInfo_Root.Opacity = 0;
+            if (!e.DataView.Contains(StandardDataFormats.StorageItems))
+            {
+                AddNotify("无法打开此文件类型", "仅允许打开文件。", NotifySeverity.Error);
+                return;
+            }
+            var items = await e.DataView.GetStorageItemsAsync();
+            if (items.Count <= 0) return;
+
+            List<string> files = new();
+            foreach (StorageFile file in items)
+            {
+                files.Add(file.Path);
+            }
+            AddOpeningMusic([.. files]);
+        }
+
+        private void WindowGridBase_DragLeave(object sender, DragEventArgs e)
+        {
+            DropInfo_Root.Opacity = 0;
         }
     }
 
