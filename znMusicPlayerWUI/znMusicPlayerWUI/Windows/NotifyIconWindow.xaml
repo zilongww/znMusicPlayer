@@ -31,7 +31,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Grid Margin="24,24,12,0" CornerRadius="8" VerticalAlignment="Top" MaxWidth="140">
-                        <c:Imagezn x:Name="LogoImage" CornerRadius="8"/>
+                        <c:ImageEx x:Name="LogoImage" CornerRadius="8"/>
                         <Grid x:Name="LoadingRoot" Background="{ThemeResource AcrylicNormal}" Opacity="0"
                               IsHitTestVisible="False">
                             <Grid.OpacityTransition>

@@ -247,10 +247,11 @@ namespace znMusicPlayerWUI
 
         static bool loadFailed = false;
         static int retryCount = 0;
-        public static void LoadSettings(JObject b)
+        public static void LoadSettings(JObject data)
         {
             try
             {
+                JObject b = data;
                 DataFolderBase.DownloadFolder = SettingEditHelper.GetSetting<string>(b, DataFolderBase.SettingParams.DownloadFolderPath);
                 DataFolderBase.AudioCacheFolder = SettingEditHelper.GetSetting<string>(b, DataFolderBase.SettingParams.AudioCacheFolderPath);
                 DataFolderBase.ImageCacheFolder = SettingEditHelper.GetSetting<string>(b, DataFolderBase.SettingParams.ImageCacheFolderPath);
@@ -305,7 +306,7 @@ namespace znMusicPlayerWUI
 
                 NotifyIconWindow.IsVisible = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.TaskbarShowIcon);
                 MainWindow.RunInBackground = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.BackgroundRun);
-                Controls.Imagezn.ImageDarkMass = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.ImageDarkMass);
+                Controls.ImageEx.ImageDarkMass = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.ImageDarkMass);
                 LoadLastExitPlayingSongAndSongList = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.LoadLastExitPlayingSongAndSongList);
                 MainWindow.SNavView.PaneDisplayMode = SettingEditHelper.GetSetting<bool>(b, DataFolderBase.SettingParams.TopNavigationStyle) ? NavigationViewPaneDisplayMode.Top : NavigationViewPaneDisplayMode.Auto;
 
@@ -381,7 +382,7 @@ namespace znMusicPlayerWUI
 
             SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.TaskbarShowIcon, NotifyIconWindow.IsVisible);
             SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.BackgroundRun, MainWindow.RunInBackground);
-            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.ImageDarkMass, Controls.Imagezn.ImageDarkMass);
+            SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.ImageDarkMass, Controls.ImageEx.ImageDarkMass);
             SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.LoadLastExitPlayingSongAndSongList, LoadLastExitPlayingSongAndSongList);
             SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.HotKeySettings, JArray.FromObject(App.hotKeyManager.RegistedHotKeys));
             SettingEditHelper.EditSetting(a, DataFolderBase.SettingParams.TopNavigationStyle, MainWindow.SNavView.PaneDisplayMode == NavigationViewPaneDisplayMode.Top);

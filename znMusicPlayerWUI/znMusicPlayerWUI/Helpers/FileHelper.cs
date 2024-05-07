@@ -54,7 +54,7 @@ namespace znMusicPlayerWUI.Helpers
         {
             return await Task.Run(() =>
             {
-                DirectoryInfo directory = new DirectoryInfo(DataEditor.DataFolderBase.ImageCacheFolder);
+                DirectoryInfo directory = new(DataEditor.DataFolderBase.ImageCacheFolder);
                 FileInfo[] fileInfo = directory.GetFiles();
                 foreach (FileInfo file in fileInfo)
                 {
@@ -166,16 +166,13 @@ namespace znMusicPlayerWUI.Helpers
 
         private static async Task<WriteableBitmap> OpenWriteableBitmapFile(StorageFile file)
         {
-            using (IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read))
-            {
-                BitmapDecoder decoder = await BitmapDecoder.CreateAsync(stream);
-                WriteableBitmap image = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
-                //pixelWidth == 0 ? (int)decoder.PixelWidth : pixelWidth,
-                //pixelHeight == 0 ? (int)decoder.PixelHeight : pixelHeight);
-                await image.SetSourceAsync(stream);
-
-                return image;
-            }
+            using IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read);
+            BitmapDecoder decoder = await BitmapDecoder.CreateAsync(stream);
+            WriteableBitmap image = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+            //pixelWidth == 0 ? (int)decoder.PixelWidth : pixelWidth,
+            //pixelHeight == 0 ? (int)decoder.PixelHeight : pixelHeight);
+            await image.SetSourceAsync(stream);
+            return image;
         }
 
         public static async Task<IReadOnlyList<StorageFile>> UserSelectFiles(

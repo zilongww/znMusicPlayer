@@ -77,6 +77,10 @@ namespace znMusicPlayerWUI
         public static ListView SNotifyListView;
         public static ScrollViewer SNotifyListViewScrollViewer;
 
+        public static void InvokeDpiEvent() => WindowDpiChanged?.Invoke();
+        public delegate void WindowDpiChangedDelegate();
+        public static event WindowDpiChangedDelegate WindowDpiChanged;
+        
         public delegate void WindowViewStateChangedDelegate(bool isView);
         public static event WindowViewStateChangedDelegate WindowViewStateChanged;
 
@@ -987,20 +991,20 @@ namespace znMusicPlayerWUI
         static bool isDeleteImage = true;
         private static void PlayingList_NowPlayingImageLoading(ImageSource imageSource, string _)
         {
-            if (SPlayContent.Content is not Imagezn)
+            if (SPlayContent.Content is not ImageEx)
             {
-                SPlayContent.Content = new Imagezn() { MinWidth = 0, CornerRadius = new(3) };
+                SPlayContent.Content = new ImageEx() { MinWidth = 0, CornerRadius = new(3) };
             }
         }
 
         public static void PlayingList_NowPlayingImageLoaded(ImageSource imageSource, string _)
         {
-            var im = SPlayContent.Content as Imagezn;
+            var im = SPlayContent.Content as ImageEx;
             if (im is null) return;
             if (imageSource is null)
             {
                 im.BorderThickness = new(0);
-                im.Dispose();
+                im.Source = null;
                 return;
             }
             if (imageSource != im.Source)
@@ -1380,7 +1384,9 @@ namespace znMusicPlayerWUI
                 nvi.Tag = null;
             }
             MusicPlayListButton.MenuItems.Clear();
-            foreach (var i in App.playListReader.NowMusicListData)
+            MusicListData[] musicListDatas = [];
+            App.playListReader.NowMusicListData.CopyTo(musicListDatas, 0);
+            foreach (var i in musicListDatas)
             {
                 var nvi = new NavigationViewItem() { Content = i.ListShowName, Tag = i };
                 MusicPlayListButton.MenuItems.Add(nvi);
@@ -2155,6 +2161,7 @@ namespace znMusicPlayerWUI
         }
         #endregion
 
+        #region Other
         private void DebugViewPopup_SizeChanged(object sender, SizeChangedEventArgs e)
         {
 #if DEBUG
@@ -2185,7 +2192,7 @@ namespace znMusicPlayerWUI
         {
             try
             {
-                DebugView_Detail_RAM.Text = $"RAM: {CodeHelper.GetAutoSizeString(Windows.System.MemoryManager.AppMemoryUsage, 2)}/{CodeHelper.GetAutoSizeString(GC.GetTotalMemory(false), 2)}";
+                DebugView_Detail_RAM.Text = $"RAM: {CodeHelper.GetAutoSizeString(Windows.System.MemoryManager.AppMemoryUsage, 2)}/{CodeHelper.GetAutoSizeString(GC.GetTotalMemory(true), 2)}";
             }
             catch { }
         }
@@ -2243,6 +2250,19 @@ namespace znMusicPlayerWUI
         {
             DropInfo_Root.Opacity = 0;
         }
+
+        private void Button_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            MusicDataFlyout.SongItemBind = new() { MusicData = App.audioPlayer.MusicData };
+            MusicDataFlyout.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
+        }
+
+        private void Button_Holding(object sender, HoldingRoutedEventArgs e)
+        {
+            MusicDataFlyout.SongItemBind = new() { MusicData = App.audioPlayer.MusicData };
+            MusicDataFlyout.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
+        }
+        #endregion
     }
 
     public enum NotifySeverity { Info, Error, Warning, Complete, Loading }

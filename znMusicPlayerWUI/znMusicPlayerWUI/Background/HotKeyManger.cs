@@ -367,9 +367,13 @@ namespace znMusicPlayerWUI.Background.HotKeys
                             NotifySeverity.Warning);
                         break;
                 }
-
                 return (Windows.Win32.Foundation.LRESULT)IntPtr.Zero;
             }
+            else if (uMsg == 0x02E0)
+            {
+                MainWindow.InvokeDpiEvent();
+            }
+
             return Windows.Win32.PInvoke.CallWindowProc(origPrc, hwnd, uMsg, wParam, lParam);
         }
     }

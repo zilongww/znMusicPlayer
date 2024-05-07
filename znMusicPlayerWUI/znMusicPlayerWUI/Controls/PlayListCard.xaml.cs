@@ -21,7 +21,7 @@ namespace znMusicPlayerWUI.Controls
         private MusicListData MusicListData { get; set; }
         public double ImageScaleDPI { get; set; } = 1.0;
         public string ID { get; set; }
-        public Imagezn ConnectAnimationElement { get; set; }
+        public ImageEx ConnectAnimationElement { get; set; }
         public TextBlock ConnectAnimationElement1 { get; set; }
 
         public PlayListCard()
@@ -125,7 +125,7 @@ namespace znMusicPlayerWUI.Controls
         {
             if (PlayListImage != null)
             {
-               PlayListImage.Dispose();
+               PlayListImage.Source = null;
             }
             PlayListImage.Source = null;
             MusicListData = null;

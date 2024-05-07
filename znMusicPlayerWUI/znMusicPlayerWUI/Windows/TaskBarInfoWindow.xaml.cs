@@ -172,7 +172,6 @@ namespace znMusicPlayerWUI.Windowed
             Helpers.SDKs.TaskbarProgress.MyTaskbarInstance.ThumbBarUpdateButtons(Handle, 3, taskbarInfoButtonPauseStyle);
         }
 
-        Image bmp = null;
         public async void SetTaskbarImage(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
@@ -181,12 +180,12 @@ namespace znMusicPlayerWUI.Windowed
             }
             if (IconPathUsing == filePath) return;
             bool canBreak = false;
-            bmp = await Task.Run(() => Bitmap.FromFile(filePath));
+            using var bmp = await Task.Run(() => Bitmap.FromFile(filePath));
             int size = 160;
             for (int i = 0; i < 50; i++)
             {
                 if (canBreak) break;
-                var hBitmap = bmp.GetThumbnailImage(size, size, null, 0) as Bitmap;
+                using var hBitmap = bmp.GetThumbnailImage(size, size, null, 0) as Bitmap;
                 var hBitmapNint = hBitmap.GetHbitmap();
                 try
                 {
@@ -230,14 +229,10 @@ namespace znMusicPlayerWUI.Windowed
             //Debug.WriteLine($"Get system message: {uMsg}\n    {wParam.Value}");
             if (uMsg == 806)
             {
-                if (bmp != null)
-                {
-                    // 到了屏幕外面就看不见了 :-)
-                    NativeMethods.NativePoint offset = new(-5000, -5000);
-                    // 只知道设置1x1的缩略图进去后看起来是正常的...
-                    var a = NativeMethods.DwmSetIconicLivePreviewBitmap(Handle, appIconHandle, ref offset, 0);
-                }
-
+                // 到了屏幕外面就看不见了 :-)
+                NativeMethods.NativePoint offset = new(-5000, -5000);
+                // 只知道设置1x1的缩略图进去后看起来是正常的...
+                var a = NativeMethods.DwmSetIconicLivePreviewBitmap(Handle, appIconHandle, ref offset, 0);
             }
             else if (uMsg == 273)
             {

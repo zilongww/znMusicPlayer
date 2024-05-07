@@ -51,7 +51,7 @@ namespace znMusicPlayerWUI.Pages
             MusicDataList.Clear();
             Children.ItemsSource = null;
             Children.Items.Clear();
-            Artist_Image.Dispose();
+            Artist_Image.Source = null;
             musicListData = null;
             NavToObj = null;
             UnloadObject(this);

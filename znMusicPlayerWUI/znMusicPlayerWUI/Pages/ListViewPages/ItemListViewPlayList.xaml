@@ -49,10 +49,10 @@
                                     <Rectangle x:Name="PlayList_Image_DropShadowBase"/>
                                     <Grid HorizontalAlignment="Left"
                                           x:Name="PlayList_ImageBaseBorder">
-                                        <controlszn:Imagezn x:Name="PlayList_Image"
+                                        <controlszn:ImageEx x:Name="PlayList_Image"
                                                             CornerRadius="8"
                                                             BorderBrush="{ThemeResource ControlElevationBorderBrush}">
-                                        </controlszn:Imagezn>
+                                        </controlszn:ImageEx>
                                     </Grid>
                                 </Grid>
                                 <Grid x:Name="InfosBaseStackPanel"

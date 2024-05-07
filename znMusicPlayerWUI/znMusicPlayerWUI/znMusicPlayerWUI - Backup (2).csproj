@@ -40,6 +40,9 @@
 	  <DebugType>portable</DebugType>
 	  <Optimize>True</Optimize>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Controls\ImageExImageEx.xaml.cs" />
+	</ItemGroup>
 	
 	<ItemGroup>
 		<None Remove="Background.zip" />
@@ -47,6 +50,7 @@
 		<None Remove="Controls\AutoView.xaml" />
 		<None Remove="Controls\DownloadCard.xaml" />
 		<None Remove="Controls\ImageEx.xaml" />
+		<None Remove="Controls\ImageExImageEx.xaml" />
 		<None Remove="Controls\ItemListViewArtist.xaml" />
 		<None Remove="Controls\ItemListViewPlayList.xaml" />
 		<None Remove="Controls\ItemListViewSearch.xaml" />
@@ -58,8 +62,6 @@
 		<None Remove="Controls\MusicDataItem.xaml" />
 		<None Remove="Controls\NotifyItem.xaml" />
 		<None Remove="Controls\PlayListCard.xaml" />
-		<None Remove="Controls\ScrollFootButton.xaml" />
-		<None Remove="Controls\ScrollViewerSearchControl.xaml" />
 		<None Remove="Controls\SongHistoryCard.xaml" />
 		<None Remove="Controls\SongHistoryInfo.xaml" />
 		<None Remove="Controls\SongItem.xaml" />
@@ -144,15 +146,6 @@
 		  <Generator>MSBuild:Compile</Generator>
 		</Page>
 		<Page Update="Controls\MusicDataFlyout.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</Page>
-		<Page Update="Controls\ImageEx.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</Page>
-		<Page Update="Controls\ScrollFootButton.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</Page>
-		<Page Update="Controls\ScrollViewerSearchControl.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</Page>
 		<None Update="Media\Decoder\Flac\NAudio.Flac\FlacFrame_GetBuffer.tt">
@@ -360,6 +353,10 @@
 
 	<ItemGroup>
 	  <CustomAdditionalCompileInputs Remove="Controls\ImageEx.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Remove="Controls\ImageExImageEx.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>

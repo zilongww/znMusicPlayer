@@ -14,7 +14,7 @@ using Microsoft.UI.Composition;
 using znMusicPlayerWUI.Media;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.DataEditor;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Windows.Graphics.Display;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -32,13 +32,25 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            musicListData = e.Parameter as MusicListData;
+            string md5 = (string)e.Parameter;
+            foreach (var mld in App.playListReader.NowMusicListData)
+            {
+                if (mld.MD5 == md5)
+                {
+                    musicListData = mld;
+                    break;
+                }
+            }
+            MainWindow.WindowDpiChanged -= MainWindow_WindowDpiChanged;
+            MainWindow.WindowDpiChanged += MainWindow_WindowDpiChanged;
+            InitShyHeader();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
             musicListData = null;
+            MainWindow.WindowDpiChanged -= MainWindow_WindowDpiChanged;
         }
 
         public PlayListPage()
@@ -54,6 +66,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         Visual imageVisual;
         Visual infoVisual;
         Visual commandBarVisual;
+        Visual headerFootRootVisual;
         private void InitVisuals()
         {
             if (isUnloaded) return;
@@ -65,54 +78,110 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
 
             scrollViewer = (VisualTreeHelper.GetChild(ItemsList, 0) as Border).Child as ScrollViewer;
             scrollViewer.CanContentRenderOutsideBounds = true;
-            scrollViewer.ViewChanging -= ScrollViewer_ViewChanging;
-            scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
+            scrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
+            scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
             scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(scrollViewer);
 
             compositor = scrollerPropertySet.Compositor;
-            headerVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_ImageInfo_Root);
+            headerVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Root);
             backgroundVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_ImageInfo_BackgroundFill);
             imageVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Image_Root);
             infoVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Info_Root);
             commandBarVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Info_CommandBar);
+            headerFootRootVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Foot_Root);
         }
 
-        private void InitShyHeader(bool imageSizeOnly = false)
+        ExpressionAnimation logoHeaderScaleAnimation;
+        ExpressionAnimation offsetExpression;
+        ExpressionAnimation backgroundVisualOpacityAnimation;
+        ExpressionAnimation imageVisualOffsetAnimation;
+        ExpressionAnimation infoVisualOffsetAnimation;
+        ExpressionAnimation commandBarVisualOffsetAnimation;
+        ExpressionAnimation headerFootRootVisualOffsetAnimation;
+        private async void InitShyHeader(bool imageSizeOnly = false, bool delay = true)
         {
             if (scrollViewer == null) return;
             if (compositor == null) return;
             if (isUnloaded) return;
-
             var anotherHeight = 154;
             double imageSizeEnd = 0.45;
             string progress = $"Clamp(-scroller.Translation.Y / {anotherHeight}, 0, 1.0)";
 
-            var logoHeaderScaleAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector2(1, 1), Vector2({imageSizeEnd}, {imageSizeEnd}), {progress})");
+            logoHeaderScaleAnimation?.Dispose();
+            logoHeaderScaleAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector2(1, 1), Vector2({imageSizeEnd}, {imageSizeEnd}), {progress})");
             logoHeaderScaleAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             imageVisual.StartAnimation("Scale.xy", logoHeaderScaleAnimation);
             if (ItemsList_Header_Root.ActualWidth != 0)
                 ItemsList_Header_Info_Root_SizeChanger.Width = ItemsList_Header_Root.ActualWidth - ItemsList_Header_Image_Root.ActualWidth * imageVisual.Scale.X - 32 - 16;
             if (imageSizeOnly) return;
 
-            var offsetExpression = compositor.CreateExpressionAnimation($"-scroller.Translation.Y - {progress} * {anotherHeight}");
+            if (delay) await Task.Delay(10);
+
+            offsetExpression?.Dispose();
+            offsetExpression = compositor.CreateExpressionAnimation($"-scroller.Translation.Y - {progress} * {anotherHeight}");
             offsetExpression.SetReferenceParameter("scroller", scrollerPropertySet);
             headerVisual.StartAnimation("Offset.Y", offsetExpression);
 
-            var backgroundVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 1, {progress})");
+            backgroundVisualOpacityAnimation?.Dispose();
+            backgroundVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 1, {progress})");
             backgroundVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             backgroundVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
 
-            var imageVisualOffsetYAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector2(0, 0), Vector2(0, {anotherHeight}), {progress})");
-            imageVisualOffsetYAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
-            imageVisual.StartAnimation("Offset.xy", imageVisualOffsetYAnimation);
+            imageVisualOffsetAnimation?.Dispose();
+            imageVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector2(0, 0), Vector2(0, {anotherHeight}), {progress})");
+            imageVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+            imageVisual.StartAnimation("Offset.xy", imageVisualOffsetAnimation);
 
-            var infoVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3({ItemsList_Header_Image_Root.ActualWidth + 16}, 0, 0), Vector3({(int)(ItemsList_Header_Image_Root.ActualWidth * imageSizeEnd) + 16}, {anotherHeight}, 0), {progress})");
+            infoVisualOffsetAnimation?.Dispose();
+            infoVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3({ItemsList_Header_Image_Root.ActualWidth + 16}, 0, 0), Vector3({(int)(ItemsList_Header_Image_Root.ActualWidth * imageSizeEnd) + 16}, {anotherHeight}, 0), {progress})");
             infoVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             infoVisual.StartAnimation(nameof(infoVisual.Offset), infoVisualOffsetAnimation);
 
-            var commandBarVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(-6, {imageVisual.Size.Y - commandBarVisual.Size.Y + 6}, 0), Vector3(-6, {imageVisual.Size.Y * imageSizeEnd - commandBarVisual.Size.Y + 6}, 0), {progress})");
+            commandBarVisualOffsetAnimation?.Dispose();
+            commandBarVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(-6, {imageVisual.Size.Y - commandBarVisual.Size.Y + 6}, 0), Vector3(-6, {imageVisual.Size.Y * imageSizeEnd - commandBarVisual.Size.Y + 6}, 0), {progress})");
             commandBarVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             commandBarVisual.StartAnimation(nameof(infoVisual.Offset), commandBarVisualOffsetAnimation);
+
+            headerFootRootVisualOffsetAnimation?.Dispose();
+            headerFootRootVisualOffsetAnimation = compositor.CreateExpressionAnimation(
+                $"Lerp(" +
+                    $"Vector3(" +
+                        $"-16," +
+                        $"{ActualHeight} - {headerFootRootVisual.Size.Y} - 8," +
+                        $"0)," +
+                    $"Vector3(" +
+                        $"-16," +
+                        $"{anotherHeight} + {ActualHeight} - {headerFootRootVisual.Size.Y} - 8," +
+                        $"0)," +
+                    $"{progress})");
+            headerFootRootVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+            headerFootRootVisual.StartAnimation("Offset", headerFootRootVisualOffsetAnimation);
+        }
+        void DisposeVisuals()
+        {
+            logoHeaderScaleAnimation?.Dispose();
+            offsetExpression?.Dispose();
+            backgroundVisualOpacityAnimation?.Dispose();
+            imageVisualOffsetAnimation?.Dispose();
+            infoVisualOffsetAnimation?.Dispose();
+            commandBarVisualOffsetAnimation?.Dispose();
+            headerFootRootVisualOffsetAnimation?.Dispose();
+
+            scrollerPropertySet = null;
+            compositor = null;
+            headerVisual = null;
+            backgroundVisual = null;
+            imageVisual = null;
+            infoVisual = null;
+            commandBarVisual = null;
+            headerFootRootVisual = null;
+            logoHeaderScaleAnimation = null;
+            offsetExpression = null;
+            backgroundVisualOpacityAnimation = null;
+            imageVisualOffsetAnimation = null;
+            infoVisualOffsetAnimation = null;
+            commandBarVisualOffsetAnimation = null;
+            headerFootRootVisualOffsetAnimation = null;
         }
 
         bool isInInitBindings = false;
@@ -180,7 +249,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             foreach (var item in array)
             {
                 item.Count = count;
-                musicListBind.Add(new() { MusicData = item, ImageScaleDPI = dpi });
+                musicListBind.Add(new() { MusicData = item, MusicListData = musicListData, ImageScaleDPI = dpi });
                 count++;
             }
             SortComboBox.SelectedIndex = (int)musicListData.PlaySort;
@@ -199,7 +268,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         private async void InitImage()
         {
             if (isUnloaded) return;
-            ItemsList_Header_ImageInfo_Root.BorderThickness = thickness0;
+            ItemsList_Header_Image.BorderThickness = thickness0;
             ImageSource imageSource = null;
             if (musicListData.ListDataType == DataType.±¾µØ¸èµ¥)
             {
@@ -211,11 +280,15 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             {
                 imageSource = (await ImageManage.GetImageSource(musicListData)).Item1;
             }
+            if (imageSource == null)
+            {
+                imageSource = await FileHelper.GetImageSource("");
+            }
 
             if (isUnloaded) return;
-            ItemsList_Header_ImageInfo_Root.BorderThickness = thickness1;
+            ItemsList_Header_Image.BorderThickness = thickness1;
             ItemsList_Header_Image.Source = imageSource;
-            InitShyHeader();
+            InitShyHeader(delay: false);
 
         }
 
@@ -245,6 +318,8 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
             isUnloaded = true;
+            MainWindow.WindowDpiChanged -= MainWindow_WindowDpiChanged;
+            DisposeVisuals();
             if (ItemsList_Header_Image != null) ItemsList_Header_Image.Source = null;
             if (ItemsList != null) ItemsList.ItemsSource = null;
             if (SortComboBox != null) SortComboBox.ItemsSource = null;
@@ -254,12 +329,31 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             listSortEnum = null;
             musicListData = null;
             if (scrollViewer != null)
-                scrollViewer.ViewChanging -= ScrollViewer_ViewChanging;
+                scrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
+            Bindings.StopTracking();
+            UnloadObject(this);
         }
 
-        private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        bool isDelayInitShyHeaderWhenScroll = false;
+        private async void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            InitShyHeader(true);
+            if (scrollViewer == null) return;
+            if (scrollViewer.VerticalOffset < 300)
+            {
+                isDelayInitShyHeaderWhenScroll = true;
+                InitShyHeader(true);
+                await Task.Delay(200);
+                InitShyHeader(true);
+            }
+            else
+            {
+                if (isDelayInitShyHeaderWhenScroll)
+                {
+                    isDelayInitShyHeaderWhenScroll = false;
+                    await Task.Delay(500);
+                    InitShyHeader(true);
+                }
+            }
         }
 
         private void ItemsList_Header_Image_Root_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -268,6 +362,11 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         }
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            InitShyHeader();
+        }
+
+        private void MainWindow_WindowDpiChanged()
         {
             InitShyHeader();
         }

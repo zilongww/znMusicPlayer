@@ -54,7 +54,7 @@
     </Page.Resources>
 
     <Grid>
-        <controls:Imagezn x:Name="BackgroundBaseImage" IsHitTestVisible="False"
+        <controls:ImageEx x:Name="BackgroundBaseImage" IsHitTestVisible="False"
                           VerticalAlignment="Center" HorizontalAlignment="Center"
                           Stretch="UniformToFill" Loaded="BackgroundBaseImage_Loaded"/>
         <TextBlock x:Name="BridgeTb" TextAlignment="Left" HorizontalAlignment="Left"/>
@@ -101,12 +101,12 @@
                             </TransitionCollection>
                         </Grid.Transitions>
                         <Border x:Name="AlbumImageShadowTarget"/>
-                        <controls:Imagezn x:Name="AlbumImageBase" IsMassImage="True" CornerRadius="8" BorderBrush="{ThemeResource ControlElevationBorderBrush}" BorderThickness="1">
+                        <controls:ImageEx x:Name="AlbumImageBase" IsMassImage="True" CornerRadius="8" BorderBrush="{ThemeResource ControlElevationBorderBrush}" BorderThickness="1">
                             <uis:Effects.Shadow>
                                 <uis:AttachedDropShadow BlurRadius="60" Color="#50000000" CastTo="{x:Bind AlbumImageShadowTarget}"
                                                         Offset="0,3"/>
                             </uis:Effects.Shadow>
-                        </controls:Imagezn>
+                        </controls:ImageEx>
                     </Grid>
                     <Grid x:Name="LyricSecondPlaceGrid" Margin="0,8,0,0" Grid.Row="1" SizeChanged="MusicPage_SizeChanged">
                         <ListView x:Name="LrcSecondListView"

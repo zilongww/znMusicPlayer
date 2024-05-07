@@ -151,6 +151,8 @@
                                 BorderThickness="0"
                                 Margin="0"
                                 Click="Button_Click_1"
+                                RightTapped="Button_RightTapped"
+                                Holding="Button_Holding"
                                 AccessKey="BM">
                             <Button.Resources>
                                 <ResourceDictionary>
@@ -165,6 +167,7 @@
                                     </ResourceDictionary.ThemeDictionaries>
                                 </ResourceDictionary>
                             </Button.Resources>
+                            <controls:MusicDataFlyout x:Name="MusicDataFlyout"/>
                         </Button>
                         <Grid VerticalAlignment="Center">
                             <Grid.ColumnDefinitions>

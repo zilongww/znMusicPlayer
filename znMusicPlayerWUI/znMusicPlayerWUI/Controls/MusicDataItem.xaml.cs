@@ -18,6 +18,7 @@ using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.Media;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
+using System.Collections;
 
 namespace znMusicPlayerWUI.Controls
 {
@@ -25,6 +26,7 @@ namespace znMusicPlayerWUI.Controls
     {
         static bool isStaticInited = false;
         static List<MusicDataItem> staticMusicDataItem = [];
+        ArrayList arrayList;
         static void initListen()
         {
             if (isStaticInited) return;
@@ -45,12 +47,12 @@ namespace znMusicPlayerWUI.Controls
 
         bool isUnloaded = false;
         SongItemBindBase songItemBind;
-        MusicDataFlyout musicDataFlyout;
         public MusicDataItem()
         {
             initListen();
             InitializeComponent();
             InitVisuals();
+            //arrayList = new ArrayList(10000000);
         }
 
         void InitInfo()
@@ -73,7 +75,7 @@ namespace znMusicPlayerWUI.Controls
             if (isUnloaded) return;
             if (songItemBind == null) return;
             initImageCallCount++;
-            await Task.Delay(200);
+            await Task.Delay(150);
             initImageCallCount--;
             if (initImageCallCount != 0) return;
             if (isUnloaded) return;
@@ -122,8 +124,6 @@ namespace znMusicPlayerWUI.Controls
         ScalarKeyFrameAnimation strokeVisualShowAnimation;
         void InitVisuals()
         {
-            musicDataFlyout = new();
-
             backgroundFillVisual = ElementCompositionPreview.GetElementVisual(Background_FillRectangle);
             rightButtonVisual = ElementCompositionPreview.GetElementVisual(Info_Buttons_Root);
             strokeVisual = ElementCompositionPreview.GetElementVisual(Background_HighlightRectangle);
@@ -225,6 +225,11 @@ namespace znMusicPlayerWUI.Controls
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
+            if (rightButtonVisual != null) 
+            {
+                rightButtonVisual.Compositor.GetCommitBatch(CompositionBatchTypes.Animation).Completed -= MusicDataItem_Completed;
+            }
+            App.audioPlayer.PlayStateChanged -= AudioPlayer_PlayStateChanged;
             staticMusicDataItem.Remove(this);
             isUnloaded = true;
             songItemBind = null;
@@ -270,7 +275,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void UserControl_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
-            musicDataFlyout.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
+          musicDataFlyout.ShowAt(sender as UIElement, e.GetPosition(sender as UIElement));
         }
 
         private void UserControl_Holding(object sender, HoldingRoutedEventArgs e)
@@ -281,6 +286,11 @@ namespace znMusicPlayerWUI.Controls
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             musicDataFlyout.ShowAt(sender as FrameworkElement);
+        }
+
+        private void Info_Texts_ButtonNameTextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Info_Texts_ButtonNameButton.Width = Info_Texts_ButtonNameTextBlock.ActualWidth;
         }
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
@@ -294,6 +304,41 @@ namespace znMusicPlayerWUI.Controls
             }
             else
                 await App.playingList.Play(songItemBind.MusicData, true);
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            Pages.ListViewPages.ListViewPage.SetPageToListViewPage(songItemBind.MusicData.Album);
+        }
+
+        private void Info_Texts_FlyoutMenu_Artist_Item_Loaded(object sender, RoutedEventArgs e)
+        {
+            Info_Texts_FlyoutMenu_Album_Item.Text = $"×¨¼­£º{songItemBind.MusicData.Album.Title}";
+            Info_Texts_FlyoutMenu_Artist_Item.Items.Clear();
+            foreach (var artist in songItemBind.MusicData.Artists)
+            {
+                var mfi = new MenuFlyoutItem()
+                {
+                    Text = artist.Name,
+                    Tag = artist
+                };
+                mfi.Click += (_, __) =>
+                {
+                    Pages.ListViewPages.ListViewPage.SetPageToListViewPage((_ as FrameworkElement).Tag as Artist);
+                };
+                Info_Texts_FlyoutMenu_Artist_Item.Items.Add(mfi);
+            }
+
+        }
+
+        private void Info_Texts_FlyoutMenu_Artist_Item_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Info_Texts_FlyoutMenu_Artist_Item.Items.Clear();
         }
     }
 }

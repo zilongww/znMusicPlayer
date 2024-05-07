@@ -98,9 +98,9 @@ namespace znMusicPlayerWUI.Controls
             }
         }
 
-        private void Imagezn_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        private void ImageEx_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            var image = sender as Imagezn;
+            var image = sender as ImageEx;
             var data = image.DataContext as MusicData;
             if (image != null)
             {

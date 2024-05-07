@@ -30,7 +30,7 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
-                    <c1:Imagezn VerticalAlignment="Center" HorizontalAlignment="Center"
+                    <c1:ImageEx VerticalAlignment="Center" HorizontalAlignment="Center"
                                 Stretch="UniformToFill" MaxWidth="90" MaxHeight="90"
                                 CornerRadius="4" Margin="0"/>
                     <TextBlock Text="{Binding ListShowName}" Grid.Row="1" HorizontalAlignment="Center"/>

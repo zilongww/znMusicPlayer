@@ -210,8 +210,8 @@ namespace znMusicPlayerWUI.Pages.MusicPages
         {
             if (imageSource is null)
             {
-                BackgroundBaseImage.Dispose();
-                AlbumImageBase.Dispose();
+                BackgroundBaseImage.Source = null;
+                AlbumImageBase.Source = null;
                 //BackgroundFillBase.Opacity = 0;
                 return;
             }

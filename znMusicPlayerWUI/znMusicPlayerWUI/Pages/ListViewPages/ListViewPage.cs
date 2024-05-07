@@ -10,15 +10,32 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         {
             var tType = data.GetType();
             Type pageType = null;
+            object paramData = null;
 
-            if (tType == typeof(Album)) pageType = typeof(ItemListViewAlbum);
-            else if (tType == typeof(Artist)) pageType = typeof(ItemListViewArtist);
-            else if (tType == typeof(MusicListData)) pageType = typeof(PlayListPage);
-            else if (tType == typeof(SearchData)) pageType = typeof(ItemListViewSearch);
+            if (tType == typeof(Album))
+            {
+                paramData = data;
+                pageType = typeof(ItemListViewAlbum);
+            }
+            else if (tType == typeof(Artist))
+            {
+                paramData = data;
+                pageType = typeof(ItemListViewArtist);
+            }
+            else if (tType == typeof(MusicListData))
+            {
+                paramData = (data as MusicListData).MD5;
+                pageType = typeof(PlayListPage);
+            }
+            else if (tType == typeof(SearchData))
+            {
+                paramData = data;
+                pageType = typeof(ItemListViewSearch);
+            }
 
             MainWindow.SetNavViewContent(
                 pageType,
-                data,
+                paramData,
                 new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
         }
     }

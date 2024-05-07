@@ -271,7 +271,7 @@ namespace znMusicPlayerWUI.Controls
             if (isDisposed) return;
             if (AlbumImage.Source != null)
             {
-                AlbumImage.Dispose();
+                AlbumImage.Source = null;
             }
 
             showCount++;
@@ -353,7 +353,7 @@ namespace znMusicPlayerWUI.Controls
                     DataContext = null;
                     MusicData = null;
                     MusicListData = null;
-                    AlbumImage?.Dispose();
+                    if (AlbumImage != null) AlbumImage.Source = null;
                 }
                 //AlbumImage?.DisposeVisualsAnimation();
                 DisposeVisualsAnimation();

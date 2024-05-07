@@ -58,7 +58,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void UIUnloaded(object sender, RoutedEventArgs e)
         {
-            PlayListImage.Dispose();
+            PlayListImage.Source = null;
         }
 
         public void Dispose()

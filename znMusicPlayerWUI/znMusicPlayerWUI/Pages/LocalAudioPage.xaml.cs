@@ -14,7 +14,7 @@ namespace znMusicPlayerWUI.Pages
         public LocalAudioPage()
         {
             InitializeComponent();
-            arrayList = new ArrayList(100000000);
+            //arrayList = new ArrayList(100000000);
         }
 
         public void UpdateShyHeader()

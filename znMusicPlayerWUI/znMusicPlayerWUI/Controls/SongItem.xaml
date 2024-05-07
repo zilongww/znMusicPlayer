@@ -203,8 +203,8 @@
                                         BorderThickness="1"
                                         BorderBrush="{ThemeResource ControlElevationBorderBrush}"
                                         CornerRadius="4">
-                                    <local:Imagezn x:Name="AlbumImage"
-                                                   ShowMenuBehavior="None"
+                                    <local:ImageEx x:Name="AlbumImage"
+                                                   PointInBehavior="None"
                                                    CornerRadius="3"/>
                                 </Border>
                                 <Grid Width="58" Height="58" x:Name="FileNotExistsRoot" Visibility="Collapsed"

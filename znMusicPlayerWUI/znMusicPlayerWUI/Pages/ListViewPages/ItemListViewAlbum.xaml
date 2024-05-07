@@ -49,7 +49,7 @@
                                   BorderThickness="0" Visibility="Visible"
                                   Margin="0"
                                   x:Name="Album_ImageBaseBorder">
-                                <controlszn:Imagezn x:Name="Album_Image"
+                                <controlszn:ImageEx x:Name="Album_Image"
                                                     Loaded="menu_border_Loaded"
                                                     SizeChanged="Result_BaseGrid_SizeChanged"
                                                     IsHitTestVisible="False" Stretch="UniformToFill"
@@ -67,7 +67,7 @@
                                 <Grid x:Name="AlbumLogoRoot"
                                       Margin="0,0,12,0" HorizontalAlignment="Left"
                                       CornerRadius="0" BorderThickness="0">
-                                    <controlszn:Imagezn x:Name="AlbumLogo" CornerRadius="8"
+                                    <controlszn:ImageEx x:Name="AlbumLogo" CornerRadius="8"
                                                         BorderBrush="{ThemeResource ControlElevationBorderBrush}"/>
                                 </Grid>
                                 <Border x:Name="InfoTextsRoot" HorizontalAlignment="Left">

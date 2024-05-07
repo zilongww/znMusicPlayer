@@ -788,7 +788,7 @@ namespace znMusicPlayerWUI.Pages
             }
             else
             {
-                toggleSwitch.IsOn = Controls.Imagezn.ImageDarkMass;
+                toggleSwitch.IsOn = Controls.ImageEx.ImageDarkMass;
             }
         }
 
@@ -802,7 +802,7 @@ namespace znMusicPlayerWUI.Pages
             }
             else 
             {
-                Controls.Imagezn.ImageDarkMass = toggleSwitch.IsOn;
+                Controls.ImageEx.ImageDarkMass = toggleSwitch.IsOn;
             }
         }
 

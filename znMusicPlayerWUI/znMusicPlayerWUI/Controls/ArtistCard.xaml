@@ -21,7 +21,7 @@
             <Rectangle x:Name="BackColorBaseRectAngle" Opacity="1"/>
             <StackPanel Orientation="Horizontal">
                 <Border Width="80" Height="80" CornerRadius="0">
-                    <local:Imagezn x:Name="PlayListImage" Stretch="UniformToFill" ShowMenuBehavior="None"/>
+                    <local:ImageEx x:Name="PlayListImage" Stretch="UniformToFill" PointInBehavior="None"/>
                 </Border>
                 <TextBlock Padding="6,4" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Text="{Binding Name}"/>
             </StackPanel>

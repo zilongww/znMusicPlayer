@@ -76,7 +76,8 @@ namespace znMusicPlayerWUI.Pages
             MusicDataList = null;
             searchMusicDatas = null;
 
-            Album_Image?.Dispose(); AlbumLogo?.Dispose();
+            if (Album_Image != null) Album_Image.Source = null;
+            if (AlbumLogo != null) AlbumLogo.Source = null;
 
             NavToObj?.Songs?.Songs.Clear();
             NavToObj = null;

@@ -161,7 +161,7 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <controls:Imagezn x:Name="MusicControl_Image" VerticalAlignment="Center" HorizontalAlignment="Center"
+                        <controls:ImageEx x:Name="MusicControl_Image" VerticalAlignment="Center" HorizontalAlignment="Center"
                                           MaxHeight="150" MaxWidth="150" CornerRadius="4"/>
                         <Grid Grid.Column="1">
                             <StackPanel Margin="12,0,0,0">

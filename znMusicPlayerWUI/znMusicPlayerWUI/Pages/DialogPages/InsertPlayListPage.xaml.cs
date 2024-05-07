@@ -62,7 +62,7 @@ namespace znMusicPlayerWUI.Pages.DialogPages
         private async void Grid_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             var ml = sender.DataContext as MusicListData;
-            Imagezn image = (sender as Grid).Children[0] as Imagezn;
+            ImageEx image = (sender as Grid).Children[0] as ImageEx;
             if (ml == null) return;
             if (image == null) return;
 
