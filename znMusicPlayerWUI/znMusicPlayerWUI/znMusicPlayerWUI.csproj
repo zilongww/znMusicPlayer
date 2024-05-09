@@ -4,12 +4,10 @@
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
 		<RootNamespace>znMusicPlayerWUI</RootNamespace>
-		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<Platforms>x86;x64;arm64</Platforms>
 		<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
 		<UseWinUI>true</UseWinUI>
 		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-		<ApplicationIcon>icon.ico</ApplicationIcon>
 		<NeutralLanguage>zh-CN</NeutralLanguage>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<AssemblyName>znMusicPlayerWUI</AssemblyName>
@@ -17,6 +15,8 @@
 		<ProduceReferenceAssembly>True</ProduceReferenceAssembly>
 		<PublishTrimmed>False</PublishTrimmed>
 		<PublishAot>False</PublishAot>
+		<ApplicationIcon>Images\Icons\icon.ico</ApplicationIcon>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
 	  <DebugType>portable</DebugType>
@@ -91,12 +91,12 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+		<Content Include="Images\Icons\icon.ico" />
+		<Content Include="Images\Icons\icon_nobackground.ico" />
 		<Content Include="IpaDic\char.bin" />
 		<Content Include="IpaDic\matrix.bin" />
 		<Content Include="IpaDic\sys.dic" />
 		<Content Include="IpaDic\unk.dic" />
-		<Content Include="icon.ico" />
-		<Content Include="icon_nobackground.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -155,6 +155,12 @@
 		<Page Update="Controls\ScrollViewerSearchControl.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</Page>
+		<None Update="Images\Icons\icon.ico">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Images\Icons\icon_nobackground.ico">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 		<None Update="Media\Decoder\Flac\NAudio.Flac\FlacFrame_GetBuffer.tt">
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>FlacFrame_GetBuffer.cs</LastGenOutput>

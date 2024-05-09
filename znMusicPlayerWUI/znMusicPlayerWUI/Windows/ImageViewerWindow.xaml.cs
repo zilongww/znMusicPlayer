@@ -36,7 +36,7 @@ namespace znMusicPlayerWUI.Windowed
             window.Maximize();
             window.Activate();
             window.Title = "查看图片";
-            window.AppWindow.SetIcon("icon.ico");
+            window.AppWindow.SetIcon(Path.Combine("Images", "Icons", "icon.ico"));
             return window;
         }
 

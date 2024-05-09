@@ -17,9 +17,9 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.SystemBackdrops;
-using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.Pages;
 using znMusicPlayerWUI.Pages.MusicPages;
+using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.Controls;
 using znMusicPlayerWUI.Windowed;
 using znMusicPlayerWUI.DataEditor;
@@ -136,7 +136,7 @@ namespace znMusicPlayerWUI
             //SubClassing();
 
             AppWindow.Title = App.AppName;
-            AppWindow.SetIcon("icon.ico");
+            AppWindow.SetIcon(System.IO.Path.Combine("Images", "Icons", "icon.ico"));
 
             InitializeTitleBar(SWindowGridBaseTop.RequestedTheme);
 

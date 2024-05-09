@@ -49,7 +49,7 @@ namespace znMusicPlayerWUI.Windowed
 
             notifyIcon = new System.Windows.Forms.NotifyIcon();
             notifyIcon.Text = App.AppName;
-            notifyIcon.Icon = new(Path.Combine(Directory.GetCurrentDirectory(), "icon_nobackground.ico"));
+            notifyIcon.Icon = new(Path.Combine(Directory.GetCurrentDirectory(), "Images", "Icons", "icon_nobackground.ico"));
             notifyIcon.Visible = isVisible;
 
             #region others
@@ -66,7 +66,7 @@ namespace znMusicPlayerWUI.Windowed
             AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
             AppWindow.IsShownInSwitchers = false;
             AppWindow.Title = $"NotifyIcon Window";
-            AppWindow.SetIcon("icon.ico");
+            AppWindow.SetIcon(Path.Combine("Images", "Icons", "icon_nobackground.ico"));
 
             AppWindow.TitleBar.ButtonBackgroundColor = Color.FromArgb(0, 0, 0, 0);
             AppWindow.TitleBar.ButtonForegroundColor = Color.FromArgb(0, 255, 255, 255);

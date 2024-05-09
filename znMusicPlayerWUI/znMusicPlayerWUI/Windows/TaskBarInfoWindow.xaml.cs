@@ -75,7 +75,7 @@ namespace znMusicPlayerWUI.Windowed
             AppWindow.TitleBar.BackgroundColor = Windows.UI.Color.FromArgb(0, 0, 0, 0);
             AppWindow.TitleBar.ButtonBackgroundColor = Windows.UI.Color.FromArgb(0, 0, 0, 0);
             AppWindow.TitleBar.ButtonInactiveBackgroundColor = Windows.UI.Color.FromArgb(0, 0, 0, 0);
-            AppWindow.SetIcon("icon.ico");
+            AppWindow.SetIcon(Path.Combine("Images", "Icons", "icon.ico"));
             AppWindow.MoveAndResize(new(0, 0, 0, 0));
             AppWindow.SetPresenter(overlappedPresenter);
         }
