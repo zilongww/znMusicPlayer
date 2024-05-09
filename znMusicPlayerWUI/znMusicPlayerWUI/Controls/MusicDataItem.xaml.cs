@@ -100,7 +100,7 @@ namespace znMusicPlayerWUI.Controls
             if (isUnloaded) return;
             if (songItemBind == null) return;
             initImageCallCount++;
-            await Task.Delay(150);
+            await Task.Delay(200);
             initImageCallCount--;
             if (initImageCallCount != 0) return;
             if (isUnloaded) return;
@@ -344,7 +344,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
         {
-            Pages.ListViewPages.ListViewPage.SetPageToListViewPage(songItemBind.MusicData.Album);
+            Pages.ListViewPages.ListViewPage.SetPageToListViewPage(new() { PageType = Pages.ListViewPages.PageType.Album, Param = songItemBind.MusicData.Album });
         }
 
         private void Info_Texts_FlyoutMenu_Artist_Item_Loaded(object sender, RoutedEventArgs e)
@@ -360,7 +360,7 @@ namespace znMusicPlayerWUI.Controls
                 };
                 mfi.Click += (_, __) =>
                 {
-                    Pages.ListViewPages.ListViewPage.SetPageToListViewPage((_ as FrameworkElement).Tag as Artist);
+                    Pages.ListViewPages.ListViewPage.SetPageToListViewPage(new() { PageType = Pages.ListViewPages.PageType.Artist, Param = (_ as FrameworkElement).Tag });
                 };
                 Info_Texts_FlyoutMenu_Artist_Item.Items.Add(mfi);
             }

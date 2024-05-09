@@ -4,43 +4,29 @@ using znMusicPlayerWUI.DataEditor;
 
 namespace znMusicPlayerWUI.Pages.ListViewPages
 {
+    public enum PageType { PlayList, Album, Artist, Search }
+    public class PageData
+    {
+        public PageType PageType { get; set; }
+        public object Param { get; set; }
+        public double VerticalOffset { get; set; } = 0;
+    }
+
     public static class ListViewPage
     {
-        public static void SetPageToListViewPage(object data)
+        public static void SetPageToListViewPage(PageData pageData)
         {
-            var tType = data.GetType();
-            Type pageType = null;
-            object paramData = null;
-
-            if (tType == typeof(Album))
+            Type pageType = pageData.PageType switch
             {
-                paramData = data;
-                pageType = typeof(ItemListViewAlbum);
-            }
-            else if (tType == typeof(Artist))
-            {
-                paramData = data;
-                pageType = typeof(ItemListViewArtist);
-            }
-            else if (tType == typeof(MusicListData))
-            {
-                paramData = data;
-                pageType = typeof(PlayListPage);
-            }
-            else if (tType == typeof(SearchData))
-            {
-                paramData = data;
-                pageType = typeof(ItemListViewSearch);
-            }
-            else if (tType == typeof(string))
-            {
-                paramData = data;
-                pageType = typeof(PlayListPage);
-            }
-
+                PageType.PlayList => typeof(PlayListPage),
+                PageType.Album => typeof(ItemListViewAlbum),
+                PageType.Artist => typeof(ItemListViewArtist),
+                PageType.Search => typeof(ItemListViewSearch),
+                _ => null
+            };
             MainWindow.SetNavViewContent(
                 pageType,
-                paramData,
+                pageData,
                 new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
         }
     }

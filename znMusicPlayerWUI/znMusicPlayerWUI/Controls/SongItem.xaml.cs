@@ -336,7 +336,7 @@ namespace znMusicPlayerWUI.Controls
         #region Events
         private void A_Click(object sender, RoutedEventArgs e)
         {
-            Pages.ListViewPages.ListViewPage.SetPageToListViewPage((sender as MenuFlyoutItem).Tag as IIsListPage);
+            Pages.ListViewPages.ListViewPage.SetPageToListViewPage(new() { PageType = Pages.ListViewPages.PageType.Artist, Param = (sender as MenuFlyoutItem).Tag });
 
             //var artist = await App.metingServices.NeteaseServices.GetArtist(((Artist)(sender as MenuFlyoutItem).Tag).ID);
             //await MainWindow.ShowDialog("result", $"{artist.Name}\n{artist.PicturePath}\n{artist.Describee}\n{artist.HotSongs.Songs.Count}");
@@ -689,7 +689,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void mfi_Click(object sender, RoutedEventArgs e)
         {
-            Pages.ListViewPages.ListViewPage.SetPageToListViewPage(MusicData.Album);
+            Pages.ListViewPages.ListViewPage.SetPageToListViewPage(new() { PageType = Pages.ListViewPages.PageType.Album, Param = MusicData.Album });
         }
 
         private void root_AccessKeyInvoked(UIElement sender, Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs args)

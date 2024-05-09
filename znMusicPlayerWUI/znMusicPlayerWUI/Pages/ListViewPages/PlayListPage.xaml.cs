@@ -28,16 +28,19 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         MusicListData musicListData { get; set; } = null;
         ObservableCollection<SongItemBindBase> musicListBind { get; set; } = new();
         ScrollViewer scrollViewer;
+        PageData pageData;
         public string md5;
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            md5 = (string)e.Parameter;
+            pageData = e.Parameter as PageData;
+            md5 = pageData.Param as string;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+            pageData.VerticalOffset = scrollViewer.VerticalOffset;
             musicListData = null;
             MainWindow.WindowDpiChanged -= MainWindow_WindowDpiChanged;
         }
@@ -382,7 +385,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         {
             if (scrollViewer == null) return;
             //scrollViewer.ScrollToVerticalOffset(Math.Round(scrollViewer.VerticalOffset, 0));
-            scrollVisual.IsPixelSnappingEnabled = true;
+            headerVisual.IsPixelSnappingEnabled = true;
             if (scrollViewer.VerticalOffset < 300)
             {
                 isDelayInitShyHeaderWhenScroll = true;

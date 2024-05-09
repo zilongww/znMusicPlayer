@@ -124,7 +124,7 @@ namespace znMusicPlayerWUI.Controls
                     }
                     break;
                 case "album":
-                    Pages.ListViewPages.ListViewPage.SetPageToListViewPage(songItemBind.MusicData.Album);
+                    Pages.ListViewPages.ListViewPage.SetPageToListViewPage(new() { PageType = Pages.ListViewPages.PageType.Album, Param = songItemBind.MusicData.Album });
                     break;
                 case "download":
                     App.downloadManager.Add(songItemBind.MusicData);
@@ -289,7 +289,7 @@ namespace znMusicPlayerWUI.Controls
 
         private void Mfi_Click(object sender, RoutedEventArgs e)
         {
-            Pages.ListViewPages.ListViewPage.SetPageToListViewPage((sender as FrameworkElement).Tag as Artist);
+            Pages.ListViewPages.ListViewPage.SetPageToListViewPage(new() { PageType = Pages.ListViewPages.PageType.Artist, Param = (sender as FrameworkElement).Tag });
         }
     }
 }

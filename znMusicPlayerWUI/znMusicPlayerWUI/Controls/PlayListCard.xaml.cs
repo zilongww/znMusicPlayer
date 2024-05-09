@@ -11,7 +11,6 @@ using Windows.UI;
 using znMusicPlayerWUI.Media;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.DataEditor;
-using znMusicPlayerWUI.Pages;
 using znMusicPlayerWUI.Pages.ListViewPages;
 
 namespace znMusicPlayerWUI.Controls
@@ -219,7 +218,7 @@ namespace znMusicPlayerWUI.Controls
                 }
                 else
                 {
-                    ListViewPage.SetPageToListViewPage(MusicListData.MD5);
+                    ListViewPage.SetPageToListViewPage(new() { PageType = PageType.PlayList, Param = MusicListData.MD5 });
                 }
             }
             isPressed = false;
@@ -289,7 +288,7 @@ namespace znMusicPlayerWUI.Controls
         private void Grid_AccessKeyInvoked(UIElement sender, Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs args)
         {
             if (MusicListData != null)
-                ListViewPage.SetPageToListViewPage(MusicListData.MD5);
+                ListViewPage.SetPageToListViewPage(new() { PageType = PageType.PlayList, Param = MusicListData.MD5 });
         }
 
         private async void EditPlayListButton_Click(object sender, RoutedEventArgs e)

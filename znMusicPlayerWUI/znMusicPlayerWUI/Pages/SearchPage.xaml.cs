@@ -34,12 +34,17 @@ namespace znMusicPlayerWUI.Pages
 
         public void StartSearch(string title)
         {
-            ListViewPages.ListViewPage.SetPageToListViewPage(
-                new SearchData {
+            ListViewPages.ListViewPage.SetPageToListViewPage(new()
+            {
+                PageType = ListViewPages.PageType.Search,
+                Param =
+                new SearchData
+                {
                     Key = title,
                     From = (MusicFrom)Enum.Parse(typeof(MusicFrom), SearchSourceComboBox.SelectedItem as string),
                     SearchDataType = (SearchDataType)Enum.Parse(typeof(SearchDataType), SearchTypeComboBox.SelectedItem as string)
-                });
+                }
+            });
         }
 
         private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)

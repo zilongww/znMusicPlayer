@@ -1454,7 +1454,7 @@ namespace znMusicPlayerWUI
                 }
                 else if ((sender.SelectedItem as NavigationViewItem)?.Tag.GetType() == typeof(MusicListData))
                 {
-                    Pages.ListViewPages.ListViewPage.SetPageToListViewPage(((sender.SelectedItem as NavigationViewItem).Tag as OnlyClass).MD5);
+                    Pages.ListViewPages.ListViewPage.SetPageToListViewPage(new() { PageType = Pages.ListViewPages.PageType.PlayList, Param = ((sender.SelectedItem as NavigationViewItem).Tag as OnlyClass).MD5 });
                 }
                 else if (sender.SelectedItem as NavigationViewItem == NavView.SettingsItem as NavigationViewItem)
                 {
@@ -2200,9 +2200,12 @@ namespace znMusicPlayerWUI
 
         private void DebugViewPopup_Unloaded(object sender, RoutedEventArgs e)
         {
+
+#if DEBUG
             ramTimer.Stop();
             ramTimer.Tick -= RamTimer_Tick;
             ramTimer = null;
+#endif
         }
 
         private void RamTimer_Tick(object sender, object e)
