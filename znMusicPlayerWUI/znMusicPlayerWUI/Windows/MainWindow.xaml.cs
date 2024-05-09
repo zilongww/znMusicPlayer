@@ -1452,7 +1452,7 @@ namespace znMusicPlayerWUI
                 {
                     Debug.WriteLine("[MainWindow][NavigationSelectionChanged] SelectedItem 为 null");
                 }
-                else if ((sender.SelectedItem as NavigationViewItem)?.Tag.GetType() == typeof(MusicListData) || (sender.SelectedItem as NavigationViewItem)?.Tag.GetType() == typeof(PlayListPage))
+                else if ((sender.SelectedItem as NavigationViewItem)?.Tag.GetType() == typeof(MusicListData))
                 {
                     Pages.ListViewPages.ListViewPage.SetPageToListViewPage(((sender.SelectedItem as NavigationViewItem).Tag as OnlyClass).MD5);
                 }
@@ -1496,6 +1496,17 @@ namespace znMusicPlayerWUI
                 foreach (NavigationViewItem item in (SNavView.MenuItems[5] as NavigationViewItem).MenuItems)
                 {
                     if ((SContentFrame.Content as ItemListViewPlayList).NavToObj == item.Tag as MusicListData)
+                    {
+                        SNavView.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
+            else if (type == typeof(Pages.ListViewPages.PlayListPage))
+            {
+                foreach (NavigationViewItem item in (SNavView.MenuItems[5] as NavigationViewItem).MenuItems)
+                {
+                    if ((SContentFrame.Content as Pages.ListViewPages.PlayListPage).md5 == (item.Tag as MusicListData).MD5)
                     {
                         SNavView.SelectedItem = item;
                         break;

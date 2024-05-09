@@ -15,26 +15,15 @@ using Windows.Foundation.Collections;
 
 namespace znMusicPlayerWUI.Controls
 {
-    public partial class ScrollFootButton : Grid
+    public partial class ScrollFootButton : UserControl
     {
+        public enum ButtonType { NowPlaying, Top, Bottom }
         public ScrollFootButton()
         {
             InitializeComponent();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-
+            PositionToNowPlaying_Button.Tag = ButtonType.NowPlaying;
+            PositionToTop_Button.Tag = ButtonType.Top;
+            PositionToBottom_Button.Tag = ButtonType.Bottom;
         }
     }
 }

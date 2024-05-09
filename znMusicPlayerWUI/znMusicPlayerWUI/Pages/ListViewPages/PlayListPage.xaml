@@ -161,16 +161,15 @@
                     </Grid>
                     <Grid x:Name="ItemsList_Header_Foot_Root">
                         <controls:ScrollFootButton
-                                x:Name="ItemsList_Header_Foot_Buttons"
-                                VerticalAlignment="Bottom"
-                                HorizontalAlignment="Right"/>
+                            x:Name="ItemsList_Header_Foot_Buttons"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Right"/>
                     </Grid>
                     <Grid 
                         x:Name="ItemList_Header_Search_Root"
                         VerticalAlignment="Bottom" >
                         <controls:ScrollViewerSearchControl
                             x:Name="ItemList_Header_Search_Control"
-                            IsOpenChanged="ItemList_Header_Search_Control_IsOpenChanged"
                             Margin="16,0" IsOpen="False"/>
                     </Grid>
                 </Grid>

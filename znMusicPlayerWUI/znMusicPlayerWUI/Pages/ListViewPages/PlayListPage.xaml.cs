@@ -14,11 +14,9 @@ using Microsoft.UI.Composition;
 using znMusicPlayerWUI.Media;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.DataEditor;
-using Windows.Graphics.Display;
 using Newtonsoft.Json.Linq;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using znMusicPlayerWUI.Controls;
+using CommunityToolkit.WinUI.UI;
 
 namespace znMusicPlayerWUI.Pages.ListViewPages
 {
@@ -30,12 +28,11 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         MusicListData musicListData { get; set; } = null;
         ObservableCollection<SongItemBindBase> musicListBind { get; set; } = new();
         ScrollViewer scrollViewer;
-        string md5;
+        public string md5;
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             md5 = (string)e.Parameter;
-            //InitShyHeader();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -61,6 +58,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         Visual commandBarVisual;
         Visual headerFootRootVisual;
         Visual searchRootVisual;
+        ScalarKeyFrameAnimation commandBarVisualOpacityAnimation;
         private void InitVisuals()
         {
             if (isUnloaded) return;
@@ -82,9 +80,12 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             backgroundVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_ImageInfo_BackgroundFill);
             imageVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Image_Root);
             infoVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Info_Root);
-            commandBarVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Info_CommandBar);
             headerFootRootVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Foot_Root);
             searchRootVisual = ElementCompositionPreview.GetElementVisual(ItemList_Header_Search_Root);
+            commandBarVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Info_CommandBar);
+
+            commandBarVisual.Opacity = 0;
+            AnimateHelper.AnimateScalar(commandBarVisual, 1, 0.3, 0, 0, 0, 0, out commandBarVisualOpacityAnimation);
         }
 
         ExpressionAnimation logoHeaderScaleAnimation;
@@ -168,7 +169,9 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             infoVisualOffsetAnimation?.Dispose();
             commandBarVisualOffsetAnimation?.Dispose();
             headerFootRootVisualOffsetAnimation?.Dispose();
+            commandBarVisualOpacityAnimation?.Dispose();
 
+            scrollVisual = null;
             scrollerPropertySet = null;
             compositor = null;
             headerVisual = null;
@@ -184,6 +187,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             infoVisualOffsetAnimation = null;
             commandBarVisualOffsetAnimation = null;
             headerFootRootVisualOffsetAnimation = null;
+            commandBarVisualOpacityAnimation = null;
         }
 
         bool isInInitBindings = false;
@@ -289,6 +293,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         private async void InitImage()
         {
             if (isUnloaded) return;
+            if (musicListData == null) return;
             ItemsList_Header_Image.BorderThickness = thickness0;
             ImageSource imageSource = null;
             if (musicListData.ListDataType == DataType.±¾µØ¸èµ¥)
@@ -306,15 +311,35 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
                 imageSource = await FileHelper.GetImageSource("");
             }
 
-            if (isUnloaded) return;
+            if (isUnloaded || musicListData == null) return;
             ItemsList_Header_Image.BorderThickness = thickness1;
             ItemsList_Header_Image.Source = imageSource;
             InitShyHeader();
+            commandBarVisual.StartAnimation("Opacity", commandBarVisualOpacityAnimation);
+        }
 
+        void InitEvents()
+        {
+            ItemList_Header_Search_Control.IsOpenChanged -= ItemList_Header_Search_Control_IsOpenChanged;
+            ItemList_Header_Search_Control.IsOpenChanged += ItemList_Header_Search_Control_IsOpenChanged;
+            ItemsList_Header_Foot_Buttons.PositionToNowPlaying_Button.Click -= PositionToNowPlaying_Button_Click;
+            ItemsList_Header_Foot_Buttons.PositionToNowPlaying_Button.Click += PositionToNowPlaying_Button_Click;
+            ItemsList_Header_Foot_Buttons.PositionToTop_Button.Click -= PositionToNowPlaying_Button_Click;
+            ItemsList_Header_Foot_Buttons.PositionToTop_Button.Click += PositionToNowPlaying_Button_Click;
+            ItemsList_Header_Foot_Buttons.PositionToBottom_Button.Click -= PositionToNowPlaying_Button_Click;
+            ItemsList_Header_Foot_Buttons.PositionToBottom_Button.Click += PositionToNowPlaying_Button_Click;
+        }
+        void RemoveEvents()
+        {
+            ItemList_Header_Search_Control.IsOpenChanged -= ItemList_Header_Search_Control_IsOpenChanged;
+            ItemsList_Header_Foot_Buttons.PositionToNowPlaying_Button.Click -= PositionToNowPlaying_Button_Click;
+            ItemsList_Header_Foot_Buttons.PositionToTop_Button.Click -= PositionToNowPlaying_Button_Click;
+            ItemsList_Header_Foot_Buttons.PositionToBottom_Button.Click -= PositionToNowPlaying_Button_Click;
         }
 
         private void Init()
         {
+            InitEvents();
             InitInfo();
             InitImage();
             InitVisuals();
@@ -334,6 +359,8 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
             isUnloaded = true;
+            RemoveEvents();
+            ItemList_Header_Search_Control.IsOpenChanged -= ItemList_Header_Search_Control_IsOpenChanged;
             MainWindow.WindowDpiChanged -= MainWindow_WindowDpiChanged;
             DisposeVisuals();
             if (ItemsList_Header_Image != null) ItemsList_Header_Image.Source = null;
@@ -387,6 +414,29 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         private void MainWindow_WindowDpiChanged()
         {
             InitShyHeader();
+        }
+
+        private async void PositionToNowPlaying_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            switch ((ScrollFootButton.ButtonType)btn.Tag)
+            {
+                case ScrollFootButton.ButtonType.NowPlaying:
+                    foreach (var i in musicListBind)
+                    {
+                        if (i.MusicData != App.audioPlayer.MusicData) continue;
+                        await ItemsList.SmoothScrollIntoViewWithItemAsync(i, ScrollItemPlacement.Center);
+                        await ItemsList.SmoothScrollIntoViewWithItemAsync(i, ScrollItemPlacement.Center, disableAnimation: true);
+                        MusicDataItem.TryHighlightPlayingItem();
+                    }
+                    break;
+                case ScrollFootButton.ButtonType.Top:
+                    scrollViewer.ChangeView(null, 0, null);
+                    break;
+                case ScrollFootButton.ButtonType.Bottom:
+                    scrollViewer.ChangeView(null, scrollViewer.ScrollableHeight, null);
+                    break;
+            }
         }
 
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)

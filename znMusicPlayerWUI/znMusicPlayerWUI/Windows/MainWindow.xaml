@@ -79,12 +79,6 @@
                             Loaded="NavView_Loaded"
                             AccessKey="MO">
 
-                <NavigationView.Style>
-                    <Style TargetType="NavigationView">
-                        
-                    </Style>
-                </NavigationView.Style>
-
                 <NavigationView.MenuItems>
                     <NavigationViewItemHeader Content="网络"/>
                     <NavigationViewItem Content="搜索" AccessKey="MS">
