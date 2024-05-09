@@ -301,9 +301,11 @@ namespace znMusicPlayerWUI
                 }
             }
 
+            var screenWidth = displayArea.WorkArea.Width;
+            var screenHeight = displayArea.WorkArea.Height;
             // 设置参数
-            if (displayArea.WorkArea.Width * dpi <= windowWidth ||
-                displayArea.WorkArea.Height * dpi <= windowHeight)
+            if (screenWidth <= windowWidth ||
+                 screenHeight<= windowHeight)
             {
                 OverlappedPresenter.Maximize();
             }
