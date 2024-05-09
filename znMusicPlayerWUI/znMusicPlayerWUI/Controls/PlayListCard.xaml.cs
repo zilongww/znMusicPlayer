@@ -219,7 +219,7 @@ namespace znMusicPlayerWUI.Controls
                 }
                 else
                 {
-                    ListViewPage.SetPageToListViewPage(MusicListData);
+                    ListViewPage.SetPageToListViewPage(MusicListData.MD5);
                 }
             }
             isPressed = false;
@@ -289,7 +289,7 @@ namespace znMusicPlayerWUI.Controls
         private void Grid_AccessKeyInvoked(UIElement sender, Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs args)
         {
             if (MusicListData != null)
-                ListViewPage.SetPageToListViewPage(MusicListData);
+                ListViewPage.SetPageToListViewPage(MusicListData.MD5);
         }
 
         private async void EditPlayListButton_Click(object sender, RoutedEventArgs e)

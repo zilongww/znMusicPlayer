@@ -9,14 +9,25 @@ namespace znMusicPlayerWUI.Controls
     public enum ViewMode { Horizontal, Vertical, None };
     public partial class AutoScrollViewer : ScrollView
     {
-        public ViewMode ViewMode { get; set; } = ViewMode.Horizontal;
-
+        public static readonly DependencyProperty ViewModeProperty = DependencyProperty.Register(
+            "ViewMode",
+            typeof(ViewMode),
+            typeof(AutoScrollViewer),
+            new PropertyMetadata(ViewMode.Horizontal, null)
+        );
         public static readonly DependencyProperty PauseProperty = DependencyProperty.Register(
             "Pause",
             typeof(bool),
             typeof(AutoScrollViewer),
-            new PropertyMetadata(null, null)
+            new PropertyMetadata(false, null)
         );
+
+        public ViewMode ViewMode
+        {
+            get => (ViewMode)GetValue(ViewModeProperty);
+            set => SetValue(ViewModeProperty, value);
+        }
+
         public bool Pause
         {
             get => (bool)GetValue(PauseProperty);

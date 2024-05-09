@@ -21,6 +21,11 @@
                         <ListViewItemPresenter
                             Padding="0"
                             Margin="16,1">
+                            <ListViewItemPresenter.Transitions>
+                                <TransitionCollection>
+                                    <RepositionThemeTransition/>
+                                </TransitionCollection>
+                            </ListViewItemPresenter.Transitions>
                         </ListViewItemPresenter>
                     </ControlTemplate>
                 </Setter.Value>
@@ -41,7 +46,7 @@
             <ListView.Header>
                 <Grid
                     x:Name="ItemsList_Header_Root"
-                    Margin="0,0,0,4"
+                    Margin="0,0,0,3"
                     VerticalAlignment="Top">
                     <Border
                         x:Name="ItemsList_Header_ImageInfo_BackgroundFill"
@@ -160,11 +165,26 @@
                                 VerticalAlignment="Bottom"
                                 HorizontalAlignment="Right"/>
                     </Grid>
-                    <Grid x:Name="ItemList_Header_Search_Root">
-                        <controls:ScrollViewerSearchControl/>
+                    <Grid 
+                        x:Name="ItemList_Header_Search_Root"
+                        VerticalAlignment="Bottom" >
+                        <controls:ScrollViewerSearchControl
+                            x:Name="ItemList_Header_Search_Control"
+                            IsOpenChanged="ItemList_Header_Search_Control_IsOpenChanged"
+                            Margin="16,0" IsOpen="False"/>
                     </Grid>
                 </Grid>
             </ListView.Header>
+            <ListView.Footer>
+                <Grid>
+                    <TextBlock
+                        Text="到底了~"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        Margin="4,4,4,52" x:Name="AtListBottomTb"
+                        Foreground="{ThemeResource TextFillColorSecondary}"/>
+                </Grid>
+            </ListView.Footer>
         </ListView>
     </Grid>
 </Page>

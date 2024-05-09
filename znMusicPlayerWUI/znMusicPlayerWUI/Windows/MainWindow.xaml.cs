@@ -186,6 +186,7 @@ namespace znMusicPlayerWUI
                 if (InOpenMusicPage) SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
                 else RemoveEvents();
                 AppWindow.Hide();
+                WindowGridBase.Opacity = 0;
                 isBackground = true;
                 return;
             }
@@ -515,6 +516,8 @@ namespace znMusicPlayerWUI
                     {
                         AddEvents();
                     }
+                    WindowGridBase.Opacity = 1;
+                    AppTitleBar.Opacity = 1;
                 }
             }
             else
@@ -528,6 +531,11 @@ namespace znMusicPlayerWUI
                     WindowViewStateChanged?.Invoke(false);
                     if (InOpenMusicPage) SMusicPage.MusicPageViewStateChange(MusicPageViewState.Hidden);
                     else RemoveEvents();
+                    WindowGridBase.Opacity = 0;
+                }
+                else
+                {
+                    AppTitleBar.Opacity = 0.6;
                 }
             }
         }
@@ -1384,9 +1392,7 @@ namespace znMusicPlayerWUI
                 nvi.Tag = null;
             }
             MusicPlayListButton.MenuItems.Clear();
-            MusicListData[] musicListDatas = [];
-            App.playListReader.NowMusicListData.CopyTo(musicListDatas, 0);
-            foreach (var i in musicListDatas)
+            foreach (var i in App.playListReader.NowMusicListData)
             {
                 var nvi = new NavigationViewItem() { Content = i.ListShowName, Tag = i };
                 MusicPlayListButton.MenuItems.Add(nvi);
@@ -1425,19 +1431,19 @@ namespace znMusicPlayerWUI
             NavigationViewItem item = sender.SelectedItem as NavigationViewItem;
             if (item is null) return;
             
-            if (item == SNavView.MenuItems[1])
+            if (item == SNavView.MenuItems[1] as NavigationViewItem)
                 SetNavViewContent(typeof(SearchPage));
-            else if (item == SNavView.MenuItems[2])
+            else if (item == SNavView.MenuItems[2] as NavigationViewItem)
                 SetNavViewContent(typeof(BrowsePage));
-            else if (item == SNavView.MenuItems[3])
+            else if (item == SNavView.MenuItems[3] as NavigationViewItem)
                 SetNavViewContent(typeof(DownloadPage));
-            else if (item == SNavView.MenuItems[5])
+            else if (item == SNavView.MenuItems[5] as NavigationViewItem)
                 SetNavViewContent(typeof(PlayListPage));
-            else if (item == SNavView.MenuItems[6])
+            else if (item == SNavView.MenuItems[6] as NavigationViewItem)
                 SetNavViewContent(typeof(HistoryPage));
-            else if (item == SNavView.MenuItems[7])
+            else if (item == SNavView.MenuItems[7] as NavigationViewItem)
                 SetNavViewContent(typeof(LocalAudioPage));
-            else if (item == SNavView.FooterMenuItems[0])
+            else if (item == SNavView.FooterMenuItems[0] as NavigationViewItem)
                 SetNavViewContent(typeof(AboutPage));
             else
             {
@@ -1446,9 +1452,9 @@ namespace znMusicPlayerWUI
                 {
                     Debug.WriteLine("[MainWindow][NavigationSelectionChanged] SelectedItem 为 null");
                 }
-                else if ((sender.SelectedItem as NavigationViewItem)?.Tag.GetType() == typeof(MusicListData))
+                else if ((sender.SelectedItem as NavigationViewItem)?.Tag.GetType() == typeof(MusicListData) || (sender.SelectedItem as NavigationViewItem)?.Tag.GetType() == typeof(PlayListPage))
                 {
-                    Pages.ListViewPages.ListViewPage.SetPageToListViewPage((sender.SelectedItem as NavigationViewItem).Tag as IIsListPage);
+                    Pages.ListViewPages.ListViewPage.SetPageToListViewPage(((sender.SelectedItem as NavigationViewItem).Tag as OnlyClass).MD5);
                 }
                 else if (sender.SelectedItem as NavigationViewItem == NavView.SettingsItem as NavigationViewItem)
                 {
@@ -2192,7 +2198,7 @@ namespace znMusicPlayerWUI
         {
             try
             {
-                DebugView_Detail_RAM.Text = $"RAM: {CodeHelper.GetAutoSizeString(Windows.System.MemoryManager.AppMemoryUsage, 2)}/{CodeHelper.GetAutoSizeString(GC.GetTotalMemory(true), 2)}";
+                DebugView_Detail_RAM.Text = $"RAM: {CodeHelper.GetAutoSizeString(Windows.System.MemoryManager.AppMemoryUsage, 2)}/{CodeHelper.GetAutoSizeString(GC.GetTotalMemory(false), 2)}";
             }
             catch { }
         }

@@ -6,7 +6,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
 {
     public static class ListViewPage
     {
-        public static void SetPageToListViewPage(IIsListPage data)
+        public static void SetPageToListViewPage(object data)
         {
             var tType = data.GetType();
             Type pageType = null;
@@ -24,13 +24,18 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             }
             else if (tType == typeof(MusicListData))
             {
-                paramData = (data as MusicListData).MD5;
+                paramData = data;
                 pageType = typeof(PlayListPage);
             }
             else if (tType == typeof(SearchData))
             {
                 paramData = data;
                 pageType = typeof(ItemListViewSearch);
+            }
+            else if (tType == typeof(string))
+            {
+                paramData = data;
+                pageType = typeof(PlayListPage);
             }
 
             MainWindow.SetNavViewContent(

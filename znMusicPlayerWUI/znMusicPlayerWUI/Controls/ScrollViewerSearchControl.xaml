@@ -9,11 +9,14 @@
     xmlns:ui="using:CommunityToolkit.WinUI.UI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
+    mc:Ignorable="d" IsHitTestVisible="False"
     BorderThickness="1" CornerRadius="8" Padding="8"
-    MaxWidth="1000" MaxHeight="50"
+    MaxWidth="1000" MaxHeight="50" Opacity="0"
     Background="{ThemeResource AcrylicNormal}"
     BorderBrush="{ThemeResource ControlElevationBorderBrush}">
+    <Grid.OpacityTransition>
+        <ScalarTransition/>
+    </Grid.OpacityTransition>
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="auto"/>

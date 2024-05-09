@@ -15,6 +15,7 @@ using znMusicPlayerWUI.Media;
 using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.DataEditor;
 using Windows.Graphics.Display;
+using Newtonsoft.Json.Linq;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -29,21 +30,12 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         MusicListData musicListData { get; set; } = null;
         ObservableCollection<SongItemBindBase> musicListBind { get; set; } = new();
         ScrollViewer scrollViewer;
+        string md5;
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            string md5 = (string)e.Parameter;
-            foreach (var mld in App.playListReader.NowMusicListData)
-            {
-                if (mld.MD5 == md5)
-                {
-                    musicListData = mld;
-                    break;
-                }
-            }
-            MainWindow.WindowDpiChanged -= MainWindow_WindowDpiChanged;
-            MainWindow.WindowDpiChanged += MainWindow_WindowDpiChanged;
-            InitShyHeader();
+            md5 = (string)e.Parameter;
+            //InitShyHeader();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -61,12 +53,14 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
 
         CompositionPropertySet scrollerPropertySet;
         Compositor compositor;
+        Visual scrollVisual;
         Visual headerVisual;
         Visual backgroundVisual;
         Visual imageVisual;
         Visual infoVisual;
         Visual commandBarVisual;
         Visual headerFootRootVisual;
+        Visual searchRootVisual;
         private void InitVisuals()
         {
             if (isUnloaded) return;
@@ -83,12 +77,14 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(scrollViewer);
 
             compositor = scrollerPropertySet.Compositor;
+            scrollVisual = ElementCompositionPreview.GetElementVisual(scrollViewer);
             headerVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Root);
             backgroundVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_ImageInfo_BackgroundFill);
             imageVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Image_Root);
             infoVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Info_Root);
             commandBarVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Info_CommandBar);
             headerFootRootVisual = ElementCompositionPreview.GetElementVisual(ItemsList_Header_Foot_Root);
+            searchRootVisual = ElementCompositionPreview.GetElementVisual(ItemList_Header_Search_Root);
         }
 
         ExpressionAnimation logoHeaderScaleAnimation;
@@ -98,7 +94,8 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         ExpressionAnimation infoVisualOffsetAnimation;
         ExpressionAnimation commandBarVisualOffsetAnimation;
         ExpressionAnimation headerFootRootVisualOffsetAnimation;
-        private async void InitShyHeader(bool imageSizeOnly = false, bool delay = true)
+        ExpressionAnimation searchRootVisualOffsetAnimation;
+        private async void InitShyHeader(bool imageSizeOnly = false, bool delay = false)
         {
             if (scrollViewer == null) return;
             if (compositor == null) return;
@@ -156,6 +153,11 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
                     $"{progress})");
             headerFootRootVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             headerFootRootVisual.StartAnimation("Offset", headerFootRootVisualOffsetAnimation);
+
+            searchRootVisualOffsetAnimation?.Dispose();
+            searchRootVisualOffsetAnimation = compositor.CreateExpressionAnimation($"Lerp(Vector3(0, {ItemsList_Header_Root.ActualHeight + 4}, 0), Vector3(0, {ItemsList_Header_Root.ActualHeight + 4}, 0), {progress})");
+            searchRootVisualOffsetAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+            searchRootVisual.StartAnimation(nameof(infoVisual.Offset), searchRootVisualOffsetAnimation);
         }
         void DisposeVisuals()
         {
@@ -201,9 +203,11 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
                         array = musicListData.Songs;
                         break;
                     case PlaySort.Ä¬ÈÏ½µÐò:
-                        List<MusicData> list = musicListData.Songs;
-                        list.Reverse();
-                        array = list;
+                        MusicData[] list = new MusicData[musicListData.Songs.Count];
+                        musicListData.Songs.CopyTo(list, 0);
+                        var l = list.ToList();
+                        l.Reverse();
+                        array = l;
                         break;
                     case PlaySort.Ãû³ÆÉýÐò:
                         array = [.. musicListData.Songs.OrderBy(m => m.Title)];
@@ -252,6 +256,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
                 musicListBind.Add(new() { MusicData = item, MusicListData = musicListData, ImageScaleDPI = dpi });
                 count++;
             }
+
             SortComboBox.SelectedIndex = (int)musicListData.PlaySort;
             isInInitBindings = false;
         }
@@ -259,6 +264,22 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         private void InitInfo()
         {
             if (isUnloaded) return;
+            foreach (var mld in App.playListReader.NowMusicListData)
+            {
+                if (mld.MD5 == md5)
+                {
+                    musicListData = mld;
+                    break;
+                }
+            }
+
+            if (musicListData == null) return;
+            listSortEnum = Enum.GetValues(typeof(PlaySort)).Cast<PlaySort>().ToList();
+            SortComboBox.ItemsSource = listSortEnum;
+            SortComboBox.SelectedIndex = (int)musicListData.PlaySort;
+
+            MainWindow.WindowDpiChanged -= MainWindow_WindowDpiChanged;
+            MainWindow.WindowDpiChanged += MainWindow_WindowDpiChanged;
             ItemsList_Header_Info_TitleTextBlock.Text = musicListData.ListShowName;
             ItemsList_Header_Info_OtherTextBlock.Text = $"¹² {musicListData.Songs.Count} Ê×¸èÇú";
         }
@@ -288,7 +309,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             if (isUnloaded) return;
             ItemsList_Header_Image.BorderThickness = thickness1;
             ItemsList_Header_Image.Source = imageSource;
-            InitShyHeader(delay: false);
+            InitShyHeader();
 
         }
 
@@ -296,21 +317,16 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         {
             InitInfo();
             InitImage();
-            InitBindings();
             InitVisuals();
             InitShyHeader();
+            InitBindings();
         }
 
         public ArrayList arrayList { get; set; }
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            if (musicListData == null) return;
             Init();
             ItemsList.ItemsSource = musicListBind;
-
-            listSortEnum = Enum.GetValues(typeof(PlaySort)).Cast<PlaySort>().ToList();
-            SortComboBox.ItemsSource = listSortEnum;
-            SortComboBox.SelectedIndex = (int)musicListData.PlaySort;
             //arrayList = new ArrayList(100000000);
         }
 
@@ -338,6 +354,8 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         private async void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             if (scrollViewer == null) return;
+            //scrollViewer.ScrollToVerticalOffset(Math.Round(scrollViewer.VerticalOffset, 0));
+            scrollVisual.IsPixelSnappingEnabled = true;
             if (scrollViewer.VerticalOffset < 300)
             {
                 isDelayInitShyHeaderWhenScroll = true;
@@ -395,6 +413,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
                 case "addLocal":
                     break;
                 case "search":
+                    ItemList_Header_Search_Control.IsOpen = !ItemList_Header_Search_Control.IsOpen;
                     break;
             }
         }
@@ -404,15 +423,34 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
 
         }
 
-        private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        bool isInSave = false;
+        private async void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (isInSave) return;
             if (isInInitBindings) return;
             if (musicListData == null) return;
             if (SortComboBox == null) return;
             if (SortComboBox.SelectedIndex == -1) return;
             if (SortComboBox.SelectedIndex == (int)musicListData.PlaySort) return;
+            isInSave = true;
             musicListData.PlaySort = (PlaySort)SortComboBox.SelectedIndex;
+            var data = await PlayListHelper.ReadData();
+            data[musicListData.ListName] = JObject.FromObject(musicListData);
+            await PlayListHelper.SaveData(data);
             InitBindings();
+            isInSave = false;
+        }
+
+        private void ItemList_Header_Search_Control_IsOpenChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue)
+            {
+                ItemsList_Header_Root.Margin = new(0, 0, 0, ItemList_Header_Search_Control.ActualHeight + 7);
+            }
+            else
+            {
+                ItemsList_Header_Root.Margin = new(0, 0, 0, 3);
+            }
         }
     }
 }

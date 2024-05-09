@@ -232,7 +232,6 @@ namespace znMusicPlayerWUI.Controls
 
         private async void AddToPlayListSubItems_Loaded(object sender, RoutedEventArgs e)
         {
-            return;
             AddToPlayListSubItems.Items.Clear();
             var mls = await PlayListHelper.ReadAllPlayList();
             foreach (var item in mls)
@@ -264,7 +263,6 @@ namespace znMusicPlayerWUI.Controls
 
         private void ArtistItem_Loaded(object sender, RoutedEventArgs e)
         {
-            return;
             ArtistItem.Items.Clear();
             foreach (var artist in songItemBind.MusicData.Artists)
             {

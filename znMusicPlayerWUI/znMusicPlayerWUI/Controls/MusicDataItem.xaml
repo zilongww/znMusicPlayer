@@ -46,9 +46,10 @@
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Grid
-                x:Name="Info_Root" Margin="8"
+                x:Name="Info_Root"
                 Background="Transparent"
-                DoubleTapped="UserControl_DoubleTapped">
+                DoubleTapped="UserControl_DoubleTapped"
+                Padding="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
@@ -57,19 +58,18 @@
                     x:Name="Info_Image_Root"
                     Height="58"
                     Width="58"
-                    Margin="0,0,6,0"
-                    BorderThickness="1"
-                    CornerRadius="4"
-                    BorderBrush="{ThemeResource ControlElevationBorderBrush}">
+                    Margin="0,0,6,0">
                     <local:ImageEx
+                        BorderThickness="1"
                         CornerRadius="4"
+                        BorderBrush="{ThemeResource ControlElevationBorderBrush}"
                         PointInBehavior="None"
                         x:Name="Info_Image"/>
                 </Border>
                 <StackPanel
                     x:Name="Info_Texts_StackPanel"
                     Grid.Column="1"
-                    Margin="6,0"
+                    Margin="6,0" UseLayoutRounding="False"
                     VerticalAlignment="Center">
                     <TextBlock
                         Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"
@@ -134,9 +134,8 @@
             <Grid
                 x:Name="Info_Buttons_Root"
                 Visibility="Collapsed"
-                Margin="0,0,12,0"
+                Padding="0,0,12,0"
                 Grid.Column="1"
-                VerticalAlignment="Center"
                 MinHeight="38">
                 <StackPanel 
                     x:Name="Info_Buttons_StackPanel"

@@ -147,7 +147,9 @@ namespace znMusicPlayerWUI.Controls
 
         private void UserControl_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            if (IsMouse4Click) { IsMouse4Click = false; return; }
             if (PointInBehavior == PointInBehaviors.None || PointInBehavior == PointInBehaviors.OnlyLightUp) return;
+            //if (e.PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Mouse)
             Windowed.ImageViewerWindow.ShowWindow(Source, SaveName);
         }
 

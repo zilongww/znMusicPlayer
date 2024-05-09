@@ -13,7 +13,8 @@
     PointerExited="UserControl_PointerExited"
     PointerPressed="UserControl_PointerPressed"
     PointerReleased="UserControl_PointerReleased"
-    SizeChanged="UserControl_SizeChanged">
+    SizeChanged="UserControl_SizeChanged"
+    Background="Transparent">
     <Grid
         x:Name="root"
         CornerRadius="{Binding ElementName=control,Path=CornerRadius}">

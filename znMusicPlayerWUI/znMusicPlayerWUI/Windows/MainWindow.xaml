@@ -16,11 +16,14 @@
     mc:Ignorable="d">
 
     <Grid x:Name="WindowGridBase" SizeChanged="Grid_SizeChanged"
-          KeyDown="Grid_KeyDown" KeyUp="Grid_KeyUp"
+          KeyDown="Grid_KeyDown" KeyUp="Grid_KeyUp" Opacity="0"
           PointerPressed="Grid_PointerPressed" PointerReleased="Grid_PointerReleased"
           Tapped="Grid_Tapped" Loaded="WindowGridBase_Loaded"  RequestedTheme="Default"
           AllowDrop="True"
           DragOver="WindowGridBase_DragOver" Drop="WindowGridBase_Drop" DragLeave="WindowGridBase_DragLeave">
+        <Grid.OpacityTransition>
+            <ScalarTransition/>
+        </Grid.OpacityTransition>
 
         <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Fill="#01000000"/>
         <Rectangle x:Name="BackgroundColor" Fill="{ThemeResource ApplicationPageBackgroundThemeBrush}" Visibility="Collapsed"/>
@@ -42,6 +45,9 @@
                   VerticalAlignment="Top"
                   Height="48"
                   Margin="0,0,0,0">
+                <Grid.OpacityTransition>
+                    <ScalarTransition/>
+                </Grid.OpacityTransition>
                 <Grid VerticalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
@@ -72,6 +78,12 @@
                             PaneOpened="NavView_PaneOpened"
                             Loaded="NavView_Loaded"
                             AccessKey="MO">
+
+                <NavigationView.Style>
+                    <Style TargetType="NavigationView">
+                        
+                    </Style>
+                </NavigationView.Style>
 
                 <NavigationView.MenuItems>
                     <NavigationViewItemHeader Content="网络"/>
