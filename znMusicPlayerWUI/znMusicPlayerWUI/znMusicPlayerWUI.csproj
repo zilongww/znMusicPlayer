@@ -95,6 +95,7 @@
 		<Content Include="IpaDic\matrix.bin" />
 		<Content Include="IpaDic\sys.dic" />
 		<Content Include="IpaDic\unk.dic" />
+		<Content Include="icon.ico" />
 		<Content Include="icon_nobackground.ico" />
 	</ItemGroup>
 
