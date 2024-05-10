@@ -174,7 +174,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             Grid fontIconFolderGrid = new() { Margin = new(12) };
             fontIconFolderGrid.Children.Add(new FontIcon() { Glyph = "\uE8D5", FontSize = 30, Foreground = App.Current.Resources["ControlSolidFillColorDefaultBrush"] as SolidColorBrush });
             fontIconFolderGrid.Children.Add(new FontIcon() { Glyph = "\uE8B7", FontSize = 30 });
-            fontIconFolderGrid.Children.Add(new FontIcon() { Glyph = "\uEC4F", FontSize = 13 });
+            fontIconFolderGrid.Children.Add(new FontIcon() { Glyph = "\uEC4F", FontSize = 13, Margin = new(0, 4, -0, 0) });
             stackPanelContent2.Children.Add(fontIconFolderGrid);
             stackPanelContent2.Children.Add(new TextBlock() { Text = "扫描文件夹的音乐文件", TextTrimming = TextTrimming.CharacterEllipsis });
 
