@@ -131,7 +131,13 @@
                       Margin="19,20,0,0" Opacity="0.8"
                       IsHitTestVisible="False"/>
         </Grid>
-        <Grid x:Name="TRBaseParent">
+        <Grid x:Name="TRBaseParent"
+              HorizontalAlignment="Center">
+            <Grid.Transitions>
+                <TransitionCollection>
+                    <ContentThemeTransition/>
+                </TransitionCollection>
+            </Grid.Transitions>
             <Border x:Name="TRShadowTarget"/>
             <TextBlock x:Name="LyricRomajiPopup_tb"
                        FontSize="14"

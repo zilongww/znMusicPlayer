@@ -744,12 +744,50 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
 
         private void multi_addSelectToPlayList_flyout_Opening(object sender, object e)
         {
+            MenuFlyout flyout = sender as MenuFlyout;
+            foreach (var list in App.playListReader.NowMusicListData)
+            {
+                MenuFlyoutItem item = new MenuFlyoutItem()
+                {
+                    Text = list.ListShowName,
+                    Tag = list
+                };
+                item.Click += Item_Click;
+                flyout.Items.Add(item);
+            }
+        }
 
+        private async void Item_Click(object sender, RoutedEventArgs e)
+        {
+            var flyoutItem = sender as MenuFlyoutItem;
+            flyoutItem.Click -= Item_Click;
+            MainWindow.ShowLoadingDialog();
+            var text = await PlayListHelper.ReadData();
+            var list = flyoutItem.Tag as MusicListData;
+            var listName = list.ListName;
+            foreach (SongItemBindBase item in ItemsList.SelectedItems.Cast<SongItemBindBase>())
+            {
+                MainWindow.SetLoadingText($"ÕýÔÚÌí¼Ó£º{item.MusicData.Title} - {item.MusicData.ButtonName}");
+                MainWindow.SetLoadingProgressRingValue(ItemsList.SelectedItems.Count, ItemsList.SelectedItems.IndexOf(item));
+
+                await Task.Run(() =>
+                {
+                    PlayListHelper.AddMusicDataToPlayList(item.MusicData, list);
+                });
+            }
+            text[listName] = JObject.FromObject(list);
+            await PlayListHelper.SaveData(text);
+            await App.playListReader.Refresh();
+            MainWindow.HideDialog();
         }
 
         private void multi_addSelectToPlayList_flyout_Closed(object sender, object e)
         {
-
+            foreach (MenuFlyoutItem item in (sender as MenuFlyout).Items)
+            {
+                item.Click -= Item_Click;
+            }
+            (sender as MenuFlyout).Items.Clear();
         }
     }
 }
