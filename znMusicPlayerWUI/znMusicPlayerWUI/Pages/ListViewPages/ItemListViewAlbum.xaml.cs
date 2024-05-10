@@ -17,6 +17,7 @@ using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.Controls;
 using znMusicPlayerWUI.DataEditor;
 using CommunityToolkit.WinUI.UI;
+using znMusicPlayerWUI.Pages.ListViewPages;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -40,7 +41,7 @@ namespace znMusicPlayerWUI.Pages
             //PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
             base.OnNavigatedTo(e);
             IsNavigatedOutFromPage = false;
-            Album a = (Album)e.Parameter;
+            Album a = ((PageData)e.Parameter).Param as Album;
             NavToObj = a;
             musicListData = new() { ListDataType = DataType.专辑 };
             InitData();

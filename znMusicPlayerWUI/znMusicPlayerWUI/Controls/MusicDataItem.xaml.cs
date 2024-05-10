@@ -123,19 +123,21 @@ namespace znMusicPlayerWUI.Controls
             result = bitmapTuple.Item1;
 
             if (isUnloaded) result = null;
-            if (musicData == songItemBind.MusicData)
+            if (songItemBind == null) result = null;
+
+            if (result != null)
             {
-                if (result != null)
+                if (musicData == songItemBind.MusicData)
                 {
                     Info_Image.Source = result;
                     SetImageBorder(true);
                 }
-                else
-                {
-                    Info_Image.Source = null;
-                    Info_Image_Root.Visibility = Visibility.Collapsed;
-                    SetImageBorder(false);
-                }
+            }
+            else
+            {
+                Info_Image.Source = null;
+                Info_Image_Root.Visibility = Visibility.Collapsed;
+                SetImageBorder(false);
             }
         }
 

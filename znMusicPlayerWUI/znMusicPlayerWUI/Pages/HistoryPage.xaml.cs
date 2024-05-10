@@ -73,7 +73,7 @@ namespace znMusicPlayerWUI.Pages
             CompositionPropertySet scrollerPropertySet = ElementCompositionPreview.GetScrollViewerManipulationPropertySet(scrollViewer);
             Compositor compositor = scrollerPropertySet.Compositor;
 
-            var padingSize = HeaderSelectBase.ActualHeight + HeaderText.ActualHeight - 12;
+            var padingSize = HeaderBaseTextBlock_Base.ActualHeight - 8;
             // Get the visual that represents our HeaderTextBlock 
             // And define the progress animation string
             String progress = $"Clamp(-scroller.Translation.Y / {padingSize}, 0, 1.0)";
@@ -93,7 +93,7 @@ namespace znMusicPlayerWUI.Pages
             */
 
             // Logo scale and transform                                          from               to
-            var logoHeaderScaleAnimation = compositor.CreateExpressionAnimation("Lerp(Vector2(1,1), Vector2(0.7, 0.7), " + progress + ")");
+            /*var logoHeaderScaleAnimation = compositor.CreateExpressionAnimation("Lerp(Vector2(1,1), Vector2(0.7, 0.7), " + progress + ")");
             logoHeaderScaleAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
 
             var logoVisual = ElementCompositionPreview.GetElementVisual(HeaderBaseTextBlock);
@@ -107,18 +107,27 @@ namespace znMusicPlayerWUI.Pages
             logoVisualOffsetYAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             logoVisual.StartAnimation("Offset.Y", logoVisualOffsetYAnimation);
 
-            var selectVisualOffsetXAnimation = compositor.CreateExpressionAnimation($"Lerp(100, 60, {progress})");
-            selectVisualOffsetXAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
-            headerSelectVisual.StartAnimation("Offset.X", selectVisualOffsetXAnimation);
-
-            var selectVisualOffsetYAnimation = compositor.CreateExpressionAnimation($"Lerp(34, {padingSize} + 2, {progress})");
-            selectVisualOffsetYAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
-            headerSelectVisual.StartAnimation("Offset.Y", selectVisualOffsetYAnimation);
-            
             var backgroundVisual = ElementCompositionPreview.GetElementVisual(HeaderBaseRectangle);
             var backgroundVisualOpacityAnimation = compositor.CreateExpressionAnimation($"Lerp(0, 1, {progress})");
             backgroundVisualOpacityAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
             backgroundVisual.StartAnimation("Opacity", backgroundVisualOpacityAnimation);
+
+*//*
+            var selectVisualOffsetYAnimation = compositor.CreateExpressionAnimation($"Lerp(34, {padingSize} + 2, {progress})");
+            selectVisualOffsetYAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+            headerSelectVisual.StartAnimation("Offset.Y", selectVisualOffsetYAnimation);
+
+            var selectVisualOffsetXAnimation = compositor.CreateExpressionAnimation($"Lerp(100, 60, {progress})");
+            selectVisualOffsetXAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+            headerSelectVisual.StartAnimation("Offset.X", selectVisualOffsetXAnimation);*/
+
+            var selectVisualOffsetYAnimation = compositor.CreateExpressionAnimation($"Lerp(34, 34, {progress})");
+            selectVisualOffsetYAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+            headerSelectVisual.StartAnimation("Offset.Y", selectVisualOffsetYAnimation);
+
+            var selectVisualOffsetXAnimation = compositor.CreateExpressionAnimation($"Lerp(100, 100, {progress})");
+            selectVisualOffsetXAnimation.SetReferenceParameter("scroller", scrollerPropertySet);
+            headerSelectVisual.StartAnimation("Offset.X", selectVisualOffsetXAnimation);
         }
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)

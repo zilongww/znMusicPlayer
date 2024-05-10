@@ -6,6 +6,7 @@
     xmlns:local="using:znMusicPlayerWUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:m="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
+    xmlns:ui="using:CommunityToolkit.WinUI.UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     MaxHeight="40" MinHeight="40">
@@ -14,7 +15,7 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="CornerRadius" Value="4"/>
-            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Padding" Value="11"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="Width" Value="40"/>
@@ -44,9 +45,11 @@
                 x:FieldModifier="Public" x:Name="PositionToTop_Button"
                 AccessKey="V" CornerRadius="0,4,4,0"
                 ToolTipService.ToolTip="滚动到顶部">
-                <AnimatedIcon>
+                <AnimatedIcon
+                    ui:VisualExtensions.RotationAngleInDegrees="180"
+                    ui:VisualExtensions.CenterPoint="8,8">
                     <AnimatedIcon.Source>
-                        <m:AnimatedChevronUpDownSmallVisualSource/>
+                        <m:AnimatedChevronDownSmallVisualSource/>
                     </AnimatedIcon.Source>
                 </AnimatedIcon>
             </Button>
@@ -60,7 +63,7 @@
                 x:FieldModifier="Public" x:Name="PositionToNowPlaying_Button"
                 AccessKey="N"
                 ToolTipService.ToolTip="滚动到当前正在播放的歌曲">
-                <FontIcon Glyph="&#xE759;" FontSize="15"/>
+                <FontIcon Glyph="&#xE759;" FontSize="16"/>
             </Button>
         </Border>
     </Grid>

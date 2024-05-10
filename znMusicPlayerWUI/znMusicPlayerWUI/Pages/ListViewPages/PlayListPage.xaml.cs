@@ -17,6 +17,7 @@ using znMusicPlayerWUI.DataEditor;
 using Newtonsoft.Json.Linq;
 using znMusicPlayerWUI.Controls;
 using CommunityToolkit.WinUI.UI;
+using Windows.Storage.Pickers;
 
 namespace znMusicPlayerWUI.Pages.ListViewPages
 {
@@ -40,7 +41,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            pageData.VerticalOffset = scrollViewer.VerticalOffset;
+            //(e.Parameter as PageData).VerticalOffset = scrollViewer.VerticalOffset;
             musicListData = null;
             MainWindow.WindowDpiChanged -= MainWindow_WindowDpiChanged;
         }
@@ -50,6 +51,124 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             InitializeComponent();
         }
 
+        async void AddLocalFilesDo()
+        {
+            StackPanel stackPanel = new() { HorizontalAlignment = HorizontalAlignment.Stretch, Spacing = 4, Orientation = Orientation.Vertical };
+
+            StackPanel stackPanelContent1 = new StackPanel() { Orientation = Orientation.Vertical };
+            Grid fontIconBaseGrid = new Grid() { Margin = new(12), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+            Grid fontIconGrid = new() { Margin = new(-16, -12, 0, 0) };
+            fontIconGrid.Children.Add(new FontIcon() { Glyph = "\uE729", FontSize = 30, Foreground = App.Current.Resources["ControlSolidFillColorDefaultBrush"] as SolidColorBrush });
+            fontIconGrid.Children.Add(new FontIcon() { Glyph = "\uE7C3", FontSize = 30 });
+            Grid fontIconGrid1 = new() { Margin = new(-8, -6, 0, 0) };
+            fontIconGrid1.Children.Add(new FontIcon() { Glyph = "\uE729", FontSize = 30, Foreground = App.Current.Resources["ControlSolidFillColorDefaultBrush"] as SolidColorBrush });
+            fontIconGrid1.Children.Add(new FontIcon() { Glyph = "\uE7C3", FontSize = 30 });
+            Grid fontIconGrid2 = new();
+            fontIconGrid2.Children.Add(new FontIcon() { Glyph = "\uE729", FontSize = 30, Foreground = App.Current.Resources["ControlSolidFillColorDefaultBrush"] as SolidColorBrush });
+            fontIconGrid2.Children.Add(new FontIcon() { Glyph = "\uE7C3", FontSize = 30 });
+            fontIconGrid2.Children.Add(new FontIcon() { Glyph = "\uEC4F", FontSize = 13, Margin = new(0, 10, 8, 0) });
+            fontIconBaseGrid.Children.Add(fontIconGrid);
+            fontIconBaseGrid.Children.Add(fontIconGrid1);
+            fontIconBaseGrid.Children.Add(fontIconGrid2);
+            stackPanelContent1.Children.Add(fontIconBaseGrid);
+            stackPanelContent1.Children.Add(new TextBlock() { Text = "添加 单个/多个 文件", TextTrimming = TextTrimming.CharacterEllipsis });
+
+            StackPanel stackPanelContent2 = new StackPanel() { Orientation = Orientation.Vertical };
+            Grid fontIconFolderGrid = new() { Margin = new(12) };
+            fontIconFolderGrid.Children.Add(new FontIcon() { Glyph = "\uE8D5", FontSize = 30, Foreground = App.Current.Resources["ControlSolidFillColorDefaultBrush"] as SolidColorBrush });
+            fontIconFolderGrid.Children.Add(new FontIcon() { Glyph = "\uE8B7", FontSize = 30 });
+            stackPanelContent2.Children.Add(fontIconFolderGrid);
+            stackPanelContent2.Children.Add(new TextBlock() { Text = "扫描文件夹的音乐文件", TextTrimming = TextTrimming.CharacterEllipsis });
+
+            var ab = new Button() { Content = stackPanelContent1, HorizontalAlignment = HorizontalAlignment.Stretch, MinWidth = 164 };
+            var bb = new Button() { Content = stackPanelContent2, HorizontalAlignment = HorizontalAlignment.Stretch };
+
+            ab.Click += Ab_Click;
+            bb.Click += Bb_Click;
+
+            stackPanel.Children.Add(ab);
+            stackPanel.Children.Add(bb);
+
+            await MainWindow.ShowDialog("添加本地文件", stackPanel);
+
+            ab.Click -= Ab_Click;
+            bb.Click -= Bb_Click;
+        }
+
+        async void Ab_Click(object sender, RoutedEventArgs e)
+        {
+            var files = await FileHelper.UserSelectFiles(
+                PickerViewMode.List, PickerLocationId.MusicLibrary);
+            //App.SupportedMediaFormats);
+            if (files.Any())
+            {
+                MainWindow.HideDialog();
+                ItemsList_Header_Info_CommandBar.IsEnabled = false;
+                var item = MainWindow.AddNotify("添加本地歌曲", "正在准备添加本地歌曲...", NotifySeverity.Loading, TimeSpan.MaxValue);
+                var jdata = await PlayListHelper.ReadData();
+                int count = 0;
+                string listName = musicListData.ListName;
+                foreach (var i in files)
+                {
+                    item.HorizontalAlignment = HorizontalAlignment.Stretch;
+                    item.SetNotifyItemData("添加本地歌曲", $"进度：{count}/{files.Count}，{Math.Round(((decimal)count / files.Count) * 100, 1)}%\n正在添加：{i.Name}", NotifySeverity.Loading);
+                    item.SetProcess(files.Count, count);
+                    FileInfo fi = null;
+                    await Task.Run(() => fi = new FileInfo(i.Path));
+                    jdata = await PlayListHelper.AddLocalMusicDataToPlayList(listName, fi, jdata);
+                    count++;
+                }
+                item.SetProcess(0, 0);
+                item.HorizontalAlignment = HorizontalAlignment.Center;
+                item.SetNotifyItemData("添加本地歌曲", "正在保存...", NotifySeverity.Loading);
+                await PlayListHelper.SaveData(jdata);
+                await App.playListReader.Refresh();
+                if (musicListData != null)
+                {
+                    foreach (var m in App.playListReader.NowMusicListData)
+                    {
+                        if (m.MD5 == musicListData.MD5)
+                        {
+                            musicListData = m;
+                            break;
+                        }
+                    }
+                    InitBindings();
+                }
+                ItemsList_Header_Info_CommandBar.IsEnabled = true;
+                item.SetNotifyItemData("添加本地歌曲", "添加本地歌曲成功。", NotifySeverity.Complete);
+                MainWindow.NotifyCountDown(item);
+            }
+        }
+        async void Bb_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.Storage.StorageFolder folder = await FileHelper.UserSelectFolder(PickerLocationId.MusicLibrary);
+            if (folder != null)
+            {
+                var jdata = await PlayListHelper.ReadData();
+                DirectoryInfo directory = null;
+                await Task.Run(() => directory = Directory.CreateDirectory(folder.Path));
+                foreach (var i in directory.GetFiles())
+                {
+                    if (App.SupportedMediaFormats.Contains(i.Extension))
+                    {
+                        jdata = await PlayListHelper.AddLocalMusicDataToPlayList(musicListData.ListName, i, jdata);
+                    }
+                }
+                await PlayListHelper.SaveData(jdata);
+                await App.playListReader.Refresh();
+                foreach (var m in App.playListReader.NowMusicListData)
+                {
+                    if (m.MD5 == musicListData.MD5)
+                    {
+                        musicListData = m;
+                        break;
+                    }
+                }
+                InitBindings();
+                MainWindow.AddNotify("添加本地歌曲成功。", null, NotifySeverity.Complete);
+            }
+        }
 
         CompositionPropertySet scrollerPropertySet;
         Compositor compositor;
@@ -355,6 +474,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         {
             Init();
             ItemsList.ItemsSource = musicListBind;
+            scrollViewer.ChangeView(null, pageData.VerticalOffset, null);
             //arrayList = new ArrayList(100000000);
         }
 
@@ -464,6 +584,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
                     InitBindings();
                     break;
                 case "addLocal":
+                    AddLocalFilesDo();
                     break;
                 case "search":
                     ItemList_Header_Search_Control.IsOpen = !ItemList_Header_Search_Control.IsOpen;
