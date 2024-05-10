@@ -51,6 +51,103 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             InitializeComponent();
         }
 
+        // Items 更新时 CommandBar 宽度不会更新 >:(
+        async void UpdateCommandBarWidth()
+        {
+            ItemsList_Header_Info_CommandBar.Width = 0;
+            await Task.Delay(50);
+            ItemsList_Header_Info_CommandBar.Width = double.NaN;
+        }
+        void MultiSelectDo(bool isChecked)
+        {
+            if (isUnloaded) return;
+            if (musicListBind == null) return;
+
+            foreach (FrameworkElement element in ItemsList_Header_Info_CommandBar.PrimaryCommands)
+            {
+                if ((string)element.Tag == "multiSelect") continue;
+                if (((string)element.Tag).Contains("multi"))
+                    element.Visibility = isChecked ? Visibility.Visible : Visibility.Collapsed;
+                else
+                {
+                    element.Visibility = isChecked ? Visibility.Collapsed : Visibility.Visible;
+                }
+            }
+            UpdateCommandBarWidth();
+
+            ItemsList.SelectionMode = isChecked ? ListViewSelectionMode.Multiple : ListViewSelectionMode.None;
+        }
+
+        void SelectedReverseDo()
+        {
+            foreach (SongItemBindBase item in ItemsList.Items.Cast<SongItemBindBase>())
+            {
+                if (ItemsList.SelectedItems.Contains(item))
+                {
+                    ItemsList.SelectedItems.Remove(item);
+                }
+                else
+                {
+                    ItemsList.SelectedItems.Add(item);
+                }
+            }
+        }
+        async void DeleteSelectedItemDo()
+        {
+            if (ItemsList.SelectedItems.Any())
+            {
+                var result = await MainWindow.ShowDialog("删除歌曲", $"真的要从歌单中删除这{ItemsList.SelectedItems.Count}首歌曲吗？", "取消", "确定", defaultButton: ContentDialogButton.Close);
+                if (result == ContentDialogResult.Primary)
+                {
+                    ItemsList_Header_Info_CommandBar.IsEnabled = false;
+                    var item = MainWindow.AddNotify("删除歌曲", "正在准备删除歌曲...", NotifySeverity.Loading, TimeSpan.MaxValue);
+                    var jdata = await PlayListHelper.ReadData();
+                    int num = 0;
+                    string listName = musicListData.ListName;
+                    foreach (SongItemBindBase data in ItemsList.SelectedItems.Cast<SongItemBindBase>())
+                    {
+                        num++;
+                        item.HorizontalAlignment = HorizontalAlignment.Stretch;
+                        item.SetNotifyItemData("删除歌曲", $"进度：{Math.Round(((decimal)num / ItemsList.SelectedItems.Count) * 100, 1)}%\n正在删除：{data.MusicData.Title} - {data.MusicData.ButtonName}", NotifySeverity.Loading);
+                        item.SetProcess(ItemsList.SelectedItems.Count, num);
+                        musicListData.Songs.Remove(data.MusicData);
+                    }
+                    jdata[musicListData.ListName] = JObject.FromObject(musicListData);
+
+                    item.HorizontalAlignment = HorizontalAlignment.Center;
+                    item.SetNotifyItemData("删除歌曲", "正在保存...", NotifySeverity.Loading);
+                    item.SetProcess(0, 0);
+                    await PlayListHelper.SaveData(jdata);
+                    await App.playListReader.Refresh();
+                    item.SetNotifyItemData("删除歌曲", "删除歌曲成功。", NotifySeverity.Complete);
+                    MainWindow.NotifyCountDown(item);
+                    ItemsList_Header_Info_CommandBar.IsEnabled = true;
+                    InitInfo();
+                    InitBindings();
+                }
+            }
+        }
+        void DownloadSelectedItemDo()
+        {
+            if (ItemsList.SelectedItems.Any())
+            {
+                foreach (SongItemBindBase songItem in ItemsList.SelectedItems)
+                {
+                    App.downloadManager.Add(songItem.MusicData);
+                }
+            }
+        }
+        void AddSelectedItemToPlayingDo()
+        {
+            if (ItemsList.SelectedItems.Any())
+            {
+                foreach (SongItemBindBase item in ItemsList.SelectedItems.Cast<SongItemBindBase>())
+                {
+                    App.playingList.Add(item.MusicData);
+                }
+            }
+        }
+
         async void AddLocalFilesDo()
         {
             StackPanel stackPanel = new() { HorizontalAlignment = HorizontalAlignment.Stretch, Spacing = 4, Orientation = Orientation.Vertical };
@@ -77,6 +174,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             Grid fontIconFolderGrid = new() { Margin = new(12) };
             fontIconFolderGrid.Children.Add(new FontIcon() { Glyph = "\uE8D5", FontSize = 30, Foreground = App.Current.Resources["ControlSolidFillColorDefaultBrush"] as SolidColorBrush });
             fontIconFolderGrid.Children.Add(new FontIcon() { Glyph = "\uE8B7", FontSize = 30 });
+            fontIconFolderGrid.Children.Add(new FontIcon() { Glyph = "\uEC4F", FontSize = 13 });
             stackPanelContent2.Children.Add(fontIconFolderGrid);
             stackPanelContent2.Children.Add(new TextBlock() { Text = "扫描文件夹的音乐文件", TextTrimming = TextTrimming.CharacterEllipsis });
 
@@ -94,7 +192,6 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             ab.Click -= Ab_Click;
             bb.Click -= Bb_Click;
         }
-
         async void Ab_Click(object sender, RoutedEventArgs e)
         {
             var files = await FileHelper.UserSelectFiles(
@@ -123,18 +220,8 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
                 item.SetNotifyItemData("添加本地歌曲", "正在保存...", NotifySeverity.Loading);
                 await PlayListHelper.SaveData(jdata);
                 await App.playListReader.Refresh();
-                if (musicListData != null)
-                {
-                    foreach (var m in App.playListReader.NowMusicListData)
-                    {
-                        if (m.MD5 == musicListData.MD5)
-                        {
-                            musicListData = m;
-                            break;
-                        }
-                    }
-                    InitBindings();
-                }
+                InitInfo();
+                InitBindings();
                 ItemsList_Header_Info_CommandBar.IsEnabled = true;
                 item.SetNotifyItemData("添加本地歌曲", "添加本地歌曲成功。", NotifySeverity.Complete);
                 MainWindow.NotifyCountDown(item);
@@ -157,18 +244,12 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
                 }
                 await PlayListHelper.SaveData(jdata);
                 await App.playListReader.Refresh();
-                foreach (var m in App.playListReader.NowMusicListData)
-                {
-                    if (m.MD5 == musicListData.MD5)
-                    {
-                        musicListData = m;
-                        break;
-                    }
-                }
+                InitInfo();
                 InitBindings();
                 MainWindow.AddNotify("添加本地歌曲成功。", null, NotifySeverity.Complete);
             }
         }
+
 
         CompositionPropertySet scrollerPropertySet;
         Compositor compositor;
@@ -181,9 +262,10 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         Visual headerFootRootVisual;
         Visual searchRootVisual;
         ScalarKeyFrameAnimation commandBarVisualOpacityAnimation;
-        private void InitVisuals()
+        void InitVisuals()
         {
             if (isUnloaded) return;
+            MultiSelectDo(false);
 
             // 设置 header 为顶层
             var headerPresenter = (UIElement)VisualTreeHelper.GetParent((UIElement)ItemsList.Header);
@@ -218,7 +300,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         ExpressionAnimation commandBarVisualOffsetAnimation;
         ExpressionAnimation headerFootRootVisualOffsetAnimation;
         ExpressionAnimation searchRootVisualOffsetAnimation;
-        private async void InitShyHeader(bool imageSizeOnly = false, bool delay = false)
+        async void InitShyHeader(bool imageSizeOnly = false, bool delay = false)
         {
             if (scrollViewer == null) return;
             if (compositor == null) return;
@@ -314,7 +396,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
 
         bool isInInitBindings = false;
         List<PlaySort> listSortEnum = null;
-        private async void InitBindings()
+        async void InitBindings()
         {
             if (isUnloaded) return;
             if (isInInitBindings) return;
@@ -387,7 +469,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             isInInitBindings = false;
         }
 
-        private void InitInfo()
+        void InitInfo()
         {
             if (isUnloaded) return;
             foreach (var mld in App.playListReader.NowMusicListData)
@@ -412,7 +494,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
 
         static Thickness thickness0 = new(0);
         static Thickness thickness1 = new(1);
-        private async void InitImage()
+        async void InitImage()
         {
             if (isUnloaded) return;
             if (musicListData == null) return;
@@ -459,7 +541,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             ItemsList_Header_Foot_Buttons.PositionToBottom_Button.Click -= PositionToNowPlaying_Button_Click;
         }
 
-        private void Init()
+        void Init()
         {
             InitEvents();
             InitInfo();
@@ -518,6 +600,8 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
                 if (isDelayInitShyHeaderWhenScroll)
                 {
                     isDelayInitShyHeaderWhenScroll = false;
+                    await Task.Delay(500);
+                    InitShyHeader(true);
                     await Task.Delay(500);
                     InitShyHeader(true);
                 }
@@ -594,7 +678,38 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
 
         private void AppBarToggleButton_Click(object sender, RoutedEventArgs e)
         {
+            var btn = sender as AppBarToggleButton;
+            switch (btn.Tag)
+            {
+                case "multiSelect":
+                    MultiSelectDo((bool)btn.IsChecked);
+                    break;
+                case "move":
+                    break;
+            }
+        }
 
+        private void multiButton_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as AppBarButton;
+            switch (btn.Tag)
+            {
+                case "multi_selectAll":
+                    ItemsList.SelectAll();
+                    break;
+                case "multi_selectReverse":
+                    SelectedReverseDo();
+                    break;
+                case "multi_deleteSelect":
+                    DeleteSelectedItemDo();
+                    break;
+                case "multi_downloadSelect":
+                    DownloadSelectedItemDo();
+                    break;
+                case "multi_addSelectToPlaying":
+                    AddSelectedItemToPlayingDo();
+                    break;
+            }
         }
 
         bool isInSave = false;
@@ -625,6 +740,16 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             {
                 ItemsList_Header_Root.Margin = new(0, 0, 0, 3);
             }
+        }
+
+        private void multi_addSelectToPlayList_flyout_Opening(object sender, object e)
+        {
+
+        }
+
+        private void multi_addSelectToPlayList_flyout_Closed(object sender, object e)
+        {
+
         }
     }
 }

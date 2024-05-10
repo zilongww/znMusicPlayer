@@ -24,7 +24,12 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid x:Name="V1" Grid.Row="0" HorizontalAlignment="Stretch">
-                <Viewbox>
+                <Viewbox x:Name="T1BaseViewbox">
+                    <Viewbox.Transitions>
+                        <TransitionCollection>
+                            <ContentThemeTransition/>
+                        </TransitionCollection>
+                    </Viewbox.Transitions>
                     <Grid x:Name="T1BaseParent">
                         <Border x:Name="T1ShadowTarget"/>
                         <TextBlock x:Name="T1Base">
@@ -38,7 +43,12 @@
                 </Viewbox>
             </Grid>
             <Grid x:Name="V2" Grid.Row="1" HorizontalAlignment="Stretch">
-                <Viewbox>
+                <Viewbox x:Name="T2BaseViewbox">
+                    <Viewbox.Transitions>
+                        <TransitionCollection>
+                            <ContentThemeTransition/>
+                        </TransitionCollection>
+                    </Viewbox.Transitions>
                     <Grid x:Name="T2BaseParent">
                         <Border x:Name="T2ShadowTarget"/>
                         <TextBlock x:Name="T2Base">

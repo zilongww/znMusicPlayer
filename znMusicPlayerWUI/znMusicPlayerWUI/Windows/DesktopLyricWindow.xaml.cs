@@ -16,6 +16,7 @@ using WinRT;
 using Windows.Graphics;
 using NAudio.Wave;
 using Vanara.PInvoke;
+using Microsoft.UI.Xaml.Hosting;
 
 namespace znMusicPlayerWUI.Windowed
 {
@@ -89,9 +90,18 @@ namespace znMusicPlayerWUI.Windowed
             AppWindow.Closing += AppWindow_Closing;
         }
 
+        Visual tb1Visual;
+        Visual tb2Visual;
+        Vector3KeyFrameAnimation tb1Animation;
+        Vector3KeyFrameAnimation tb2Animation;
         private void root_Loaded(object sender, RoutedEventArgs e)
         {
             AddEvents();/*
+            AnimateHelper.AnimateOffset(T1BaseViewbox, 0, 0, 0, 0.2, 0, 0, 0, 0,
+                out tb1Visual, out var compositor, out tb1Animation);
+            AnimateHelper.AnimateOffset(T2BaseViewbox, 0, 0, 0, 0.2, 0, 0, 0, 0,
+                out tb2Visual, out var compositor1, out tb2Animation);*/
+            /*
             T1Base.SizeChanged += T1Base_SizeChanged;
             T2Base.SizeChanged += T1Base_SizeChanged;
             LyricRomajiPopup_tb.SizeChanged += T1Base_SizeChanged;*/
@@ -140,6 +150,8 @@ namespace znMusicPlayerWUI.Windowed
         private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
             RemoveEvents();
+            //tb1Animation?.Dispose();
+            //tb2Animation?.Dispose();
         }
 
         public void AddEvents()
@@ -220,6 +232,20 @@ namespace znMusicPlayerWUI.Windowed
             if (showCount <= 0) InfoTBBorder.Opacity = 0;
         }
 
+        void animationTextVisual(int tbIndex)
+        {
+            return;
+            if (tbIndex == 1)
+            {
+                tb1Visual.Offset = new(0, 40, 0);
+                tb1Visual.StartAnimation("Offset", tb1Animation);
+            }
+            else if (tbIndex == 2)
+            {
+                tb2Visual.Offset = new(0, 40, 0);
+                tb2Visual.StartAnimation("Offset", tb2Animation);
+            }
+        }
         private void SetLyric(LyricData nowLyricsData, bool isNext = false)
         {
             T11.Text = null;
@@ -252,6 +278,8 @@ namespace znMusicPlayerWUI.Windowed
                     V1.HorizontalAlignment = HorizontalAlignment.Center;
                     V2.HorizontalAlignment = HorizontalAlignment.Center;
                 }
+                animationTextVisual(1);
+                animationTextVisual(2);
                 return;
             }
             if (nowLyricsData.Lyric == null)
@@ -276,6 +304,8 @@ namespace znMusicPlayerWUI.Windowed
                     V1.HorizontalAlignment = HorizontalAlignment.Center;
                     V2.HorizontalAlignment = HorizontalAlignment.Center;
                 }
+                animationTextVisual(1);
+                animationTextVisual(2);
                 return;
             }
             if (nowLyricsData.Lyric.First() == LyricHelper.NoneLyricString)
@@ -377,6 +407,9 @@ namespace znMusicPlayerWUI.Windowed
                     T1.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
                     T2.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
                 }
+
+                animationTextVisual(1);
+                animationTextVisual(2);
             }
             else
             {
@@ -509,6 +542,9 @@ namespace znMusicPlayerWUI.Windowed
                     T2.Foreground = root.Resources["LrcForeground"] as SolidColorBrush;
                 }
             }
+
+            animationTextVisual(1);
+            animationTextVisual(2);
         }
 
         private void AudioPlayer_TimingChanged(AudioPlayer audioPlayer)

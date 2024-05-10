@@ -9,7 +9,7 @@
     xmlns:ui="using:CommunityToolkit.WinUI.UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    MaxHeight="40" MinHeight="40">
+    MaxHeight="42" MinHeight="42">
     <UserControl.Resources>
         <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
             <Setter Property="Background" Value="Transparent"/>
@@ -47,7 +47,7 @@
                 ToolTipService.ToolTip="滚动到顶部">
                 <AnimatedIcon
                     ui:VisualExtensions.RotationAngleInDegrees="180"
-                    ui:VisualExtensions.CenterPoint="8,8">
+                    ui:VisualExtensions.CenterPoint="9,9">
                     <AnimatedIcon.Source>
                         <m:AnimatedChevronDownSmallVisualSource/>
                     </AnimatedIcon.Source>

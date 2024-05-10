@@ -14,6 +14,7 @@ using znMusicPlayerWUI.Helpers;
 using znMusicPlayerWUI.Controls;
 using znMusicPlayerWUI.DataEditor;
 using CommunityToolkit.WinUI.UI;
+using znMusicPlayerWUI.Pages.ListViewPages;
 
 namespace znMusicPlayerWUI.Pages
 {
@@ -37,7 +38,7 @@ namespace znMusicPlayerWUI.Pages
             //PlayAllButton.Foreground = new SolidColorBrush(CodeHelper.IsAccentColorDark() ? Colors.White : Colors.Black);
             base.OnNavigatedTo(e);
             IsNavigatedOutFromPage = false;
-            var a = (SearchData)e.Parameter;
+            var a =  ((PageData)e.Parameter).Param as SearchData;
             NavToObj = a.Key;
             NowMusicFrom = a.From;
             NowSearchMode = a.SearchDataType;
