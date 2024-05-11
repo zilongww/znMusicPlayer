@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using znMusicPlayerWUI.Controls;
 using CommunityToolkit.WinUI.UI;
 using Windows.Storage.Pickers;
+using Windows.ApplicationModel.Search;
 
 namespace znMusicPlayerWUI.Pages.ListViewPages
 {
@@ -249,7 +250,6 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
                 MainWindow.AddNotify("添加本地歌曲成功。", null, NotifySeverity.Complete);
             }
         }
-
 
         CompositionPropertySet scrollerPropertySet;
         Compositor compositor;
@@ -524,6 +524,10 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
 
         void InitEvents()
         {
+            MainWindow.InKeyDownEvent -= MainWindow_InKeyDownEvent;
+            MainWindow.InKeyDownEvent += MainWindow_InKeyDownEvent;
+            ItemList_Header_Search_Control.SearchingAItem -= ItemList_Header_Search_Control_SearchingAItem;
+            ItemList_Header_Search_Control.SearchingAItem += ItemList_Header_Search_Control_SearchingAItem;
             ItemList_Header_Search_Control.IsOpenChanged -= ItemList_Header_Search_Control_IsOpenChanged;
             ItemList_Header_Search_Control.IsOpenChanged += ItemList_Header_Search_Control_IsOpenChanged;
             ItemsList_Header_Foot_Buttons.PositionToNowPlaying_Button.Click -= PositionToNowPlaying_Button_Click;
@@ -533,8 +537,10 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             ItemsList_Header_Foot_Buttons.PositionToBottom_Button.Click -= PositionToNowPlaying_Button_Click;
             ItemsList_Header_Foot_Buttons.PositionToBottom_Button.Click += PositionToNowPlaying_Button_Click;
         }
+
         void RemoveEvents()
         {
+            ItemList_Header_Search_Control.SearchingAItem -= ItemList_Header_Search_Control_SearchingAItem;
             ItemList_Header_Search_Control.IsOpenChanged -= ItemList_Header_Search_Control_IsOpenChanged;
             ItemsList_Header_Foot_Buttons.PositionToNowPlaying_Button.Click -= PositionToNowPlaying_Button_Click;
             ItemsList_Header_Foot_Buttons.PositionToTop_Button.Click -= PositionToNowPlaying_Button_Click;
@@ -556,6 +562,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         {
             Init();
             ItemsList.ItemsSource = musicListBind;
+            ItemList_Header_Search_Control.SongItemBinds = musicListBind;
             scrollViewer.ChangeView(null, pageData.VerticalOffset, null);
             //arrayList = new ArrayList(100000000);
         }
@@ -734,6 +741,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
         {
             if ((bool)e.NewValue)
             {
+                ItemList_Header_Search_Control.FocusToSearchBox();
                 ItemsList_Header_Root.Margin = new(0, 0, 0, ItemList_Header_Search_Control.ActualHeight + 7);
             }
             else
@@ -788,6 +796,27 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
                 item.Click -= Item_Click;
             }
             (sender as MenuFlyout).Items.Clear();
+        }
+
+        private async void ItemList_Header_Search_Control_SearchingAItem(SongItemBindBase songItemBind)
+        {
+            var scrollPlacement = ActualHeight <= 450 ? ScrollItemPlacement.Bottom : ScrollItemPlacement.Center;
+            await ItemsList.SmoothScrollIntoViewWithItemAsync(songItemBind, scrollPlacement);
+            await ItemsList.SmoothScrollIntoViewWithItemAsync(songItemBind, scrollPlacement, true);
+            MusicDataItem.TryHighlight(songItemBind);
+        }
+
+        private void MainWindow_InKeyDownEvent(Windows.System.VirtualKey key)
+        {
+            if (MainWindow.isControlDown)
+            {
+                if (key == Windows.System.VirtualKey.F)
+                {
+                    ItemList_Header_Search_Control.IsOpen = !ItemList_Header_Search_Control.IsOpen;
+                    if (!ItemList_Header_Search_Control.IsOpen)
+                        ItemsList_Header_Info_CommandBar.Focus(FocusState.Programmatic);
+                }
+            }
         }
     }
 }

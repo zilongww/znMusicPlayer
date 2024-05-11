@@ -10,7 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" SizeChanged="Page_SizeChanged">
     <Grid>
-        <ListView x:Name="ListViewBase" HorizontalContentAlignment="Center" SelectionMode="None">
+        <ListView x:Name="ListViewBase" HorizontalContentAlignment="Center" SelectionMode="Single">
             <ListView.Header>
                 <Grid x:Name="HeaderBaseGrid">
                     <Border x:Name="HeaderBaseRectangle" Background="{ThemeResource AcrylicNormal}"    
@@ -19,6 +19,68 @@
                     <TextBlock x:Name="HeaderBaseTextBlock" Text="本地音频" Style="{ThemeResource TBHeader}"/>
                 </Grid>
             </ListView.Header>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
+            <x:String>正在开发中...</x:String>
             <x:String>正在开发中...</x:String>
         </ListView>
     </Grid>
