@@ -8,11 +8,11 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.System;
 using Windows.Storage;
 using Windows.Foundation;
-using znMusicPlayerWUI.Pages;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.Pages;
+using TewIMP.Helpers;
+using TewIMP.DataEditor;
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public sealed partial class MusicDataFlyout : UserControl
     {

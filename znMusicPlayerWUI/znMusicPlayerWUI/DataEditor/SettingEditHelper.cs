@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace znMusicPlayerWUI.DataEditor
+namespace TewIMP.DataEditor
 {
     public static class SettingEditHelper
     {

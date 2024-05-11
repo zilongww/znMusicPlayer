@@ -4,7 +4,7 @@ using WinCompositor = Windows.UI.Composition.Compositor;
 using WinDispatcherQueueController = Windows.System.DispatcherQueueController;
 using WinDispatcherQueue = Windows.System.DispatcherQueue;
 
-namespace znMusicPlayerWUI.Helpers.TransparentWindowHelper
+namespace TewIMP.Helpers.TransparentWindowHelper
 {
     public static class WindowsCompositionHelper
     {

@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.Helpers;
+using TewIMP.DataEditor;
 
-namespace znMusicPlayerWUI.Pages.DialogPages
+namespace TewIMP.Pages.DialogPages
 {
     public partial class EditPlayListPage : Page
     {

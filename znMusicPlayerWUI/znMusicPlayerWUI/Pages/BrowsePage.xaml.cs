@@ -4,9 +4,9 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Composition;
-using znMusicPlayerWUI.Controls;
+using TewIMP.Controls;
 
-namespace znMusicPlayerWUI.Pages
+namespace TewIMP.Pages
 {
     public partial class BrowsePage : Page
     {

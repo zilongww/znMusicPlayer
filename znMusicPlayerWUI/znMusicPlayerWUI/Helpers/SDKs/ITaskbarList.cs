@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace znMusicPlayerWUI.Helpers.SDKs
+namespace TewIMP.Helpers.SDKs
 {
     public static class TaskbarProgress
     {

@@ -15,7 +15,7 @@ using NVorbis.Ogg;
 using TagLib;
 using Vanara.PInvoke;
 
-namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
+namespace TewIMP.Media.Decoder.FFmpeg
 {
     public static class FFmpegBinariesHelper
     {

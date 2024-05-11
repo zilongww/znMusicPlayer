@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace znMusicPlayerWUI.Pages.MusicPages
+namespace TewIMP.Pages.MusicPages
 {
     public enum MusicPageViewState { View, Hidden }
     public delegate void MusicPageViewStateChangeDelegate(MusicPageViewState musicPageViewState);

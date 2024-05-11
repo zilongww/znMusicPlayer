@@ -1,12 +1,12 @@
 ﻿<Page
-    x:Class="znMusicPlayerWUI.Pages.ItemListViewArtist"
+    x:Class="TewIMP.Pages.ItemListViewArtist"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:znMusicPlayerWUI.Pages"
-    xmlns:controlszn="using:znMusicPlayerWUI.Controls"
+    xmlns:local="using:TewIMP.Pages"
+    xmlns:controlszn="using:TewIMP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:helper="using:znMusicPlayerWUI.Helpers"
+    xmlns:helper="using:TewIMP.Helpers"
     xmlns:m="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     mc:Ignorable="d" SizeChanged="Result_BaseGrid_SizeChanged">
     

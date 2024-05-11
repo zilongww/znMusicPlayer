@@ -3,11 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using znMusicPlayerWUI.Media;
-using znMusicPlayerWUI.Helpers;
+using TewIMP.Media;
+using TewIMP.Helpers;
 using CueSharp;
 
-namespace znMusicPlayerWUI.Pages.DialogPages
+namespace TewIMP.Pages.DialogPages
 {
     public partial class AudioInfoPage : Page
     {

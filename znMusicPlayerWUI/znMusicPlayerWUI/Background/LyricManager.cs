@@ -4,11 +4,11 @@ using System.Text;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.Helpers;
+using TewIMP.DataEditor;
 using Microsoft.UI.Xaml;
 
-namespace znMusicPlayerWUI.Background
+namespace TewIMP.Background
 {
     public class LyricManager
     {

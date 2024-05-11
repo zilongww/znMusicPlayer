@@ -4,13 +4,13 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Composition;
-using znMusicPlayerWUI.Helpers;
+using TewIMP.Helpers;
 using System.Collections;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public partial class ImageEx : Grid
     {

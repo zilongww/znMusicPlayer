@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices.WindowsRuntime;
-using znMusicPlayerWUI.Helpers;
+using TewIMP.Helpers;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -12,11 +12,11 @@ using Microsoft.UI.Windowing;
 using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 using Windows.Storage;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.DataEditor;
 using WinRT.Interop;
 using Windows.UI;
 
-namespace znMusicPlayerWUI.Windowed
+namespace TewIMP.Windowed
 {
     public partial class ImageViewerWindow : Window
     {

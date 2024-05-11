@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WinRT.Interop;
 
-namespace znMusicPlayerWUI.Windowed.WindowHelper;
+namespace TewIMP.Windowed.WindowHelper;
 
 public static class Window
 {

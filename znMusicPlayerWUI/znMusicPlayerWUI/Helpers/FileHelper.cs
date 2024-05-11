@@ -12,7 +12,7 @@ using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using static NMeCab.Core.DoubleArray;
 
-namespace znMusicPlayerWUI.Helpers
+namespace TewIMP.Helpers
 {
     public static class FileHelper
     {

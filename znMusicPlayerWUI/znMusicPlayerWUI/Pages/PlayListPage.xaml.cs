@@ -6,10 +6,10 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Composition;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.Helpers;
+using TewIMP.DataEditor;
 
-namespace znMusicPlayerWUI.Pages
+namespace TewIMP.Pages
 {
     public partial class PlayListPage : Page
     {

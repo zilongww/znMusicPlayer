@@ -14,16 +14,16 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Composition;
-using znMusicPlayerWUI.Media;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.Controls;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.Media;
+using TewIMP.Helpers;
+using TewIMP.Controls;
+using TewIMP.DataEditor;
 using Windows.Storage.Pickers;
 using Newtonsoft.Json.Linq;
 using CommunityToolkit.WinUI.UI;
 using Vanara.Extensions;
 
-namespace znMusicPlayerWUI.Pages
+namespace TewIMP.Pages
 {
     public partial class ItemListViewPlayList : Page, IPage
     {
@@ -589,7 +589,7 @@ namespace znMusicPlayerWUI.Pages
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             if (Children.Items.Count == 0) return;
-            if (App.playingList.PlayBehavior == znMusicPlayerWUI.Background.PlayBehavior.随机播放)
+            if (App.playingList.PlayBehavior == TewIMP.Background.PlayBehavior.随机播放)
             {
                 App.playingList.ClearAll();
             }

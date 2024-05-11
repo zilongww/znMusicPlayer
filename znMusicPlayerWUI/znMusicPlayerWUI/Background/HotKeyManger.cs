@@ -7,7 +7,7 @@ using Vanara.PInvoke;
 using Newtonsoft.Json;
 using Microsoft.UI.Xaml;
 
-namespace znMusicPlayerWUI.Background.HotKeys
+namespace TewIMP.Background.HotKeys
 {
     public enum HotKeyID
     {

@@ -2,13 +2,13 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using znMusicPlayerWUI.Background.HotKeys;
+using TewIMP.Background.HotKeys;
 using Vanara.PInvoke;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace znMusicPlayerWUI.Pages.DialogPages
+namespace TewIMP.Pages.DialogPages
 {
     public sealed partial class HotKeyEditor : UserControl
     {

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace znMusicPlayerWUI.Media.AudioEffects.Assets
+namespace TewIMP.Media.AudioEffects.Assets
 {
     using System;
 

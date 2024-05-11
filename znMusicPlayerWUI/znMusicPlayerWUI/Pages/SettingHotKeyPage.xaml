@@ -1,9 +1,9 @@
 ﻿<Page
-    x:Class="znMusicPlayerWUI.Pages.SettingHotKeyPage"
+    x:Class="TewIMP.Pages.SettingHotKeyPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:znMusicPlayerWUI.Pages"
-    xmlns:controls="using:znMusicPlayerWUI.Controls"
+    xmlns:local="using:TewIMP.Pages"
+    xmlns:controls="using:TewIMP.Controls"
     xmlns:cc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"

@@ -2,7 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls;
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public partial class NotifyItem : Grid
     {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using znMusicPlayerWUI.Helpers;
+using TewIMP.Helpers;
 
-namespace znMusicPlayerWUI.DataEditor
+namespace TewIMP.DataEditor
 {
     public enum MusicFrom { kwMusic, kgMusic, qqMusic, neteaseMusic, miguMusic, localMusic, otherMusic }
     public enum DataType { 歌曲, 歌单, 本地歌单, 专辑, 用户, 艺术家 }

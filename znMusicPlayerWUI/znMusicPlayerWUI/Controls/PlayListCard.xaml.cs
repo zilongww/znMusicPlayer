@@ -8,12 +8,12 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Composition;
 using Newtonsoft.Json.Linq;
 using Windows.UI;
-using znMusicPlayerWUI.Media;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.DataEditor;
-using znMusicPlayerWUI.Pages.ListViewPages;
+using TewIMP.Media;
+using TewIMP.Helpers;
+using TewIMP.DataEditor;
+using TewIMP.Pages.ListViewPages;
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public partial class PlayListCard : Grid, IDisposable
     {

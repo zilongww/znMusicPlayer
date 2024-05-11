@@ -12,10 +12,10 @@ using NAudio.CoreAudioApi.Interfaces;
 using Melanchall.DryWetMidi.Multimedia;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
-using znMusicPlayerWUI.DataEditor;
-using static znMusicPlayerWUI.Media.AudioPlayer;
+using TewIMP.DataEditor;
+using static TewIMP.Media.AudioPlayer;
 
-namespace znMusicPlayerWUI.Media
+namespace TewIMP.Media
 {
     public class OutDevice : OnlyClass
     {

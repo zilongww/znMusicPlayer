@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Windowing;
 
-namespace znMusicPlayerWUI.Windowed
+namespace TewIMP.Windowed
 {
     public partial class TaskBarInfoWindow : Window
     {

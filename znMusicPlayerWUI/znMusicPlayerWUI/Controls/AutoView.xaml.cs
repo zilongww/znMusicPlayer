@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public enum ViewMode { Horizontal, Vertical, None };
     public partial class AutoScrollViewer : ScrollView

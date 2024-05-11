@@ -13,7 +13,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public partial class ScrollFootButton : UserControl
     {

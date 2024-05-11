@@ -6,9 +6,9 @@ using Microsoft.UI.Xaml.Controls;
 using CommunityToolkit.WinUI.Controls;
 using Windows.System;
 using NAudio.Wave;
-using znMusicPlayerWUI.Media;
+using TewIMP.Media;
 
-namespace znMusicPlayerWUI.Pages
+namespace TewIMP.Pages
 {
     public partial class AboutPage : Page
     {

@@ -3,10 +3,10 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Media;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.Helpers;
+using TewIMP.DataEditor;
 
-namespace znMusicPlayerWUI.Media
+namespace TewIMP.Media
 {
     public static class ImageManage
     {

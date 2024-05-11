@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.DataEditor;
 
-namespace znMusicPlayerWUI.Helpers.MetingService
+namespace TewIMP.Helpers.MetingService
 {
     public class NeteaseMeting: IMetingService
     {

@@ -4,12 +4,12 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Composition;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.DataEditor;
-using znMusicPlayerWUI.Pages;
-using znMusicPlayerWUI.Pages.ListViewPages;
+using TewIMP.Helpers;
+using TewIMP.DataEditor;
+using TewIMP.Pages;
+using TewIMP.Pages.ListViewPages;
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public partial class ArtistCard : Grid, IDisposable
     {

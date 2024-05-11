@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Vanara.PInvoke;
 
-namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
+namespace TewIMP.Media.Decoder.FFmpeg
 {
     public enum MediaState { Play, Pause, Stop, None, Read }
     public unsafe class FFmpegDecoder

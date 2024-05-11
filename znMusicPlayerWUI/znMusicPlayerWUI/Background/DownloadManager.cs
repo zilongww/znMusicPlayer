@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.Helpers;
+using TewIMP.DataEditor;
 
-namespace znMusicPlayerWUI.Background
+namespace TewIMP.Background
 {
     public enum DownloadStates { Waiting, Downloading, DownloadedSaving, DownloadedPreview, Downloaded, Error }
     public class DownloadData

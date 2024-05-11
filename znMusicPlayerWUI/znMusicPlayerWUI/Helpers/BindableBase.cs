@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.DataEditor;
 
-namespace znMusicPlayerWUI.Helpers
+namespace TewIMP.Helpers
 {
     public class SongItemBindBase : BindableBase
     {

@@ -2,10 +2,10 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.Background;
+using TewIMP.Helpers;
+using TewIMP.Background;
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public partial class DownloadCard : Grid
     {

@@ -1,9 +1,9 @@
 ﻿<Page
-    x:Class="znMusicPlayerWUI.Pages.SettingPage"
+    x:Class="TewIMP.Pages.SettingPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:znMusicPlayerWUI"
-    xmlns:control="using:znMusicPlayerWUI.Controls"
+    xmlns:local="using:TewIMP"
+    xmlns:control="using:TewIMP.Controls"
     xmlns:community="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:cc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -283,7 +283,7 @@
                                     Background="{ThemeResource SystemAccentColor}"
                                     x:Name="accentcolor_accentcolor_presenter_root"
                                     Visibility="Visible">
-                                <TextBlock Text="znMusicPlayerWUI"
+                                <TextBlock Text="TewIMP"
                                            Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
                                            VerticalAlignment="Center"
                                            HorizontalAlignment="Center"

@@ -3,10 +3,10 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using znMusicPlayerWUI.DataEditor;
-using znMusicPlayerWUI.Helpers;
+using TewIMP.DataEditor;
+using TewIMP.Helpers;
 
-namespace znMusicPlayerWUI.Background
+namespace TewIMP.Background
 {
     public class CacheManager
     {

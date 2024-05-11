@@ -1,9 +1,9 @@
 ﻿<Page
-    x:Class="znMusicPlayerWUI.Pages.LocalAudioPage"
+    x:Class="TewIMP.Pages.LocalAudioPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:znMusicPlayerWUI"
-    xmlns:controls="using:znMusicPlayerWUI.Controls"
+    xmlns:local="using:TewIMP"
+    xmlns:controls="using:TewIMP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:CommunityToolkit.WinUI.UI.Behaviors"

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace znMusicPlayerWUI.DataEditor
+namespace TewIMP.DataEditor
 {
     public class SongHistoryData : OnlyClass
     {

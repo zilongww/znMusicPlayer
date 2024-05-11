@@ -1,4 +1,4 @@
-﻿namespace znMusicPlayerWUI.Pages
+﻿namespace TewIMP.Pages
 {
     public interface IPage
     {

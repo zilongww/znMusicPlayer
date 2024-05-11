@@ -3,13 +3,13 @@ using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
-using znMusicPlayerWUI.Media;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.Media;
+using TewIMP.DataEditor;
 using NAudio;
 using Microsoft.UI.Xaml.Media;
 using Melanchall.DryWetMidi.Core;
 
-namespace znMusicPlayerWUI.Background
+namespace TewIMP.Background
 {
     public enum PlayBehavior { 循环播放, 顺序播放, 单曲循环, 随机播放, 播放完成后停止 }
     public enum SetPlayInfo { Normal, Next, Previous }

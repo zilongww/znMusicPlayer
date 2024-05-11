@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Composition;
 
-namespace znMusicPlayerWUI.Pages
+namespace TewIMP.Pages
 {
     public partial class EmptyPage : Page
     {

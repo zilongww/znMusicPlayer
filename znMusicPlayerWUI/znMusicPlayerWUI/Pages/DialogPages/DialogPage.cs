@@ -1,4 +1,4 @@
-﻿namespace znMusicPlayerWUI.Pages.DialogPages
+﻿namespace TewIMP.Pages.DialogPages
 {
     internal class DialogPage
     {

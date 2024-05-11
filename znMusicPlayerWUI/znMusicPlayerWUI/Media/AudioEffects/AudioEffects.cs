@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace znMusicPlayerWUI.Media.AudioEffects
+namespace TewIMP.Media.AudioEffects
 {
     internal class AudioEffects
     {

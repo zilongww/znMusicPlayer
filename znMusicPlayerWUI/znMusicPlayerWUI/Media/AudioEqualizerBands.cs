@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace znMusicPlayerWUI.Media
+namespace TewIMP.Media
 {
     public static class AudioEqualizerBands
     {

@@ -6,9 +6,9 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Composition;
-using znMusicPlayerWUI.Background;
+using TewIMP.Background;
 
-namespace znMusicPlayerWUI.Pages
+namespace TewIMP.Pages
 {
     public partial class DownloadPage : Page
     {

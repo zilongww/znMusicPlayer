@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using NAudio.Dsp;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
-using znMusicPlayerWUI.Helpers;
+using TewIMP.Helpers;
 
-namespace znMusicPlayerWUI.Media
+namespace TewIMP.Media
 {
     public class AudioFileReader : WaveStream, ISampleProvider
     {

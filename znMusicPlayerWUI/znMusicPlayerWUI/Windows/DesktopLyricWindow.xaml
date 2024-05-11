@@ -1,9 +1,9 @@
 ﻿<Window
-    x:Class="znMusicPlayerWUI.Windowed.DesktopLyricWindow"
+    x:Class="TewIMP.Windowed.DesktopLyricWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:znMusicPlayerWUI.Windowed"
-    xmlns:controls="using:znMusicPlayerWUI.Controls"
+    xmlns:local="using:TewIMP.Windowed"
+    xmlns:controls="using:TewIMP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" SizeChanged="Window_SizeChanged"
@@ -36,7 +36,7 @@
                             <ui:Effects.Shadow>
                                 <ui:AttachedDropShadow Opacity="1" BlurRadius="10" Color="#88333333" Offset="0,0.2" CastTo="{x:Bind T1ShadowTarget}"/>
                             </ui:Effects.Shadow>
-                            <Run x:Name="T1" Text="znMusicPlayerWUI" Foreground="{ThemeResource LrcForeground}"/>
+                            <Run x:Name="T1" Text="TewIMP" Foreground="{ThemeResource LrcForeground}"/>
                             <Run x:Name="T11" Foreground="{ThemeResource LrcSecondForeground}" FontSize="10"/>
                         </TextBlock>
                     </Grid>
@@ -181,7 +181,7 @@
                                           MaxHeight="150" MaxWidth="150" CornerRadius="4"/>
                         <Grid Grid.Column="1">
                             <StackPanel Margin="12,0,0,0">
-                                <TextBlock Text="znMusicPlayerWUI" x:Name="MusicControl_TitleTb" FontSize="20"/>
+                                <TextBlock Text="TewIMP" x:Name="MusicControl_TitleTb" FontSize="20"/>
                                 <TextBlock Text="artist" x:Name="MusicControl_ButtonNameTb"/>
                             </StackPanel>
                         </Grid>

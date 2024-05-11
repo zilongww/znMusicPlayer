@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using znMusicPlayerWUI.DataEditor;
-using znMusicPlayerWUI.Helpers.MetingService;
+using TewIMP.DataEditor;
+using TewIMP.Helpers.MetingService;
 
-namespace znMusicPlayerWUI.Helpers
+namespace TewIMP.Helpers
 {
     public abstract class IMetingService
     {

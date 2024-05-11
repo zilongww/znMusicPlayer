@@ -9,12 +9,12 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Composition;
 using Windows.System;
 using Windows.Storage;
-using znMusicPlayerWUI.Media;
-using znMusicPlayerWUI.Pages;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.Media;
+using TewIMP.Pages;
+using TewIMP.Helpers;
+using TewIMP.DataEditor;
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public partial class SongItem : Grid
     {

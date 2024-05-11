@@ -18,14 +18,14 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-namespace znMusicPlayerWUI.Media.AudioEffects
+namespace TewIMP.Media.AudioEffects
 {
     using System;
     using System.IO;
     using System.Runtime.InteropServices;
     using NAudio.Wave;
-    using znMusicPlayerWUI.Media.AudioEffects.Assets;
-    using znMusicPlayerWUI.Media.AudioEffects;
+    using TewIMP.Media.AudioEffects.Assets;
+    using TewIMP.Media.AudioEffects;
     using SoundTouch;
 
     /// <summary>

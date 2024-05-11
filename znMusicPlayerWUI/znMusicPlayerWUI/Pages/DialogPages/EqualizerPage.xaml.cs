@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-namespace znMusicPlayerWUI.Pages.DialogPages
+namespace TewIMP.Pages.DialogPages
 {
     public partial class EqualizerPage : Page
     {

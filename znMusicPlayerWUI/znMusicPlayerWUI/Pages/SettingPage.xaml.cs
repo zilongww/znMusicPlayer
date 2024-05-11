@@ -7,12 +7,12 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Composition;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.DataEditor;
-using znMusicPlayerWUI.Windowed;
-using znMusicPlayerWUI.Background;
+using TewIMP.Helpers;
+using TewIMP.DataEditor;
+using TewIMP.Windowed;
+using TewIMP.Background;
 
-namespace znMusicPlayerWUI.Pages
+namespace TewIMP.Pages
 {
     public partial class SettingPage : Page
     {

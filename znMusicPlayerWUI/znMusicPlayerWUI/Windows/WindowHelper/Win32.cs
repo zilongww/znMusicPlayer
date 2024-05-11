@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
 
-namespace znMusicPlayerWUI.Windowed.WindowHelper;
+namespace TewIMP.Windowed.WindowHelper;
 
 public static class Win32
 {

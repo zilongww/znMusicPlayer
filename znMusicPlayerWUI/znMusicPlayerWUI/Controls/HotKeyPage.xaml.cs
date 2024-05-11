@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Controls;
-using znMusicPlayerWUI.Background.HotKeys;
+using TewIMP.Background.HotKeys;
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public partial class HotKeyPresenter : Page
     {

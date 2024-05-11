@@ -16,9 +16,9 @@ using Windows.UI;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Composition;
 using WinRT;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.Pages;
-using znMusicPlayerWUI.Pages.MusicPages;
+using TewIMP.Helpers;
+using TewIMP.Pages;
+using TewIMP.Pages.MusicPages;
 using Microsoft.UI.Xaml.Input;
 using Windows.Graphics;
 using System.Runtime.InteropServices;
@@ -31,7 +31,7 @@ using Windows.Media;
 using Windows.Media.Playback;
 using CommunityToolkit.WinUI.UI.Controls;
 
-namespace znMusicPlayerWUI.Windowed
+namespace TewIMP.Windowed
 {
     public sealed partial class MediaPlayerWindow : Window
     {
@@ -57,7 +57,7 @@ namespace znMusicPlayerWUI.Windowed
             var _mediaPlaybackItem = new MediaPlaybackItem(_mediaSource);/*
             var props = _mediaPlaybackItem.GetDisplayProperties();
             props.Type = MediaPlaybackType.Music;
-            props.MusicProperties.Title = "znMusicPlayerWUI";
+            props.MusicProperties.Title = "TewIMP";
             props.MusicProperties.Artist = "请问您今天要来点兔唇吗";
             props.Thumbnail = Windows.Storage.Streams.RandomAccessStreamReference.CreateFromUri(new Uri("C:\\Users\\zilong\\Pictures\\2023-01-05 (3).png"));
             _mediaPlaybackItem.ApplyDisplayProperties(props);*/

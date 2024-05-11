@@ -3,9 +3,9 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Vanara.PInvoke;
 using Windows.System;
-using znMusicPlayerWUI.Background.HotKeys;
+using TewIMP.Background.HotKeys;
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public partial class KeyControl : StackPanel
     {

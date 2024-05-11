@@ -11,16 +11,16 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Composition;
-using znMusicPlayerWUI.Media;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.Media;
+using TewIMP.Helpers;
+using TewIMP.DataEditor;
 using Newtonsoft.Json.Linq;
-using znMusicPlayerWUI.Controls;
+using TewIMP.Controls;
 using CommunityToolkit.WinUI.UI;
 using Windows.Storage.Pickers;
 using Windows.ApplicationModel.Search;
 
-namespace znMusicPlayerWUI.Pages.ListViewPages
+namespace TewIMP.Pages.ListViewPages
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -662,7 +662,7 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
             {
                 case "playAll":
                     if (musicListBind.Count == 0) return;
-                    if (App.playingList.PlayBehavior == znMusicPlayerWUI.Background.PlayBehavior.随机播放)
+                    if (App.playingList.PlayBehavior == TewIMP.Background.PlayBehavior.随机播放)
                     {
                         App.playingList.ClearAll();
                     }

@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using znMusicPlayerWUI.Media;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.DataEditor;
-using znMusicPlayerWUI.Windowed;
-using znMusicPlayerWUI.Background;
-using znMusicPlayerWUI.Background.HotKeys;
+using TewIMP.Media;
+using TewIMP.Helpers;
+using TewIMP.DataEditor;
+using TewIMP.Windowed;
+using TewIMP.Background;
+using TewIMP.Background.HotKeys;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Popups;
@@ -19,7 +19,7 @@ using Newtonsoft.Json.Linq;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace znMusicPlayerWUI
+namespace TewIMP
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
@@ -37,7 +37,7 @@ namespace znMusicPlayerWUI
         public static PlayListReader playListReader { get; private set; } = null;
         public static HotKeyManager hotKeyManager { get; private set; } = null;
         public static App AppStatic { get; private set; } = null;
-        public static string AppName { get; } = "znMusicPlayer";
+        public static string AppName { get; } = "TewIMP";
         public static string AppVersion { get; } = "0.3.8 Preview";
 
         public static Window WindowLocal;
@@ -237,8 +237,8 @@ namespace znMusicPlayerWUI
         public static async void ShowErrorDialog()
         {
             MessageDialog messageDialog = new("设置文件出现了一些错误，且程序尝试 5 次后也无法恢复默认配置。\n" +
-                "请尝试删除 文档->znMusicPlayer->UserData 里的 Setting 文件。\n" +
-                "如果仍然出现问题，请到 GitHub 里向项目提出 Issues。", "znMusicPlayerWUI - 程序无法启动");
+                "请尝试删除 文档->TewIMP->UserData 里的 Setting 文件。\n" +
+                "如果仍然出现问题，请到 GitHub 里向项目提出 Issues。", "TewIMP - 程序无法启动");
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(WindowLocal);
             WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, hwnd);
             await messageDialog.ShowAsync();

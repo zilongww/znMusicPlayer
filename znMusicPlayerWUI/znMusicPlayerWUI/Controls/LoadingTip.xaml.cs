@@ -2,7 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Threading.Tasks;
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public sealed partial class LoadingTip : Grid
     {

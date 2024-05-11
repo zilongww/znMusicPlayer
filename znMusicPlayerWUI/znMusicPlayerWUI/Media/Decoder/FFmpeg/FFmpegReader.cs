@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace znMusicPlayerWUI.Media.Decoder.FFmpeg
+namespace TewIMP.Media.Decoder.FFmpeg
 {
     public class FFmpegReader : WaveStream
     {

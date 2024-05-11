@@ -13,7 +13,7 @@ using WinRT.Interop;
 using Windows.UI;
 using WinRT;
 
-namespace znMusicPlayerWUI.WindowHelperzn
+namespace TewIMP.WindowHelperzn
 {
     public static class WindowHelper
     {

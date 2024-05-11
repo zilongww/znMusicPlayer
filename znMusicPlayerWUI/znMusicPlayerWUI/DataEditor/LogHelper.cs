@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace znMusicPlayerWUI.DataEditor
+namespace TewIMP.DataEditor
 {
     public static class LogHelper
     {

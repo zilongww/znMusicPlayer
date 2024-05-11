@@ -17,14 +17,14 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.SystemBackdrops;
-using znMusicPlayerWUI.Pages;
-using znMusicPlayerWUI.Pages.MusicPages;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.Controls;
-using znMusicPlayerWUI.Windowed;
-using znMusicPlayerWUI.DataEditor;
-using znMusicPlayerWUI.Background;
-using znMusicPlayerWUI.Background.HotKeys;
+using TewIMP.Pages;
+using TewIMP.Pages.MusicPages;
+using TewIMP.Helpers;
+using TewIMP.Controls;
+using TewIMP.Windowed;
+using TewIMP.DataEditor;
+using TewIMP.Background;
+using TewIMP.Background.HotKeys;
 using CommunityToolkit.WinUI;
 using Windows.UI;
 using WinRT;
@@ -37,7 +37,7 @@ using Windows.Storage;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace znMusicPlayerWUI
+namespace TewIMP
 {
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.

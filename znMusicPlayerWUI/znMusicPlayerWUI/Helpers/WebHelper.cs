@@ -5,9 +5,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.DataEditor;
 
-namespace znMusicPlayerWUI.Helpers
+namespace TewIMP.Helpers
 {
     public static class WebHelper
     {

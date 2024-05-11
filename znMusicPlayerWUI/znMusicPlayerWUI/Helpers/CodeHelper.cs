@@ -20,10 +20,10 @@ using Microsoft.UI.Composition;
 using Windows.Storage.Streams;
 using Windows.Graphics.Imaging;
 using Windows.UI.ViewManagement;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.DataEditor;
 using WinRT.Interop;
 
-namespace znMusicPlayerWUI.Helpers
+namespace TewIMP.Helpers
 {
     /// <summary>
     /// Easy to crate a simple animation

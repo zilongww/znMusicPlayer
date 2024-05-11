@@ -9,16 +9,16 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Composition;
 using System.Runtime.InteropServices;
 using System.Collections.ObjectModel;
-using znMusicPlayerWUI.DataEditor;
-using znMusicPlayerWUI.Media;
-using znMusicPlayerWUI.Helpers;
+using TewIMP.DataEditor;
+using TewIMP.Media;
+using TewIMP.Helpers;
 using WinRT;
 using Windows.Graphics;
 using NAudio.Wave;
 using Vanara.PInvoke;
 using Microsoft.UI.Xaml.Hosting;
 
-namespace znMusicPlayerWUI.Windowed
+namespace TewIMP.Windowed
 {
     public enum LyricTextPosition { Default, Left, Right, Center }
     public enum LyricTranslateTextPosition { Center, Left, Right }

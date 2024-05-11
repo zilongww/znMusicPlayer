@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.UI.Xaml.Media.Animation;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.DataEditor;
 
-namespace znMusicPlayerWUI.Pages.ListViewPages
+namespace TewIMP.Pages.ListViewPages
 {
     public enum PageType { PlayList, Album, Artist, Search }
     public class PageData

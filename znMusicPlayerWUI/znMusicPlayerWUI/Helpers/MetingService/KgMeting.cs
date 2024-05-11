@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.DataEditor;
 
-namespace znMusicPlayerWUI.Helpers.MetingService
+namespace TewIMP.Helpers.MetingService
 {
     class KgMeting : IMetingService
     {

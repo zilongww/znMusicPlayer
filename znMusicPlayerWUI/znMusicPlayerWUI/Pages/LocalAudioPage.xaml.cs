@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Composition;
 using System.Collections;
 
-namespace znMusicPlayerWUI.Pages
+namespace TewIMP.Pages
 {
     public partial class LocalAudioPage : Page
     {

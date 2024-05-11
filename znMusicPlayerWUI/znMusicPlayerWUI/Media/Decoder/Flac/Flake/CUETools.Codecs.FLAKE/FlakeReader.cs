@@ -164,7 +164,7 @@ namespace CUETools.Codecs.FLAKE
 			await System.Threading.Tasks.Task.Delay(200);
 			isReloadFreeze--;
 			if (isReloadFreeze > 0) return;
-            await znMusicPlayerWUI.App.audioPlayer.Reload(znMusicPlayerWUI.Media.AudioPlayer.ct += TimeSpan.FromMilliseconds(100));
+            await TewIMP.App.audioPlayer.Reload(TewIMP.Media.AudioPlayer.ct += TimeSpan.FromMilliseconds(100));
         }
 
         public AudioPCMConfig PCM { get; private set; }

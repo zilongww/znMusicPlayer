@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
-namespace znMusicPlayerWUI.Background
+namespace TewIMP.Background
 {
     public sealed class PlayListReader
     {

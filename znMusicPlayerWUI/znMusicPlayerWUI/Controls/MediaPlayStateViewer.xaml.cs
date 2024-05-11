@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml.Controls;
 using NAudio.Wave;
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public partial class MediaPlayStateViewer : Grid
     {

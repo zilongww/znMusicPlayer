@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 
-namespace znMusicPlayerWUI.Helpers
+namespace TewIMP.Helpers
 {
     [Obsolete]
     public static class NeteaseHelper

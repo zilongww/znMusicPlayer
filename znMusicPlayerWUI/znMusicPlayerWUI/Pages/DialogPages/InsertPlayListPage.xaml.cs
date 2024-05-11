@@ -3,13 +3,13 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using znMusicPlayerWUI.Media;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.Controls;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.Media;
+using TewIMP.Helpers;
+using TewIMP.Controls;
+using TewIMP.DataEditor;
 using Newtonsoft.Json.Linq;
 
-namespace znMusicPlayerWUI.Pages.DialogPages
+namespace TewIMP.Pages.DialogPages
 {
     public partial class InsertPlayListPage : Page
     {

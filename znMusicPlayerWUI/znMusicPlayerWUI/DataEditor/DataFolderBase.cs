@@ -2,12 +2,12 @@
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using znMusicPlayerWUI.Windowed;
-using znMusicPlayerWUI.Background;
-using znMusicPlayerWUI.Background.HotKeys;
+using TewIMP.Windowed;
+using TewIMP.Background;
+using TewIMP.Background.HotKeys;
 using Microsoft.UI.Xaml;
 
-namespace znMusicPlayerWUI.DataEditor
+namespace TewIMP.DataEditor
 {
     public static class DataFolderBase
     {

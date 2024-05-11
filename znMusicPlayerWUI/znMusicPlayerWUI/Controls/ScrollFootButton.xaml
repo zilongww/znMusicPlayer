@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <UserControl
-    x:Class="znMusicPlayerWUI.Controls.ScrollFootButton"
+    x:Class="TewIMP.Controls.ScrollFootButton"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:znMusicPlayerWUI.Controls"
+    xmlns:local="using:TewIMP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:m="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:ui="using:CommunityToolkit.WinUI.UI"

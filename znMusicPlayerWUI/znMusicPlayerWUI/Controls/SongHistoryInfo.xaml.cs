@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.DataEditor;
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public sealed partial class SongHistoryInfo : UserControl
     {

@@ -10,13 +10,13 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Windowing;
-using znMusicPlayerWUI.Controls;
-using znMusicPlayerWUI.DataEditor;
+using TewIMP.Controls;
+using TewIMP.DataEditor;
 using NAudio.Wave;
 using Windows.System;
 using CommunityToolkit.WinUI.UI;
 
-namespace znMusicPlayerWUI.Pages.MusicPages
+namespace TewIMP.Pages.MusicPages
 {
     public partial class MusicPage : Page, IMusicPage
     {

@@ -13,9 +13,9 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using znMusicPlayerWUI.Helpers;
+using TewIMP.Helpers;
 
-namespace znMusicPlayerWUI.Controls
+namespace TewIMP.Controls
 {
     public sealed partial class ScrollViewerSearchControl : Grid
     {

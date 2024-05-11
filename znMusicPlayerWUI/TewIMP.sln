@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32611.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "znMusicPlayerWUI (Package)", "znMusicPlayerWUI (Package)\znMusicPlayerWUI (Package).wapproj", "{64F59CFB-91DE-40F2-A52A-9D9720CE6D00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "znMusicPlayerWUI", "znMusicPlayerWUI\znMusicPlayerWUI.csproj", "{D32D69DE-DAC3-4F62-9735-D650E3C328A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TewIMP", "znMusicPlayerWUI\TewIMP.csproj", "{D32D69DE-DAC3-4F62-9735-D650E3C328A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,16 +1,16 @@
 ﻿<Page
-    x:Class="znMusicPlayerWUI.Pages.PlayListPage"
+    x:Class="TewIMP.Pages.PlayListPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:znMusicPlayerWUI"
-    xmlns:c="using:znMusicPlayerWUI.Controls"
+    xmlns:local="using:TewIMP"
+    xmlns:c="using:TewIMP.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:data="using:znMusicPlayerWUI.DataEditor"
+    xmlns:data="using:TewIMP.DataEditor"
     xmlns:ui="using:CommunityToolkit.WinUI.UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:cc="using:znMusicPlayerWUI.Controls"
+    xmlns:cc="using:TewIMP.Controls"
     mc:Ignorable="d" SizeChanged="Page_SizeChanged">
 
     <GridView x:Name="BaseGridView"

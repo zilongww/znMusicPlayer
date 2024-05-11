@@ -9,15 +9,15 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
-using znMusicPlayerWUI.Media;
-using znMusicPlayerWUI.Helpers;
-using znMusicPlayerWUI.DataEditor;
-using static znMusicPlayerWUI.Windowed.RoundWindow;
+using TewIMP.Media;
+using TewIMP.Helpers;
+using TewIMP.DataEditor;
+using static TewIMP.Windowed.RoundWindow;
 using Windows.UI;
 using WinRT;
 using NAudio.Wave;
 
-namespace znMusicPlayerWUI.Windowed
+namespace TewIMP.Windowed
 {
     public sealed partial class NotifyIconWindow : Window
     {

@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Composition;
 
-namespace znMusicPlayerWUI.Helpers.TransparentWindowHelper
+namespace TewIMP.Helpers.TransparentWindowHelper
 {
     public static class TransparentHelper
     {

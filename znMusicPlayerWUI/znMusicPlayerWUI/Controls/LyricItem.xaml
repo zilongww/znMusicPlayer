@@ -1,8 +1,8 @@
 ﻿<Grid
-    x:Class="znMusicPlayerWUI.Controls.LyricItem"
+    x:Class="TewIMP.Controls.LyricItem"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:znMusicPlayerWUI.Controls"
+    xmlns:local="using:TewIMP.Controls"
     xmlns:brush="using:CommunityToolkit.WinUI.UI.Media"
     xmlns:ui="using:CommunityToolkit.WinUI.UI"   
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
