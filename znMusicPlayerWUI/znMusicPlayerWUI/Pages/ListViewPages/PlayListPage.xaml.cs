@@ -540,6 +540,8 @@ namespace znMusicPlayerWUI.Pages.ListViewPages
 
         void RemoveEvents()
         {
+            MainWindow.InKeyDownEvent -= MainWindow_InKeyDownEvent;
+            ItemList_Header_Search_Control.SearchingAItem -= ItemList_Header_Search_Control_SearchingAItem;
             ItemList_Header_Search_Control.SearchingAItem -= ItemList_Header_Search_Control_SearchingAItem;
             ItemList_Header_Search_Control.IsOpenChanged -= ItemList_Header_Search_Control_IsOpenChanged;
             ItemsList_Header_Foot_Buttons.PositionToNowPlaying_Button.Click -= PositionToNowPlaying_Button_Click;
